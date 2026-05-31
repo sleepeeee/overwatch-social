@@ -1,0 +1,7 @@
+rsx_version: "0.10.0"
+schema_version: "2"
+init_timestamp: "2026-05-31T19:02:56Z"
+source: "rsx-skill@central-skill-link:D:/skills建立與檢測專家/packs/rsx"
+standards_hash: "734c8b9631612ad38943e5bcafe2902213d0213cc41dba647dfc5643a1ca29c7"
+init_magnet: "rsx-init-magnet-95c18389a44ee8b9"
+skill_install_timestamp: "2026-05-31T19:02:56Z"
