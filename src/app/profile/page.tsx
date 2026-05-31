@@ -159,6 +159,7 @@ export default function ProfilePage() {
   };
 
   const handleToggleLanguage = (lang: string) => {
+    setErrorMsg(null);
     setCardData((prev) => {
       const current = prev.languages || [];
       if (current.includes(lang)) {
@@ -168,6 +169,10 @@ export default function ProfilePage() {
           languages: current.filter((l) => l !== lang)
         };
       } else {
+        if (current.length >= 3) {
+          setErrorMsg("溝通語言最多只能選擇三個喔，以維護卡片完美視覺！");
+          return prev;
+        }
         return {
           ...prev,
           languages: [...current, lang]
@@ -352,7 +357,12 @@ export default function ProfilePage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-bold text-gray-400 mb-2 block">溝通語言 (複選)</label>
+                  <div className="flex justify-between items-center mb-2">
+                    <label className="text-xs font-bold text-gray-400 block">溝通語言 (最多 3 個)</label>
+                    <span className="text-[10px] text-gray-500 bg-gray-950 px-1.5 py-0.5 rounded border border-gray-850">
+                      已選 {cardData.languages.length} / 3
+                    </span>
+                  </div>
                   <div className="flex flex-wrap gap-1.5">
                     {LANGUAGE_OPTIONS.map((lang) => {
                       const isSelected = cardData.languages.includes(lang);
