@@ -146,8 +146,8 @@ export default function OWCard({ cardData, isLoggedIn = true, isEditable = false
           <span className="text-[#3e2723] font-extrabold text-lg md:text-xl tracking-tight">
             <span className="text-[#d87040]">UID: </span>{getDisplayBattleTag()}
           </span>
-          {/* 只要不是隱藏且已登入，或者未登入時為提供使用者登入暗示，我們均提供複製按鈕（但點擊時會做安全攔截） */}
-          {(isEditable || isLoggedIn || getDisplayBattleTag().includes("#****")) && (
+          {/* 只要公開或是自己編輯，我們均提供複製按鈕（未登入時點擊會做安全攔截與登入暗示） */}
+          {(isEditable || is_tag_visible) && battle_tag !== "已隱藏#xxxx" && (
             <button
               onClick={handleCopyTag}
               className="p-1 rounded-md hover:bg-[#e8dcbe] text-[#5d4037] transition-colors relative"
@@ -197,6 +197,9 @@ export default function OWCard({ cardData, isLoggedIn = true, isEditable = false
                     <img
                       src={heroInfo.imageUrl}
                       alt={heroInfo.name}
+                      referrerPolicy="no-referrer"
+                      loading="lazy"
+                      decoding="async"
                       className="max-w-[140%] max-h-[110%] object-contain origin-bottom transition-all duration-300 group-hover:scale-105 z-10"
                       draggable="false"
                     />
