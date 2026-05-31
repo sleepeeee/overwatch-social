@@ -41,6 +41,7 @@ export default function ProfilePage() {
   const [cardData, setCardData] = useState<OWPlayerCard>(DEFAULT_CARD);
   const [saved, setSaved] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [heroRoleFilter, setHeroRoleFilter] = useState<"all" | "tank" | "damage" | "support">("all"); // 🛡️ 英雄定位過濾
   
   // 🛡️ [Mitigation] 引入 Mounted 狀態鎖，徹底杜絕 Next.js Hydration Mismatch 與 FOUC Layout Shift
   const [isMounted, setIsMounted] = useState(false);
@@ -288,21 +289,21 @@ export default function ProfilePage() {
 
               <div className="bg-gray-950/60 p-3 rounded-lg border border-gray-800 flex justify-between items-center">
                 <div className="space-y-0.5">
-                  <span className="text-xs font-bold text-gray-300 block">對外隱藏 BattleTag</span>
+                  <span className="text-xs font-bold text-gray-300 block">直接隱藏卡片</span>
                   <span className="text-[10px] text-gray-500 block">
-                    開啟後，廣場卡片上的真實 ID 將會遮蔽，且不提供「複製」按鈕以保障個人隱私。
+                    開啟後，您的特工名片將直接從交友廣場（河道）中消失，其他玩家將無法瀏覽到您的任何資訊。
                   </span>
                 </div>
                 <button
                   type="button"
                   onClick={() => setCardData({ ...cardData, is_tag_visible: !cardData.is_tag_visible })}
                   className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 ${
-                    cardData.is_tag_visible ? "bg-orange-500" : "bg-gray-800"
+                    !cardData.is_tag_visible ? "bg-orange-500" : "bg-gray-800"
                   }`}
                 >
                   <span
                     className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200 ${
-                      cardData.is_tag_visible ? "translate-x-6" : "translate-x-1"
+                      !cardData.is_tag_visible ? "translate-x-6" : "translate-x-1"
                     }`}
                   />
                 </button>
@@ -402,8 +403,32 @@ export default function ProfilePage() {
                   已選 {cardData.selected_heroes.length} / 3
                 </span>
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
-                {HEROES_CONFIG.map((hero) => {
+              <div className="flex flex-wrap gap-1.5 pb-3 border-b border-gray-850">
+                {[
+                  { value: "all", label: "全部英雄" },
+                  { value: "tank", label: "肉盾 🛡️" },
+                  { value: "damage", label: "攻擊 ⚔️" },
+                  { value: "support", label: "支援 ➕" }
+                ].map((tab) => (
+                  <button
+                    key={tab.value}
+                    type="button"
+                    onClick={() => setHeroRoleFilter(tab.value as any)}
+                    className={`text-[10px] font-bold px-3 py-1.5 rounded-lg transition-colors border cursor-pointer ${
+                      heroRoleFilter === tab.value
+                        ? "bg-orange-500 border-orange-500 text-white shadow-[0_0_10px_rgba(249,115,22,0.2)]"
+                        : "bg-gray-950 border-gray-850 text-gray-400 hover:bg-gray-900"
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+              
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 max-h-[300px] overflow-y-auto pr-1">
+                {HEROES_CONFIG.filter(
+                  (hero) => heroRoleFilter === "all" || hero.role === heroRoleFilter
+                ).map((hero) => {
                   const isSelected = cardData.selected_heroes.includes(hero.id);
                   return (
                     <button
@@ -479,8 +504,8 @@ export default function ProfilePage() {
                   已選 {Object.keys(cardData.social_channels || {}).length} / 3
                 </span>
               </div>
-              <p className="text-xs text-gray-500">
-                💡 點選以下圖標按鈕以「啟用 / 停用」該聯絡管道。真實個人帳號已於後台完成 Google 安全綁定，無須手動輸入。
+              <p className="text-xs text-gray-400">
+                💡 點選以下圖標按鈕，即可在名片上展示您經常使用的通訊管道，方便其他特工了解您的聯絡交流習慣。
               </p>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
