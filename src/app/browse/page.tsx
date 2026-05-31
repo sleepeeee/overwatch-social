@@ -79,6 +79,11 @@ export default function BrowsePage() {
   };
 
   const filteredPlayers = players.filter((player) => {
+    // 🛡️ [Privacy Protection] 如果玩家設定對外隱藏 (is_tag_visible === false)，則直接從廣場河道完全消失！
+    if (!player.is_tag_visible) {
+      return false;
+    }
+
     // 關鍵字搜尋安全容錯
     const matchesQuery = 
       player.battle_tag.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -127,21 +132,21 @@ export default function BrowsePage() {
           </p>
         </div>
 
-        <div className="bg-gray-900 border border-gray-800 rounded-lg p-2.5 flex items-center gap-3 text-xs">
-          <span className="text-gray-400 font-medium">🛡️ 登入狀態模擬:</span>
+        <div className="bg-slate-950/60 border border-[rgba(249,115,22,0.25)] rounded-xl p-2.5 flex items-center gap-3 text-xs shadow-[0_0_15px_rgba(249,115,22,0.08)]">
+          <span className="text-gray-300 font-bold">🛡️ 登入狀態模擬:</span>
           <button
             onClick={() => setIsLoggedIn(!isLoggedIn)}
-            className={`px-3 py-1 rounded font-bold transition-colors ${
-              isLoggedIn ? "bg-green-600 text-white" : "bg-red-600 text-white"
+            className={`px-3.5 py-1.5 rounded-lg font-black transition-all duration-300 active:scale-95 cursor-pointer shadow-md ${
+              isLoggedIn ? "bg-green-600 hover:bg-green-500 text-white" : "bg-red-600 hover:bg-red-500 text-white"
             }`}
           >
-            {isLoggedIn ? "已登入 (解鎖社群複製)" : "未登入 (限制複製)"}
+            {isLoggedIn ? "已登入 (完整查閱 & 複製)" : "未登入 (限制並遮罩 UID)"}
           </button>
         </div>
       </div>
 
       {/* 搜尋與篩選器面板 */}
-      <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 mb-8 space-y-4">
+      <div className="ow-glass-panel ow-tech-corner p-6 mb-8 space-y-4">
         <div className="flex flex-col md:flex-row gap-4 items-center">
           <div className="relative flex-grow w-full">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
