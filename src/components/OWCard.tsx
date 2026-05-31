@@ -244,9 +244,9 @@ export default function OWCard({ cardData, isLoggedIn = true, isEditable = false
 
       <div className="flex flex-col gap-3 pt-2 border-t border-dashed border-[#a1887f] mt-auto">
         <div className="flex justify-between items-center">
-          <div className="flex items-center gap-1.5 text-xs text-[#5d4037] font-bold">
-            <Globe size={14} className="text-[#8d6e63]" />
-            <span className="truncate max-w-[150px]">
+          <div className="flex items-center gap-1 text-xs text-[#5d4037] font-bold">
+            <Globe size={14} className="text-[#8d6e63] shrink-0" />
+            <span className="inline-block truncate max-w-[110px] sm:max-w-[140px] align-middle" title={languages.join('、')}>
               {languages.length > 0 ? languages.join('、') : "未設定"}
             </span>
             <div className="ml-1 pl-2 border-l border-[#a1887f] flex items-center">
