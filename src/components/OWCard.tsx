@@ -215,11 +215,19 @@ export default function OWCard({ cardData, isLoggedIn = true, isEditable = false
             </span>
             <div className="ml-1 pl-2 border-l border-[#a1887f] flex items-center">
               {mic_status === 'mic-on' ? (
+<<<<<<< HEAD
                 <Mic size={14} className="text-green-600" aria-label="可開麥交流" />
               ) : mic_status === 'listen-only' ? (
                 <Mic size={14} className="text-blue-500" aria-label="僅能聽麥" />
               ) : (
                 <MicOff size={14} className="text-gray-400" aria-label="不用語音" />
+=======
+                <Mic size={14} className="text-green-600" title="可開麥交流" />
+              ) : mic_status === 'listen-only' ? (
+                <Mic size={14} className="text-blue-500" title="僅能聽麥" />
+              ) : (
+                <MicOff size={14} className="text-gray-400" title="不用語音" />
+>>>>>>> origin/feature/card-builder
               )}
             </div>
           </div>
