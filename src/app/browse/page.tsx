@@ -8,62 +8,59 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, RotateCcw, Users, AlertCircle } from "lucide-react";
-
-// 🛡️ [Mitigation] 靜態/SSR 安全過濾：在伺服器端渲染階段直接對 MOCK_PLAYERS 進行物理隱私屏蔽，防止 SSR 洩漏真實 ID！
-const INITIAL_SANITIZED_PLAYERS = MOCK_PLAYERS.map(p => {
-  if (!p.is_tag_visible) {
-    return {
-      ...p,
-      battle_tag: "已隱藏#xxxx" // 物理遮罩真實 ID，阻斷 Chrome 抓包與 HTML 原始碼洩漏！
-    };
-  }
-  return p;
-});
+import { createClient } from "@/lib/supabase/client";
 
 export default function BrowsePage() {
-  const [players, setPlayers] = useState<OWPlayerCard[]>(INITIAL_SANITIZED_PLAYERS);
+  const [players, setPlayers] = useState<OWPlayerCard[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedRole, setSelectedRole] = useState("全部");
   const [selectedServer, setSelectedServer] = useState("全部");
   const [selectedMic, setSelectedMic] = useState("全部");
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
-
-  // 🛡️ [Mitigation] 引入 Mounted 狀態鎖，徹底杜絕 Next.js Hydration Mismatch 與 FOUC Layout Shift
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
-    const savedCard = localStorage.getItem("ow_social_user_card");
-    let userCardId = "player-current-user";
-    let activePlayers = [...MOCK_PLAYERS];
+    const supabase = createClient();
 
-    if (savedCard) {
-      try {
-        const userCard: OWPlayerCard = JSON.parse(savedCard);
-        userCardId = userCard.id;
-        
-        // 排除重複的 Mock ID，確保玩家自訂的置頂
-        const filteredMock = MOCK_PLAYERS.filter(p => p.id !== userCard.id);
-        activePlayers = [userCard, ...filteredMock];
-      } catch (e) {
-        console.error("讀取使用者卡片失敗", e);
-      }
-    }
+    // 查詢真實廣場資料（DB 層已遮蔽，前端無需額外處理）
+    const loadPlayers = async () => {
+      const { data, error } = await supabase
+        .from("public_profiles")
+        .select("*")
+        .order("updated_at", { ascending: false });
 
-    // 🛡️ [Mitigation] 客戶端資料物理遮蔽隔離 (Data Sanitization)
-    // 遍歷所有廣場名片，如果「不是本人的名片」且「is_tag_visible 為 false」，直接在資料層物理屏蔽明文 BattleTag！
-    const sanitized = activePlayers.map(p => {
-      const isCurrentUserCard = p.id === userCardId;
-      if (!isCurrentUserCard && !p.is_tag_visible) {
-        return {
-          ...p,
-          battle_tag: "已隱藏#xxxx"
-        };
+      if (!error && data && data.length > 0) {
+        // 將 DB row 轉為 OWPlayerCard 格式
+        setPlayers(data.map(row => ({
+          id: row.user_id,
+          server: row.server,
+          battle_tag: row.battle_tag, // DB view 已遮蔽
+          is_tag_visible: row.is_tag_visible,
+          selected_heroes: row.selected_heroes ?? [],
+          tags: row.tags ?? [],
+          message: row.message ?? "",
+          languages: row.languages ?? [],
+          mic_status: row.mic_status as OWPlayerCard["mic_status"],
+          social_channels: {}, // public_profiles 不含 social_channels
+          mbti: row.mbti ?? undefined,
+        })));
+      } else {
+        // 冷啟動 fallback：DB 無資料時顯示 Mock
+        setPlayers(MOCK_PLAYERS);
       }
-      return p;
+    };
+
+    supabase.auth.getUser().then(({ data }) => {
+      setIsLoggedIn(!!data.user);
     });
 
-    setPlayers(sanitized);
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsLoggedIn(!!session?.user);
+    });
+
+    loadPlayers();
+    return () => listener.subscription.unsubscribe();
   }, []);
 
   const getHeroRole = (heroId: string) => {
