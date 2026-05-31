@@ -7,15 +7,19 @@
 ---
 
 <!-- ZONE_A_START -->
-> **Zone A 最後更新：2026-05-31**（初次部署，尚無進度）
+> **Zone A 最後更新：2026-06-01**
 
 ## 現在在做什麼
 
-（尚未開始任何 change。下一步：跑 `/rsx:explore <主題>` 探索 + 建 REF；或 `/rsx:status` 看狀態）
+`google-oauth-supabase-auth` change 已完成全部任務（tasks.md 全勾）+ §6.7 APPLY 審查（8/10 PROCEED）。
+rsx-archiver 已建立 F-001、ADR-01，crossref 已回填。Gate 全 PASS。
+下一步：主代理執行 `openspec archive google-oauth-supabase-auth`。
 
 ## 進行中的 Changes（未 archive）
 
-（無）
+| Change | 狀態 | 備註 |
+|---|---|---|
+| google-oauth-supabase-auth | Gate PASS，待 archive | 主代理執行 openspec archive |
 
 ## 待 Propose Changes
 
@@ -23,12 +27,18 @@
 
 ## 近期歸檔紀錄
 
-（無）
+（尚未歸檔，google-oauth-supabase-auth 為第一個 change）
 <!-- ZONE_A_END -->
 
 ---
 
 ## Zone B — 工作日誌（追加，由新到舊）
+
+### 2026-06-01 google-oauth-supabase-auth — ARCHIVE 前置（Gate + Finding/ADR）
+
+- **已完成**：§Z Gate 全 PASS；建 F-001（profiles 安全漏洞三輪審查）；建 ADR-01（DB 層 view 隱私遮蔽決策）；雙向 crossref 回填（REF-002/003/004 referenced_by 更新）；latest.md Zone A 更新
+- **卡關**：無
+- **下次優先**：主代理執行 `openspec archive google-oauth-supabase-auth`
 
 ### 2026-05-31 project initialized
 

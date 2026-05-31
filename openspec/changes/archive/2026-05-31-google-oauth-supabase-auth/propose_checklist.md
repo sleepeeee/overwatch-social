@@ -26,6 +26,8 @@
 | REF-003 | Supabase Google OAuth（PKCE + callback route）| `.rsx/knowledge/REF-003-*.md` |
 | REF-004 | Supabase RLS（profiles 表 + auth.uid() policy）| `.rsx/knowledge/REF-004-*.md` |
 
+| §6.7 APPLY 完成審查 | codex_review_audit（實作後）| ✅ PASS | 8/10 PROCEED | open redirect 防護充分；getClaims().sub 授權正確；middleware 用 getUser() 刷新符合設計；public_profiles view 方向正確（建議後續驗 security_invoker）；mock fallback 建議 production 禁用。無阻斷級漏洞。 |
+
 ## Apply 階段需特別注意的 Codex 建議
 
 1. **public_profiles view 語意**：view 的公開安全性靠 projection 不靠 RLS，需明確 `GRANT SELECT ON public_profiles TO anon` 且絕不 `GRANT SELECT ON profiles TO anon`
