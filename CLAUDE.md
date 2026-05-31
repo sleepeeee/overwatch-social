@@ -40,3 +40,34 @@ src/components/
 - Commit message 用中文，動詞開頭（新增、修正、更新）
 - 主要開發在 main branch，功能分支用 `feature/功能名稱`
 - 溝通語言：繁體中文
+<!-- rsx:awareness:begin v=0.10.0 -->
+
+## rsx 工作流程規範
+
+詳見 rsx skill 的 `sop/RSX_SOP.md`（任一全域路徑皆可，視當下使用的 AI agent）：
+
+- `~/.claude/skills/rsx/sop/RSX_SOP.md`（Claude Code）
+- `~/.codex/skills/rsx/sop/RSX_SOP.md`（Codex）
+- `~/.gemini/skills/rsx/sop/RSX_SOP.md`（Gemini）
+
+新對話載入順序：
+1. 本檔
+2. `.rsx/notes/latest.md`（若有）
+3. RSX_SOP.md §0-§6 主幹
+
+## rsx 知識點
+
+- REF 知識點放 `.rsx/knowledge/`，schema 見 `.rsx/_STANDARDS.md`
+- ADR 放 `.rsx/decisions/`
+- Finding 放 `.rsx/findings/`
+
+## rsx 工作流程
+
+| 階段 | 入口 |
+|---|---|
+| init | `/rsx:init`（已完成）|
+| explore | `/rsx:explore` 或依 RSX_SOP §1 |
+| propose | `/rsx:propose`（內部呼叫 `/opsx:propose`）|
+| apply | `/rsx:apply`（內部呼叫 `/opsx:apply`）|
+| archive | `/rsx:archive`（內部呼叫 `/opsx:archive`）|
+<!-- rsx:awareness:end -->

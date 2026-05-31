@@ -198,8 +198,6 @@ export default function OWCard({ cardData, isLoggedIn = true, isEditable = false
                       src={heroInfo.imageUrl}
                       alt={heroInfo.name}
                       referrerPolicy="no-referrer"
-                      loading="lazy"
-                      decoding="async"
                       className="max-w-[140%] max-h-[110%] object-contain origin-bottom transition-all duration-300 group-hover:scale-105 z-10"
                       draggable="false"
                     />
