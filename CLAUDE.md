@@ -12,10 +12,11 @@ npm run build    # 正式打包
 ```
 
 ## 技術棧
-- **框架**：Next.js 15 (App Router) + TypeScript
+- **框架**：Next.js 16 (App Router) + TypeScript
 - **樣式**：Tailwind CSS v4 + shadcn/ui
-- **預計後端**：Supabase（尚未串接，目前用靜態假資料）
-- **部署**：Vercel（尚未設定）
+- **後端**：Supabase（Auth + PostgreSQL）已串接，Project ID：`cxoncanfveqtfofcqyqe`
+- **部署**：Vercel ✅ 已部署 → https://overwatch-social.vercel.app
+- **認證**：Google OAuth（透過 Supabase Auth）
 
 ## 目前頁面結構
 ```
