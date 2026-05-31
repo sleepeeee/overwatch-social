@@ -33,6 +33,7 @@ export default function OWCard({ cardData, isLoggedIn = true, isEditable = false
   // 🛡️ [Mitigation] 複製 BattleTag 強固保護
   const handleCopyTag = (e: React.MouseEvent) => {
     e.stopPropagation();
+    if (!isLoggedIn && !isEditable) return;
     if (!is_tag_visible && !isEditable) return;
     if (!battle_tag || battle_tag === "已隱藏#xxxx") return;
     navigator.clipboard.writeText(battle_tag);
@@ -116,7 +117,7 @@ export default function OWCard({ cardData, isLoggedIn = true, isEditable = false
               </>
             )}
           </span>
-          {(is_tag_visible || isEditable) && battle_tag !== "已隱藏#xxxx" && (
+          {(is_tag_visible || isEditable) && battle_tag !== "已隱藏#xxxx" && (isLoggedIn || isEditable) && (
             <button
               onClick={handleCopyTag}
               className="p-1 rounded-md hover:bg-[#e8dcbe] text-[#5d4037] transition-colors relative"
