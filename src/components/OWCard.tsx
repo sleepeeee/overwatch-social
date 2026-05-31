@@ -146,7 +146,7 @@ export default function OWCard({ cardData, isLoggedIn = true, isEditable = false
 
       <div className="flex justify-between items-center mb-4 px-1">
         <div className="flex items-center gap-2">
-          <span className="text-[#5d4037] font-extrabold text-lg md:text-xl tracking-tight">
+          <span className="text-[#5d4037] font-extrabold text-base md:text-lg tracking-tight">
             <span className="text-[#82b7cc] font-black">UID: </span>{getDisplayBattleTag()}
           </span>
           {/* 只要公開或是自己編輯，我們均提供複製按鈕（未登入時點擊會做安全攔截與登入暗示） */}

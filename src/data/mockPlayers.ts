@@ -327,6 +327,83 @@ export const HEROES_CONFIG: HeroConfig[] = [
 // 3. 5~10 個精美的預設玩家名片 Mock 資料
 export const MOCK_PLAYERS: OWPlayerCard[] = [
   {
+    id: 'player-hevelius',
+    server: 'Asia Server',
+    battle_tag: 'Hevelius#1777',
+    is_tag_visible: true,
+    selected_heroes: ['ana', 'zenyatta', 'kiriko'],
+    tags: ['團隊至上', '拒絕暴躁', '輕鬆歡樂'],
+    message: '每天清晨用色彩和安娜的睡針開啟新畫布 🎨 尋找溫和有心態的輸出特工一起快樂組排！',
+    languages: ['繁體中文', 'English'],
+    mic_status: 'mic-on',
+    social_channels: {
+      discord: 'hevelius#7777'
+    },
+    mbti: 'INFJ'
+  },
+  {
+    id: 'player-solange',
+    server: 'Asia Server',
+    battle_tag: 'Solange#2888',
+    is_tag_visible: true,
+    selected_heroes: ['tracer', 'dva', 'mercy'],
+    tags: ['有麥克風', '團隊至上', '招募隊友'],
+    message: '哈囉特工！我是插畫家 Solange。專精閃光與碧姬，希望能找到一起歡樂推車的好拍檔！',
+    languages: ['繁體中文', '简体中文'],
+    mic_status: 'mic-on',
+    social_channels: {
+      discord: 'solange#8888',
+      x: '@solange_riddle'
+    },
+    mbti: 'ENFP'
+  },
+  {
+    id: 'player-aurum',
+    server: 'Asia Server',
+    battle_tag: 'Aurum#9999',
+    is_tag_visible: true,
+    selected_heroes: ['genji', 'hanzo', 'reaper'],
+    tags: ['招募隊友', '拒絕暴躁', '語音交流'],
+    message: '冷靜專注。目標宗師，主玩源氏與死神。不常開麥但配合度極高，輸贏皆平常心。',
+    languages: ['繁體中文', 'English'],
+    mic_status: 'listen-only',
+    social_channels: {
+      discord: 'aurum#9999'
+    },
+    mbti: 'INTJ'
+  },
+  {
+    id: 'player-meteor',
+    server: 'Asia Server',
+    battle_tag: '流星#5542',
+    is_tag_visible: true,
+    selected_heroes: ['baptiste', 'kiriko', 'lucio'],
+    tags: ['團隊至上', '有麥克風', '拒絕暴躁'],
+    message: '主輔助巴帝斯特/霧子！喜歡跟坦克打戰術配合，心態良好拒絕暴躁，歡迎加好友排位！',
+    languages: ['繁體中文'],
+    mic_status: 'mic-on',
+    social_channels: {
+      discord: 'meteor#5542'
+    },
+    mbti: 'ENFJ'
+  },
+  {
+    id: 'player-chronos',
+    server: 'Asia Server',
+    battle_tag: '時空特工#7761',
+    is_tag_visible: true,
+    selected_heroes: ['tracer', 'ashe', 'soldier-76'],
+    tags: ['輕鬆歡樂', '語音交流', '招募隊友'],
+    message: '主玩閃光艾希！每天休閒推車，輸贏都是一場精彩的冒險。',
+    languages: ['繁體中文', 'English'],
+    mic_status: 'mic-on',
+    social_channels: {
+      discord: 'chronos#7761',
+      steam: '24681357'
+    },
+    mbti: 'ESFP'
+  },
+  {
     id: 'player-akira',
     server: 'Asia Server',
     battle_tag: '愛喝奶茶#3342',
