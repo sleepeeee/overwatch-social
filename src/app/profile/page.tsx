@@ -35,6 +35,13 @@ const DEFAULT_CARD: OWPlayerCard = {
   mbti: "INFJ"
 };
 
+const BINDED_SOCIAL_ACCOUNTS = {
+  discord: "akira#1234",
+  steam: "98765432",
+  x: "@akira_ow",
+  line: "akira_line"
+};
+
 export default function ProfilePage() {
   const [cardData, setCardData] = useState<OWPlayerCard>(DEFAULT_CARD);
   const [saved, setSaved] = useState(false);
@@ -105,21 +112,54 @@ export default function ProfilePage() {
     });
   };
 
-  const handleSocialChange = (platform: string, value: string) => {
+  const handleToggleSocial = (platformId: string) => {
     setErrorMsg(null);
-    const trimmedVal = value.trim();
     setCardData((prev) => {
-      const updatedChannels = { ...(prev.social_channels || {}) };
-      if (trimmedVal) {
-        updatedChannels[platform as keyof typeof prev.social_channels] = trimmedVal;
+      const currentChannels = { ...(prev.social_channels || {}) };
+      const isActive = !!currentChannels[platformId as keyof typeof prev.social_channels];
+      const activeCount = Object.keys(currentChannels).length;
+      
+      if (isActive) {
+        if (activeCount <= 1) {
+          setErrorMsg("為保障聯絡暢通，最少必須點選啟用一個聯絡管道喔！");
+          return prev;
+        }
+        delete currentChannels[platformId as keyof typeof prev.social_channels];
       } else {
-        delete updatedChannels[platform as keyof typeof prev.social_channels];
+        if (activeCount >= 3) {
+          setErrorMsg("常用聯絡管道最多只能點選三個喔，以維護卡片版面整潔！");
+          return prev;
+        }
+        const bindedAccount = BINDED_SOCIAL_ACCOUNTS[platformId as keyof typeof BINDED_SOCIAL_ACCOUNTS];
+        currentChannels[platformId as keyof typeof prev.social_channels] = bindedAccount;
       }
+      
       return {
         ...prev,
-        social_channels: updatedChannels
+        social_channels: currentChannels
       };
     });
+  };
+
+  const getPlatformEmoji = (platformId: string) => {
+    switch (platformId) {
+      case 'discord': return '👾';
+      case 'steam': return '🎮';
+      case 'x': return '𝕏';
+      case 'line': return '💬';
+      default: return '🔗';
+    }
+  };
+
+  const getPlatformColor = (platformId: string, isActive: boolean) => {
+    if (!isActive) return "bg-gray-950 border-gray-850 text-gray-500 hover:bg-gray-900 hover:border-gray-700";
+    switch (platformId) {
+      case 'discord': return "bg-[#5865F2]/20 border-[#5865F2] text-white shadow-[0_0_15px_rgba(88,101,242,0.25)] scale-[1.02]";
+      case 'steam': return "bg-[#171a21]/20 border-[#171a21] text-white shadow-[0_0_15px_rgba(23,26,33,0.25)] scale-[1.02]";
+      case 'x': return "bg-[#0f1419]/20 border-white text-white shadow-[0_0_15px_rgba(255,255,255,0.15)] scale-[1.02]";
+      case 'line': return "bg-[#06C755]/20 border-[#06C755] text-white shadow-[0_0_15px_rgba(6,199,85,0.25)] scale-[1.02]";
+      default: return "bg-orange-500/20 border-orange-500 text-white";
+    }
   };
 
   const handleToggleLanguage = (lang: string) => {
@@ -215,7 +255,7 @@ export default function ProfilePage() {
 
         {/* 右側：編輯表單 */}
         <div className="lg:col-span-7 space-y-6">
-          <Card className="bg-gray-900 border-gray-800 text-white">
+          <Card className="ow-glass-panel text-white">
             <CardContent className="pt-6 space-y-5">
               <h2 className="font-extrabold text-lg text-orange-400 border-b border-gray-800 pb-2 flex items-center gap-2">
                 🎮 玩家基礎設定
@@ -357,7 +397,7 @@ export default function ProfilePage() {
           </Card>
 
           {/* 常用英雄選擇 */}
-          <Card className="bg-gray-900 border-gray-800 text-white">
+          <Card className="ow-glass-panel text-white">
             <CardContent className="pt-6 space-y-4">
               <div className="flex justify-between items-center border-b border-gray-850 pb-2">
                 <h2 className="font-extrabold text-lg text-orange-400 flex items-center gap-2">
@@ -401,7 +441,7 @@ export default function ProfilePage() {
           </Card>
 
           {/* 特色標籤選擇 */}
-          <Card className="bg-gray-900 border-gray-800 text-white">
+          <Card className="ow-glass-panel text-white">
             <CardContent className="pt-6 space-y-4">
               <div className="flex justify-between items-center border-b border-gray-850 pb-2">
                 <h2 className="font-extrabold text-lg text-orange-400 flex items-center gap-2">
@@ -434,28 +474,47 @@ export default function ProfilePage() {
           </Card>
 
           {/* 常用聯絡管道 */}
-          <Card className="bg-gray-900 border-gray-800 text-white">
+          <Card className="ow-glass-panel text-white">
             <CardContent className="pt-6 space-y-4">
               <div className="flex justify-between items-center border-b border-gray-850 pb-2">
                 <h2 className="font-extrabold text-lg text-orange-400 flex items-center gap-2">
                   💬 常用聯絡管道設定 (1~3 個)
                 </h2>
+                <span className="text-[10px] text-gray-500 bg-gray-950 px-2 py-0.5 rounded border border-gray-850">
+                  已選 {Object.keys(cardData.social_channels || {}).length} / 3
+                </span>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <p className="text-xs text-gray-500">
+                💡 點選以下圖標按鈕以「啟用 / 停用」該聯絡管道。真實個人帳號已於後台完成 Google 安全綁定，無須手動輸入。
+              </p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
                 {SOCIAL_PLATFORMS.map((platform) => {
-                  const val = (cardData.social_channels || {})[platform.id as keyof typeof cardData.social_channels] || "";
+                  const isActive = !!(cardData.social_channels || {})[platform.id as keyof typeof cardData.social_channels];
+                  const bindedAccount = BINDED_SOCIAL_ACCOUNTS[platform.id as keyof typeof BINDED_SOCIAL_ACCOUNTS];
+                  
                   return (
-                    <div key={platform.id}>
-                      <label className="text-xs font-bold text-gray-400 mb-1.5 block">
-                        {platform.label} 帳號
-                      </label>
-                      <Input
-                        placeholder={platform.placeholder}
-                        className="bg-gray-950 border-gray-850 focus:border-orange-500 text-white text-xs font-mono"
-                        value={val}
-                        onChange={(e) => handleSocialChange(platform.id, e.target.value)}
-                      />
-                    </div>
+                    <button
+                      key={platform.id}
+                      type="button"
+                      onClick={() => handleToggleSocial(platform.id)}
+                      className={`p-3 rounded-xl border flex items-center gap-3 transition-all duration-300 ${getPlatformColor(platform.id, isActive)}`}
+                    >
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center text-lg shrink-0 transition-transform ${isActive ? "scale-110 rotate-3" : "scale-100"}`} style={{
+                        backgroundColor: isActive ? undefined : "#0f172a"
+                      }}>
+                        {getPlatformEmoji(platform.id)}
+                      </div>
+                      <div className="text-left min-w-0 flex-1">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-sm font-bold truncate">{platform.label}</span>
+                          {isActive && <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse shrink-0" />}
+                        </div>
+                        <span className="text-[10px] text-gray-500 block truncate font-mono">
+                          {isActive ? `已連接: ${bindedAccount}` : "未啟用"}
+                        </span>
+                      </div>
+                    </button>
                   );
                 })}
               </div>

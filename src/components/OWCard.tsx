@@ -31,10 +31,28 @@ export default function OWCard({ cardData, isLoggedIn = true, isEditable = false
   } = cardData || {};
 
   // 🛡️ [Mitigation] 複製 BattleTag 強固保護
+  const [copiedTagError, setCopiedTagError] = useState(false);
+
   const handleCopyTag = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!is_tag_visible && !isEditable) return;
+    if (isEditable) {
+      if (!battle_tag || battle_tag === "已隱藏#xxxx") return;
+      navigator.clipboard.writeText(battle_tag);
+      setCopiedTag(true);
+      setTimeout(() => setCopiedTag(false), 2000);
+      return;
+    }
+
+    if (!isLoggedIn) {
+      // 未登入，阻斷複製，並顯示警告提示
+      setCopiedTagError(true);
+      setTimeout(() => setCopiedTagError(false), 2000);
+      return;
+    }
+
+    if (!is_tag_visible) return;
     if (!battle_tag || battle_tag === "已隱藏#xxxx") return;
+
     navigator.clipboard.writeText(battle_tag);
     setCopiedTag(true);
     setTimeout(() => setCopiedTag(false), 2000);
@@ -46,6 +64,27 @@ export default function OWCard({ cardData, isLoggedIn = true, isEditable = false
     navigator.clipboard.writeText(account);
     setCopiedSocial(platform);
     setTimeout(() => setCopiedSocial(null), 2000);
+  };
+
+  // 🛡️ [Mitigation] 取得展示的 BattleTag (未登入遮罩 #****)
+  const getDisplayBattleTag = () => {
+    if (isEditable) return battle_tag;
+    
+    // 未登入狀態，物理遮罩 tag 數字
+    if (!isLoggedIn) {
+      if (battle_tag && battle_tag.includes("#")) {
+        const [name] = battle_tag.split("#");
+        return `${name}#****`;
+      }
+      return "未知特工#****";
+    }
+
+    // 已登入狀態下，若隱私設定為隱藏，顯示為已隱藏
+    if (!is_tag_visible) {
+      return "已隱藏#xxxx";
+    }
+
+    return battle_tag;
   };
 
   // 🛡️ [Mitigation] 常用英雄配置獲取強固邊界保護
@@ -105,18 +144,10 @@ export default function OWCard({ cardData, isLoggedIn = true, isEditable = false
       <div className="flex justify-between items-center mb-4 px-1">
         <div className="flex items-center gap-2">
           <span className="text-[#3e2723] font-extrabold text-lg md:text-xl tracking-tight">
-            {is_tag_visible || isEditable ? (
-              <>
-                <span className="text-[#d87040]">UID: </span>{battle_tag}
-              </>
-            ) : (
-              <>
-                <span className="text-gray-500">UID: 已隱藏</span>
-                <span className="text-gray-400 text-sm">#xxxx</span>
-              </>
-            )}
+            <span className="text-[#d87040]">UID: </span>{getDisplayBattleTag()}
           </span>
-          {(is_tag_visible || isEditable) && battle_tag !== "已隱藏#xxxx" && (
+          {/* 只要不是隱藏且已登入，或者未登入時為提供使用者登入暗示，我們均提供複製按鈕（但點擊時會做安全攔截） */}
+          {(isEditable || isLoggedIn || getDisplayBattleTag().includes("#****")) && (
             <button
               onClick={handleCopyTag}
               className="p-1 rounded-md hover:bg-[#e8dcbe] text-[#5d4037] transition-colors relative"
@@ -126,6 +157,11 @@ export default function OWCard({ cardData, isLoggedIn = true, isEditable = false
               {copiedTag && (
                 <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-[10px] py-1 px-2 rounded shadow-md whitespace-nowrap z-50">
                   複製成功！
+                </span>
+              )}
+              {copiedTagError && (
+                <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-red-600 text-white text-[10px] py-1 px-2 rounded shadow-md whitespace-nowrap z-50">
+                  ⚠️ 請先登入帳號
                 </span>
               )}
             </button>
