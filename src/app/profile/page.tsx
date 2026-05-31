@@ -35,12 +35,7 @@ const DEFAULT_CARD: OWPlayerCard = {
   mbti: "INFJ"
 };
 
-const BINDED_SOCIAL_ACCOUNTS = {
-  discord: "akira#1234",
-  steam: "98765432",
-  x: "@akira_ow",
-  line: "akira_line"
-};
+
 
 export default function ProfilePage() {
   const [cardData, setCardData] = useState<OWPlayerCard>(DEFAULT_CARD);
@@ -130,8 +125,8 @@ export default function ProfilePage() {
           setErrorMsg("常用聯絡管道最多只能點選三個喔，以維護卡片版面整潔！");
           return prev;
         }
-        const bindedAccount = BINDED_SOCIAL_ACCOUNTS[platformId as keyof typeof BINDED_SOCIAL_ACCOUNTS];
-        currentChannels[platformId as keyof typeof prev.social_channels] = bindedAccount;
+        // 不需要儲存任何具體資料，僅作常用標識
+        currentChannels[platformId as keyof typeof prev.social_channels] = "true";
       }
       
       return {
@@ -491,7 +486,6 @@ export default function ProfilePage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
                 {SOCIAL_PLATFORMS.map((platform) => {
                   const isActive = !!(cardData.social_channels || {})[platform.id as keyof typeof cardData.social_channels];
-                  const bindedAccount = BINDED_SOCIAL_ACCOUNTS[platform.id as keyof typeof BINDED_SOCIAL_ACCOUNTS];
                   
                   return (
                     <button
@@ -511,7 +505,7 @@ export default function ProfilePage() {
                           {isActive && <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse shrink-0" />}
                         </div>
                         <span className="text-[10px] text-gray-500 block truncate font-mono">
-                          {isActive ? `已連接: ${bindedAccount}` : "未啟用"}
+                          {isActive ? "已開啟展示" : "未開啟展示"}
                         </span>
                       </div>
                     </button>

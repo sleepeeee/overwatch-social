@@ -267,76 +267,25 @@ export default function OWCard({ cardData, isLoggedIn = true, isEditable = false
           )}
         </div>
 
-        {/* 🛡️ [Mitigation] 社交圖示安全容錯與隱私保護渲染 */}
-        <div className="flex items-center gap-2 relative">
-          {social_channels && Object.entries(social_channels).map(([platform, account]) => {
-            if (!account) return null;
-            const isOpen = activeSocial === platform;
+        {/* 🛡️ [Mitigation] 社交圖示安全容錯展示 (僅告知常用管道，不展示明文) */}
+        <div className="flex items-center gap-2">
+          {social_channels && Object.entries(social_channels).map(([platform, isEnabled]) => {
+            if (!isEnabled) return null;
             
             return (
-              <div key={platform} className="relative">
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setActiveSocial(isOpen ? null : platform);
-                  }}
-                  className={`w-8 h-8 rounded-full flex items-center justify-center shadow transition-all duration-200 scale-100 hover:scale-110 active:scale-95 ${getSocialIconStyle(platform)}`}
-                  title={`${getPlatformLabel(platform)} 帳號`}
-                >
-                  <span className="text-xs font-black">
-                    {platform === 'discord' ? '👾' : platform === 'steam' ? '🎮' : platform === 'x' ? '𝕏' : '💬'}
-                  </span>
-                </button>
-
-                {isOpen && (
-                  <div 
-                    className="absolute bottom-10 left-1/2 -translate-x-1/2 bg-gray-900 border border-gray-800 text-white rounded-lg shadow-2xl p-3 z-50 flex flex-col gap-2 min-w-[200px]"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-gray-900" />
-                    
-                    <div className="flex justify-between items-center text-[10px] text-gray-400 font-bold border-b border-gray-800 pb-1">
-                      <span>{getPlatformLabel(platform)} 聯絡管道</span>
-                      <button 
-                        onClick={() => setActiveSocial(null)}
-                        className="text-gray-500 hover:text-white"
-                      >
-                        ✕
-                      </button>
-                    </div>
-
-                    {isLoggedIn ? (
-                      <div className="flex flex-col gap-1.5">
-                        <span className="text-xs font-mono font-bold break-all select-all text-orange-400 bg-gray-950 px-2 py-1 rounded">
-                          {account}
-                        </span>
-                        <button
-                          onClick={() => handleCopySocial(platform, account)}
-                          className="w-full bg-orange-500 hover:bg-orange-600 text-white text-[11px] font-bold py-1 rounded transition-colors"
-                        >
-                          {copiedSocial === platform ? "✓ 複製成功！" : "一鍵複製"}
-                        </button>
-                      </div>
-                    ) : (
-                      <div className="text-center py-1">
-                        <p className="text-[11px] text-yellow-500 font-bold">⚠️ 請先登入帳號</p>
-                        <p className="text-[9px] text-gray-500 mt-0.5">登入後即可複製聯絡資訊</p>
-                      </div>
-                    )}
-                  </div>
-                )}
+              <div 
+                key={platform} 
+                className={`w-8 h-8 rounded-full flex items-center justify-center shadow transition-all duration-300 hover:scale-110 select-none ${getSocialIconStyle(platform)}`}
+                title={`我經常使用 ${getPlatformLabel(platform)} 交流！`}
+              >
+                <span className="text-xs font-black">
+                  {platform === 'discord' ? '👾' : platform === 'steam' ? '🎮' : platform === 'x' ? '𝕏' : '💬'}
+                </span>
               </div>
             );
           })}
         </div>
       </div>
-      
-      {activeSocial && (
-        <div 
-          className="fixed inset-0 z-40 pointer-events-auto" 
-          onClick={() => setActiveSocial(null)} 
-        />
-      )}
     </div>
   );
 }

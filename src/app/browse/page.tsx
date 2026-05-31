@@ -79,6 +79,11 @@ export default function BrowsePage() {
   };
 
   const filteredPlayers = players.filter((player) => {
+    // 🛡️ [Privacy Protection] 如果玩家設定對外隱藏 (is_tag_visible === false)，則直接從廣場河道完全消失！
+    if (!player.is_tag_visible) {
+      return false;
+    }
+
     // 關鍵字搜尋安全容錯
     const matchesQuery = 
       player.battle_tag.toLowerCase().includes(searchQuery.toLowerCase()) ||
