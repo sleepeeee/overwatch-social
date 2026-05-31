@@ -31,11 +31,28 @@ export default function OWCard({ cardData, isLoggedIn = true, isEditable = false
   } = cardData || {};
 
   // 🛡️ [Mitigation] 複製 BattleTag 強固保護
+  const [copiedTagError, setCopiedTagError] = useState(false);
+
   const handleCopyTag = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!isLoggedIn && !isEditable) return;
-    if (!is_tag_visible && !isEditable) return;
+    if (isEditable) {
+      if (!battle_tag || battle_tag === "已隱藏#xxxx") return;
+      navigator.clipboard.writeText(battle_tag);
+      setCopiedTag(true);
+      setTimeout(() => setCopiedTag(false), 2000);
+      return;
+    }
+
+    if (!isLoggedIn) {
+      // 未登入，阻斷複製，並顯示警告提示
+      setCopiedTagError(true);
+      setTimeout(() => setCopiedTagError(false), 2000);
+      return;
+    }
+
+    if (!is_tag_visible) return;
     if (!battle_tag || battle_tag === "已隱藏#xxxx") return;
+
     navigator.clipboard.writeText(battle_tag);
     setCopiedTag(true);
     setTimeout(() => setCopiedTag(false), 2000);
@@ -47,6 +64,27 @@ export default function OWCard({ cardData, isLoggedIn = true, isEditable = false
     navigator.clipboard.writeText(account);
     setCopiedSocial(platform);
     setTimeout(() => setCopiedSocial(null), 2000);
+  };
+
+  // 🛡️ [Mitigation] 取得展示的 BattleTag (未登入遮罩 #****)
+  const getDisplayBattleTag = () => {
+    if (isEditable) return battle_tag;
+    
+    // 未登入狀態，物理遮罩 tag 數字
+    if (!isLoggedIn) {
+      if (battle_tag && battle_tag.includes("#")) {
+        const [name] = battle_tag.split("#");
+        return `${name}#****`;
+      }
+      return "未知特工#****";
+    }
+
+    // 已登入狀態下，若隱私設定為隱藏，顯示為已隱藏
+    if (!is_tag_visible) {
+      return "已隱藏#xxxx";
+    }
+
+    return battle_tag;
   };
 
   // 🛡️ [Mitigation] 常用英雄配置獲取強固邊界保護
@@ -96,9 +134,9 @@ export default function OWCard({ cardData, isLoggedIn = true, isEditable = false
   return (
     <div className="relative w-full max-w-[420px] mx-auto bg-[#f6ecd5] border-[3px] border-[#8d6e63] rounded-2xl shadow-xl p-5 overflow-hidden transition-all duration-500 hover:border-[#d87040] hover:shadow-[0_15px_35px_rgba(216,112,64,0.35)] hover:-translate-y-1.5 flex flex-col justify-between" style={{ fontFamily: "Georgia, serif" }}>
       
-      <div className="flex justify-between items-center border-b border-dashed border-[#a1887f] pb-3 mb-4">
-        <span className="text-[#5d4037] font-bold text-sm tracking-widest uppercase">Overwatch | 鬥陣特工</span>
-        <span className="bg-[#8d6e63] text-[#f6ecd5] px-3 py-0.5 rounded-full text-xs font-semibold tracking-wide">
+      <div className="flex justify-between items-center border-b border-dashed border-[#a1887f] pb-3 mb-4 gap-2">
+        <span className="text-[#5d4037] font-bold text-[11px] sm:text-xs tracking-widest uppercase whitespace-nowrap shrink-0">Overwatch | 鬥陣特工</span>
+        <span className="bg-[#8d6e63] text-[#f6ecd5] px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-semibold tracking-wide whitespace-nowrap shrink-0">
           {server}
         </span>
       </div>
@@ -106,18 +144,10 @@ export default function OWCard({ cardData, isLoggedIn = true, isEditable = false
       <div className="flex justify-between items-center mb-4 px-1">
         <div className="flex items-center gap-2">
           <span className="text-[#3e2723] font-extrabold text-lg md:text-xl tracking-tight">
-            {is_tag_visible || isEditable ? (
-              <>
-                <span className="text-[#d87040]">UID: </span>{battle_tag}
-              </>
-            ) : (
-              <>
-                <span className="text-gray-500">UID: 已隱藏</span>
-                <span className="text-gray-400 text-sm">#xxxx</span>
-              </>
-            )}
+            <span className="text-[#d87040]">UID: </span>{getDisplayBattleTag()}
           </span>
-          {(is_tag_visible || isEditable) && battle_tag !== "已隱藏#xxxx" && (isLoggedIn || isEditable) && (
+          {/* 只要不是隱藏且已登入，或者未登入時為提供使用者登入暗示，我們均提供複製按鈕（但點擊時會做安全攔截） */}
+          {(isEditable || isLoggedIn || getDisplayBattleTag().includes("#****")) && (
             <button
               onClick={handleCopyTag}
               className="p-1 rounded-md hover:bg-[#e8dcbe] text-[#5d4037] transition-colors relative"
@@ -127,6 +157,11 @@ export default function OWCard({ cardData, isLoggedIn = true, isEditable = false
               {copiedTag && (
                 <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-[10px] py-1 px-2 rounded shadow-md whitespace-nowrap z-50">
                   複製成功！
+                </span>
+              )}
+              {copiedTagError && (
+                <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-red-600 text-white text-[10px] py-1 px-2 rounded shadow-md whitespace-nowrap z-50">
+                  ⚠️ 請先登入帳號
                 </span>
               )}
             </button>
@@ -163,8 +198,6 @@ export default function OWCard({ cardData, isLoggedIn = true, isEditable = false
                       src={heroInfo.imageUrl}
                       alt={heroInfo.name}
                       referrerPolicy="no-referrer"
-                      loading="lazy"
-                      decoding="async"
                       className="max-w-[140%] max-h-[110%] object-contain origin-bottom transition-all duration-300 group-hover:scale-105 z-10"
                       draggable="false"
                     />
@@ -212,9 +245,9 @@ export default function OWCard({ cardData, isLoggedIn = true, isEditable = false
 
       <div className="flex flex-col gap-3 pt-2 border-t border-dashed border-[#a1887f] mt-auto">
         <div className="flex justify-between items-center">
-          <div className="flex items-center gap-1.5 text-xs text-[#5d4037] font-bold">
-            <Globe size={14} className="text-[#8d6e63]" />
-            <span className="truncate max-w-[150px]">
+          <div className="flex items-center gap-1 text-xs text-[#5d4037] font-bold">
+            <Globe size={14} className="text-[#8d6e63] shrink-0" />
+            <span className="inline-block truncate max-w-[110px] sm:max-w-[140px] align-middle" title={languages.join('、')}>
               {languages.length > 0 ? languages.join('、') : "未設定"}
             </span>
             <div className="ml-1 pl-2 border-l border-[#a1887f] flex items-center">
@@ -235,76 +268,25 @@ export default function OWCard({ cardData, isLoggedIn = true, isEditable = false
           )}
         </div>
 
-        {/* 🛡️ [Mitigation] 社交圖示安全容錯與隱私保護渲染 */}
-        <div className="flex items-center gap-2 relative">
-          {social_channels && Object.entries(social_channels).map(([platform, account]) => {
-            if (!account) return null;
-            const isOpen = activeSocial === platform;
+        {/* 🛡️ [Mitigation] 社交圖示安全容錯展示 (僅告知常用管道，不展示明文) */}
+        <div className="flex items-center gap-2">
+          {social_channels && Object.entries(social_channels).map(([platform, isEnabled]) => {
+            if (!isEnabled) return null;
             
             return (
-              <div key={platform} className="relative">
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setActiveSocial(isOpen ? null : platform);
-                  }}
-                  className={`w-8 h-8 rounded-full flex items-center justify-center shadow transition-all duration-200 scale-100 hover:scale-110 active:scale-95 ${getSocialIconStyle(platform)}`}
-                  title={`${getPlatformLabel(platform)} 帳號`}
-                >
-                  <span className="text-xs font-black">
-                    {platform === 'discord' ? '👾' : platform === 'steam' ? '🎮' : platform === 'x' ? '𝕏' : '💬'}
-                  </span>
-                </button>
-
-                {isOpen && (
-                  <div 
-                    className="absolute bottom-10 left-1/2 -translate-x-1/2 bg-gray-900 border border-gray-800 text-white rounded-lg shadow-2xl p-3 z-50 flex flex-col gap-2 min-w-[200px]"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-gray-900" />
-                    
-                    <div className="flex justify-between items-center text-[10px] text-gray-400 font-bold border-b border-gray-800 pb-1">
-                      <span>{getPlatformLabel(platform)} 聯絡管道</span>
-                      <button 
-                        onClick={() => setActiveSocial(null)}
-                        className="text-gray-500 hover:text-white"
-                      >
-                        ✕
-                      </button>
-                    </div>
-
-                    {isLoggedIn ? (
-                      <div className="flex flex-col gap-1.5">
-                        <span className="text-xs font-mono font-bold break-all select-all text-orange-400 bg-gray-950 px-2 py-1 rounded">
-                          {account}
-                        </span>
-                        <button
-                          onClick={() => handleCopySocial(platform, account)}
-                          className="w-full bg-orange-500 hover:bg-orange-600 text-white text-[11px] font-bold py-1 rounded transition-colors"
-                        >
-                          {copiedSocial === platform ? "✓ 複製成功！" : "一鍵複製"}
-                        </button>
-                      </div>
-                    ) : (
-                      <div className="text-center py-1">
-                        <p className="text-[11px] text-yellow-500 font-bold">⚠️ 請先登入帳號</p>
-                        <p className="text-[9px] text-gray-500 mt-0.5">登入後即可複製聯絡資訊</p>
-                      </div>
-                    )}
-                  </div>
-                )}
+              <div 
+                key={platform} 
+                className={`w-8 h-8 rounded-full flex items-center justify-center shadow transition-all duration-300 hover:scale-110 select-none ${getSocialIconStyle(platform)}`}
+                title={`我經常使用 ${getPlatformLabel(platform)} 交流！`}
+              >
+                <span className="text-xs font-black">
+                  {platform === 'discord' ? '👾' : platform === 'steam' ? '🎮' : platform === 'x' ? '𝕏' : '💬'}
+                </span>
               </div>
             );
           })}
         </div>
       </div>
-      
-      {activeSocial && (
-        <div 
-          className="fixed inset-0 z-40 pointer-events-auto" 
-          onClick={() => setActiveSocial(null)} 
-        />
-      )}
     </div>
   );
 }
