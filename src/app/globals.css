@@ -219,4 +219,56 @@
 
 .ow-tech-btn:hover::after {
   transform: translateX(100%);
-}
+}
+
+/* 🌸 [Morning Sketch] 風格主題變數 (Data-Style Themes) */
+[data-style="A"] {
+  --theme-accent: #8c7c6c;
+  --theme-accent-rgb: 140, 124, 108;
+  --theme-highlight: #f5d46b;
+  --theme-highlight-rgb: 245, 212, 107;
+  --theme-bg-gradient: radial-gradient(circle at 50% 0%, #fcf9f2 0%, #f3ecd8 100%);
+}
+
+[data-style="B"] {
+  --theme-accent: #82b7cc;
+  --theme-accent-rgb: 130, 183, 204;
+  --theme-highlight: #f5d46b;
+  --theme-highlight-rgb: 245, 212, 107;
+  --theme-bg-gradient: radial-gradient(circle at 50% 0%, #f4f8fa 0%, #eef5f8 100%);
+}
+
+[data-style="AB"] {
+  --theme-accent: #82b7cc;
+  --theme-accent-rgb: 130, 183, 204;
+  --theme-highlight: #8c7c6c;
+  --theme-highlight-rgb: 140, 124, 108;
+  --theme-bg-gradient: radial-gradient(circle at 50% 0%, #f7f9fa 0%, #f0f4f6 100%);
+}
+
+/* 🌸 [Morning Sketch] .cyber-dots 網格底紋 */
+.cyber-dots {
+  background-image: radial-gradient(rgba(var(--theme-accent-rgb), 0.12) 1.5px, transparent 1.5px);
+  background-size: 24px 24px;
+}
+
+/* 🌸 [Morning Sketch] 高品質毛玻璃卡片樣式 */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.45) !important;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.6) !important;
+  border-radius: 1.5rem;
+  box-shadow: 
+    0 8px 32px 0 rgba(var(--theme-accent-rgb), 0.08),
+    0 1px 2px 0 rgba(255, 255, 255, 0.8) inset;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-panel:hover {
+  border-color: rgba(var(--theme-accent-rgb), 0.4) !important;
+  box-shadow: 
+    0 15px 45px -10px rgba(var(--theme-accent-rgb), 0.12),
+    0 1px 2px 0 rgba(255, 255, 255, 0.8) inset;
+}
+
