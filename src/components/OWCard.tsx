@@ -99,15 +99,15 @@ export default function OWCard({ cardData, isLoggedIn = true, isEditable = false
     
     switch (type) {
       case 'info':
-        return 'bg-[#e0f2fe] text-[#0369a1] border-[#bae6fd]';
+        return 'bg-[#82b7cc]/12 text-[#82b7cc] border-[#82b7cc]/20';
       case 'warning':
-        return 'bg-[#fef3c7] text-[#b45309] border-[#fde68a]';
+        return 'bg-[#d8a070]/12 text-[#d8a070] border-[#d8a070]/20';
       case 'success':
-        return 'bg-[#dcfce7] text-[#15803d] border-[#bbf7d0]';
+        return 'bg-emerald-500/8 text-emerald-600 border-emerald-500/15';
       case 'danger':
-        return 'bg-[#fee2e2] text-[#b91c1c] border-[#fecaca]';
+        return 'bg-red-500/8 text-red-600 border-red-500/15';
       default:
-        return 'bg-[#f3f4f6] text-[#374151] border-[#e5e7eb]';
+        return 'bg-[#8c7c6c]/8 text-[#8c7c6c] border-[#8c7c6c]/15';
     }
   };
 
@@ -132,25 +132,28 @@ export default function OWCard({ cardData, isLoggedIn = true, isEditable = false
   };
 
   return (
-    <div className="relative w-full max-w-[420px] mx-auto bg-[#f6ecd5] border-[3px] border-[#8d6e63] rounded-2xl shadow-xl p-5 overflow-hidden transition-all duration-500 hover:border-[#d87040] hover:shadow-[0_15px_35px_rgba(216,112,64,0.35)] hover:-translate-y-1.5 flex flex-col justify-between" style={{ fontFamily: "Georgia, serif" }}>
+    <div className="relative w-full max-w-[420px] mx-auto bg-white/70 backdrop-blur-md border border-[#8c7c6c]/18 rounded-[24px] shadow-[0_15px_45px_rgba(140,124,108,0.06)] p-5 overflow-hidden transition-all duration-500 hover:border-[#82b7cc]/40 hover:shadow-[0_20px_50px_rgba(130,183,204,0.18)] hover:-translate-y-2 hover:scale-[1.015] flex flex-col justify-between group/card" style={{ fontFamily: "var(--font-sans), sans-serif" }}>
       
-      <div className="flex justify-between items-center border-b border-dashed border-[#a1887f] pb-3 mb-4 gap-2">
-        <span className="text-[#5d4037] font-bold text-[11px] sm:text-xs tracking-widest uppercase whitespace-nowrap shrink-0">Overwatch | 鬥陣特工</span>
-        <span className="bg-[#8d6e63] text-[#f6ecd5] px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-semibold tracking-wide whitespace-nowrap shrink-0">
+      {/* 頂部全息發光高光線 */}
+      <div className="absolute top-0 right-0 h-[3px] w-24 bg-gradient-to-l from-[#82b7cc] via-[#f5d46b] to-transparent pointer-events-none" />
+
+      <div className="flex justify-between items-center border-b border-dashed border-[#8c7c6c]/15 pb-3 mb-4 gap-2">
+        <span className="text-[#8c7c6c]/80 font-extrabold text-[11px] sm:text-xs tracking-widest uppercase whitespace-nowrap shrink-0">Overwatch | 鬥陣特工</span>
+        <span className="bg-[#82b7cc]/12 text-[#82b7cc] border border-[#82b7cc]/20 px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-black tracking-widest whitespace-nowrap shrink-0 uppercase">
           {server}
         </span>
       </div>
 
       <div className="flex justify-between items-center mb-4 px-1">
         <div className="flex items-center gap-2">
-          <span className="text-[#3e2723] font-extrabold text-lg md:text-xl tracking-tight">
-            <span className="text-[#d87040]">UID: </span>{getDisplayBattleTag()}
+          <span className="text-[#5d4037] font-extrabold text-lg md:text-xl tracking-tight">
+            <span className="text-[#82b7cc] font-black">UID: </span>{getDisplayBattleTag()}
           </span>
-          {/* 只要不是隱藏且已登入，或者未登入時為提供使用者登入暗示，我們均提供複製按鈕（但點擊時會做安全攔截） */}
-          {(isEditable || isLoggedIn || getDisplayBattleTag().includes("#****")) && (
+          {/* 只要公開或是自己編輯，我們均提供複製按鈕（未登入時點擊會做安全攔截與登入暗示） */}
+          {(isEditable || is_tag_visible) && battle_tag !== "已隱藏#xxxx" && (
             <button
               onClick={handleCopyTag}
-              className="p-1 rounded-md hover:bg-[#e8dcbe] text-[#5d4037] transition-colors relative"
+              className="p-1 rounded-lg hover:bg-[#82b7cc]/10 text-[#8c7c6c] hover:text-[#82b7cc] transition-colors relative"
               title="複製 BattleTag"
             >
               <Copy size={16} />
@@ -169,42 +172,41 @@ export default function OWCard({ cardData, isLoggedIn = true, isEditable = false
         </div>
         
         {isEditable && (
-          <div className="flex items-center text-xs text-gray-500 gap-1 bg-[#e8dcbe] px-2 py-0.5 rounded-full">
-            {is_tag_visible ? <Eye size={12} className="text-[#d87040]" /> : <EyeOff size={12} />}
-            <span>{is_tag_visible ? "公開" : "隱藏"}</span>
+          <div className="flex items-center text-xs text-[#8c7c6c] gap-1 bg-[#8c7c6c]/8 px-2.5 py-1 rounded-full border border-[#8c7c6c]/15">
+            {is_tag_visible ? <Eye size={12} className="text-[#82b7cc]" /> : <EyeOff size={12} />}
+            <span className="font-extrabold">{is_tag_visible ? "公開" : "隱藏"}</span>
           </div>
         )}
       </div>
 
       {/* 常用英雄展示區安全迴圈渲染 */}
-      <div className="relative w-full h-[180px] bg-[#eedebc] border border-[#d7ccc8] rounded-xl overflow-hidden mb-4 flex">
-        <div className="absolute inset-0 opacity-5 pointer-events-none" style={{ backgroundImage: "repeating-linear-gradient(45deg, #000 0, #000 1px, transparent 0, transparent 50%)", backgroundSize: "10px 10px" }} />
+      <div className="relative w-full h-[180px] bg-[#fdfaf3]/60 backdrop-blur-sm border border-[#8c7c6c]/10 rounded-2xl overflow-hidden mb-4 flex shadow-[inset_0_2px_8px_rgba(140,124,108,0.02)]">
+        <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: "repeating-linear-gradient(45deg, #8c7c6c 0, #8c7c6c 1px, transparent 0, transparent 50%)", backgroundSize: "10px 10px" }} />
         
         {[0, 1, 2].map((index) => {
           const heroId = selected_heroes[index];
           const heroInfo = heroId ? getHeroInfo(heroId) : null;
           
           return (
-            <div key={index} className="relative flex-1 h-full border-r border-[#d7ccc8] last:border-r-0 flex flex-col justify-end items-center pb-2 overflow-hidden group">
+            <div key={index} className="relative flex-1 h-full border-r border-[#8c7c6c]/10 last:border-r-0 flex flex-col justify-end items-center pb-2 overflow-hidden group/hero">
               {heroInfo ? (
                 <>
-                  <span className="absolute top-2 left-2 text-[10px] font-bold text-[#5d4037] bg-[#f6ecd5]/80 px-1.5 py-0.5 rounded border border-[#d7ccc8] z-20">
+                  <span className="absolute top-2 left-2 text-[10px] font-extrabold text-[#5d4037] bg-white/85 px-2 py-0.5 rounded-lg border border-[#8c7c6c]/12 shadow-sm z-20 transition-all duration-300 group-hover/hero:bg-[#82b7cc] group-hover/hero:text-white group-hover/hero:border-[#82b7cc]">
                     {heroInfo.name}
                   </span>
                   
                   <div className="relative w-full h-[90%] flex justify-center items-end select-none">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src={heroInfo.imageUrl}
+                      src={`https://otg-hero-icons.pages.dev/images/heroes/${heroInfo.id}.png`}
                       alt={heroInfo.name}
                       referrerPolicy="no-referrer"
-                      className="max-w-[140%] max-h-[110%] object-contain origin-bottom transition-all duration-300 group-hover:scale-105 z-10"
+                      className="max-w-[140%] max-h-[110%] object-contain origin-bottom transition-all duration-500 scale-95 group-hover/hero:scale-105 z-10 filter drop-shadow-[0_4px_8px_rgba(140,124,108,0.15)] group-hover/hero:drop-shadow-[0_6px_12px_rgba(130,183,204,0.3)]"
                       draggable="false"
                     />
                   </div>
                 </>
               ) : (
-                <div className="w-full h-full flex flex-col justify-center items-center text-[#8d6e63]/40 p-2 text-center">
+                <div className="w-full h-full flex flex-col justify-center items-center text-[#8c7c6c]/30 p-2 text-center">
                   <Sparkles size={20} className="mb-1 animate-pulse" />
                   <span className="text-[10px] font-bold">空欄位</span>
                 </div>
@@ -217,42 +219,42 @@ export default function OWCard({ cardData, isLoggedIn = true, isEditable = false
       <div className="flex flex-wrap justify-center gap-2 mb-4 px-1 min-h-[34px] items-center">
         {tags.length > 0 ? (
           tags.map((tagText, idx) => {
-            const rotation = idx === 0 ? '-rotate-2' : idx === 1 ? 'rotate-1' : 'rotate-2';
+            const rotation = idx === 0 ? '-rotate-1' : idx === 1 ? 'rotate-1' : 'rotate-0';
             return (
               <span
                 key={tagText}
-                className={`inline-flex items-center text-xs font-bold px-3 py-1 rounded-md border-2 shadow-sm transition-transform duration-200 hover:scale-105 hover:rotate-0 ${rotation} ${getTagType(tagText)}`}
-                style={{ fontFamily: "'Inter', sans-serif" }}
+                className={`inline-flex items-center text-xs font-black px-3 py-1 rounded-lg border shadow-sm transition-all duration-300 hover:scale-105 hover:rotate-0 ${rotation} ${getTagType(tagText)}`}
+                style={{ fontFamily: "var(--font-sans), sans-serif" }}
               >
                 {tagText.startsWith('#') ? tagText : `#${tagText}`}
               </span>
             );
           })
         ) : (
-          <span className="text-xs text-gray-400 italic">尚未設定標籤</span>
+          <span className="text-xs text-[#8c7c6c]/60 italic font-bold">尚未設定標籤</span>
         )}
       </div>
 
-      <div className="relative bg-[#eedebc]/70 border border-[#d7ccc8] rounded-xl p-3 mb-4 flex-grow flex flex-col justify-between">
-        <div className="text-[#4e342e] text-xs font-bold flex gap-1 items-start mb-2">
-          <span className="text-base leading-none">💬</span>
-          <span className="text-[11px] uppercase tracking-wider text-gray-500">留言</span>
+      <div className="relative bg-[#fcf9f2]/90 border border-[#8c7c6c]/10 rounded-2xl p-3.5 mb-4 flex-grow flex flex-col justify-between shadow-[inset_0_1px_4px_rgba(140,124,108,0.02)]">
+        <div className="text-[#8c7c6c] text-xs font-bold flex gap-1 items-start mb-2">
+          <span className="text-sm leading-none">💬</span>
+          <span className="text-[11px] uppercase tracking-widest text-[#8c7c6c]/80 font-black">留言</span>
         </div>
-        <p className="text-[#3e2723] text-sm font-semibold leading-relaxed px-1 break-words line-clamp-3">
+        <p className="text-[#5d4037] text-sm font-semibold leading-relaxed px-1 break-words line-clamp-3">
           {message || "這個玩家很懶，什麼都沒有留下..."}
         </p>
       </div>
 
-      <div className="flex flex-col gap-3 pt-2 border-t border-dashed border-[#a1887f] mt-auto">
+      <div className="flex flex-col gap-3 pt-3 border-t border-dashed border-[#8c7c6c]/15 mt-auto">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-1 text-xs text-[#5d4037] font-bold">
-            <Globe size={14} className="text-[#8d6e63] shrink-0" />
-            <span className="inline-block truncate max-w-[110px] sm:max-w-[140px] align-middle" title={languages.join('、')}>
+            <Globe size={14} className="text-[#8c7c6c] shrink-0" />
+            <span className="inline-block truncate max-w-[110px] sm:max-w-[140px] align-middle text-[#8c7c6c]" title={languages.join('、')}>
               {languages.length > 0 ? languages.join('、') : "未設定"}
             </span>
-            <div className="ml-1 pl-2 border-l border-[#a1887f] flex items-center">
+            <div className="ml-1 pl-2 border-l border-[#8c7c6c]/15 flex items-center">
               {mic_status === 'mic-on' ? (
-                <Mic size={14} className="text-green-600" aria-label="可開麥交流" />
+                <Mic size={14} className="text-emerald-600" aria-label="可開麥交流" />
               ) : mic_status === 'listen-only' ? (
                 <Mic size={14} className="text-blue-500" aria-label="僅能聽麥" />
               ) : (
@@ -262,7 +264,7 @@ export default function OWCard({ cardData, isLoggedIn = true, isEditable = false
           </div>
 
           {mbti && (
-            <span className="bg-[#eedebc] border border-[#8d6e63] text-[#5d4037] px-2 py-0.5 rounded text-[11px] font-bold tracking-widest">
+            <span className="bg-[#82b7cc]/12 border border-[#82b7cc]/25 text-[#82b7cc] px-2.5 py-0.5 rounded-full text-[10px] font-black tracking-widest uppercase">
               {mbti}
             </span>
           )}
@@ -276,7 +278,7 @@ export default function OWCard({ cardData, isLoggedIn = true, isEditable = false
             return (
               <div 
                 key={platform} 
-                className={`w-8 h-8 rounded-full flex items-center justify-center shadow transition-all duration-300 hover:scale-110 select-none ${getSocialIconStyle(platform)}`}
+                className={`w-8 h-8 rounded-full flex items-center justify-center shadow-sm border border-[#8c7c6c]/10 transition-all duration-300 hover:scale-110 select-none ${getSocialIconStyle(platform)}`}
                 title={`我經常使用 ${getPlatformLabel(platform)} 交流！`}
               >
                 <span className="text-xs font-black">
