@@ -122,10 +122,11 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply text-foreground;
-    background: radial-gradient(circle at 50% 0%, #0b1528 0%, #020610 100%) !important;
+    @apply text-[#5d4037];
+    background: radial-gradient(circle at 50% 0%, #fcf9f2 0%, #f3ecd8 100%) !important;
     position: relative;
     min-height: 100vh;
+    font-family: var(--font-sans);
   }
   body::before {
     content: "";
@@ -134,7 +135,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: radial-gradient(rgba(249, 115, 22, 0.04) 1px, transparent 1px);
+    background-image: radial-gradient(rgba(130, 183, 204, 0.09) 1px, transparent 1px);
     background-size: 24px 24px;
     pointer-events: none;
     z-index: -1;
@@ -144,16 +145,17 @@
   }
 }
 
-/* 🛡️ [Aesthetics] Overwatch 全息未來科技玻璃擬態風 */
+/* 🛡️ [Aesthetics] 朝陽全息・莫蘭迪暖風毛玻璃面板 */
 .ow-glass-panel {
-  background: rgba(13, 25, 47, 0.5) !important;
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(249, 115, 22, 0.15) !important;
-  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5), 
-              0 0 15px rgba(249, 115, 22, 0.05);
+  background: rgba(255, 255, 255, 0.65) !important;
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(140, 124, 108, 0.15) !important;
+  box-shadow: 0 15px 45px -10px rgba(140, 124, 108, 0.08), 
+              0 0 20px rgba(130, 183, 204, 0.04);
   position: relative;
   overflow: hidden;
-  border-radius: 1rem;
+  border-radius: 1.5rem; /* 更圓潤的大圓角 */
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .ow-glass-panel::after {
@@ -162,34 +164,47 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 2px;
-  background: linear-gradient(90deg, #f97316 0%, rgba(249, 115, 22, 0.5) 30%, transparent 100%);
+  height: 3px;
+  background: linear-gradient(90deg, #82b7cc 0%, #f5d46b 50%, transparent 100%);
   pointer-events: none;
 }
 
-/* 🛡️ [Aesthetics] 科技感斜切角元素裝飾 */
+/* 🛡️ [Aesthetics] 溫潤微圓角與流體切邊裝飾 */
 .ow-tech-corner {
-  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%);
+  border-radius: 20px;
 }
 
 .ow-tech-corner-sm {
-  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%);
+  border-radius: 12px;
 }
 
-/* 🛡️ [Aesthetics] 霓虹橘發光陰影與脈衝動畫 */
+/* 🛡️ [Aesthetics] 全息莫蘭迪晴藍與金黃外發光 */
 .ow-glow-orange {
-  filter: drop-shadow(0 0 8px rgba(249, 115, 22, 0.4));
+  filter: drop-shadow(0 0 6px rgba(130, 183, 204, 0.35));
 }
 
 .ow-neon-border {
-  border-color: rgba(249, 115, 22, 0.5) !important;
-  box-shadow: 0 0 15px rgba(249, 115, 22, 0.25) !important;
+  border-color: rgba(130, 183, 204, 0.35) !important;
+  box-shadow: 0 0 15px rgba(130, 183, 204, 0.15) !important;
 }
 
-/* 🛡️ [Aesthetics] 特工微動態按鈕 */
+/* 全息柔和漸層文字與背景 */
+.ow-text-holographic {
+  background: linear-gradient(135deg, #82b7cc 0%, #d8a070 50%, #f5d46b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 4px rgba(130, 183, 204, 0.1));
+}
+
+.ow-bg-holographic-glow {
+  background: radial-gradient(circle at center, rgba(130, 183, 204, 0.15) 0%, rgba(245, 212, 107, 0.08) 50%, transparent 100%);
+  filter: blur(40px);
+}
+
+/* 🛡️ [Aesthetics] 晴藍暖風微動態按鈕 */
 .ow-tech-btn {
   position: relative;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   overflow: hidden;
 }
 
@@ -197,9 +212,9 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
   transform: translateX(-100%);
-  transition: transform 0.6s ease;
+  transition: transform 0.8s ease;
 }
 
 .ow-tech-btn:hover::after {

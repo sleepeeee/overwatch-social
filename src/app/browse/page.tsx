@@ -121,19 +121,19 @@ export default function BrowsePage() {
       {/* 保持原先的精美 UI 佈局 */}
       <div className="mb-8 flex flex-col md:flex-row justify-between items-center gap-4">
         <div className="text-center md:text-left">
-          <h1 className="text-3xl font-extrabold tracking-tight text-white flex items-center justify-center md:justify-start gap-2">
-            <Users className="text-orange-500" /> 名片交友廣場
+          <h1 className="text-3xl font-extrabold tracking-tight text-[#3e2723] flex items-center justify-center md:justify-start gap-2">
+            <Users className="text-[#82b7cc]" /> 名片交友廣場
           </h1>
-          <p className="text-gray-400 mt-1">
+          <p className="text-[#8c7c6c] mt-1 font-semibold">
             在這裡與其他特工異世相逢！點擊 BattleTag 旁複製直接加好友，點擊社群 icon 複製聯絡管道。
           </p>
         </div>
 
-        <div className="bg-slate-950/60 border border-[rgba(249,115,22,0.25)] rounded-xl p-2.5 flex items-center gap-3 text-xs shadow-[0_0_15px_rgba(249,115,22,0.08)]">
-          <span className="text-gray-300 font-bold">🛡️ 登入狀態模擬:</span>
+        <div className="bg-white/60 border border-[#8c7c6c]/18 rounded-2xl p-2.5 flex items-center gap-3 text-xs shadow-sm">
+          <span className="text-[#8c7c6c] font-black">🛡️ 登入狀態模擬:</span>
           <button
             onClick={() => setIsLoggedIn(!isLoggedIn)}
-            className={`px-3.5 py-1.5 rounded-lg font-black transition-all duration-300 active:scale-95 cursor-pointer shadow-md ${
+            className={`px-3.5 py-1.5 rounded-xl font-black transition-all duration-300 active:scale-95 cursor-pointer shadow-md ${
               isLoggedIn ? "bg-green-600 hover:bg-green-500 text-white" : "bg-red-600 hover:bg-red-500 text-white"
             }`}
           >
@@ -143,14 +143,14 @@ export default function BrowsePage() {
       </div>
 
       {/* 搜尋與篩選器面板 */}
-      <div className="ow-glass-panel ow-tech-corner p-6 mb-8 space-y-4">
+      <div className="ow-glass-panel p-6 mb-8 space-y-4">
         <div className="flex flex-col md:flex-row gap-4 items-center">
           <div className="relative flex-grow w-full">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8c7c6c]/70" size={18} />
             <Input
               type="text"
               placeholder="搜尋玩家 BattleTag、常用英雄 (如閃光)、留言關鍵字或 MBTI..."
-              className="pl-10 bg-gray-950 border-gray-850 focus:border-orange-500 text-white text-sm"
+              className="pl-10 bg-white/60 border-[#8c7c6c]/20 focus:border-[#82b7cc] focus:ring-1 focus:ring-[#82b7cc]/30 text-[#5d4037] text-sm rounded-xl"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -159,7 +159,7 @@ export default function BrowsePage() {
           <div className="flex gap-2 shrink-0 w-full md:w-auto justify-end">
             <button
               onClick={handleResetFilters}
-              className="flex items-center gap-1.5 px-3 py-2 bg-gray-950 border border-gray-850 hover:bg-gray-900 rounded-lg text-xs font-bold text-gray-400 transition-colors"
+              className="flex items-center gap-1.5 px-3.5 py-2 bg-white/60 border border-[#8c7c6c]/20 hover:bg-[#8c7c6c]/5 rounded-xl text-xs font-bold text-[#8c7c6c] transition-colors"
               title="重置所有篩選"
             >
               <RotateCcw size={14} />
@@ -168,11 +168,11 @@ export default function BrowsePage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 border-t border-gray-850 pt-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 border-t border-[#8c7c6c]/10 pt-4">
           <div className="space-y-1">
-            <label className="text-[10px] font-bold uppercase tracking-wider text-gray-500">遊玩伺服器</label>
+            <label className="text-[10px] font-black uppercase tracking-widest text-[#8c7c6c]/80">遊玩伺服器</label>
             <select
-              className="w-full bg-gray-950 border border-gray-850 rounded-lg py-2 px-3 text-xs focus:border-orange-500 text-white"
+              className="w-full bg-white/60 border border-[#8c7c6c]/20 rounded-xl py-2 px-3 text-xs focus:border-[#82b7cc] text-[#5d4037] font-semibold"
               value={selectedServer}
               onChange={(e) => setSelectedServer(e.target.value)}
             >
@@ -186,16 +186,16 @@ export default function BrowsePage() {
           </div>
 
           <div className="space-y-1">
-            <label className="text-[10px] font-bold uppercase tracking-wider text-gray-500">常用定位</label>
+            <label className="text-[10px] font-black uppercase tracking-widest text-[#8c7c6c]/80">常用定位</label>
             <div className="grid grid-cols-4 gap-1">
               {["全部", "坦克", "輸出", "支援"].map((role) => (
                 <button
                   key={role}
                   onClick={() => setSelectedRole(role)}
-                  className={`text-[10px] font-bold py-2 rounded-lg transition-colors border ${
+                  className={`text-[10px] font-extrabold py-2 rounded-xl transition-all border ${
                     selectedRole === role
-                      ? "bg-orange-500 border-orange-500 text-white"
-                      : "bg-gray-950 border-gray-850 text-gray-400 hover:bg-gray-900"
+                      ? "bg-[#82b7cc] border-[#82b7cc] text-white shadow-sm"
+                      : "bg-white/60 border-[#8c7c6c]/18 text-[#8c7c6c] hover:bg-[#8c7c6c]/5"
                   }`}
                 >
                   {role === "坦克" ? "🛡️" : role === "輸出" ? "⚔️" : role === "支援" ? "➕" : ""} {role}
@@ -205,9 +205,9 @@ export default function BrowsePage() {
           </div>
 
           <div className="space-y-1">
-            <label className="text-[10px] font-bold uppercase tracking-wider text-gray-500">語音溝通習慣</label>
+            <label className="text-[10px] font-black uppercase tracking-widest text-[#8c7c6c]/80">語音溝通習慣</label>
             <select
-              className="w-full bg-gray-950 border border-gray-850 rounded-lg py-2 px-3 text-xs focus:border-orange-500 text-white"
+              className="w-full bg-white/60 border border-[#8c7c6c]/20 rounded-xl py-2 px-3 text-xs focus:border-[#82b7cc] text-[#5d4037] font-semibold"
               value={selectedMic}
               onChange={(e) => setSelectedMic(e.target.value)}
             >
@@ -222,10 +222,10 @@ export default function BrowsePage() {
         </div>
       </div>
 
-      <div className="mb-6 flex justify-between items-center text-xs font-bold text-gray-500 px-1">
+      <div className="mb-6 flex justify-between items-center text-xs font-semibold text-[#8c7c6c] px-1">
         <span>共有 {filteredPlayers.length} 位玩家的精美名片符合條件</span>
         {searchQuery || selectedRole !== "全部" || selectedServer !== "全部" || selectedMic !== "全部" ? (
-          <span className="text-orange-500">已啟用條件篩選</span>
+          <span className="text-[#82b7cc] font-black">已啟用條件篩選</span>
         ) : null}
       </div>
 
@@ -241,19 +241,19 @@ export default function BrowsePage() {
           ))}
         </div>
       ) : (
-        <div className="bg-gray-900 border border-gray-800 rounded-2xl py-16 px-4 text-center max-w-xl mx-auto flex flex-col items-center justify-center gap-4">
-          <div className="w-16 h-16 rounded-full bg-gray-950 flex items-center justify-center text-orange-500 border border-gray-850">
+        <div className="ow-glass-panel py-16 px-4 text-center max-w-xl mx-auto flex flex-col items-center justify-center gap-4">
+          <div className="w-16 h-16 rounded-full bg-white/60 flex items-center justify-center text-[#82b7cc] border border-[#8c7c6c]/15 shadow-sm">
             <AlertCircle size={28} />
           </div>
           <div className="space-y-1">
-            <h3 className="text-white font-extrabold text-lg">沒有找到符合條件的名片</h3>
-            <p className="text-gray-500 text-xs max-w-sm mx-auto">
+            <h3 className="text-[#3e2723] font-extrabold text-lg">沒有找到符合條件的名片</h3>
+            <p className="text-[#8c7c6c] text-xs max-w-sm mx-auto">
               試著調整您的篩選選項，或在右側重置所有條件，以瀏覽廣場上更多的鬥陣特工特工！
             </p>
           </div>
           <Button
             onClick={handleResetFilters}
-            className="bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs px-5 py-2 mt-2 rounded-lg"
+            className="bg-[#82b7cc] hover:bg-[#82b7cc]/90 text-white font-extrabold text-xs px-6 py-4.5 mt-2 rounded-xl shadow-md transition-all active:scale-95"
           >
             重置所有篩選
           </Button>
