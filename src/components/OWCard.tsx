@@ -134,9 +134,9 @@ export default function OWCard({ cardData, isLoggedIn = true, isEditable = false
   return (
     <div className="relative w-full max-w-[420px] mx-auto bg-[#f6ecd5] border-[3px] border-[#8d6e63] rounded-2xl shadow-xl p-5 overflow-hidden transition-all duration-500 hover:border-[#d87040] hover:shadow-[0_15px_35px_rgba(216,112,64,0.35)] hover:-translate-y-1.5 flex flex-col justify-between" style={{ fontFamily: "Georgia, serif" }}>
       
-      <div className="flex justify-between items-center border-b border-dashed border-[#a1887f] pb-3 mb-4">
-        <span className="text-[#5d4037] font-bold text-sm tracking-widest uppercase">Overwatch | 鬥陣特工</span>
-        <span className="bg-[#8d6e63] text-[#f6ecd5] px-3 py-0.5 rounded-full text-xs font-semibold tracking-wide">
+      <div className="flex justify-between items-center border-b border-dashed border-[#a1887f] pb-3 mb-4 gap-2">
+        <span className="text-[#5d4037] font-bold text-[11px] sm:text-xs tracking-widest uppercase whitespace-nowrap shrink-0">Overwatch | 鬥陣特工</span>
+        <span className="bg-[#8d6e63] text-[#f6ecd5] px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-semibold tracking-wide whitespace-nowrap shrink-0">
           {server}
         </span>
       </div>
