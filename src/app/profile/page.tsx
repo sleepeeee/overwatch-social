@@ -18,6 +18,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Sparkles, Save, Info, AlertTriangle } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
+import { getMyProfile, saveProfile } from "@/app/actions/profile";
+import type { User } from "@supabase/supabase-js";
 
 const DEFAULT_CARD: OWPlayerCard = {
   id: "player-current-user",
@@ -40,28 +43,38 @@ const DEFAULT_CARD: OWPlayerCard = {
 export default function ProfilePage() {
   const [cardData, setCardData] = useState<OWPlayerCard>(DEFAULT_CARD);
   const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [heroRoleFilter, setHeroRoleFilter] = useState<"all" | "tank" | "damage" | "support">("all"); // 🛡️ 英雄定位過濾
-  
-  // 🛡️ [Mitigation] 引入 Mounted 狀態鎖，徹底杜絕 Next.js Hydration Mismatch 與 FOUC Layout Shift
+  const [heroRoleFilter, setHeroRoleFilter] = useState<"all" | "tank" | "damage" | "support">("all");
+  const [user, setUser] = useState<User | null>(null);
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
-    const savedCard = localStorage.getItem("ow_social_user_card");
-    if (savedCard) {
-      try {
-        const parsed = JSON.parse(savedCard);
-        // 防禦性合併，以防 localStorage 中 social_channels 被損壞
-        setCardData({
-          ...DEFAULT_CARD,
-          ...parsed,
-          social_channels: parsed.social_channels || {}
-        });
-      } catch (e) {
-        console.error("載入名片資料失敗", e);
+    const supabase = createClient();
+
+    supabase.auth.getUser().then(async ({ data }) => {
+      setUser(data.user);
+      if (data.user) {
+        // 已登入：從 Supabase 載入名片
+        const profile = await getMyProfile();
+        if (profile) {
+          setCardData({ ...DEFAULT_CARD, ...profile, social_channels: profile.social_channels || {} });
+        }
       }
-    }
+    });
+
+    const { data: listener } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        const profile = await getMyProfile();
+        if (profile) {
+          setCardData({ ...DEFAULT_CARD, ...profile, social_channels: profile.social_channels || {} });
+        }
+      }
+    });
+
+    return () => listener.subscription.unsubscribe();
   }, []);
 
   const handleToggleHero = (heroId: string) => {
@@ -181,7 +194,11 @@ export default function ProfilePage() {
     });
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    if (!user) {
+      setErrorMsg("請先登入 Google 帳號才能儲存名片！");
+      return;
+    }
     setErrorMsg(null);
     
     if (!cardData.battle_tag || !cardData.battle_tag.trim()) {
@@ -204,7 +221,13 @@ export default function ProfilePage() {
       return;
     }
 
-    localStorage.setItem("ow_social_user_card", JSON.stringify(cardData));
+    setSaving(true);
+    const result = await saveProfile(cardData);
+    setSaving(false);
+    if (result.error) {
+      setErrorMsg(result.error);
+      return;
+    }
     setSaved(true);
     setTimeout(() => setSaved(false), 3000);
   };

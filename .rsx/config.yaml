@@ -1,0 +1,48 @@
+# rsx per-project 配置模板
+# 由 /rsx-init 複製到 <project>/.rsx/config.yaml，使用者可逐欄覆寫。
+# Schema 變更必同步 _STANDARDS.md。
+
+schema:
+  # REF 知識點 type 白名單；新增 custom_types 必在 _STANDARDS.md §3 補定義段。
+  types: [github, docs, blog, paper]
+
+  # 擴充 type（例：[video, dataset, model_card]）；定義在 _STANDARDS.md。
+  custom_types: []
+
+  # 各 type 的可選欄位範本（複寫請維持與 _STANDARDS.md 一致）
+  # github: [stars, last_commit, language, license]
+  # docs:   [version, last_updated, official]
+  # blog:   [author, published_date, platform]
+  # paper:  [doi, year, venue]
+
+sources:
+  # explore 階段啟用的搜尋來源
+  github: true        # GitHub 倉庫搜尋（star/last_commit 評估）
+  web: true           # WebSearch（一般網頁、官方文件、blog）
+  local: true         # 本地 .rsx/knowledge/ 已建 REF 的 grep 掃描
+
+opsx:
+  # opsx 整合：rsx propose / apply / archive 內部會呼叫 opsx
+  enabled: true
+  path: ./openspec   # opsx 預設路徑（相對於專案根）
+
+audit:
+  # Codex 第二意見整合
+  codex_enabled: true
+
+  # MANDATORY Codex 介入時刻（對應 RSX_SOP §6）
+  #   6.1 = Stage 0 動機定位（propose 階段）
+  #   6.5 = Stage 6 最後審查（propose → apply 之前）
+  #   6.7 = APPLY 完成實作審查（apply → archive 之前）
+  mandatory_moments: [6.1, 6.5, 6.7]
+
+llm:
+  # 預設使用的 LLM（rsx 不強制限制；只是預設）
+  default: sonnet
+
+validation:
+  # crossref 對稱性強制檢查
+  crossref_required: true
+
+  # propose 階段最少 REF 數（Stage 1 情報蒐集門檻）
+  min_refs_per_propose: 3
