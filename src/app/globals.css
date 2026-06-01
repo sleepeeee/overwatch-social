@@ -343,4 +343,36 @@
   box-shadow: 0 8px 22px -4px rgba(130, 183, 204, 0.35);
 }
 
+/* 🛡️ [Content Protection] 全站 CSS 防選取與圖片防拖曳保護 */
+
+/* 1.1 全域防選取 */
+html, body {
+  -webkit-user-select: none;  /* Safari, Chrome */
+  -moz-user-select: none;     /* Firefox */
+  -ms-user-select: none;      /* IE10+/Edge */
+  user-select: none;          /* Standard */
+}
+
+/* 1.2 表單輸入控制項與可編輯區域豁免，確保正常編輯 */
+input, 
+textarea, 
+[contenteditable="true"],
+.selectable {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+/* 2.2 關鍵視覺圖片防拖曳保護 */
+img, 
+.no-drag,
+.ow-card,
+.glass-panel {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+}
 
