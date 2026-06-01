@@ -1,7 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import DeveloperConsoleClient from "./DeveloperConsoleClient";
-import { getSystemStats, getHeroStats } from "@/app/actions/developer";
 
 export const metadata = {
   title: "開發者主控台 | Overwatch Social",
@@ -33,19 +32,38 @@ export default async function Page() {
     created_at: item.created_at as string,
   }));
 
-  // 讀取真實系統統計 + 英雄流行度（輕量查詢）
-  const [stats, heroStats] = await Promise.all([
-    getSystemStats(),
-    getHeroStats(),
+  // 讀取統計 + 英雄流行度（共享 supabase client，消除重複 getUser() auth round-trip）
+  const [totalResult, completedResult, heroRaw] = await Promise.all([
+    supabase.from("profiles").select("user_id", { count: "exact", head: true }),
+    supabase.from("profiles").select("user_id", { count: "exact", head: true })
+      .not("battle_tag", "is", null)
+      .neq("battle_tag", "愛喝奶茶#3342"),
+    supabase.from("profiles").select("selected_heroes").limit(500),
   ]);
+
+  const totalProfiles = totalResult.count ?? 0;
+  const completedProfiles = completedResult.count ?? 0;
+  const statsError = totalResult.error?.message || completedResult.error?.message;
+
+  // Hero stats JS 聚合（共用已拉取的 heroRaw）
+  const heroCount = new Map<string, number>();
+  (heroRaw.data || []).forEach(row => {
+    ((row.selected_heroes as string[]) ?? []).forEach(h => {
+      heroCount.set(h, (heroCount.get(h) || 0) + 1);
+    });
+  });
+  const heroStats = [...heroCount.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5)
+    .map(([heroId, count]) => ({ heroId, count }));
 
   return (
     <DeveloperConsoleClient
       initialWhitelist={whitelist}
       currentUserEmail={user?.email || "unknown@developer.com"}
-      totalProfiles={stats.totalProfiles}
-      completedProfiles={stats.completedProfiles}
-      statsError={stats.success ? undefined : (stats as { error?: string }).error}
+      totalProfiles={totalProfiles}
+      completedProfiles={completedProfiles}
+      statsError={statsError}
       heroStats={heroStats}
     />
   );
