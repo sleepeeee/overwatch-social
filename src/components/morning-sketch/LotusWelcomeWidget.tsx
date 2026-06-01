@@ -79,6 +79,12 @@ export default function LotusWelcomeWidget({ previewData, activeStepOverride }: 
   }, [previewData]);
 
   const current = announcements[activeStep - 1] || announcements[0];
+  const stableAlignments = {
+    iconScale: Math.min(Math.max((current.alignments?.icon_scale || 100) / 100, 0.9), 1.12),
+    tagFontSize: current.alignments?.tag_font_size || 10,
+    titleFontSize: current.alignments?.title_font_size || 18,
+    messageFontSize: current.alignments?.message_font_size || 13,
+  };
 
   return (
     <div 
@@ -92,9 +98,9 @@ export default function LotusWelcomeWidget({ previewData, activeStepOverride }: 
 
       {/* 精緻自繪多層漸變蓮花 SVG 或自定義圖片圖標 */}
       <div 
-        className="relative z-10 w-28 h-28 flex items-center justify-center pt-2"
+        className="relative z-10 w-24 h-24 flex items-center justify-center pt-1 shrink-0"
         style={{
-          transform: `translate(${current.alignments?.icon_x || 0}px, ${current.alignments?.icon_y || 0}px) scale(${(current.alignments?.icon_scale || 100) / 100})`
+          transform: `scale(${stableAlignments.iconScale})`
         }}
       >
         {current.custom_icon_url ? (
@@ -134,31 +140,28 @@ export default function LotusWelcomeWidget({ previewData, activeStepOverride }: 
         className="relative z-10 space-y-2.5 px-4 animate-[fadeIn_0.5s_ease-out] flex-grow flex flex-col justify-center"
       >
         <span 
-          className="text-xs font-black uppercase tracking-widest px-3 py-1 rounded-full inline-block mx-auto border"
+          className="soft-home-badge mx-auto border uppercase"
           style={{ 
             color: current.color, 
             borderColor: current.color,
             backgroundColor: `${current.color.replace("0.85", "0.08")}`,
-            fontSize: `${current.alignments?.tag_font_size || 10}px`,
-            transform: `translate(${current.alignments?.tag_x || 0}px, ${current.alignments?.tag_y || 0}px)`
+            fontSize: `${stableAlignments.tagFontSize}px`
           }}
         >
           {current.tag}
         </span>
         <h4 
-          className="text-lg font-extrabold text-[#3e2723] tracking-wide"
+          className="text-lg font-extrabold text-[#3e2723] tracking-wide min-h-[28px] flex items-center justify-center"
           style={{
-            fontSize: `${current.alignments?.title_font_size || 18}px`,
-            transform: `translate(${current.alignments?.title_x || 0}px, ${current.alignments?.title_y || 0}px)`
+            fontSize: `${stableAlignments.titleFontSize}px`
           }}
         >
           {current.title}
         </h4>
         <p 
-          className="text-[#8c7c6c] text-xs md:text-sm leading-relaxed italic px-2"
+          className="text-[#8c7c6c] text-xs md:text-sm leading-relaxed italic px-2 min-h-[62px] flex items-center justify-center line-clamp-3"
           style={{
-            fontSize: `${current.alignments?.message_font_size || 13}px`,
-            transform: `translate(${current.alignments?.message_x || 0}px, ${current.alignments?.message_y || 0}px)`
+            fontSize: `${stableAlignments.messageFontSize}px`
           }}
         >
           &ldquo;{current.message}&rdquo;
@@ -167,10 +170,7 @@ export default function LotusWelcomeWidget({ previewData, activeStepOverride }: 
 
       {/* 01-04 步進圓形按鈕組 */}
       <div 
-        className="relative z-10 flex gap-4 pb-2"
-        style={{
-          transform: `translate(${current.alignments?.buttons_x || 0}px, ${current.alignments?.buttons_y || 0}px)`
-        }}
+        className="relative z-10 flex gap-4 pb-2 shrink-0"
       >
         {announcements.map((s, idx) => {
           const stepNum = idx + 1;
