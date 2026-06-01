@@ -36,8 +36,10 @@ export async function saveHeroAlignments(alignments: Record<string, AlignmentCon
       return { success: false, error: error.message };
     }
 
-    // 讓 browse/profile 頁面的 Server Component 快取失效，下次載入即反映新值
-    revalidatePath("/browse");
+    // NOTE: revalidatePath 對 Client Component 無效（browse/profile 均為 "use client"）。
+    // 真正的更新機制：用戶重整頁面時 useEffect 重新呼叫 getHeroAlignments() 取最新值。
+    // 若需即時更新，應在 AdjusterClientPage 成功後呼叫 router.refresh()（開發者工具可接受刷頁）。
+    revalidatePath("/browse");   // 對未來可能的 Server Component 子元件保留
     revalidatePath("/profile");
     return { success: true };
   } catch (err) {
