@@ -103,8 +103,89 @@ export async function removeWhitelistEmail(email: string) {
 }
 
 /**
+ * 讀取所有玩家 profiles 基本資訊（用戶管理，developer-only，不含 social_channels）
+ * 需要 migration 004 的 "profiles select developer" policy
+ */
+export async function getAllProfilesForDeveloper(search?: string): Promise<{
+  success: boolean;
+  data?: Array<{
+    user_id: string;
+    battle_tag: string;
+    is_tag_visible: boolean;
+    selected_heroes: string[];
+    updated_at: string;
+  }>;
+  error?: string;
+}> {
+  try {
+    const { supabase } = await ensureDeveloper();
+
+    let query = supabase
+      .from("profiles")
+      .select("user_id, battle_tag, is_tag_visible, selected_heroes, updated_at")
+      .order("updated_at", { ascending: false })
+      .limit(100);
+
+    if (search && search.trim()) {
+      query = query.ilike("battle_tag", `%${search.trim()}%`);
+    }
+
+    const { data, error } = await query;
+
+    if (error) {
+      console.error("getAllProfilesForDeveloper failed:", error.message);
+      return { success: false, error: error.message };
+    }
+
+    return {
+      success: true,
+      data: (data || []).map(row => ({
+        user_id: row.user_id as string,
+        battle_tag: (row.battle_tag as string) || "",
+        is_tag_visible: row.is_tag_visible as boolean,
+        selected_heroes: (row.selected_heroes as string[]) ?? [],
+        updated_at: row.updated_at as string,
+      })),
+    };
+  } catch (err) {
+    return { success: false, error: String(err) };
+  }
+}
+
+/**
+ * 讀取英雄流行度統計 Top 5（developer-only）
+ * 從所有 profiles.selected_heroes 聚合
+ */
+export async function getHeroStats(): Promise<Array<{ heroId: string; count: number }>> {
+  try {
+    const { supabase } = await ensureDeveloper();
+
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("selected_heroes")
+      .limit(500);
+
+    if (error || !data) return [];
+
+    const heroCount = new Map<string, number>();
+    data.forEach(row => {
+      ((row.selected_heroes as string[]) ?? []).forEach(heroId => {
+        heroCount.set(heroId, (heroCount.get(heroId) || 0) + 1);
+      });
+    });
+
+    return [...heroCount.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([heroId, count]) => ({ heroId, count }));
+  } catch {
+    return [];
+  }
+}
+
+/**
  * 讀取系統真實統計（需要 developer 角色才能查全部 profiles）
- * 注意：使用 developer-specific SELECT policy（003 migration 已加入）
+ * 注意：使用 developer-specific SELECT policy（004 migration 已加入）
  */
 export async function getSystemStats() {
   try {
