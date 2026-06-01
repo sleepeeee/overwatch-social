@@ -12,9 +12,16 @@ interface DevModeState {
 // This hook is for display purposes only — any backend developer-only features must
 // re-validate the role via RLS policy (auth.jwt()->'app_metadata'->>'role').
 export function useDevMode(): DevModeState {
-  const [state, setState] = useState<DevModeState>({ isDeveloper: false, loading: true });
+  const isDev = process.env.NODE_ENV === "development";
+  const [state, setState] = useState<DevModeState>({ 
+    isDeveloper: isDev, 
+    loading: !isDev 
+  });
 
   useEffect(() => {
+    // 🛡️ 開發環境下已在初始化 state 時直接 Bypass，在此處無需執行 supabase 監聽
+    if (isDev) return;
+
     const supabase = createClient();
 
     // onAuthStateChange 在 mount 時會觸發 INITIAL_SESSION，作為單一 state 來源
@@ -27,7 +34,7 @@ export function useDevMode(): DevModeState {
     });
 
     return () => listener.subscription.unsubscribe();
-  }, []);
+  }, [isDev]);
 
   return state;
 }

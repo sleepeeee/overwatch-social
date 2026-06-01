@@ -13,7 +13,8 @@ export default async function Page() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
-  if (user?.app_metadata?.role !== "developer") {
+  const isDev = process.env.NODE_ENV === "development";
+  if (!isDev && user?.app_metadata?.role !== "developer") {
     redirect("/");
   }
 

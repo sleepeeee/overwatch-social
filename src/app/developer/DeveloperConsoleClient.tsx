@@ -16,7 +16,13 @@ import {
   LogOut,
   ArrowLeft,
   Upload,
-  Image as ImageIcon
+  Image as ImageIcon,
+  Lock,
+  Unlock,
+  RotateCcw,
+  AlignLeft,
+  AlignCenter,
+  AlignRight
 } from "lucide-react";
 import { addWhitelistEmail, removeWhitelistEmail } from "@/app/actions/developer";
 import { getAnnouncements, saveAnnouncements, uploadAnnouncementIcon, AnnouncementItem, AlignmentConfig } from "@/app/actions/homepage";
@@ -50,6 +56,15 @@ export default function DeveloperConsoleClient({
   const [activeApcTool, setActiveApcTool] = useState<"none" | "homepage">("none");
   // 選擇按鈕當前選取的公告 segment (1-4)
   const [activeSegment, setActiveSegment] = useState<number>(1);
+
+  // 各調校區塊的鎖定狀態 (icon, tag, title, message, buttons)
+  const [lockedBlocks, setLockedBlocks] = useState<Record<string, boolean>>({
+    icon: false,
+    tag: false,
+    title: false,
+    message: false,
+    buttons: false
+  });
 
   // 首頁對準儀狀態
   const [announcements, setAnnouncements] = useState<AnnouncementItem[]>([]);
@@ -182,11 +197,12 @@ export default function DeveloperConsoleClient({
     currentAlignments: AlignmentConfig,
     min: number,
     max: number,
-    unit: string = "px"
+    unit: string = "px",
+    disabled: boolean = false
   ) => {
     const value = currentAlignments[field] ?? 0;
     return (
-      <div className="space-y-1.5 p-3 rounded-lg bg-white/20 border border-[#8c7c6c]/5">
+      <div className={`space-y-1.5 p-3 rounded-lg bg-white/20 border border-[#8c7c6c]/5 transition-opacity duration-300 ${disabled ? "opacity-40" : ""}`}>
         <div className="flex items-center justify-between gap-2">
           <span className="text-[10.5px] font-semibold text-[#8c7c6c]/90">{label}</span>
           <div className="flex items-center gap-1">
@@ -195,13 +211,14 @@ export default function DeveloperConsoleClient({
               min={min}
               max={max}
               value={value}
+              disabled={disabled}
               onChange={(e) => {
                 const val = parseInt(e.target.value);
                 if (!isNaN(val)) {
                   adjustAlignment(field, val - value, min, max);
                 }
               }}
-              className="w-14 text-center text-xs font-mono text-[#3e2723] bg-white/80 border border-[#8c7c6c]/20 rounded py-0.5 focus:outline-none focus:border-[#82b7cc]"
+              className="w-14 text-center text-xs font-mono text-[#3e2723] bg-white/80 border border-[#8c7c6c]/20 rounded py-0.5 focus:outline-none focus:border-[#82b7cc] disabled:cursor-not-allowed"
             />
             <span className="text-[10px] text-[#8c7c6c]/60 font-semibold">{unit}</span>
           </div>
@@ -211,16 +228,81 @@ export default function DeveloperConsoleClient({
           min={min}
           max={max}
           value={value}
+          disabled={disabled}
           onChange={(e) => {
             const val = parseInt(e.target.value);
             if (!isNaN(val)) {
               adjustAlignment(field, val - value, min, max);
             }
           }}
-          className="w-full h-1 bg-[#8c7c6c]/20 rounded-lg appearance-none cursor-pointer accent-[#8c7c6c]"
+          className="w-full h-1 bg-[#8c7c6c]/20 rounded-lg appearance-none cursor-pointer accent-[#8c7c6c] disabled:cursor-not-allowed"
         />
       </div>
     );
+  };
+
+  // 一鍵偏左、置中、偏右對齊
+  const alignBlockX = (field: "icon_x" | "tag_x" | "title_x" | "message_x" | "buttons_x", alignment: "left" | "center" | "right") => {
+    let targetX = 0;
+    if (alignment === "left") targetX = -30;
+    if (alignment === "right") targetX = 30;
+
+    setAnnouncements(prev => {
+      const updated = [...prev];
+      const idx = activeSegment - 1;
+      const defaultAlignments: AlignmentConfig = {
+        icon_x: 0, icon_y: 0, icon_scale: 100,
+        title_font_size: 18, title_x: 0, title_y: 0,
+        message_font_size: 13, message_x: 0, message_y: 0,
+        buttons_x: 0, buttons_y: 0,
+        tag_font_size: 10, tag_x: 0, tag_y: 0
+      };
+      const alignments = { ...defaultAlignments, ...updated[idx].alignments };
+
+      updated[idx] = {
+        ...updated[idx],
+        alignments: {
+          ...alignments,
+          [field]: targetX
+        } as AlignmentConfig
+      };
+      return updated;
+    });
+  };
+
+  // 一鍵返回預設值
+  const resetBlockAlignments = (block: "icon" | "tag" | "title" | "message" | "buttons") => {
+    const blockDefaults: Record<string, Partial<AlignmentConfig>> = {
+      icon: { icon_scale: 100, icon_x: 0, icon_y: 0 },
+      tag: { tag_font_size: 10, tag_x: 0, tag_y: 0 },
+      title: { title_font_size: 18, title_x: 0, title_y: 0 },
+      message: { message_font_size: 13, message_x: 0, message_y: 0 },
+      buttons: { buttons_x: 0, buttons_y: 0 }
+    };
+
+    const defaults = blockDefaults[block];
+
+    setAnnouncements(prev => {
+      const updated = [...prev];
+      const idx = activeSegment - 1;
+      const defaultAlignments: AlignmentConfig = {
+        icon_x: 0, icon_y: 0, icon_scale: 100,
+        title_font_size: 18, title_x: 0, title_y: 0,
+        message_font_size: 13, message_x: 0, message_y: 0,
+        buttons_x: 0, buttons_y: 0,
+        tag_font_size: 10, tag_x: 0, tag_y: 0
+      };
+      const alignments = { ...defaultAlignments, ...updated[idx].alignments };
+
+      updated[idx] = {
+        ...updated[idx],
+        alignments: {
+          ...alignments,
+          ...defaults
+        } as AlignmentConfig
+      };
+      return updated;
+    });
   };
 
   // 新增白名單處理
@@ -780,58 +862,143 @@ export default function DeveloperConsoleClient({
                               </div>
                             </div>
 
-                             {/* 3. 精密位置補償調校 */}
-                            <div className="p-5 rounded-xl border border-[#8c7c6c]/15 bg-white/50 space-y-4">
-                              <h3 className="text-xs font-black text-[#8c7c6c] uppercase tracking-widest border-b border-[#8c7c6c]/15 pb-2">
-                                ⚙️ 精密位置與字型大小對準 (Closed Loop Calibration)
-                              </h3>
+                            {/* 3. 精密位置補償調校 (分區卡片顯示) */}
+                            <div className="space-y-6">
+                              {/* 標頭提示 */}
+                              <div className="flex items-center gap-2 border-b border-[#8c7c6c]/15 pb-2">
+                                <Sliders size={16} className="text-[#8c7c6c]" />
+                                <h3 className="text-xs font-black text-[#8c7c6c] uppercase tracking-widest">
+                                  ⚙️ 精密位置與字型大小對準 (Closed Loop Calibration)
+                                </h3>
+                              </div>
+
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {/* A. 圖標調校 */}
-                                <div className="space-y-4">
-                                  <span className="text-[11px] font-black text-[#3e2723] block">💮 圖標設定 (Icon Configs)</span>
+                                {/* A. 圖標設定區塊 */}
+                                <div className="p-5 rounded-xl border border-[#8c7c6c]/15 bg-white/50 space-y-4 transition-all">
+                                  <div className="flex justify-between items-center border-b border-[#8c7c6c]/15 pb-2">
+                                    <span className="text-[11px] font-black text-[#3e2723] flex items-center gap-1.5">
+                                      {lockedBlocks.icon ? "🔒" : "💮"} 圖標設定 (Icon Configs)
+                                    </span>
+                                    <div className="flex items-center gap-2">
+                                      {/* 左中右 */}
+                                      <div className="flex items-center bg-[#8c7c6c]/5 border border-[#8c7c6c]/10 rounded-lg p-0.5">
+                                        <button type="button" title="偏左對齊" disabled={lockedBlocks.icon} onClick={() => alignBlockX("icon_x", "left")} className="p-1 rounded text-[#8c7c6c] hover:bg-white disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"><AlignLeft size={12} /></button>
+                                        <button type="button" title="置中對齊" disabled={lockedBlocks.icon} onClick={() => alignBlockX("icon_x", "center")} className="p-1 rounded text-[#8c7c6c] hover:bg-white disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"><AlignCenter size={12} /></button>
+                                        <button type="button" title="偏右對齊" disabled={lockedBlocks.icon} onClick={() => alignBlockX("icon_x", "right")} className="p-1 rounded text-[#8c7c6c] hover:bg-white disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"><AlignRight size={12} /></button>
+                                      </div>
+                                      {/* 重置 */}
+                                      <button type="button" title="返回預設值" disabled={lockedBlocks.icon} onClick={() => resetBlockAlignments("icon")} className="p-1 rounded bg-[#8c7c6c]/5 hover:bg-white border border-[#8c7c6c]/10 text-[#8c7c6c] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"><RotateCcw size={12} /></button>
+                                      {/* 鎖定 */}
+                                      <button type="button" title={lockedBlocks.icon ? "點選解鎖" : "點選鎖定"} onClick={() => setLockedBlocks(prev => ({ ...prev, icon: !prev.icon }))} className={`p-1 rounded border transition-all cursor-pointer ${lockedBlocks.icon ? "bg-amber-100 border-amber-300 text-amber-700 shadow-inner" : "bg-white border-[#8c7c6c]/20 text-[#8c7c6c] hover:bg-[#8c7c6c]/5"}`}>{lockedBlocks.icon ? <Lock size={12} /> : <Unlock size={12} />}</button>
+                                    </div>
+                                  </div>
                                   <div className="space-y-3">
-                                    {renderAlignmentSlider("圖標大小比例", "icon_scale", alignments, 50, 150, "%")}
-                                    {renderAlignmentSlider("圖標 X 軸位移", "icon_x", alignments, -50, 50, "px")}
-                                    {renderAlignmentSlider("圖標 Y 軸位移", "icon_y", alignments, -50, 50, "px")}
+                                    {renderAlignmentSlider("圖標大小比例", "icon_scale", alignments, 50, 150, "%", lockedBlocks.icon)}
+                                    {renderAlignmentSlider("圖標 X 軸位移", "icon_x", alignments, -50, 50, "px", lockedBlocks.icon)}
+                                    {renderAlignmentSlider("圖標 Y 軸位移", "icon_y", alignments, -50, 50, "px", lockedBlocks.icon)}
                                   </div>
                                 </div>
 
-                                {/* B. 標籤調校 */}
-                                <div className="space-y-4">
-                                  <span className="text-[11px] font-black text-[#3e2723] block">🏷️ 標籤設定 (Tag Configs)</span>
+                                {/* B. 標籤設定區塊 */}
+                                <div className="p-5 rounded-xl border border-[#8c7c6c]/15 bg-white/50 space-y-4 transition-all">
+                                  <div className="flex justify-between items-center border-b border-[#8c7c6c]/15 pb-2">
+                                    <span className="text-[11px] font-black text-[#3e2723] flex items-center gap-1.5">
+                                      {lockedBlocks.tag ? "🔒" : "🏷️"} 標籤設定 (Tag Configs)
+                                    </span>
+                                    <div className="flex items-center gap-2">
+                                      {/* 左中右 */}
+                                      <div className="flex items-center bg-[#8c7c6c]/5 border border-[#8c7c6c]/10 rounded-lg p-0.5">
+                                        <button type="button" title="偏左對齊" disabled={lockedBlocks.tag} onClick={() => alignBlockX("tag_x", "left")} className="p-1 rounded text-[#8c7c6c] hover:bg-white disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"><AlignLeft size={12} /></button>
+                                        <button type="button" title="置中對齊" disabled={lockedBlocks.tag} onClick={() => alignBlockX("tag_x", "center")} className="p-1 rounded text-[#8c7c6c] hover:bg-white disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"><AlignCenter size={12} /></button>
+                                        <button type="button" title="偏右對齊" disabled={lockedBlocks.tag} onClick={() => alignBlockX("tag_x", "right")} className="p-1 rounded text-[#8c7c6c] hover:bg-white disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"><AlignRight size={12} /></button>
+                                      </div>
+                                      {/* 重置 */}
+                                      <button type="button" title="返回預設值" disabled={lockedBlocks.tag} onClick={() => resetBlockAlignments("tag")} className="p-1 rounded bg-[#8c7c6c]/5 hover:bg-white border border-[#8c7c6c]/10 text-[#8c7c6c] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"><RotateCcw size={12} /></button>
+                                      {/* 鎖定 */}
+                                      <button type="button" title={lockedBlocks.tag ? "點選解鎖" : "點選鎖定"} onClick={() => setLockedBlocks(prev => ({ ...prev, tag: !prev.tag }))} className={`p-1 rounded border transition-all cursor-pointer ${lockedBlocks.tag ? "bg-amber-100 border-amber-300 text-amber-700 shadow-inner" : "bg-white border-[#8c7c6c]/20 text-[#8c7c6c] hover:bg-[#8c7c6c]/5"}`}>{lockedBlocks.tag ? <Lock size={12} /> : <Unlock size={12} />}</button>
+                                    </div>
+                                  </div>
                                   <div className="space-y-3">
-                                    {renderAlignmentSlider("標籤字體大小", "tag_font_size", alignments, 8, 18, "px")}
-                                    {renderAlignmentSlider("標籤 X 軸位移", "tag_x", alignments, -50, 50, "px")}
-                                    {renderAlignmentSlider("標籤 Y 軸位移", "tag_y", alignments, -50, 50, "px")}
+                                    {renderAlignmentSlider("標籤字體大小", "tag_font_size", alignments, 8, 18, "px", lockedBlocks.tag)}
+                                    {renderAlignmentSlider("標籤 X 軸位移", "tag_x", alignments, -50, 50, "px", lockedBlocks.tag)}
+                                    {renderAlignmentSlider("標籤 Y 軸位移", "tag_y", alignments, -50, 50, "px", lockedBlocks.tag)}
                                   </div>
                                 </div>
 
-                                {/* C. 標題調校 */}
-                                <div className="space-y-4">
-                                  <span className="text-[11px] font-black text-[#3e2723] block">📝 標題設定 (Title Configs)</span>
+                                {/* C. 標題設定區塊 */}
+                                <div className="p-5 rounded-xl border border-[#8c7c6c]/15 bg-white/50 space-y-4 transition-all">
+                                  <div className="flex justify-between items-center border-b border-[#8c7c6c]/15 pb-2">
+                                    <span className="text-[11px] font-black text-[#3e2723] flex items-center gap-1.5">
+                                      {lockedBlocks.title ? "🔒" : "📝"} 標題設定 (Title Configs)
+                                    </span>
+                                    <div className="flex items-center gap-2">
+                                      {/* 左中右 */}
+                                      <div className="flex items-center bg-[#8c7c6c]/5 border border-[#8c7c6c]/10 rounded-lg p-0.5">
+                                        <button type="button" title="偏左對齊" disabled={lockedBlocks.title} onClick={() => alignBlockX("title_x", "left")} className="p-1 rounded text-[#8c7c6c] hover:bg-white disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"><AlignLeft size={12} /></button>
+                                        <button type="button" title="置中對齊" disabled={lockedBlocks.title} onClick={() => alignBlockX("title_x", "center")} className="p-1 rounded text-[#8c7c6c] hover:bg-white disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"><AlignCenter size={12} /></button>
+                                        <button type="button" title="偏右對齊" disabled={lockedBlocks.title} onClick={() => alignBlockX("title_x", "right")} className="p-1 rounded text-[#8c7c6c] hover:bg-white disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"><AlignRight size={12} /></button>
+                                      </div>
+                                      {/* 重置 */}
+                                      <button type="button" title="返回預設值" disabled={lockedBlocks.title} onClick={() => resetBlockAlignments("title")} className="p-1 rounded bg-[#8c7c6c]/5 hover:bg-white border border-[#8c7c6c]/10 text-[#8c7c6c] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"><RotateCcw size={12} /></button>
+                                      {/* 鎖定 */}
+                                      <button type="button" title={lockedBlocks.title ? "點選解鎖" : "點選鎖定"} onClick={() => setLockedBlocks(prev => ({ ...prev, title: !prev.title }))} className={`p-1 rounded border transition-all cursor-pointer ${lockedBlocks.title ? "bg-amber-100 border-amber-300 text-amber-700 shadow-inner" : "bg-white border-[#8c7c6c]/20 text-[#8c7c6c] hover:bg-[#8c7c6c]/5"}`}>{lockedBlocks.title ? <Lock size={12} /> : <Unlock size={12} />}</button>
+                                    </div>
+                                  </div>
                                   <div className="space-y-3">
-                                    {renderAlignmentSlider("標題字體大小", "title_font_size", alignments, 10, 28, "px")}
-                                    {renderAlignmentSlider("標題 X 軸位移", "title_x", alignments, -50, 50, "px")}
-                                    {renderAlignmentSlider("標題 Y 軸位移", "title_y", alignments, -50, 50, "px")}
+                                    {renderAlignmentSlider("標題字體大小", "title_font_size", alignments, 10, 28, "px", lockedBlocks.title)}
+                                    {renderAlignmentSlider("標題 X 軸位移", "title_x", alignments, -50, 50, "px", lockedBlocks.title)}
+                                    {renderAlignmentSlider("標題 Y 軸位移", "title_y", alignments, -50, 50, "px", lockedBlocks.title)}
                                   </div>
                                 </div>
 
-                                {/* D. 內文調校 */}
-                                <div className="space-y-4">
-                                  <span className="text-[11px] font-black text-[#3e2723] block">💬 內文設定 (Message Configs)</span>
+                                {/* D. 內文設定區塊 */}
+                                <div className="p-5 rounded-xl border border-[#8c7c6c]/15 bg-white/50 space-y-4 transition-all">
+                                  <div className="flex justify-between items-center border-b border-[#8c7c6c]/15 pb-2">
+                                    <span className="text-[11px] font-black text-[#3e2723] flex items-center gap-1.5">
+                                      {lockedBlocks.message ? "🔒" : "💬"} 內文設定 (Message Configs)
+                                    </span>
+                                    <div className="flex items-center gap-2">
+                                      {/* 左中右 */}
+                                      <div className="flex items-center bg-[#8c7c6c]/5 border border-[#8c7c6c]/10 rounded-lg p-0.5">
+                                        <button type="button" title="偏左對齊" disabled={lockedBlocks.message} onClick={() => alignBlockX("message_x", "left")} className="p-1 rounded text-[#8c7c6c] hover:bg-white disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"><AlignLeft size={12} /></button>
+                                        <button type="button" title="置中對齊" disabled={lockedBlocks.message} onClick={() => alignBlockX("message_x", "center")} className="p-1 rounded text-[#8c7c6c] hover:bg-white disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"><AlignCenter size={12} /></button>
+                                        <button type="button" title="偏右對齊" disabled={lockedBlocks.message} onClick={() => alignBlockX("message_x", "right")} className="p-1 rounded text-[#8c7c6c] hover:bg-white disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"><AlignRight size={12} /></button>
+                                      </div>
+                                      {/* 重置 */}
+                                      <button type="button" title="返回預設值" disabled={lockedBlocks.message} onClick={() => resetBlockAlignments("message")} className="p-1 rounded bg-[#8c7c6c]/5 hover:bg-white border border-[#8c7c6c]/10 text-[#8c7c6c] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"><RotateCcw size={12} /></button>
+                                      {/* 鎖定 */}
+                                      <button type="button" title={lockedBlocks.message ? "點選解鎖" : "點選鎖定"} onClick={() => setLockedBlocks(prev => ({ ...prev, message: !prev.message }))} className={`p-1 rounded border transition-all cursor-pointer ${lockedBlocks.message ? "bg-amber-100 border-amber-300 text-amber-700 shadow-inner" : "bg-white border-[#8c7c6c]/20 text-[#8c7c6c] hover:bg-[#8c7c6c]/5"}`}>{lockedBlocks.message ? <Lock size={12} /> : <Unlock size={12} />}</button>
+                                    </div>
+                                  </div>
                                   <div className="space-y-3">
-                                    {renderAlignmentSlider("內文字體大小", "message_font_size", alignments, 10, 20, "px")}
-                                    {renderAlignmentSlider("內文 X 軸位移", "message_x", alignments, -50, 50, "px")}
-                                    {renderAlignmentSlider("內文 Y 軸位移", "message_y", alignments, -50, 50, "px")}
+                                    {renderAlignmentSlider("內文字體大小", "message_font_size", alignments, 10, 20, "px", lockedBlocks.message)}
+                                    {renderAlignmentSlider("內文 X 軸位移", "message_x", alignments, -50, 50, "px", lockedBlocks.message)}
+                                    {renderAlignmentSlider("內文 Y 軸位移", "message_y", alignments, -50, 50, "px", lockedBlocks.message)}
                                   </div>
                                 </div>
 
-                                {/* E. 按鈕組調校 */}
-                                <div className="space-y-4 md:col-span-2">
-                                  <span className="text-[11px] font-black text-[#3e2723] block">🔘 按鈕組設定 (Buttons Configs)</span>
+                                {/* E. 按鈕組設定區塊 */}
+                                <div className="p-5 rounded-xl border border-[#8c7c6c]/15 bg-white/50 space-y-4 transition-all md:col-span-2">
+                                  <div className="flex justify-between items-center border-b border-[#8c7c6c]/15 pb-2">
+                                    <span className="text-[11px] font-black text-[#3e2723] flex items-center gap-1.5">
+                                      {lockedBlocks.buttons ? "🔒" : "🔘"} 按鈕組設定 (Buttons Configs)
+                                    </span>
+                                    <div className="flex items-center gap-2">
+                                      {/* 左中右 */}
+                                      <div className="flex items-center bg-[#8c7c6c]/5 border border-[#8c7c6c]/10 rounded-lg p-0.5">
+                                        <button type="button" title="偏左對齊" disabled={lockedBlocks.buttons} onClick={() => alignBlockX("buttons_x", "left")} className="p-1 rounded text-[#8c7c6c] hover:bg-white disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"><AlignLeft size={12} /></button>
+                                        <button type="button" title="置中對齊" disabled={lockedBlocks.buttons} onClick={() => alignBlockX("buttons_x", "center")} className="p-1 rounded text-[#8c7c6c] hover:bg-white disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"><AlignCenter size={12} /></button>
+                                        <button type="button" title="偏右對齊" disabled={lockedBlocks.buttons} onClick={() => alignBlockX("buttons_x", "right")} className="p-1 rounded text-[#8c7c6c] hover:bg-white disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"><AlignRight size={12} /></button>
+                                      </div>
+                                      {/* 重置 */}
+                                      <button type="button" title="返回預設值" disabled={lockedBlocks.buttons} onClick={() => resetBlockAlignments("buttons")} className="p-1 rounded bg-[#8c7c6c]/5 hover:bg-white border border-[#8c7c6c]/10 text-[#8c7c6c] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"><RotateCcw size={12} /></button>
+                                      {/* 鎖定 */}
+                                      <button type="button" title={lockedBlocks.buttons ? "點選解鎖" : "點選鎖定"} onClick={() => setLockedBlocks(prev => ({ ...prev, buttons: !prev.buttons }))} className={`p-1 rounded border transition-all cursor-pointer ${lockedBlocks.buttons ? "bg-amber-100 border-amber-300 text-amber-700 shadow-inner" : "bg-white border-[#8c7c6c]/20 text-[#8c7c6c] hover:bg-[#8c7c6c]/5"}`}>{lockedBlocks.buttons ? <Lock size={12} /> : <Unlock size={12} />}</button>
+                                    </div>
+                                  </div>
                                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    {renderAlignmentSlider("按鈕組 X 軸位移", "buttons_x", alignments, -50, 50, "px")}
-                                    {renderAlignmentSlider("按鈕組 Y 軸位移", "buttons_y", alignments, -50, 50, "px")}
+                                    {renderAlignmentSlider("按鈕組 X 軸位移", "buttons_x", alignments, -50, 50, "px", lockedBlocks.buttons)}
+                                    {renderAlignmentSlider("按鈕組 Y 軸位移", "buttons_y", alignments, -50, 50, "px", lockedBlocks.buttons)}
                                   </div>
                                 </div>
                               </div>
