@@ -2,6 +2,7 @@
 
 import { AlignmentConfig } from "@/data/heroAlignments";
 import { createClient } from "@/lib/supabase/server";
+import { revalidatePath } from "next/cache";
 
 /**
  * 🛡️ [APC - Advanced Process Control]
@@ -35,6 +36,9 @@ export async function saveHeroAlignments(alignments: Record<string, AlignmentCon
       return { success: false, error: error.message };
     }
 
+    // 讓 browse/profile 頁面的 Server Component 快取失效，下次載入即反映新值
+    revalidatePath("/browse");
+    revalidatePath("/profile");
     return { success: true };
   } catch (err) {
     console.error("Failed to save hero alignments via Server Action:", err);
