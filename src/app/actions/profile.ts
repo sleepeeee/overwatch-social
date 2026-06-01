@@ -32,6 +32,14 @@ export async function getMyProfile(): Promise<OWPlayerCard | null> {
 }
 
 export async function saveProfile(card: OWPlayerCard): Promise<{ error?: string }> {
+  // 伺服器端輸入驗證（防止繞過前端直接呼叫 Server Action）
+  if (!card.battle_tag?.trim()) return { error: "BattleTag 不可為空" };
+  if (card.battle_tag.length > 50) return { error: "BattleTag 長度超出限制" };
+  if (card.message && card.message.length > 200) return { error: "留言長度超出限制（最多 200 字）" };
+  if ((card.selected_heroes ?? []).length > 3) return { error: "常用英雄最多 3 個" };
+  if ((card.tags ?? []).length > 3) return { error: "標籤最多 3 個" };
+  if ((card.languages ?? []).length > 3) return { error: "語言最多 3 個" };
+
   const supabase = await createClient();
   const { data: claimsData, error: claimsError } = await supabase.auth.getClaims();
 
