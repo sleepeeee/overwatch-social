@@ -178,7 +178,7 @@ export default function Home() {
 
                 {/* 完整展示 3 份卡片，大氣的三欄 grid 佈局 (含滑動更新動畫過渡) */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 overflow-hidden py-1 px-0.5 w-full">
-                  {profiles.map((p, idx) => {
+                  {initialProfiles.map((p, idx) => {
                     const isNew = idx === 0;
 
                     return (
