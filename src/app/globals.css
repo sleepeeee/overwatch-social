@@ -159,16 +159,6 @@
   transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.ow-glass-panel::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 3px;
-  background: linear-gradient(90deg, #82b7cc 0%, #f5d46b 50%, transparent 100%);
-  pointer-events: none;
-}
 
 /* 🛡️ [Aesthetics] 溫潤微圓角與流體切邊裝飾 */
 .ow-tech-corner {

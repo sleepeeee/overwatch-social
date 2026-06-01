@@ -23,7 +23,6 @@ export default function BrowsePage() {
   const { authLoading } = useAuth();
   const [activeGame, setActiveGame] = useState<GameId>("ow");
   const [searchQuery, setSearchQuery] = useState("");
-  const [isPremiumStyle, setIsPremiumStyle] = useState(true);
 
   const handleResetSearch = () => {
     setSearchQuery("");
@@ -40,50 +39,18 @@ export default function BrowsePage() {
 
   return (
     <div 
-      data-theme-expert={isPremiumStyle ? "true" : "false"}
+      data-theme-expert="true"
       className="max-w-6xl mx-auto px-4 py-8 space-y-6 relative min-h-screen"
     >
       <TopBar />
 
-      {/* 🎨 視覺風格對比切換按鈕 */}
-      <div className="flex justify-end items-center gap-2 mb-2 animate-[fadeIn_0.5s_ease-out]">
-        <span className="text-[10px] font-black text-[#8c7c6c]/60 uppercase tracking-widest flex items-center gap-1">
-          <Sliders size={11} />風格對比模式
-        </span>
-        <div className="inline-flex rounded-xl bg-white/40 border border-[#8c7c6c]/18 p-0.5 shadow-[0_1px_4px_rgba(140,124,108,0.02)] backdrop-blur-sm z-20">
-          <button
-            onClick={() => setIsPremiumStyle(false)}
-            className={`px-3 py-1.5 rounded-lg text-[10px] font-black cursor-pointer transition-all uppercase tracking-wider ${
-              !isPremiumStyle
-                ? "bg-[#8c7c6c]/20 text-[#3e2723] shadow-inner"
-                : "text-[#8c7c6c]/70 hover:text-[#3e2723]"
-            }`}
-          >
-            無 CSS SKILL
-          </button>
-          <button
-            onClick={() => setIsPremiumStyle(true)}
-            className={`px-3 py-1.5 rounded-lg text-[10px] font-black cursor-pointer transition-all flex items-center gap-1 uppercase tracking-wider ${
-              isPremiumStyle
-                ? "bg-[#82b7cc] text-white shadow-sm"
-                : "text-[#8c7c6c]/70 hover:text-[#3e2723]"
-            }`}
-          >
-            <Sparkles size={11} />
-            CSS SKILL
-          </button>
-        </div>
-      </div>
-
       {/* 💗 Premium 水彩裝飾發光球 */}
-      {isPremiumStyle && (
-        <div className="absolute top-[5%] -right-16 w-80 h-80 rounded-full bg-gradient-to-tr from-[#82b7cc]/4 to-[#f5d46b]/6 blur-3xl pointer-events-none z-0 animate-[fadeIn_1.2s_ease-out]" />
-      )}
+      <div className="absolute top-[5%] -right-16 w-80 h-80 rounded-full bg-gradient-to-tr from-[#82b7cc]/4 to-[#f5d46b]/6 blur-3xl pointer-events-none z-0 animate-[fadeIn_1.2s_ease-out]" />
 
       <div className="ow-glass-panel p-4 md:px-5 md:py-4 space-y-4 relative z-10">
         <div className="text-left space-y-3">
           <span className="soft-home-badge uppercase flex items-center gap-1.5 w-fit">
-            <Moon size={11} className="shrink-0 text-[#8c7c6c] fill-[#8c7c6c]/10" />
+            <Moon size={11} className="shrink-0 text-[#82b7cc] fill-[#82b7cc]/10" />
             名片廣場
           </span>
 
@@ -147,13 +114,13 @@ export default function BrowsePage() {
       {/* 🚀 子廣場元件常駐 DOM 控制，消除 unmount 詭異 Loading 動畫 */}
       <div className="w-full pt-2 relative z-10 animate-[fadeIn_0.5s_ease-out]">
         <div className={activeGame === "ow" ? "block" : "hidden"}>
-          <OverwatchSquare searchQuery={searchQuery} isPremiumStyle={isPremiumStyle} />
+          <OverwatchSquare searchQuery={searchQuery} />
         </div>
         <div className={activeGame === "val" ? "block" : "hidden"}>
-          <ValorantSquare isPremiumStyle={isPremiumStyle} />
+          <ValorantSquare />
         </div>
         <div className={activeGame === "lol" ? "block" : "hidden"}>
-          <LoLSquare isPremiumStyle={isPremiumStyle} />
+          <LoLSquare />
         </div>
       </div>
     </div>
