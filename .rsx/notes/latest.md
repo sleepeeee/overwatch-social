@@ -11,18 +11,18 @@
 
 ## 現在在做什麼
 
-空閒。`auth-ux-login-gate` 已歸檔。
-下一步：`/rsx:propose developer-console-backend`。
+`developer-console-backend` PROPOSE 完成，openspec validate PASS。
+下一步：`/rsx:apply developer-console-backend`。
 
 ## 進行中的 Changes（未 archive）
 
-（無）
+| Change | 狀態 | 備註 |
+|---|---|---|
+| developer-console-backend | PROPOSED ✓，待 APPLY | Task 1 需先在 Supabase SQL Editor 執行 migration |
 
 ## 待 Propose Changes
 
-| Change | 摘要 |
-|---|---|
-| developer-console-backend | 後台真實統計（用戶數/名片數）+ 對準儀改存 Supabase DB |
+（無）
 
 ## 近期歸檔紀錄
 
