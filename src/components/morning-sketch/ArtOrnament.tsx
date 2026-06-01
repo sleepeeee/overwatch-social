@@ -7,19 +7,19 @@ export default function ArtOrnament() {
     <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
       {/* 1. Misty Layers: 雲霧般的低飽和光暈 (使用 theme accent 變數 + 大模糊度 + 緩慢呼吸) */}
       <div 
-        className="absolute top-[-10%] left-[-10%] w-[55vw] h-[55vw] rounded-full opacity-25 blur-[130px] animate-mist-a"
+        className="art-mist absolute top-[-10%] left-[-10%] w-[55vw] h-[55vw] rounded-full opacity-25 blur-[130px] animate-mist-a"
         style={{
           backgroundColor: "rgba(var(--theme-accent-rgb, 140, 124, 108), 0.8)"
         }}
       />
       <div 
-        className="absolute top-[20%] right-[-15%] w-[60vw] h-[60vw] rounded-full opacity-20 blur-[140px] animate-mist-b"
+        className="art-mist absolute top-[20%] right-[-15%] w-[60vw] h-[60vw] rounded-full opacity-20 blur-[140px] animate-mist-b"
         style={{
           backgroundColor: "rgba(var(--theme-accent-rgb, 130, 183, 204), 0.6)"
         }}
       />
       <div 
-        className="absolute bottom-[-10%] left-[15%] w-[50vw] h-[50vw] rounded-full opacity-35 blur-[120px] animate-mist-c"
+        className="art-mist absolute bottom-[-10%] left-[15%] w-[50vw] h-[50vw] rounded-full opacity-35 blur-[120px] animate-mist-c"
         style={{
           backgroundColor: "rgba(var(--theme-highlight-rgb, 245, 212, 107), 0.5)"
         }}

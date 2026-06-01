@@ -182,7 +182,7 @@ export default function FeaturedArtists({ styleMode }: FeaturedArtistsProps) {
         >
           <div className="space-y-1 mb-4">
             <h2 className="text-sm font-black text-[#3e2723] uppercase tracking-widest leading-none">
-              Today's Palette
+              Today&apos;s Palette
             </h2>
             <p className="text-[9px] font-black text-[#8c7c6c]/60 uppercase tracking-widest">
               點擊色塊複製 Hex 色碼

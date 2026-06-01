@@ -347,10 +347,37 @@
 
 /* 1.1 全域防選取 */
 html, body {
+  max-width: 100%;
   -webkit-user-select: none;  /* Safari, Chrome */
   -moz-user-select: none;     /* Firefox */
   -ms-user-select: none;      /* IE10+/Edge */
   user-select: none;          /* Standard */
+}
+
+@media (max-width: 640px) {
+  body {
+    background-attachment: scroll !important;
+  }
+
+  body::before {
+    opacity: 0.5;
+  }
+
+  .glass-panel {
+    backdrop-filter: blur(18px) saturate(105%);
+    -webkit-backdrop-filter: blur(18px) saturate(105%);
+    border-radius: 26px;
+  }
+
+  .organic-corners {
+    border-radius: 28px !important;
+  }
+
+  .art-mist {
+    filter: blur(70px);
+    animation: none !important;
+    opacity: 0.18;
+  }
 }
 
 /* 1.2 表單輸入控制項與可編輯區域豁免，確保正常編輯 */
@@ -375,4 +402,4 @@ img,
   -o-user-drag: none;
   user-drag: none;
 }
-
+

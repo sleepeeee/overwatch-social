@@ -162,7 +162,7 @@ export default function LuckyAlly() {
       {/* 禪意小字 */}
       {!isFlipped && (
         <div className="text-xs font-normal italic text-[#8c7c6c]/50 text-center tracking-wider pt-2 border-t border-[#8c7c6c]/10 shrink-0">
-          "命運會指引那個與你最有默契的靈魂。"
+          &ldquo;命運會指引那個與你最有默契的靈魂。&rdquo;
         </div>
       )}
     </div>
