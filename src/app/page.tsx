@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Sparkles, Compass, Users } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
 
 // 匯入 Morning Sketch 風格組件
 import FluidClipPath from "@/components/morning-sketch/FluidClipPath";
@@ -29,8 +30,14 @@ const rankColors: Record<string, string> = {
 export default function Home() {
   const [hoveredProfile, setHoveredProfile] = useState<string | null>(null);
 
-  const handleGoogleLogin = () => {
-    alert("實作測試：跳轉至 Google 授權登入流程！");
+  const handleGoogleLogin = async () => {
+    const supabase = createClient();
+    await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback?next=/profile`,
+      },
+    });
   };
 
   return (
