@@ -235,7 +235,8 @@ export default function AdjusterPage() {
   const thirdSlot = selectedHeroId === "tracer" ? "bastion" : "tracer";
 
   const mockCardData: OWPlayerCard = {
-    id: "dev-adjuster",
+    card_id: "dev-adjuster",
+    user_id: "dev-user",
     server: "亞太伺服器",
     battle_tag: "Developer#8888",
     is_tag_visible: true,

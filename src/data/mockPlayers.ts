@@ -1,4 +1,4 @@
-import { OWPlayerCard, PresetTag, HeroConfig } from '../types/card';
+import { OWPlayerCard, PresetTag, HeroConfig, UserProfile } from '../types/card';
 
 // 1. 後台預設標籤庫 (最多選3個)
 export const PRESET_TAGS: PresetTag[] = [
@@ -324,10 +324,81 @@ export const HEROES_CONFIG: HeroConfig[] = [
   }
 ];
 
-// 3. 5~10 個精美的預設玩家名片 Mock 資料
+// 3. 使用者帳戶個人檔案 Mock 資料
+export const MOCK_USERS: UserProfile[] = [
+  {
+    id: 'user-hevelius',
+    display_name: 'Hevelius',
+    avatar_url: '/images/avatars/avatar_female_elegant_square.png',
+    bio: '每天清晨用色彩和安娜的睡針開啟新畫布 🎨'
+  },
+  {
+    id: 'user-solange',
+    display_name: 'Solange',
+    avatar_url: '/images/avatars/avatar_female_cheerful_square.png',
+    bio: '哈囉特工！我是插畫家 Solange。'
+  },
+  {
+    id: 'user-aurum',
+    display_name: 'Aurum',
+    avatar_url: '/images/avatars/avatar_male_calm_square.png',
+    bio: '冷靜專注。目標宗師，主玩源氏與死神。'
+  },
+  {
+    id: 'user-meteor',
+    display_name: '流星',
+    avatar_url: '/images/avatars/avatar_male_sunny_square.png',
+    bio: '主輔助巴帝斯特/霧子！喜歡跟坦克打戰術配合。'
+  },
+  {
+    id: 'user-chronos',
+    display_name: '時空特工',
+    avatar_url: '/images/avatars/avatar_female_cheerful_square.png',
+    bio: '主玩閃光艾希！每天休閒推車，輸贏都是一場精彩的冒險。'
+  },
+  {
+    id: 'user-akira',
+    display_name: '愛喝奶茶',
+    avatar_url: '/images/avatars/avatar_female_elegant_square.png',
+    bio: 'GGWP！一起加油，推車到底啦 🚀'
+  },
+  {
+    id: 'user-lily',
+    display_name: '機甲少女莉莉',
+    avatar_url: '/images/avatars/avatar_female_cheerful_square.png',
+    bio: '主玩 D.Va / 慈悲！希望能找個會輸出的大哥一起雙排 🌸'
+  },
+  {
+    id: 'user-genjigod',
+    display_name: '有神快拜',
+    avatar_url: '/images/avatars/avatar_male_calm_square.png',
+    bio: '忍術！竜神の剣を喰らえ！'
+  },
+  {
+    id: 'user-fish',
+    display_name: '只想當鹹魚',
+    avatar_url: '/images/avatars/avatar_male_sunny_square.png',
+    bio: '專職輔助，安娜睡針很準！'
+  },
+  {
+    id: 'user-hardt',
+    display_name: '萊因哈特本哈',
+    avatar_url: '/images/avatars/avatar_male_calm_square.png',
+    bio: '盾牌不倒，青春不老！大錘專精！'
+  },
+  {
+    id: 'user-reaper',
+    display_name: '幽靈死神',
+    avatar_url: '/images/avatars/avatar_male_sunny_square.png',
+    bio: '死神繞後專精，快速清後排。'
+  }
+];
+
+// 4. 鬥陣特工名片 Mock 資料 (1-to-Many 關聯)
 export const MOCK_PLAYERS: OWPlayerCard[] = [
   {
-    id: 'player-hevelius',
+    card_id: 'card-hevelius',
+    user_id: 'user-hevelius',
     server: 'Asia Server',
     battle_tag: 'Hevelius#1777',
     is_tag_visible: true,
@@ -342,7 +413,8 @@ export const MOCK_PLAYERS: OWPlayerCard[] = [
     mbti: 'INFJ'
   },
   {
-    id: 'player-solange',
+    card_id: 'card-solange',
+    user_id: 'user-solange',
     server: 'Asia Server',
     battle_tag: 'Solange#2888',
     is_tag_visible: true,
@@ -358,7 +430,8 @@ export const MOCK_PLAYERS: OWPlayerCard[] = [
     mbti: 'ENFP'
   },
   {
-    id: 'player-aurum',
+    card_id: 'card-aurum',
+    user_id: 'user-aurum',
     server: 'Asia Server',
     battle_tag: 'Aurum#9999',
     is_tag_visible: true,
@@ -373,7 +446,8 @@ export const MOCK_PLAYERS: OWPlayerCard[] = [
     mbti: 'INTJ'
   },
   {
-    id: 'player-meteor',
+    card_id: 'card-meteor',
+    user_id: 'user-meteor',
     server: 'Asia Server',
     battle_tag: '流星#5542',
     is_tag_visible: true,
@@ -388,7 +462,8 @@ export const MOCK_PLAYERS: OWPlayerCard[] = [
     mbti: 'ENFJ'
   },
   {
-    id: 'player-chronos',
+    card_id: 'card-chronos',
+    user_id: 'user-chronos',
     server: 'Asia Server',
     battle_tag: '時空特工#7761',
     is_tag_visible: true,
@@ -404,7 +479,8 @@ export const MOCK_PLAYERS: OWPlayerCard[] = [
     mbti: 'ESFP'
   },
   {
-    id: 'player-akira',
+    card_id: 'card-akira',
+    user_id: 'user-akira',
     server: 'Asia Server',
     battle_tag: '愛喝奶茶#3342',
     is_tag_visible: true,
@@ -421,7 +497,8 @@ export const MOCK_PLAYERS: OWPlayerCard[] = [
     mbti: 'INFJ'
   },
   {
-    id: 'player-lily',
+    card_id: 'card-lily',
+    user_id: 'user-lily',
     server: 'Asia Server',
     battle_tag: '機甲少女莉莉#4321',
     is_tag_visible: true,
@@ -437,10 +514,11 @@ export const MOCK_PLAYERS: OWPlayerCard[] = [
     mbti: 'ENFP'
   },
   {
-    id: 'player-genjigod',
+    card_id: 'card-genjigod',
+    user_id: 'user-genjigod',
     server: 'America Server',
     battle_tag: '有神快拜#1111',
-    is_tag_visible: false, // 對外隱藏
+    is_tag_visible: false,
     selected_heroes: ['genji', 'reaper', 'cassidy'],
     tags: ['快樂排位', '只玩死鬥', '招募隊友'],
     message: '忍術！竜神の剣を喰らえ！DPS專精玩家，尋求保我的慈悲/安娜，拒絕擺爛！',
@@ -452,7 +530,8 @@ export const MOCK_PLAYERS: OWPlayerCard[] = [
     mbti: 'ESTP'
   },
   {
-    id: 'player-fish',
+    card_id: 'card-fish',
+    user_id: 'user-fish',
     server: 'Europe Server',
     battle_tag: '只想當鹹魚#2222',
     is_tag_visible: true,
@@ -468,7 +547,8 @@ export const MOCK_PLAYERS: OWPlayerCard[] = [
     mbti: 'INFJ'
   },
   {
-    id: 'player-hardt',
+    card_id: 'card-hardt',
+    user_id: 'user-hardt',
     server: 'Asia Server',
     battle_tag: '萊因哈特本哈#8888',
     is_tag_visible: true,
@@ -484,7 +564,8 @@ export const MOCK_PLAYERS: OWPlayerCard[] = [
     mbti: 'ESFJ'
   },
   {
-    id: 'player-reaper',
+    card_id: 'card-reaper',
+    user_id: 'user-reaper',
     server: 'America Server',
     battle_tag: '幽靈死神#6666',
     is_tag_visible: true,

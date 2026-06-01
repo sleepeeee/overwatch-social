@@ -36,7 +36,8 @@ export default function BrowsePage() {
       if (!error && data && data.length > 0) {
         // 將 DB row 轉為 OWPlayerCard 格式
         setPlayers(data.map(row => ({
-          id: row.user_id,
+          card_id: row.card_id ?? row.user_id,
+          user_id: row.user_id,
           server: row.server,
           battle_tag: row.battle_tag, // DB view 已遮蔽
           is_tag_visible: row.is_tag_visible,
@@ -238,7 +239,7 @@ export default function BrowsePage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
           {filteredPlayers.map((player) => (
             <div 
-              key={player.id} 
+              key={player.card_id} 
               className="w-full flex justify-center hover:-translate-y-1 transition-transform duration-300"
             >
               <OWCard
