@@ -803,7 +803,7 @@ export default function DeveloperConsoleClient({
                 </div>
               </div>
             )}
-<<<<<<< HEAD
+
 
             {/* TAB 3 (子頁面): 首頁公告精密對準面板 */}
             {activeTab === "tools" && activeApcTool === "homepage" && announcements.length === 4 && (
@@ -1137,7 +1137,7 @@ export default function DeveloperConsoleClient({
               </form>
             )}
 
-=======
+
             {/* TAB 4: 用戶管理 */}
             {activeTab === "users" && (
               <div className="space-y-6">
@@ -1229,7 +1229,7 @@ export default function DeveloperConsoleClient({
                 )}
               </div>
             )}
->>>>>>> upstream/main
+
           </div>
 
           {/* 頁尾版權 */}
