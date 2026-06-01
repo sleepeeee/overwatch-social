@@ -367,16 +367,16 @@
 }
 
 .browse-tab {
-  min-height: 72px;
+  min-height: 62px;
   display: inline-flex;
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  gap: 0.28rem;
+  gap: 0.2rem;
   border-radius: 1.1rem;
   border: 1px solid rgba(140, 124, 108, 0.16);
   background: rgba(255, 255, 255, 0.48);
-  padding: 0.9rem 1rem;
+  padding: 0.72rem 0.9rem;
   color: #6e655b;
   box-shadow: 0 10px 30px -18px rgba(140, 124, 108, 0.18);
   transition: all 0.3s ease;
@@ -397,7 +397,7 @@
 }
 
 .browse-tab-status {
-  font-size: 0.68rem;
+  font-size: 0.62rem;
   line-height: 1;
   font-weight: 700;
   opacity: 0.52;
