@@ -11,15 +11,21 @@
 
 ## 現在在做什麼
 
-空閒。兩個 change 均已 archive。下一步見「下一步開發計畫」。
+`auth-ux-login-gate` PROPOSE 完成，openspec validate PASS。
+下一步：`/rsx:apply auth-ux-login-gate`。
+`developer-console-backend` 待 propose（next）。
 
 ## 進行中的 Changes（未 archive）
 
-（無）
+| Change | 狀態 | 備註 |
+|---|---|---|
+| auth-ux-login-gate | PROPOSED ✓，待 APPLY | 登出按鈕 + LoginModal + profile overlay |
 
 ## 待 Propose Changes
 
-（無）
+| Change | 摘要 |
+|---|---|
+| developer-console-backend | 後台真實統計（用戶數/名片數）+ 對準儀改存 Supabase DB |
 
 ## 近期歸檔紀錄
 
