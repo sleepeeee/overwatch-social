@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Users, Calendar, Copy, Check, Plus } from "lucide-react";
 
 interface LobbyEvent {
@@ -20,6 +20,7 @@ interface FeaturedArtistsProps {
 
 export default function FeaturedArtists({ styleMode }: FeaturedArtistsProps) {
   const [copiedColor, setCopiedColor] = useState<string | null>(null);
+  const copyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   
   // 模擬揪團資料
   const [events, setEvents] = useState<LobbyEvent[]>([
@@ -84,7 +85,8 @@ export default function FeaturedArtists({ styleMode }: FeaturedArtistsProps) {
   const handleCopyColor = (hex: string) => {
     navigator.clipboard.writeText(hex);
     setCopiedColor(hex);
-    setTimeout(() => setCopiedColor(null), 1500);
+    if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
+    copyTimerRef.current = setTimeout(() => setCopiedColor(null), 1500);
   };
 
   const isStyleA = styleMode === "A";
