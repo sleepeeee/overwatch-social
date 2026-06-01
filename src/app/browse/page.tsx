@@ -35,6 +35,7 @@ export default function BrowsePage() {
       const { data, error } = await supabase
         .from("public_profiles")
         .select("*")
+        .eq("is_tag_visible", true) // DB 層過濾，隱私選擇不送至 client（防禦深度）
         .order("updated_at", { ascending: false });
 
       if (!error && data && data.length > 0) {

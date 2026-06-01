@@ -44,6 +44,7 @@ export default function Home() {
   }, []);
 
   const handleLogout = async () => {
+    setUser(null); // 樂觀 UI 更新，不等 onAuthStateChange event
     const supabase = createClient();
     await supabase.auth.signOut();
     router.refresh();
