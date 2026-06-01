@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-import { LayoutDashboard, MessageSquare, MapPin, AtSign, RefreshCw, Settings, LogOut, Heart } from "lucide-react";
+import { LayoutDashboard, MessageSquare, MapPin, AtSign, RefreshCw, Settings, LogOut, Heart, Moon } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
 interface SidebarProps {
@@ -47,15 +47,13 @@ export default function AppSidebar({ styleMode, activeTab, setActiveTab }: Sideb
       {/* 側邊欄頂部 Logo */}
       <div className="p-6 flex flex-col items-center justify-center border-b border-[#8c7c6c]/10 gap-2 min-h-[100px]">
         {/* 精緻蓮花圖標 */}
-        <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#82b7cc]/15 to-[#f5d46b]/15 flex items-center justify-center border border-[#82b7cc]/30 shadow-sm animate-pulse">
-          <svg viewBox="0 0 100 100" className="w-6 h-6 text-[#82b7cc]">
-            <path d="M 50,75 C 34,68 36,55 50,35 C 64,55 66,68 50,75 Z" fill="currentColor" />
-          </svg>
+        <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#82b7cc]/15 to-[#f5d46b]/15 flex items-center justify-center border border-[#82b7cc]/30 shadow-sm animate-pulse hover:rotate-12 transition-transform duration-500">
+          <Moon className="w-6 h-6 text-[#3e2723] fill-[#3e2723]/10" />
         </div>
         
         {!isStyleB && (
-          <span className="text-sm font-black tracking-widest text-[#3e2723] uppercase">
-            LOTUS
+          <span className="text-sm font-black tracking-widest text-[#3e2723] uppercase whitespace-nowrap">
+            After Midnight
           </span>
         )}
       </div>
