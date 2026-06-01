@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Compass, User } from "lucide-react";
+import { Home, Compass, User, Sliders } from "lucide-react";
 
 export default function FloatingDock() {
   const pathname = usePathname();
@@ -12,7 +12,8 @@ export default function FloatingDock() {
   const navItems = [
     { id: "home", path: "/", label: "首頁", icon: Home },
     { id: "browse", path: "/browse", label: "廣場", icon: Compass },
-    { id: "profile", path: "/profile", label: "特工", icon: User }
+    { id: "profile", path: "/profile", label: "特工", icon: User },
+    { id: "adjuster", path: "/adjuster", label: "對準儀", icon: Sliders }
   ];
 
   return (

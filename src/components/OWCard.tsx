@@ -5,14 +5,21 @@ import { OWPlayerCard } from "@/types/card";
 import { HEROES_CONFIG, PRESET_TAGS } from "@/data/mockPlayers";
 import { Copy, Eye, EyeOff, Mic, MicOff, Globe, Sparkles } from "lucide-react";
 import { SocialIcon } from "@/components/ui/SocialIcons";
+import { HERO_ALIGNMENTS, DEFAULT_ALIGNMENT } from "@/data/heroAlignments";
 
 interface OWCardProps {
   cardData: OWPlayerCard;
   isLoggedIn?: boolean;
   isEditable?: boolean;
+  customAlignments?: Record<string, { scale: number; translateX: number; translateY: number }>;
 }
 
-export default function OWCard({ cardData, isLoggedIn = true, isEditable = false }: OWCardProps) {
+export default function OWCard({ 
+  cardData, 
+  isLoggedIn = true, 
+  isEditable = false,
+  customAlignments
+}: OWCardProps) {
   const [copiedTag, setCopiedTag] = useState(false);
   const [activeSocial, setActiveSocial] = useState<string | null>(null);
   const [copiedSocial, setCopiedSocial] = useState<string | null>(null);
@@ -187,21 +194,28 @@ export default function OWCard({ cardData, isLoggedIn = true, isEditable = false
         {[0, 1, 2].map((index) => {
           const heroId = selected_heroes[index];
           const heroInfo = heroId ? getHeroInfo(heroId) : null;
+          const adj = heroId ? (customAlignments?.[heroId] || HERO_ALIGNMENTS[heroId] || DEFAULT_ALIGNMENT) : DEFAULT_ALIGNMENT;
+          
+          const imgStyle = {
+            transform: `scale(${adj.scale}) translate(${adj.translateX}%, ${adj.translateY}%)`,
+            transformOrigin: "top center",
+          };
           
           return (
-            <div key={index} className="relative flex-1 h-full border-r border-[#8c7c6c]/10 last:border-r-0 flex flex-col justify-end items-center pb-2 overflow-hidden group/hero">
+            <div key={index} className="relative flex-1 h-full border-r border-[#8c7c6c]/10 last:border-r-0 overflow-hidden group/hero">
               {heroInfo ? (
                 <>
-                  <span className="absolute top-2 left-2 text-[10px] font-extrabold text-[#5d4037] bg-white/85 px-2 py-0.5 rounded-lg border border-[#8c7c6c]/12 shadow-sm z-20 transition-all duration-300 group-hover/hero:bg-[#82b7cc] group-hover/hero:text-white group-hover/hero:border-[#82b7cc]">
+                  <span className="absolute bottom-2.5 left-2.5 text-[10px] font-extrabold text-[#5d4037] bg-white/85 px-2 py-0.5 rounded-lg border border-[#8c7c6c]/12 shadow-sm z-20 transition-all duration-300 group-hover/hero:bg-[#82b7cc] group-hover/hero:text-white group-hover/hero:border-[#82b7cc]">
                     {heroInfo.name}
                   </span>
                   
-                  <div className="relative w-full h-[90%] flex justify-center items-end select-none">
+                  <div className="relative w-full h-[90%] flex justify-center items-start select-none transition-transform duration-500 group-hover/hero:scale-[1.05]">
                     <img
                       src={`/images/heroes/full/${heroInfo.id}.png`}
                       alt={heroInfo.name}
                       referrerPolicy="no-referrer"
-                      className="max-w-[140%] max-h-[110%] object-contain origin-bottom transition-all duration-500 scale-95 group-hover/hero:scale-105 z-10 filter drop-shadow-[0_4px_8px_rgba(140,124,108,0.15)] group-hover/hero:drop-shadow-[0_6px_12px_rgba(130,183,204,0.3)]"
+                      style={imgStyle}
+                      className="max-w-[185%] max-h-[135%] object-contain transition-all duration-500 z-10 filter drop-shadow-[0_4px_8px_rgba(140,124,108,0.15)] group-hover/hero:drop-shadow-[0_6px_12px_rgba(130,183,204,0.3)] select-none"
                       draggable="false"
                       onError={(e) => {
                         (e.target as HTMLImageElement).src = '/images/heroes/silhouette.png';

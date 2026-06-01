@@ -485,11 +485,11 @@ export default function ProfilePage() {
                       <span className="absolute top-1 right-1 text-[8px]">
                         {hero.role === "tank" ? "🛡️" : hero.role === "damage" ? "⚔️" : "➕"}
                       </span>
-                      <div className="w-10 h-10 rounded-full overflow-hidden border border-[#8c7c6c]/15 bg-white/60 flex justify-center items-end group-hover:scale-105 transition-transform mb-1.5 select-none shadow-sm">
+                      <div className="w-10 h-10 rounded-full overflow-hidden border border-[#8c7c6c]/15 bg-white/60 flex justify-center items-center group-hover:scale-105 transition-transform mb-1.5 select-none shadow-sm">
                         <img 
                           src={`/images/heroes/avatars/${hero.id}.png`} 
                           alt={hero.name} 
-                          className="w-[150%] h-[150%] object-contain origin-bottom select-none"
+                          className="w-full h-full object-cover select-none"
                           draggable="false"
                           onError={(e) => {
                             (e.target as HTMLImageElement).src = '/images/heroes/silhouette.png';
