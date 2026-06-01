@@ -8,7 +8,7 @@ version: "Supabase Auth Google provider (2026)"
 last_updated: 2026-05-31
 official: true
 references_to: [REF-002]
-referenced_by: [REF-004, F-001]
+referenced_by: [REF-004, F-001, F-002]
 ---
 
 ## 摘要

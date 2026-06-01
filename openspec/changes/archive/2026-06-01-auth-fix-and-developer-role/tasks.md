@@ -59,4 +59,4 @@
 
 - [x] 7.1 確認 prod `NEXT_PUBLIC_SUPABASE_URL` / publishable key 正確（.env.local 本地已有）
 - [x] 7.2 Supabase URL Configuration 確認：`https://overwatch-social.vercel.app/auth/callback` + `http://localhost:3000/auth/callback` 兩條均存在 ✅
-- [ ] 7.3 部署後 prod 端 smoke：push 到 Vercel 後確認首頁登入按鈕正常（待 git push）
+- [x] 7.3 部署後 prod 端 smoke：Vercel prod 點登入按鈕觸發 Google OAuth redirect（非 alert）✅

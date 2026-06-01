@@ -11,15 +11,15 @@
 
 ## 現在在做什麼
 
-PROPOSE 完成，`openspec validate --strict` PASS。
-下一步：執行 `/rsx:apply auth-fix-and-developer-role` 開始實作。
+auth-fix-and-developer-role APPLY 完成，§6.7 Codex + Gemini + Council 審查全 PROCEED。
+§4 ARCHIVE + §Z Gate 完成（FAIL=0，WARN=0）。
+下一步：主代理執行 `openspec archive auth-fix-and-developer-role`。
 
 ## 進行中的 Changes（未 archive）
 
 | Change | 狀態 | 備註 |
 |---|---|---|
-| auth-fix-and-developer-role | PROPOSED ✓，待 APPLY | Phase A (Task 0-2) 優先，Phase B (Task 3-7) 依賴 Phase A |
-| google-oauth-supabase-auth | 已 archive（見 openspec/changes/archive/）| 無需處理 |
+| auth-fix-and-developer-role | APPLY DONE，待 archive | Gate PASS；F-002、ADR-02 已建；crossref 回填完成 |
 
 ## 待 Propose Changes
 
@@ -27,12 +27,20 @@ PROPOSE 完成，`openspec validate --strict` PASS。
 
 ## 近期歸檔紀錄
 
-（google-oauth-supabase-auth 尚未歸檔）
+| Change | 時間 | 備註 |
+|---|---|---|
+| google-oauth-supabase-auth | 2026-06-01 | ADR-01、F-001 已建；可執行 openspec archive |
 <!-- ZONE_A_END -->
 
 ---
 
 ## Zone B — 工作日誌（追加，由新到舊）
+
+### 2026-06-01 auth-fix-and-developer-role — ARCHIVE 前置（Gate + Finding/ADR）
+
+- **已完成**：§Z Gate 全 PASS；建 F-002（Navbar/AppSidebar dead component 未掛載）；建 ADR-02（app_metadata vs 六方案開發者身分組決策）；雙向 crossref 回填（REF-002/003/004/005 referenced_by 更新）；latest.md Zone A 更新
+- **卡關**：無
+- **下次優先**：主代理執行 `openspec archive auth-fix-and-developer-role`
 
 <!-- pre-check-log-start -->
 ### [Step 0 pre-check] 登入功能修復 + 角色分群 developer mode (2026-06-01)
