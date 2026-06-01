@@ -10,11 +10,15 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, RotateCcw, Users, AlertCircle } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { getHeroAlignments } from "@/app/actions/alignment";
+import type { AlignmentConfig } from "@/data/heroAlignments";
+import { HERO_ALIGNMENTS } from "@/data/heroAlignments";
 
 export default function BrowsePage() {
   const [players, setPlayers] = useState<OWPlayerCard[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [heroAlignments, setHeroAlignments] = useState<Record<string, AlignmentConfig>>(HERO_ALIGNMENTS);
   const [selectedRole, setSelectedRole] = useState("全部");
   const [selectedServer, setSelectedServer] = useState("全部");
   const [selectedMic, setSelectedMic] = useState("全部");
@@ -63,6 +67,9 @@ export default function BrowsePage() {
       setIsLoggedIn(!!session?.user);
       setAuthLoading(false);
     });
+
+    // 從 DB 載入英雄對準參數（fallback 到靜態資料）
+    getHeroAlignments().then(setHeroAlignments);
 
     loadPlayers();
     return () => listener.subscription.unsubscribe();
@@ -245,6 +252,7 @@ export default function BrowsePage() {
                 cardData={player}
                 isLoggedIn={isLoggedIn}
                 isEditable={false}
+                customAlignments={heroAlignments}
                 onLoginRequired={(!authLoading && !isLoggedIn) ? () => setShowLoginModal(true) : undefined}
               />
             </div>

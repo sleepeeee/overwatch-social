@@ -12,6 +12,9 @@ import {
   SOCIAL_PLATFORMS
 } from "@/data/mockPlayers";
 import OWCard from "@/components/OWCard";
+import { getHeroAlignments } from "@/app/actions/alignment";
+import type { AlignmentConfig } from "@/data/heroAlignments";
+import { HERO_ALIGNMENTS } from "@/data/heroAlignments";
 import { Card, CardContent } from "@/components/ui/card";
 import { SocialIcon } from "@/components/ui/SocialIcons";
 import { Button } from "@/components/ui/button";
@@ -54,6 +57,7 @@ export default function ProfilePage() {
   const [user, setUser] = useState<User | null>(null);
   const [isMounted, setIsMounted] = useState(false);
   const [authLoading, setAuthLoading] = useState(true);
+  const [heroAlignments, setHeroAlignments] = useState<Record<string, AlignmentConfig>>(HERO_ALIGNMENTS);
 
   useEffect(() => {
     setIsMounted(true);
@@ -81,6 +85,9 @@ export default function ProfilePage() {
         }
       }
     });
+
+    // 從 DB 載入英雄對準參數（fallback 到靜態資料）
+    getHeroAlignments().then(setHeroAlignments);
 
     return () => listener.subscription.unsubscribe();
   }, []);
@@ -292,7 +299,7 @@ export default function ProfilePage() {
         {/* 左側：名片即時預覽 */}
         <div className="lg:col-span-5 flex flex-col items-center gap-4 lg:sticky lg:top-24">
           <h2 className="text-sm font-bold tracking-widest text-[#8c7c6c] uppercase">即時名片預覽</h2>
-          <OWCard cardData={cardData} isLoggedIn={true} isEditable={true} />
+          <OWCard cardData={cardData} isLoggedIn={true} isEditable={true} customAlignments={heroAlignments} />
           <p className="text-xs text-[#8c7c6c]/80 italic text-center max-w-[320px] font-semibold">
             ✨ 卡片效果將會同步更新，這也是其他玩家在廣場上看到的最終樣貌。
           </p>
