@@ -4,7 +4,7 @@ title: "開發者身分組採 app_metadata 方案（vs 六種替代方案）"
 status: Accepted
 change: auth-fix-and-developer-role
 date: 2026-06-01
-references_to: [REF-005, REF-004, REF-002]
+references_to: [REF-005, REF-004, REF-002, REF-006]
 referenced_by: []
 ---
 

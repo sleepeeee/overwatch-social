@@ -11,15 +11,12 @@
 
 ## 現在在做什麼
 
-`auth-ux-login-gate` PROPOSE 完成，openspec validate PASS。
-下一步：`/rsx:apply auth-ux-login-gate`。
-`developer-console-backend` 待 propose（next）。
+空閒。`auth-ux-login-gate` 已歸檔。
+下一步：`/rsx:propose developer-console-backend`。
 
 ## 進行中的 Changes（未 archive）
 
-| Change | 狀態 | 備註 |
-|---|---|---|
-| auth-ux-login-gate | PROPOSED ✓，待 APPLY | 登出按鈕 + LoginModal + profile overlay |
+（無）
 
 ## 待 Propose Changes
 
@@ -31,13 +28,20 @@
 
 | Change | 時間 | 備註 |
 |---|---|---|
-| auth-fix-and-developer-role | 2026-06-01 | 登入修復 + developer mode；F-002、ADR-02 已建 |
+| auth-ux-login-gate | 2026-06-01 | 登出按鈕+LoginModal+Profile overlay；F-003、ADR-03 已建 |
+| auth-fix-and-developer-role | 2026-06-01 | 登入修復+developer mode；F-002、ADR-02 已建 |
 | google-oauth-supabase-auth | 2026-06-01 | OAuth 基礎建設；ADR-01、F-001 已建 |
 <!-- ZONE_A_END -->
 
 ---
 
 ## Zone B — 工作日誌（追加，由新到舊）
+
+### 2026-06-01 auth-ux-login-gate — ARCHIVE 前置（Gate + Finding/ADR）
+
+- **已完成**：§Z Gate 全 PASS；建 F-003（authLoading guard 缺失根因：isLoggedIn 初始 false 造成 LoginModal 閃現）；建 ADR-03（LoginModal 共用元件 vs 各頁自製 overlay 決策）；雙向 crossref 回填（REF-002/REF-006 referenced_by 更新；ADR-02 references_to 補 REF-006 遺漏修正；F-003 referenced_by 加 ADR-03）；latest.md Zone A 更新
+- **卡關**：無
+- **下次優先**：主代理執行 `openspec archive auth-ux-login-gate`
 
 <!-- pre-check-log-start -->
 ### [Step 0 pre-check] 登入保護 + auth guard + permission-based UI (2026-06-01)
