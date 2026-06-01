@@ -1,16 +1,16 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useTransition, useEffect, useRef } from "react";
 import Link from "next/link";
-import { 
-  Users, 
-  Sliders, 
-  Trash2, 
-  Plus, 
-  ShieldCheck, 
-  Terminal, 
-  Cpu, 
+import {
+  Users,
+  Sliders,
+  Trash2,
+  Plus,
+  ShieldCheck,
+  Terminal,
+  Cpu,
   AlertCircle,
   ArrowRight,
   LogOut,
@@ -22,11 +22,25 @@ import {
   RotateCcw,
   AlignLeft,
   AlignCenter,
-  AlignRight
+  AlignRight,
+  TrendingUp,
+  Search,
+  Loader2,
+  Eye,
+  EyeOff
 } from "lucide-react";
-import { addWhitelistEmail, removeWhitelistEmail } from "@/app/actions/developer";
+import { addWhitelistEmail, removeWhitelistEmail, getAllProfilesForDeveloper } from "@/app/actions/developer";
 import { getAnnouncements, saveAnnouncements, uploadAnnouncementIcon, AnnouncementItem, AlignmentConfig } from "@/app/actions/homepage";
 import LotusWelcomeWidget from "@/components/morning-sketch/LotusWelcomeWidget";
+import { HEROES_CONFIG } from "@/data/mockPlayers";
+
+interface ProfileRow {
+  user_id: string;
+  battle_tag: string;
+  is_tag_visible: boolean;
+  selected_heroes: string[];
+  updated_at: string;
+}
 
 interface DeveloperConsoleClientProps {
   initialWhitelist: Array<{ email: string; created_at: string }>;
@@ -34,7 +48,11 @@ interface DeveloperConsoleClientProps {
   totalProfiles?: number;
   completedProfiles?: number;
   statsError?: string;
+  heroStats?: Array<{ heroId: string; count: number }>;
 }
+
+// 英雄名稱查找表
+const heroNameMap = new Map(HEROES_CONFIG.map(h => [h.id, h.name]));
 
 export default function DeveloperConsoleClient({
   initialWhitelist,
@@ -42,15 +60,24 @@ export default function DeveloperConsoleClient({
   totalProfiles = 0,
   completedProfiles = 0,
   statsError,
+  heroStats = [],
 }: DeveloperConsoleClientProps) {
   const [whitelist, setWhitelist] = useState(initialWhitelist);
   const [newEmail, setNewEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
-  
+
   // Tab 狀態管理
-  const [activeTab, setActiveTab] = useState<"overview" | "whitelist" | "tools">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "whitelist" | "tools" | "users">("overview");
+
+  // Users tab on-demand state
+  const [usersData, setUsersData] = useState<ProfileRow[] | null>(null);
+  const [usersLoading, setUsersLoading] = useState(false);
+  const [usersError, setUsersError] = useState("");
+  const [usersSearch, setUsersSearch] = useState("");
+  const [isPending, startTransition] = useTransition();
+  const searchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // APC 子工具切換
   const [activeApcTool, setActiveApcTool] = useState<"none" | "homepage">("none");
@@ -333,6 +360,43 @@ export default function DeveloperConsoleClient({
     }
   };
 
+  // 執行 users 資料查詢（含 try/catch，防止 Server Action 拋錯）
+  const fetchUsers = async (search?: string) => {
+    setUsersLoading(true);
+    setUsersError("");
+    try {
+      const res = await getAllProfilesForDeveloper(search);
+      if (res.success && res.data) {
+        setUsersData(res.data);
+      } else {
+        setUsersError(res.error || "載入失敗");
+      }
+    } catch (err) {
+      setUsersError("網路或認證錯誤，請重新整理頁面");
+    } finally {
+      setUsersLoading(false);
+    }
+  };
+
+  // Tab 切換（users tab 觸發 on-demand fetch，useTransition 防止 race condition）
+  const handleTabChange = (tab: "overview" | "whitelist" | "tools" | "users") => {
+    startTransition(() => {
+      setActiveTab(tab);
+    });
+    if (tab === "users" && !usersData && !usersLoading) {
+      fetchUsers();
+    }
+  };
+
+  // 搜尋框 debounce（300ms 後觸發 server-side search）
+  const handleUsersSearch = (value: string) => {
+    setUsersSearch(value);
+    if (searchDebounceRef.current) clearTimeout(searchDebounceRef.current);
+    searchDebounceRef.current = setTimeout(() => {
+      fetchUsers(value || undefined);
+    }, 300);
+  };
+
   // 刪除白名單處理
   const handleDelete = async (emailToDelete: string) => {
     if (!confirm(`確定要將 ${emailToDelete} 從開發者白名單中移除嗎？\n移除後該帳戶將失去開發者後台存取權限。`)) {
@@ -432,7 +496,7 @@ export default function DeveloperConsoleClient({
         {activeApcTool !== "homepage" && (
           <aside className="w-full md:w-64 shrink-0 flex flex-col gap-2">
           <button
-            onClick={() => setActiveTab("overview")}
+            onClick={() => handleTabChange("overview")}
             className={`w-full text-left px-4 py-3 rounded-xl flex items-center gap-3 transition-all font-black text-sm border ${
               activeTab === "overview"
                 ? "bg-gradient-to-r from-slate-900 to-slate-800/80 text-white border-slate-700 shadow-md shadow-black/20"
@@ -444,7 +508,7 @@ export default function DeveloperConsoleClient({
           </button>
           
           <button
-            onClick={() => setActiveTab("whitelist")}
+            onClick={() => handleTabChange("whitelist")}
             className={`w-full text-left px-4 py-3 rounded-xl flex items-center gap-3 transition-all font-black text-sm border ${
               activeTab === "whitelist"
                 ? "bg-gradient-to-r from-slate-900 to-slate-800/80 text-white border-slate-700 shadow-md shadow-black/20"
@@ -456,7 +520,7 @@ export default function DeveloperConsoleClient({
           </button>
           
           <button
-            onClick={() => setActiveTab("tools")}
+            onClick={() => handleTabChange("tools")}
             className={`w-full text-left px-4 py-3 rounded-xl flex items-center gap-3 transition-all font-black text-sm border ${
               activeTab === "tools"
                 ? "bg-gradient-to-r from-slate-900 to-slate-800/80 text-white border-slate-700 shadow-md shadow-black/20"
@@ -465,6 +529,18 @@ export default function DeveloperConsoleClient({
           >
             <Sliders size={16} className={activeTab === "tools" ? "text-[#82b7cc]" : ""} />
             <span>高階製程工具 (APC Tools)</span>
+          </button>
+
+          <button
+            onClick={() => handleTabChange("users")}
+            className={`w-full text-left px-4 py-3 rounded-xl flex items-center gap-3 transition-all font-black text-sm border ${
+              activeTab === "users"
+                ? "bg-gradient-to-r from-slate-900 to-slate-800/80 text-white border-slate-700 shadow-md shadow-black/20"
+                : "bg-transparent text-slate-400 border-transparent hover:text-slate-200 hover:bg-slate-900/40"
+            }`}
+          >
+            <Users size={16} className={activeTab === "users" ? "text-[#82b7cc]" : ""} />
+            <span>用戶管理 (Users)</span>
           </button>
 
           <div className="mt-8 p-4 rounded-xl border border-slate-800 bg-slate-950/40 text-center">
@@ -535,6 +611,43 @@ export default function DeveloperConsoleClient({
                     </div>
                   </div>
                 </div>
+
+                {/* 英雄流行度 Top 5 */}
+                {heroStats.length > 0 && (
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <TrendingUp size={14} className="text-[#82b7cc]" />
+                      <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest">英雄流行度 Top 5</h3>
+                    </div>
+                    <div className="space-y-2">
+                      {heroStats.map((stat, idx) => {
+                        const heroName = heroNameMap.get(stat.heroId) || stat.heroId;
+                        const maxCount = heroStats[0]?.count || 1;
+                        const barWidth = Math.round((stat.count / maxCount) * 100);
+                        return (
+                          <div key={stat.heroId} className="flex items-center gap-3">
+                            <span className="text-[10px] font-black text-slate-500 w-4 text-right">{idx + 1}</span>
+                            <div className="flex-1">
+                              <div className="flex justify-between items-center mb-1">
+                                <span className="text-xs font-bold text-slate-300">{heroName}</span>
+                                <span className="text-[10px] font-black text-slate-500">{stat.count} 人</span>
+                              </div>
+                              <div className="h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                                <div
+                                  className="h-full bg-gradient-to-r from-[#82b7cc] to-[#3b82f6] rounded-full transition-all"
+                                  style={{ width: `${barWidth}%` }}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+                {heroStats.length === 0 && (
+                  <div className="text-xs text-slate-500 italic text-center py-2">尚無英雄選用數據</div>
+                )}
 
                 {/* 開發者安全宣言卡 */}
                 <div className="p-5 rounded-xl border border-slate-800 bg-slate-950/30 flex items-start gap-4">
@@ -690,6 +803,7 @@ export default function DeveloperConsoleClient({
                 </div>
               </div>
             )}
+<<<<<<< HEAD
 
             {/* TAB 3 (子頁面): 首頁公告精密對準面板 */}
             {activeTab === "tools" && activeApcTool === "homepage" && announcements.length === 4 && (
@@ -1023,6 +1137,99 @@ export default function DeveloperConsoleClient({
               </form>
             )}
 
+=======
+            {/* TAB 4: 用戶管理 */}
+            {activeTab === "users" && (
+              <div className="space-y-6">
+                <div>
+                  <h2 className="text-xl font-black text-white uppercase tracking-wider mb-1">用戶管理 (User Management)</h2>
+                  <p className="text-xs text-slate-400">查看所有已建立名片的玩家（最多 100 筆，不含聯絡方式）</p>
+                </div>
+
+                {/* 載入中 */}
+                {usersLoading && (
+                  <div className="flex items-center justify-center py-16 gap-3 text-slate-400">
+                    <Loader2 size={20} className="animate-spin" />
+                    <span className="text-sm font-bold">載入用戶資料中...</span>
+                  </div>
+                )}
+
+                {/* 錯誤 */}
+                {usersError && !usersLoading && (
+                  <div className="p-4 rounded-xl border border-red-500/20 bg-red-500/8 text-red-400 text-xs font-semibold flex items-center gap-2">
+                    <AlertCircle size={16} />
+                    <span>{usersError}</span>
+                  </div>
+                )}
+
+                {/* 資料載入完成 */}
+                {usersData && !usersLoading && (
+                  <>
+                    {/* 搜尋（server-side ilike，300ms debounce）*/}
+                    <div className="relative">
+                      <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+                      <input
+                        type="text"
+                        placeholder="搜尋 BattleTag（server-side 過濾）..."
+                        value={usersSearch}
+                        onChange={e => handleUsersSearch(e.target.value)}
+                        className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-4 py-2.5 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-[#82b7cc] focus:ring-1 focus:ring-[#82b7cc] transition-all"
+                      />
+                    </div>
+
+                    {/* 表格 */}
+                    <div className="border border-slate-800/80 rounded-xl overflow-hidden bg-slate-950/20">
+                      <div className="max-h-[400px] overflow-y-auto">
+                        <table className="w-full border-collapse text-left">
+                          <thead>
+                            <tr className="bg-slate-950/80 border-b border-slate-800 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                              <th className="px-4 py-3">BattleTag</th>
+                              <th className="px-4 py-3">英雄數</th>
+                              <th className="px-4 py-3">公開</th>
+                              <th className="px-4 py-3">更新時間</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {usersData
+                              .map(profile => (
+                                <tr key={profile.user_id} className="border-b border-slate-900 hover:bg-slate-900/30 transition-all text-xs">
+                                  <td className="px-4 py-3 text-slate-200 font-mono">
+                                    {profile.battle_tag || <span className="text-slate-600 italic">未設定</span>}
+                                  </td>
+                                  <td className="px-4 py-3 text-slate-400">
+                                    {(profile.selected_heroes ?? []).length} 個
+                                  </td>
+                                  <td className="px-4 py-3">
+                                    {profile.is_tag_visible
+                                      ? <Eye size={13} className="text-emerald-400" />
+                                      : <EyeOff size={13} className="text-slate-600" />
+                                    }
+                                  </td>
+                                  <td className="px-4 py-3 text-slate-500">
+                                    {new Date(profile.updated_at).toLocaleString("zh-TW", { timeZone: "Asia/Taipei" })}
+                                  </td>
+                                </tr>
+                              ))
+                            }
+                            {usersData.length === 0 && (
+                              <tr>
+                                <td colSpan={4} className="px-4 py-8 text-center text-slate-500 italic">
+                                  {usersSearch ? `找不到符合「${usersSearch}」的玩家` : "目前沒有任何玩家資料"}
+                                </td>
+                              </tr>
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
+                      <div className="px-4 py-2 border-t border-slate-800 text-[10px] text-slate-600 font-bold">
+                        {usersSearch ? `搜尋「${usersSearch}」：${usersData.length} 筆` : `共 ${usersData.length} 筆（最新 100 筆，Server-side 過濾）`}
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
+>>>>>>> upstream/main
           </div>
 
           {/* 頁尾版權 */}
