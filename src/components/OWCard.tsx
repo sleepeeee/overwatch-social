@@ -141,9 +141,6 @@ export default function OWCard({
   return (
     <div className="relative w-full max-w-[420px] mx-auto bg-white/70 backdrop-blur-md border border-[#8c7c6c]/18 rounded-[24px] shadow-[0_15px_45px_rgba(140,124,108,0.06)] p-5 overflow-hidden transition-all duration-500 hover:border-[#82b7cc]/40 hover:shadow-[0_20px_50px_rgba(130,183,204,0.18)] hover:-translate-y-2 hover:scale-[1.015] flex flex-col justify-between group/card browse-preview-card" style={{ fontFamily: "var(--font-sans), sans-serif" }}>
       
-      {/* 頂部全息發光高光線 */}
-      <div className="absolute top-0 right-0 h-[3px] w-24 bg-gradient-to-l from-[#82b7cc] via-[#f5d46b] to-transparent pointer-events-none" />
-
       <div className="flex justify-between items-center border-b border-dashed border-[#8c7c6c]/15 pb-3 mb-4 gap-2">
         <span className="text-[#8c7c6c]/80 font-extrabold text-[11px] sm:text-xs tracking-widest uppercase whitespace-nowrap shrink-0">Overwatch | 鬥陣特工</span>
         <span className="bg-[#82b7cc]/12 text-[#82b7cc] border border-[#82b7cc]/20 px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-black tracking-widest whitespace-nowrap shrink-0 uppercase">

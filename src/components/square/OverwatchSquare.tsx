@@ -172,9 +172,7 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
                   onClick={() => setSelectedRole(role)}
                   className={`text-[10px] font-extrabold py-2.5 rounded-2xl transition-all border cursor-pointer ${
                     selectedRole === role
-                      ? isPremiumStyle
-                        ? "bg-[#82b7cc]/85 border-[#82b7cc]/30 text-white backdrop-blur-sm shadow-sm"
-                        : "bg-[#82b7cc]/92 border-[#82b7cc]/40 text-white shadow-sm"
+                      ? "bg-[#82b7cc]/85 border-[#82b7cc]/30 text-white backdrop-blur-sm shadow-sm"
                       : "bg-white/60 border-[#8c7c6c]/18 text-[#8c7c6c] hover:bg-white/80"
                   }`}
                 >
