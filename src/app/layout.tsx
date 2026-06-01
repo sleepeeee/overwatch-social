@@ -3,6 +3,7 @@ import { Geist } from "next/font/google";
 import "./globals.css";
 import FloatingDock from "@/components/morning-sketch/FloatingDock";
 import ArtOrnament from "@/components/morning-sketch/ArtOrnament";
+import DevModeBanner from "@/components/DevModeBanner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,6 +29,8 @@ export default function RootLayout({
           fontFamily: "var(--font-sans), sans-serif"
         }}
       >
+        {/* 開發者模式 banner（僅對 app_metadata.role=developer 顯示） */}
+        <DevModeBanner />
         {/* 全站底層藝術裝飾 */}
         <ArtOrnament />
 

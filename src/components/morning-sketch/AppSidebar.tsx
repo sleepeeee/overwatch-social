@@ -1,7 +1,9 @@
 "use client";
 
 import React from "react";
+import { useRouter } from "next/navigation";
 import { LayoutDashboard, MessageSquare, MapPin, AtSign, RefreshCw, Settings, LogOut, Heart } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
 
 interface SidebarProps {
   styleMode: "A" | "B" | "AB";
@@ -11,6 +13,7 @@ interface SidebarProps {
 
 export default function AppSidebar({ styleMode, activeTab, setActiveTab }: SidebarProps) {
   const isStyleB = styleMode === "B";
+  const router = useRouter();
 
   const menuItems = [
     { id: "dashboard", label: "DASHBOARD", icon: LayoutDashboard, badge: null },
@@ -20,8 +23,10 @@ export default function AppSidebar({ styleMode, activeTab, setActiveTab }: Sideb
     { id: "update", label: "UPDATE", icon: RefreshCw, badge: null }
   ];
 
-  const handleLogout = () => {
-    alert("實作測試：登出系統！");
+  const handleLogout = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.refresh();
   };
 
   // 當風格為 B 時，我們收窄側邊欄，如第二張圖
