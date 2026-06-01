@@ -3,34 +3,11 @@
 import fs from "fs";
 import path from "path";
 import { revalidatePath } from "next/cache";
+import { unstable_noStore as noStore } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import type { AlignmentConfig, AnnouncementItem } from "@/types/homepage";
 
-export interface AlignmentConfig {
-  icon_x: number;
-  icon_y: number;
-  icon_scale: number;
-  title_font_size: number;
-  title_x: number;
-  title_y: number;
-  message_font_size: number;
-  message_x: number;
-  message_y: number;
-  buttons_x: number;
-  buttons_y: number;
-  tag_font_size: number;
-  tag_x: number;
-  tag_y: number;
-}
-
-export interface AnnouncementItem {
-  num: string;
-  tag: string;
-  title: string;
-  color: string;
-  message: string;
-  custom_icon_url?: string;
-  alignments?: AlignmentConfig;
-}
+export type { AlignmentConfig, AnnouncementItem } from "@/types/homepage";
 
 const DEFAULT_ALIGNMENTS: AlignmentConfig = {
   icon_x: 0,
@@ -110,6 +87,8 @@ async function checkDeveloperAuth() {
  * 獲取首頁公告列表
  */
 export async function getAnnouncements(): Promise<AnnouncementItem[]> {
+  // 強制不快取，每次都從磁碟讀取最新資料
+  noStore();
   try {
     const filePath = getFilePath();
     if (!fs.existsSync(filePath)) {
@@ -151,8 +130,9 @@ export async function saveAnnouncements(data: AnnouncementItem[]) {
 
     fs.writeFileSync(filePath, JSON.stringify(data, null, 2), "utf8");
 
-    // 4. 重新驗證首頁快取
+    // 4. 重新驗證首頁快取（同時清除 developer 頁快取）
     revalidatePath("/");
+    revalidatePath("/developer");
     return { success: true };
   } catch (error) {
     console.error("Failed to save announcements:", error);
