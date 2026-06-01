@@ -95,7 +95,8 @@ export default function Home() {
         avatarUrl: randomAvatar
       };
 
-      setProfiles(prev => [newPlayer, prev[0], prev[1]]);
+      // 新卡插最前，保留前兩張的 key，讓 React 只 remount 真正新的那張
+      setProfiles(prev => [newPlayer, ...prev.slice(0, 2)]);
     }, 7000); // 每 7 秒模擬一次玩家新上線
 
     return () => clearInterval(interval);
@@ -106,23 +107,6 @@ export default function Home() {
       data-style="A"
       className="min-h-screen relative pb-32 transition-colors duration-500"
     >
-      {/* 🎬 注入 CSS 滑動更新動畫過渡 (左側滑入 & 舊卡片位移) */}
-      <style>{`
-        @keyframes slideInLeft {
-          from {
-            transform: translateX(-40px) scale(0.92);
-            opacity: 0;
-          }
-          to {
-            transform: translateX(0) scale(1);
-            opacity: 1;
-          }
-        }
-        .animate-card-slide {
-          animation: slideInLeft 0.65s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-        }
-      `}</style>
-
       <FluidClipPath />
 
       <main className="transition-all duration-500 ease-out p-6 md:p-8 min-h-screen w-full max-w-7xl mx-auto px-4 md:px-8 pt-6">

@@ -1,11 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
+// hoveredStep state 已移除，改用 CSS group-hover 避免每次 hover 觸發父元件 re-render
 import { MessageSquare, Coffee, Settings, Send } from "lucide-react";
 
 export default function LotusWelcomeWidget() {
   const [activeStep, setActiveStep] = useState(1);
-  const [hoveredStep, setHoveredStep] = useState<number | null>(null);
 
   const announcements = [
     {
@@ -107,33 +107,29 @@ export default function LotusWelcomeWidget() {
         {announcements.map((s, idx) => {
           const stepNum = idx + 1;
           const isActive = activeStep === stepNum;
-          const isHovered = hoveredStep === stepNum;
 
           return (
             <button
               key={s.num}
               onClick={() => setActiveStep(stepNum)}
-              onMouseEnter={() => setHoveredStep(stepNum)}
-              onMouseLeave={() => setHoveredStep(null)}
-              className="relative w-8 h-8 flex items-center justify-center text-[10px] font-black tracking-tighter text-[#8c7c6c] hover:text-[#3e2723] transition-all duration-300 rounded-full cursor-pointer"
+              className="group relative w-8 h-8 flex items-center justify-center text-[10px] font-black tracking-tighter text-[#8c7c6c] hover:text-[#3e2723] transition-all duration-300 rounded-full cursor-pointer"
             >
-              <div 
+              <div
                 className={`absolute inset-0 rounded-full border transition-all duration-500 flex items-center justify-center ${
-                  isActive 
-                    ? "bg-[#faf8f5] border-[#82b7cc]/60 shadow-[0_2px_10px_rgba(130,183,204,0.25)] scale-110" 
+                  isActive
+                    ? "bg-[#faf8f5] border-[#82b7cc]/60 shadow-[0_2px_10px_rgba(130,183,204,0.25)] scale-110"
                     : "bg-white/30 border-[#8c7c6c]/15 hover:border-[#8c7c6c]/40 hover:bg-white/50"
                 }`}
               />
               <span className="relative z-10 font-mono tracking-tighter text-[10px]">{s.num}</span>
 
-              {(isActive || isHovered) && (
-                <div 
-                  className={`absolute rounded-full border pointer-events-none ${
-                    isActive 
-                      ? "animate-[ping_2s_infinite] border-[#82b7cc]/25 w-[140%] h-[140%]" 
-                      : "animate-[ping_1.5s_1] border-[#8c7c6c]/15 w-[130%] h-[130%]"
-                  }`}
-                />
+              {/* active ping（常駐）*/}
+              {isActive && (
+                <div className="absolute rounded-full border pointer-events-none animate-[ping_2s_infinite] border-[#82b7cc]/25 w-[140%] h-[140%]" />
+              )}
+              {/* hover ping（CSS，無 React state）*/}
+              {!isActive && (
+                <div className="absolute rounded-full border pointer-events-none opacity-0 group-hover:opacity-100 animate-[ping_1.5s_1] border-[#8c7c6c]/15 w-[130%] h-[130%]" />
               )}
             </button>
           );

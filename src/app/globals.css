@@ -2,6 +2,20 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-40px) scale(0.92);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+}
+.animate-card-slide {
+  animation: slideInLeft 0.65s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
