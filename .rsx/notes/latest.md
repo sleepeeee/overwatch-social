@@ -11,28 +11,46 @@
 
 ## 現在在做什麼
 
-`google-oauth-supabase-auth` change 已完成全部任務（tasks.md 全勾）+ §6.7 APPLY 審查（8/10 PROCEED）。
-rsx-archiver 已建立 F-001、ADR-01，crossref 已回填。Gate 全 PASS。
-下一步：主代理執行 `openspec archive google-oauth-supabase-auth`。
+EXPLORE 完成。下一步：propose `auth-fix-and-developer-role` change。
+（`google-oauth-supabase-auth` archive 仍待執行，可在此次 propose 前或後處理）
 
 ## 進行中的 Changes（未 archive）
 
 | Change | 狀態 | 備註 |
 |---|---|---|
-| google-oauth-supabase-auth | Gate PASS，待 archive | 主代理執行 openspec archive |
+| google-oauth-supabase-auth | Gate PASS，待 archive | 需執行 `openspec archive google-oauth-supabase-auth` |
 
 ## 待 Propose Changes
 
-（無）
+| Change 名稱 | 摘要 |
+|---|---|
+| auth-fix-and-developer-role | 修復 page.tsx + AppSidebar.tsx alert() 假實作；新增 app_metadata 角色系統 + useDevMode() hook |
 
 ## 近期歸檔紀錄
 
-（尚未歸檔，google-oauth-supabase-auth 為第一個 change）
+（google-oauth-supabase-auth 尚未歸檔）
 <!-- ZONE_A_END -->
 
 ---
 
 ## Zone B — 工作日誌（追加，由新到舊）
+
+<!-- pre-check-log-start -->
+### [Step 0 pre-check] 登入功能修復 + 角色分群 developer mode (2026-06-01)
+Tier: grep
+命中：3 筆（REF-002, REF-003, REF-004）— 涵蓋登入基礎架構，但不含角色分群/developer mode
+使用者選擇：(c) 兩者都做
+額外發現：page.tsx + AppSidebar.tsx 存在 alert() 假實作，Navbar.tsx 才有真正的 OAuth 實作
+<!-- pre-check-log-end -->
+
+
+
+### 2026-06-01 auth-fix-and-developer-role — EXPLORE 完成
+
+- **已完成**：Step 0 pre-check（3 筆命中：REF-002/003/004）；瀏覽器實測確認登入 bug（page.tsx + AppSidebar.tsx alert() 假實作）；L2 外部搜尋 Supabase RBAC 方案；建立 REF-005（app_metadata 角色系統）；REF-002/REF-004 referenced_by 回填
+- **發現**：page.tsx:33 `handleGoogleLogin = alert()` + AppSidebar.tsx:24 `handleLogout = alert()` 是兩個遺留 mock，Navbar.tsx 的實作才是正確的
+- **卡關**：無
+- **下次優先**：執行 `/rsx:propose auth-fix-and-developer-role`
 
 ### 2026-06-01 google-oauth-supabase-auth — ARCHIVE 前置（Gate + Finding/ADR）
 
