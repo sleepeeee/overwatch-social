@@ -23,13 +23,12 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Sparkles, Save, Info, AlertTriangle, ArrowLeft, Gamepad2, ShieldAlert, Cpu } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
 import { getMyProfile, saveProfile } from "@/app/actions/profile";
-import type { User } from "@supabase/supabase-js";
 import Link from "next/link";
 import { useDevMode } from "@/hooks/useDevMode";
 import LoginModal from "@/components/LoginModal";
 import TopBar from "@/components/TopBar";
+import { useAuth } from "@/context/AuthContext";
 
 const DEFAULT_CARD: OWPlayerCard = {
   card_id: "card-current-user",
@@ -69,16 +68,11 @@ export default function ProfilePage() {
   const [hubSaved, setHubSaved] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [heroRoleFilter, setHeroRoleFilter] = useState<"all" | "tank" | "damage" | "support">("all");
-  const [user, setUser] = useState<User | null>(null);
-  const [isMounted, setIsMounted] = useState(false);
-  const [authLoading, setAuthLoading] = useState(true);
+  const { user, authLoading } = useAuth();
   const [heroAlignments, setHeroAlignments] = useState<Record<string, AlignmentConfig>>(HERO_ALIGNMENTS);
 
-  // 載入與初始化
+  // 初始化：從 localStorage 恢復 profile 頭像設定 + 英雄對準參數
   useEffect(() => {
-    setIsMounted(true);
-    
-    // 從 localStorage 恢復 profile 頭像和設定
     const cachedProfile = localStorage.getItem("user_profile_hub");
     if (cachedProfile) {
       try {
@@ -87,77 +81,36 @@ export default function ProfilePage() {
         console.error("恢復 profile 快取失敗", e);
       }
     }
-
-    const supabase = createClient();
-    const cancelled = { current: false };
-
-    supabase.auth.getUser().then(async ({ data }) => {
-      if (cancelled.current) return;
-      const currentUser = data.user ?? null;
-      setUser(currentUser);
-      setAuthLoading(false);
-
-      if (currentUser) {
-        const profile = await getMyProfile();
-        if (cancelled.current) return;
-        if (profile) {
-          const loadedCard = { ...DEFAULT_CARD, ...profile, social_channels: profile.social_channels || {} };
-          setCardData(loadedCard);
-
-          if (!cachedProfile) {
-            const initialName = loadedCard.battle_tag ? loadedCard.battle_tag.split('#')[0] : "愛喝奶茶";
-            const initialProfile = {
-              id: currentUser.id,
-              display_name: initialName,
-              avatar_url: "/images/avatars/avatar_female_elegant_square.png",
-              bio: loadedCard.message || "GGWP！一起加油，推車到底啦 🚀"
-            };
-            setUserProfile(initialProfile);
-            localStorage.setItem("user_profile_hub", JSON.stringify(initialProfile));
-          }
-        } else {
-          setCardData(DEFAULT_CARD);
-        }
-      }
-    });
-
-    const { data: listener } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (!["SIGNED_IN", "SIGNED_OUT", "INITIAL_SESSION"].includes(event)) return;
-      const currentUser = session?.user ?? null;
-      setUser(currentUser);
-      setAuthLoading(false);
-
-      if (currentUser) {
-        const profile = await getMyProfile();
-        if (profile) {
-          const loadedCard = { ...DEFAULT_CARD, ...profile, social_channels: profile.social_channels || {} };
-          setCardData(loadedCard);
-
-          if (!localStorage.getItem("user_profile_hub")) {
-            const initialName = loadedCard.battle_tag ? loadedCard.battle_tag.split('#')[0] : "愛喝奶茶";
-            const initialProfile = {
-              id: currentUser.id,
-              display_name: initialName,
-              avatar_url: "/images/avatars/avatar_female_elegant_square.png",
-              bio: loadedCard.message || "GGWP！一起加油，推車到底啦 🚀"
-            };
-            setUserProfile(initialProfile);
-            localStorage.setItem("user_profile_hub", JSON.stringify(initialProfile));
-          }
-        } else {
-          setCardData(DEFAULT_CARD);
-        }
-      }
-    });
-
-    // 從 DB 載入英雄對準參數（fallback 到靜態資料）
     getHeroAlignments().then(setHeroAlignments);
-
-    return () => {
-      cancelled.current = true;
-      listener.subscription.unsubscribe();
-    };
   }, []);
+
+  // user 變化時載入名片資料（auth state 由 AuthContext 統一管理）
+  useEffect(() => {
+    if (!user) return;
+
+    const cachedProfile = localStorage.getItem("user_profile_hub");
+
+    getMyProfile().then(profile => {
+      if (profile) {
+        const loadedCard = { ...DEFAULT_CARD, ...profile, social_channels: profile.social_channels || {} };
+        setCardData(loadedCard);
+
+        if (!cachedProfile) {
+          const initialName = loadedCard.battle_tag ? loadedCard.battle_tag.split('#')[0] : "愛喝奶茶";
+          const initialProfile = {
+            id: user.id,
+            display_name: initialName,
+            avatar_url: "/images/avatars/avatar_female_elegant_square.png",
+            bio: loadedCard.message || "GGWP！一起加油，推車到底啦 🚀"
+          };
+          setUserProfile(initialProfile);
+          localStorage.setItem("user_profile_hub", JSON.stringify(initialProfile));
+        }
+      } else {
+        setCardData(DEFAULT_CARD);
+      }
+    });
+  }, [user?.id]);
 
   // 變更頭像 handler
   const handleAvatarChange = (newUrl: string) => {
@@ -333,8 +286,8 @@ export default function ProfilePage() {
     setTimeout(() => setSaved(false), 2000);
   };
 
-  // 客戶端載入骨架屏
-  if (!isMounted) {
+  // auth 解析中（由 AuthContext 管理）
+  if (authLoading) {
     return (
       <div className="max-w-6xl mx-auto px-4 py-8 flex flex-col items-center justify-center min-h-[500px] gap-4">
         <div className="w-12 h-12 border-4 border-[#82b7cc] border-t-transparent rounded-full animate-spin"></div>
@@ -542,7 +495,7 @@ export default function ProfilePage() {
 
         {/* 未登入限制 */}
         <LoginModal
-          show={isMounted && !authLoading && !user}
+          show={!authLoading && !user}
           closable={false}
           title="登入後才能使用主控台"
           description="以 Google 帳號登入，快速管理你的多遊戲社交卡片與個人頭像"
@@ -894,7 +847,7 @@ export default function ProfilePage() {
 
       {/* 未登入限制 */}
       <LoginModal
-        show={isMounted && !authLoading && !user}
+        show={!authLoading && !user}
         closable={false}
         title="登入後才能建立名片"
         description="以 Google 帳號登入，建立你的特工名片並公開到交友廣場"

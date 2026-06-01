@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Search, RotateCcw, Users, Gamepad2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { createClient } from "@/lib/supabase/client";
 import TopBar from "@/components/TopBar";
+import { useAuth } from "@/context/AuthContext";
 
 // 導入三個獨立子分頁廣場
 import OverwatchSquare from "@/components/square/OverwatchSquare";
@@ -12,32 +12,16 @@ import ValorantSquare from "@/components/square/ValorantSquare";
 import LoLSquare from "@/components/square/LoLSquare";
 
 export default function BrowsePage() {
+  const { user, authLoading } = useAuth();
+  const isLoggedIn = !!user;
   const [activeGame, setActiveGame] = useState<"ow" | "val" | "lol">("ow");
   const [searchQuery, setSearchQuery] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-    const supabase = createClient();
-
-
-    supabase.auth.getUser().then(({ data }) => {
-      setIsLoggedIn(!!data.user);
-    });
-
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setIsLoggedIn(!!session?.user);
-    });
-
-    return () => listener.subscription.unsubscribe();
-  }, []);
 
   const handleResetSearch = () => {
     setSearchQuery("");
   };
 
-  if (!isMounted) {
+  if (authLoading) {
     return (
       <div className="max-w-6xl mx-auto px-4 py-8 flex flex-col items-center justify-center min-h-[600px] gap-4">
         <div className="w-12 h-12 border-4 border-[#82b7cc] border-t-transparent rounded-full animate-spin"></div>
