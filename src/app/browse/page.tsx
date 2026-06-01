@@ -141,17 +141,7 @@ export default function BrowsePage() {
           </p>
         </div>
 
-        <div className="bg-white/60 border border-[#8c7c6c]/18 rounded-2xl p-2.5 flex items-center gap-3 text-xs shadow-sm">
-          <span className="text-[#8c7c6c] font-black">🛡️ 登入狀態模擬:</span>
-          <button
-            onClick={() => setIsLoggedIn(!isLoggedIn)}
-            className={`px-3.5 py-1.5 rounded-xl font-black transition-all duration-300 active:scale-95 cursor-pointer shadow-md ${
-              isLoggedIn ? "bg-green-600 hover:bg-green-500 text-white" : "bg-red-600 hover:bg-red-500 text-white"
-            }`}
-          >
-            {isLoggedIn ? "已登入 (完整查閱 & 複製)" : "未登入 (限制並遮罩 UID)"}
-          </button>
-        </div>
+        {/* Debug toggle 已移除：此按鈕讓任何人都能繞過 BattleTag 保護 */}
       </div>
 
       {/* 搜尋與篩選器面板 */}

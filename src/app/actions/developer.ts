@@ -13,7 +13,7 @@ async function ensureDeveloper() {
   if (user?.app_metadata?.role !== "developer") {
     throw new Error("Unauthorized: Developer privilege required.");
   }
-  return supabase;
+  return { supabase, user };
 }
 
 /**
@@ -21,7 +21,7 @@ async function ensureDeveloper() {
  */
 export async function getWhitelistEmails() {
   try {
-    const supabase = await ensureDeveloper();
+    const { supabase, user: currentUser } = await ensureDeveloper();
     
     const { data, error } = await supabase
       .from("developer_whitelist")
@@ -49,7 +49,7 @@ export async function addWhitelistEmail(email: string) {
       return { success: false, error: "請輸入有效的 Email 地址" };
     }
 
-    const supabase = await ensureDeveloper();
+    const { supabase, user: currentUser } = await ensureDeveloper();
 
     const { error } = await supabase
       .from("developer_whitelist")
@@ -76,11 +76,11 @@ export async function addWhitelistEmail(email: string) {
  */
 export async function removeWhitelistEmail(email: string) {
   try {
-    const supabase = await ensureDeveloper();
+    const { supabase, user: currentUser } = await ensureDeveloper();
 
     // 🛡️ 保護性限制：防止開發者不小心刪除自己，造成無法登入後台的死鎖
-    const { data: { user } } = await supabase.auth.getUser();
-    if (user?.email && user.email.toLowerCase() === email.toLowerCase()) {
+    // 使用 ensureDeveloper() 已取得的 currentUser，避免多餘的第二次 getUser() 呼叫
+    if (currentUser?.email && currentUser.email.toLowerCase() === email.toLowerCase()) {
       return { success: false, error: "安全保護：您無法在後台將自己從白名單中移除" };
     }
 
@@ -107,7 +107,7 @@ export async function removeWhitelistEmail(email: string) {
  */
 export async function getSystemStats() {
   try {
-    const supabase = await ensureDeveloper();
+    const { supabase, user: currentUser } = await ensureDeveloper();
 
     const [{ count: totalProfiles }, { count: completedProfiles }] = await Promise.all([
       supabase.from("profiles").select("*", { count: "exact", head: true }),
