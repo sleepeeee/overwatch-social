@@ -36,18 +36,18 @@ export default function TopBar() {
   };
 
   return (
-    <div className="w-full flex items-center justify-between mb-10 z-30 relative animate-[fadeIn_0.6s_ease-out]">
-      <div className="flex items-center gap-3">
-        <div className="w-9 h-9 rounded-full bg-white/30 flex items-center justify-center border border-white/40 shadow-sm hover:rotate-12 hover:scale-105 transition-all duration-500">
+    <div className="w-full min-w-0 flex items-center justify-between gap-3 mb-10 z-30 relative animate-[fadeIn_0.6s_ease-out]">
+      <div className="flex items-center gap-2.5 min-w-0 shrink">
+        <div className="w-9 h-9 rounded-full bg-white/30 flex items-center justify-center border border-white/40 shadow-sm hover:rotate-12 hover:scale-105 transition-all duration-500 shrink-0">
           <Moon className="w-4 h-4 text-[#3e2723] fill-[#3e2723]/10" />
         </div>
-        <span className="text-[10px] font-bold tracking-widest text-[#3e2723] uppercase whitespace-nowrap">
+        <span className="text-[10px] font-bold tracking-widest text-[#3e2723] uppercase whitespace-nowrap truncate">
           After Midnight
         </span>
       </div>
 
       {user ? (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
           <Link
             href="/profile"
             className="flex items-center gap-2 px-4 py-2 rounded-2xl border border-[#82b7cc]/30 bg-white/40 text-[9px] font-bold tracking-widest uppercase text-[#5d4037] hover:bg-white transition-all duration-300"
@@ -68,15 +68,16 @@ export default function TopBar() {
         <button
           onClick={handleGoogleLogin}
           disabled={loginPending}
-          className="group relative flex items-center gap-2.5 px-4.5 py-2 rounded-2xl border border-[#8c7c6c]/20 bg-white/40 text-[9px] font-bold tracking-widest uppercase text-[#5d4037] hover:text-[#3e2723] hover:bg-white hover:border-[#82b7cc]/40 shadow-sm transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="group relative flex h-9 w-9 shrink-0 items-center justify-center gap-2.5 rounded-2xl border border-[#8c7c6c]/20 bg-white/40 p-0 text-[9px] font-bold tracking-widest uppercase text-[#5d4037] hover:text-[#3e2723] hover:bg-white hover:border-[#82b7cc]/40 shadow-sm transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed sm:h-auto sm:w-auto sm:px-4 sm:py-2"
+          aria-label={loginPending ? "Google 登入跳轉中" : "使用 Google 登入"}
         >
-          <svg className="w-3.5 h-3.5" viewBox="0 0 24 24">
+          <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24">
             <path fill="#EA4335" d="M12.24 10.285V14.4h6.887c-.648 2.41-2.519 4.114-5.136 4.114-3.466 0-6.277-2.81-6.277-6.277 0-3.466 2.81-6.277 6.277-6.277 1.558 0 2.977.569 4.083 1.503l3.14-3.14C19.167 1.83 15.938 1 12.24 1 6.033 1 1 6.033 1 12.24s5.033 11.24 11.24 11.24c6.16 0 10.993-4.32 10.993-10.993 0-.616-.068-1.22-.178-1.78l-10.815-.422z" />
             <path fill="#4285F4" d="M23.055 10.422H12.24v3.978h6.887c-.287 1.071-.856 1.954-1.751 2.519l3.076 3.076c2.313-2.138 3.52-5.176 3.52-8.583 0-.312-.016-.65-.055-.99z" />
             <path fill="#34A853" d="M12.24 23.24c3.084 0 5.672-1.022 7.562-2.779l-3.076-3.076c-.856.574-1.954.915-3.076.915-2.519 0-4.662-1.704-5.413-4.114L5.033 17.26c1.879 3.543 5.568 5.98 9.878 5.98z" />
             <path fill="#FBBC05" d="M6.827 14.191c-.198-.574-.312-1.19-.312-1.83s.114-1.256.312-1.83L3.727 7.42C2.96 8.98 2.52 10.56 2.52 12.36s.44 3.38 1.207 4.94l3.1-3.109z" />
           </svg>
-          {loginPending ? "跳轉中..." : "使用 Google 登入"}
+          <span className="hidden sm:inline">{loginPending ? "跳轉中..." : "使用 Google 登入"}</span>
         </button>
       )}
     </div>

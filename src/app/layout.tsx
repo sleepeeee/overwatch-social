@@ -5,6 +5,8 @@ import FloatingDock from "@/components/morning-sketch/FloatingDock";
 import ArtOrnament from "@/components/morning-sketch/ArtOrnament";
 import DevModeBanner from "@/components/DevModeBanner";
 import { AuthProvider } from "@/context/AuthContext";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -43,6 +45,8 @@ export default function RootLayout({
           {/* 全局常駐的高質感毛玻璃懸浮導航列 */}
           <FloatingDock />
         </AuthProvider>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

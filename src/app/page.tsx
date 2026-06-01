@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -61,8 +62,6 @@ const tagsPool = ["快樂排位", "語音交流", "拒絕暴躁", "下班上線"
 
 export default function Home() {
   const [profiles, setProfiles] = useState<PlayerCard[]>(initialProfiles);
-  const [hoveredProfile, setHoveredProfile] = useState<string | null>(null);
-
   // 實作「有新卡片加入就替換掉最舊的卡片 (維持3張)」的動態模擬器
   useEffect(() => {
     const avatarPool = [
@@ -132,16 +131,16 @@ export default function Home() {
         <div className="space-y-8 max-w-7xl mx-auto z-10 relative">
 
           {/* 🔴 [Hero Area] */}
-          <div 
-            className="relative overflow-hidden p-8 md:p-10 glass-panel organic-corners animate-[fadeInUp_0.8s_ease-out] w-full flex flex-col md:flex-row items-center justify-between gap-8 min-h-[260px]"
+          <div
+            className="relative overflow-hidden p-6 sm:p-8 md:p-10 glass-panel organic-corners animate-[fadeInUp_0.8s_ease-out] w-full flex flex-col md:flex-row items-center justify-between gap-8 min-h-[260px]"
           >
-            <div className="space-y-4.5 max-w-xl text-center md:text-left relative z-10">
+            <div className="space-y-4.5 max-w-xl min-w-0 text-center md:text-left relative z-10">
               <Badge className="bg-[#82b7cc]/15 text-[#2a454d] border border-[#82b7cc]/35 px-3 py-1 text-[10.5px] font-bold tracking-widest uppercase rounded-full flex items-center gap-1.5 shadow-[0_1px_8px_rgba(130,183,204,0.05)] w-fit mx-auto md:mx-0">
                 <Moon size={11} className="shrink-0 text-[#2a454d] fill-[#2a454d]/10" />
                 所有遊戲玩家的靈魂避風港
               </Badge>
               
-              <h2 className="text-3xl sm:text-4xl font-bold tracking-wider leading-tight text-[#3e2723]">
+              <h2 className="text-3xl sm:text-4xl font-bold tracking-wider leading-tight text-[#3e2723] break-words text-balance">
                 尋找心靈契合的 <span className="text-[#82b7cc]">最佳遊戲搭檔</span>
               </h2>
               
@@ -149,16 +148,16 @@ export default function Home() {
                 不僅僅是戰友，更是心靈相通的夥伴。在這裡，建立專屬的磨砂玻璃遊戲名片，展示你的遊戲靈魂，秒速遇到懂你的排位與日常搭檔！
               </p>
 
-              <div className="flex flex-wrap gap-3 pt-2 justify-center md:justify-start">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:flex md:flex-wrap gap-3 pt-2 justify-center md:justify-start">
                 <Link href="/profile">
-                  <Button className="calm-btn-primary font-bold text-xs tracking-widest uppercase px-6 py-4.5 rounded-2xl cursor-pointer hover:scale-102 transition-transform shadow-md">
+                  <Button className="w-full calm-btn-primary font-bold text-xs tracking-widest uppercase px-5 py-4.5 rounded-2xl cursor-pointer hover:scale-102 transition-transform shadow-md">
                     <Sparkles size={11} className="mr-1.5" />
                     建立遊戲名片
                   </Button>
                 </Link>
                 
                 <Link href="/browse">
-                  <Button variant="outline" className="border-[#8c7c6c]/10 text-[#8c7c6c] hover:text-[#5d4037] bg-white/40 hover:bg-white/70 font-bold text-[10px] tracking-widest uppercase px-6 py-4.5 rounded-2xl shadow-sm transition-all duration-300 cursor-pointer hover:scale-102">
+                  <Button variant="outline" className="w-full border-[#8c7c6c]/10 text-[#8c7c6c] hover:text-[#5d4037] bg-white/40 hover:bg-white/70 font-bold text-[10px] tracking-widest uppercase px-5 py-4.5 rounded-2xl shadow-sm transition-all duration-300 cursor-pointer hover:scale-102">
                     <Compass size={11} className="mr-1.5" />
                     漫步玩家廣場
                   </Button>
@@ -166,19 +165,34 @@ export default function Home() {
               </div>
             </div>
 
-            {/* 右側裝飾 */}
-            <div className="hidden md:flex relative z-10 pr-8">
-              <div className="relative w-36 h-36 flex items-center justify-center">
-                <div 
-                  className="absolute inset-2 rounded-full blur-md animate-[pulse_6s_infinite]" 
-                  style={{ backgroundColor: "rgba(var(--theme-accent-rgb), 0.15)" }}
-                />
-                <svg className="w-full h-full text-[#8c7c6c]/30" viewBox="0 0 100 100">
-                  <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" strokeWidth="0.8" strokeDasharray="3 4" className="animate-[spin_40s_linear_infinite]" />
-                  <circle cx="50" cy="50" r="32" fill="none" stroke="currentColor" strokeWidth="0.6" />
-                  <path d="M 30,50 Q 40,40 50,50 T 70,50" fill="none" stroke="rgba(var(--theme-accent-rgb), 0.8)" strokeWidth="1.2" className="animate-pulse" />
-                  <circle cx="50" cy="50" r="4" fill="#faf5eb" stroke="rgba(var(--theme-accent-rgb), 0.8)" strokeWidth="1" />
-                </svg>
+            {/* 右側遊戲名片預覽：讓首屏一眼看出這是找隊友名片平台 */}
+            <div className="hidden md:flex relative z-10 pr-4 lg:pr-8">
+              <div className="relative w-64 rounded-[28px] border border-white/60 bg-white/35 p-4 shadow-[0_18px_55px_rgba(140,124,108,0.08)] backdrop-blur-xl rotate-2 hover:rotate-0 transition-transform duration-500">
+                <div className="flex items-center gap-3">
+                  <div className="relative w-14 h-14 rounded-2xl overflow-hidden border border-[#82b7cc]/25 bg-white/60 shrink-0">
+                    <Image
+                      src="/images/avatars/avatar_female_cheerful_square.png"
+                      alt="玩家名片預覽頭像"
+                      fill
+                      sizes="56px"
+                      className="object-cover"
+                    />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-[10px] font-black tracking-widest uppercase text-[#82b7cc]">ALLY CARD</p>
+                    <p className="text-sm font-black text-[#3e2723] truncate">深夜補位夥伴</p>
+                    <p className="text-[10px] font-bold text-[#8c7c6c] truncate">Overwatch · 安娜</p>
+                  </div>
+                </div>
+                <div className="mt-4 rounded-2xl border border-white/70 bg-white/35 p-3">
+                  <p className="line-clamp-2 text-[11px] leading-relaxed text-[#5d4037]">
+                    “今晚找溫和雙排，會補位、有麥、心態穩。”
+                  </p>
+                </div>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <span className="pastel-tag-blue rounded-full px-2 py-0.5 text-[9px] font-black">#語音交流</span>
+                  <span className="pastel-tag-sand rounded-full px-2 py-0.5 text-[9px] font-black">#拒絕暴躁</span>
+                </div>
               </div>
             </div>
           </div>
@@ -233,9 +247,12 @@ export default function Home() {
                           <div className="flex items-center gap-2.5 min-w-0 flex-grow">
                             {/* 真實大頭貼圖片 (與 profile 頁面設定 avatar_url 格式對應，Lorelei 禪意手繪風) */}
                             <div className="w-8.5 h-8.5 rounded-xl overflow-hidden border border-[#8c7c6c]/15 shadow-sm shrink-0">
-                              <img 
+                              <Image
                                 src={p.avatarUrl} 
                                 alt={p.name} 
+                                width={34}
+                                height={34}
+                                sizes="34px"
                                 className="w-full h-full object-cover"
                                 draggable={false}
                               />

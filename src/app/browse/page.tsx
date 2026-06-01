@@ -11,10 +11,18 @@ import OverwatchSquare from "@/components/square/OverwatchSquare";
 import ValorantSquare from "@/components/square/ValorantSquare";
 import LoLSquare from "@/components/square/LoLSquare";
 
+type GameId = "ow" | "val" | "lol";
+
+const gameTabs: Array<{ id: GameId; label: string; icon: string }> = [
+  { id: "ow", label: "鬥陣特工 Overwatch", icon: "🥞" },
+  { id: "val", label: "特戰英豪 Valorant (即將推出)", icon: "🎯" },
+  { id: "lol", label: "英雄聯盟 League of Legends (即將推出)", icon: "👑" },
+];
+
 export default function BrowsePage() {
   const { user, authLoading } = useAuth();
   const isLoggedIn = !!user;
-  const [activeGame, setActiveGame] = useState<"ow" | "val" | "lol">("ow");
+  const [activeGame, setActiveGame] = useState<GameId>("ow");
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleResetSearch = () => {
@@ -47,16 +55,12 @@ export default function BrowsePage() {
 
       {/* 遊戲 Tabs 切換區 (動感高定霓虹膠囊 Tabs) */}
       <div className="flex flex-wrap gap-3 justify-center md:justify-start">
-        {[
-          { id: "ow", label: "鬥陣特工 Overwatch", icon: "🥞" },
-          { id: "val", label: "特戰英豪 Valorant (即將推出)", icon: "🎯" },
-          { id: "lol", label: "英雄聯盟 League of Legends (即將推出)", icon: "👑" },
-        ].map((game) => {
+        {gameTabs.map((game) => {
           const isSelected = activeGame === game.id;
           return (
             <button
               key={game.id}
-              onClick={() => setActiveGame(game.id as any)}
+              onClick={() => setActiveGame(game.id)}
               className={`text-xs font-black px-5 py-3 rounded-2xl border transition-all duration-300 active:scale-95 cursor-pointer flex items-center gap-2 ${
                 isSelected
                   ? "bg-[#82b7cc] border-[#82b7cc] text-white shadow-md shadow-[#82b7cc]/20 scale-102"
