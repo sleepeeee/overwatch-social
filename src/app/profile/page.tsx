@@ -13,6 +13,7 @@ import {
 } from "@/data/mockPlayers";
 import OWCard from "@/components/OWCard";
 import { Card, CardContent } from "@/components/ui/card";
+import { SocialIcon } from "@/components/ui/SocialIcons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -486,10 +487,13 @@ export default function ProfilePage() {
                       </span>
                       <div className="w-10 h-10 rounded-full overflow-hidden border border-[#8c7c6c]/15 bg-white/60 flex justify-center items-end group-hover:scale-105 transition-transform mb-1.5 select-none shadow-sm">
                         <img 
-                          src={hero.imageUrl} 
+                          src={`/images/heroes/avatars/${hero.id}.png`} 
                           alt={hero.name} 
                           className="w-[150%] h-[150%] object-contain origin-bottom select-none"
                           draggable="false"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = '/images/heroes/silhouette.png';
+                          }}
                         />
                       </div>
                       <span className="text-xs font-bold truncate max-w-full">{hero.name}</span>
@@ -559,10 +563,11 @@ export default function ProfilePage() {
                       onClick={() => handleToggleSocial(platform.id)}
                       className={`p-3 rounded-xl border flex items-center gap-3 transition-all duration-300 cursor-pointer ${getPlatformColor(platform.id, isActive)}`}
                     >
-                      <div className={`w-10 h-10 rounded-full flex items-center justify-center text-lg shrink-0 transition-transform ${isActive ? "scale-110 rotate-3" : "scale-100"}`} style={{
-                        backgroundColor: isActive ? undefined : "rgba(255, 255, 255, 0.4)"
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-transform ${isActive ? "scale-110 rotate-3" : "scale-100"}`} style={{
+                        backgroundColor: isActive ? undefined : "rgba(255, 255, 255, 0.4)",
+                        color: isActive ? "#fff" : "#8c7c6c"
                       }}>
-                        {getPlatformEmoji(platform.id)}
+                        <SocialIcon platform={platform.id} className="w-5 h-5" />
                       </div>
                       <div className="text-left min-w-0 flex-1">
                         <div className="flex items-center gap-1.5">

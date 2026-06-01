@@ -4,6 +4,7 @@ import { useState } from "react";
 import { OWPlayerCard } from "@/types/card";
 import { HEROES_CONFIG, PRESET_TAGS } from "@/data/mockPlayers";
 import { Copy, Eye, EyeOff, Mic, MicOff, Globe, Sparkles } from "lucide-react";
+import { SocialIcon } from "@/components/ui/SocialIcons";
 
 interface OWCardProps {
   cardData: OWPlayerCard;
@@ -197,11 +198,14 @@ export default function OWCard({ cardData, isLoggedIn = true, isEditable = false
                   
                   <div className="relative w-full h-[90%] flex justify-center items-end select-none">
                     <img
-                      src={`https://otg-hero-icons.pages.dev/images/heroes/${heroInfo.id}.png`}
+                      src={`/images/heroes/full/${heroInfo.id}.png`}
                       alt={heroInfo.name}
                       referrerPolicy="no-referrer"
                       className="max-w-[140%] max-h-[110%] object-contain origin-bottom transition-all duration-500 scale-95 group-hover/hero:scale-105 z-10 filter drop-shadow-[0_4px_8px_rgba(140,124,108,0.15)] group-hover/hero:drop-shadow-[0_6px_12px_rgba(130,183,204,0.3)]"
                       draggable="false"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = '/images/heroes/silhouette.png';
+                      }}
                     />
                   </div>
                 </>
@@ -278,12 +282,10 @@ export default function OWCard({ cardData, isLoggedIn = true, isEditable = false
             return (
               <div 
                 key={platform} 
-                className={`w-8 h-8 rounded-full flex items-center justify-center shadow-sm border border-[#8c7c6c]/10 transition-all duration-300 hover:scale-110 select-none ${getSocialIconStyle(platform)}`}
+                className={`w-8 h-8 rounded-full flex items-center justify-center shadow-sm border border-[#8c7c6c]/10 transition-all duration-300 hover:scale-110 select-none social-glow-btn social-glow-btn-${platform} ${getSocialIconStyle(platform)}`}
                 title={`我經常使用 ${getPlatformLabel(platform)} 交流！`}
               >
-                <span className="text-xs font-black">
-                  {platform === 'discord' ? '👾' : platform === 'steam' ? '🎮' : platform === 'x' ? '𝕏' : '💬'}
-                </span>
+                <SocialIcon platform={platform} className="w-4 h-4" />
               </div>
             );
           })}
