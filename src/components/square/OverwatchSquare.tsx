@@ -135,13 +135,25 @@ export default function OverwatchSquare({ searchQuery }: OverwatchSquareProps) {
 
   return (
     <div className="space-y-6 w-full animate-[fadeIn_0.4s_ease-out]">
-      {/* 搜尋與篩選器面板 */}
-      <div className="ow-glass-panel p-6 space-y-4">
+      <div className="ow-glass-panel p-5 md:p-6 space-y-5">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+          <div className="space-y-1">
+            <span className="soft-home-badge uppercase">Overwatch 活躍分區</span>
+            <p className="text-sm font-semibold text-[#8c7c6c]">
+              用同一套晨霧材質整理篩選條件，讓你更快掃到今天想排的隊友。
+            </p>
+          </div>
+
+          <div className="rounded-full border border-white/60 bg-white/40 px-4 py-2 text-[#8c7c6c] shadow-[0_12px_26px_-20px_rgba(140,124,108,0.25)]">
+            <span className="text-xs font-black tracking-wide uppercase">共有 {filteredPlayers.length} 位玩家符合條件</span>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="space-y-1">
             <label className="text-[10px] font-black uppercase tracking-widest text-[#8c7c6c]/80">遊玩伺服器</label>
             <select
-              className="w-full bg-white/60 border border-[#8c7c6c]/20 rounded-xl py-2 px-3 text-xs focus:border-[#82b7cc] text-[#5d4037] font-semibold"
+              className="w-full bg-white/60 border border-[#8c7c6c]/18 rounded-2xl py-2.5 px-3 text-xs focus:border-[#82b7cc] text-[#5d4037] font-semibold shadow-[0_10px_24px_-20px_rgba(140,124,108,0.22)]"
               value={selectedServer}
               onChange={(e) => setSelectedServer(e.target.value)}
             >
@@ -161,10 +173,10 @@ export default function OverwatchSquare({ searchQuery }: OverwatchSquareProps) {
                 <button
                   key={role}
                   onClick={() => setSelectedRole(role)}
-                  className={`text-[10px] font-extrabold py-2 rounded-xl transition-all border cursor-pointer ${
+                  className={`text-[10px] font-extrabold py-2.5 rounded-2xl transition-all border cursor-pointer ${
                     selectedRole === role
-                      ? "bg-[#82b7cc] border-[#82b7cc] text-white shadow-sm"
-                      : "bg-white/60 border-[#8c7c6c]/18 text-[#8c7c6c] hover:bg-[#8c7c6c]/5"
+                      ? "bg-[#82b7cc]/92 border-[#82b7cc]/40 text-white shadow-[0_12px_26px_-18px_rgba(130,183,204,0.55)]"
+                      : "bg-white/60 border-[#8c7c6c]/18 text-[#8c7c6c] hover:bg-white/80"
                   }`}
                 >
                   {role === "坦克" ? "🛡️" : role === "輸出" ? "⚔️" : role === "支援" ? "➕" : ""} {role}
@@ -177,7 +189,7 @@ export default function OverwatchSquare({ searchQuery }: OverwatchSquareProps) {
             <label className="text-[10px] font-black uppercase tracking-widest text-[#8c7c6c]/80">語音溝通習慣</label>
             <div className="flex gap-2">
               <select
-                className="w-full bg-white/60 border border-[#8c7c6c]/20 rounded-xl py-2 px-3 text-xs focus:border-[#82b7cc] text-[#5d4037] font-semibold"
+                className="w-full bg-white/60 border border-[#8c7c6c]/18 rounded-2xl py-2.5 px-3 text-xs focus:border-[#82b7cc] text-[#5d4037] font-semibold shadow-[0_10px_24px_-20px_rgba(140,124,108,0.22)]"
                 value={selectedMic}
                 onChange={(e) => setSelectedMic(e.target.value)}
               >
@@ -192,7 +204,7 @@ export default function OverwatchSquare({ searchQuery }: OverwatchSquareProps) {
               {(selectedRole !== "全部" || selectedServer !== "全部" || selectedMic !== "全部") && (
                 <button
                   onClick={handleResetFilters}
-                  className="flex items-center justify-center p-2 bg-white/60 border border-[#8c7c6c]/20 hover:bg-[#8c7c6c]/5 rounded-xl text-xs font-bold text-[#8c7c6c] transition-colors shrink-0 cursor-pointer"
+                  className="flex items-center justify-center p-2.5 bg-white/60 border border-[#8c7c6c]/18 hover:bg-white/80 rounded-2xl text-xs font-bold text-[#8c7c6c] transition-colors shrink-0 cursor-pointer shadow-[0_10px_24px_-20px_rgba(140,124,108,0.22)]"
                   title="重置篩選"
                 >
                   <RotateCcw size={14} />
@@ -201,10 +213,6 @@ export default function OverwatchSquare({ searchQuery }: OverwatchSquareProps) {
             </div>
           </div>
         </div>
-      </div>
-
-      <div className="mb-4 flex justify-between items-center text-xs font-semibold text-[#8c7c6c] px-1">
-        <span>共有 {filteredPlayers.length} 位玩家的名片符合條件</span>
       </div>
 
       {filteredPlayers.length > 0 ? (
