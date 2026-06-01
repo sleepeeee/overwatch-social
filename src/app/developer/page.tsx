@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import DeveloperConsoleClient from "./DeveloperConsoleClient";
+import { getSystemStats } from "@/app/actions/developer";
 
 export const metadata = {
   title: "開發者主控台 | Overwatch Social",
@@ -32,10 +33,15 @@ export default async function Page() {
     created_at: item.created_at as string,
   }));
 
+  // 讀取真實系統統計
+  const stats = await getSystemStats();
+
   return (
-    <DeveloperConsoleClient 
-      initialWhitelist={whitelist} 
-      currentUserEmail={user?.email || "unknown@developer.com"} 
+    <DeveloperConsoleClient
+      initialWhitelist={whitelist}
+      currentUserEmail={user?.email || "unknown@developer.com"}
+      totalProfiles={stats.totalProfiles}
+      completedProfiles={stats.completedProfiles}
     />
   );
 }

@@ -100,3 +100,28 @@ export async function removeWhitelistEmail(email: string) {
     return { success: false, error: String(err) };
   }
 }
+
+/**
+ * 讀取系統真實統計（需要 developer 角色才能查全部 profiles）
+ * 注意：使用 developer-specific SELECT policy（003 migration 已加入）
+ */
+export async function getSystemStats() {
+  try {
+    const supabase = await ensureDeveloper();
+
+    const [{ count: totalProfiles }, { count: completedProfiles }] = await Promise.all([
+      supabase.from("profiles").select("*", { count: "exact", head: true }),
+      supabase.from("profiles").select("*", { count: "exact", head: true })
+        .not("battle_tag", "is", null)
+    ]);
+
+    return {
+      success: true,
+      totalProfiles: totalProfiles ?? 0,
+      completedProfiles: completedProfiles ?? 0,
+    };
+  } catch (err) {
+    console.error("Failed to get system stats:", err);
+    return { success: false, totalProfiles: 0, completedProfiles: 0 };
+  }
+}
