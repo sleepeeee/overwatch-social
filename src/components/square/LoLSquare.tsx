@@ -3,7 +3,7 @@
 import React from "react";
 import { Shield, Sparkles } from "lucide-react";
 
-export default function LoLSquare() {
+export default function LoLSquare({ isPremiumStyle = true }: { isPremiumStyle?: boolean }) {
   const MOCK_LOL_PLAYERS = [
     { id: "lol-1", tag: "FakerFan#LOL", msg: "中路專精，喜歡雷茲/阿祈爾，操作拉滿！尋找打野雙排衝大師 🌸", mbti: "INTJ", role: "Mid / carry" },
     { id: "lol-2", tag: "T1Fighting#LOL", msg: "下路 ADC 專精，輔助求保，輸出保證不暴斃 ⚔️", mbti: "ESTJ", role: "ADC / active" },

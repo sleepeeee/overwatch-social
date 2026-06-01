@@ -3,7 +3,7 @@
 import React from "react";
 import { Target, Sparkles } from "lucide-react";
 
-export default function ValorantSquare() {
+export default function ValorantSquare({ isPremiumStyle = true }: { isPremiumStyle?: boolean }) {
   const MOCK_VAL_PLAYERS = [
     { id: "val-1", tag: "JettGod#VAL", msg: "專精決鬥者捷特，專門繞後，心態穩定！求先鋒保我 🎯", mbti: "ESTP", weapon: "Vandal / Jett" },
     { id: "val-2", tag: "SageHealMe#VAL", msg: "主玩聖祈/賢者，溫柔且有麥克風，快樂排位不氣餒 🌸", mbti: "ISFJ", weapon: "Phantom / Sage" },

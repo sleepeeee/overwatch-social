@@ -14,9 +14,10 @@ import { HERO_ALIGNMENTS } from "@/data/heroAlignments";
 
 interface OverwatchSquareProps {
   searchQuery: string;
+  isPremiumStyle?: boolean;
 }
 
-export default function OverwatchSquare({ searchQuery }: OverwatchSquareProps) {
+export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: OverwatchSquareProps) {
   const [players, setPlayers] = useState<OWPlayerCard[]>([]);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [selectedRole, setSelectedRole] = useState("全部");
@@ -125,12 +126,8 @@ export default function OverwatchSquare({ searchQuery }: OverwatchSquareProps) {
   });
 
   if (!isMounted) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[400px] gap-4 w-full">
-        <div className="w-10 h-10 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
-        <p className="text-gray-400 text-xs font-bold animate-pulse">正在載入鬥陣特工分頁...</p>
-      </div>
-    );
+    // 🛡️ [Anti-flicker] 為了防抖，我們在!isMounted時只返回一個高度為 0 的 placeholder，避免 layout jump 與 Loading 轉圈閃現！
+    return <div className="min-h-0 h-0 opacity-0" />;
   }
 
   return (
@@ -175,7 +172,9 @@ export default function OverwatchSquare({ searchQuery }: OverwatchSquareProps) {
                   onClick={() => setSelectedRole(role)}
                   className={`text-[10px] font-extrabold py-2.5 rounded-2xl transition-all border cursor-pointer ${
                     selectedRole === role
-                      ? "bg-[#82b7cc]/92 border-[#82b7cc]/40 text-white shadow-[0_12px_26px_-18px_rgba(130,183,204,0.55)]"
+                      ? isPremiumStyle
+                        ? "bg-[#82b7cc]/85 border-[#82b7cc]/30 text-white backdrop-blur-sm shadow-sm"
+                        : "bg-[#82b7cc]/92 border-[#82b7cc]/40 text-white shadow-sm"
                       : "bg-white/60 border-[#8c7c6c]/18 text-[#8c7c6c] hover:bg-white/80"
                   }`}
                 >
