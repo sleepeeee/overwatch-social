@@ -29,15 +29,23 @@ const rankColors: Record<string, string> = {
 
 export default function Home() {
   const [hoveredProfile, setHoveredProfile] = useState<string | null>(null);
+  const [loginPending, setLoginPending] = useState(false);
 
   const handleGoogleLogin = async () => {
+    if (loginPending) return;
+    setLoginPending(true);
     const supabase = createClient();
-    await supabase.auth.signInWithOAuth({
+    const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
         redirectTo: `${window.location.origin}/auth/callback?next=/profile`,
       },
     });
+    if (error) {
+      console.error("Google 登入失敗:", error.message);
+      setLoginPending(false);
+    }
+    // 登入成功時 page 會跳轉，不需重置 loginPending
   };
 
   return (
@@ -67,9 +75,10 @@ export default function Home() {
           </div>
 
           {/* 🤖 [Aesthetics] 右上角高強度的 Google 登入引導按鈕 */}
-          <button 
+          <button
             onClick={handleGoogleLogin}
-            className="group relative flex items-center gap-2.5 px-4.5 py-2 rounded-2xl border border-[#8c7c6c]/20 bg-white/40 text-[9px] font-bold tracking-widest uppercase text-[#5d4037] hover:text-[#3e2723] hover:bg-white hover:border-[#82b7cc]/40 shadow-sm transition-all duration-300"
+            disabled={loginPending}
+            className="group relative flex items-center gap-2.5 px-4.5 py-2 rounded-2xl border border-[#8c7c6c]/20 bg-white/40 text-[9px] font-bold tracking-widest uppercase text-[#5d4037] hover:text-[#3e2723] hover:bg-white hover:border-[#82b7cc]/40 shadow-sm transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {/* 彩色 Google 標誌 (使用貝茲曲線繪製的高細緻向量 G) */}
             <svg className="w-3.5 h-3.5" viewBox="0 0 24 24">

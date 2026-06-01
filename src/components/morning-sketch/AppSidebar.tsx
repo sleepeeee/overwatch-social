@@ -25,7 +25,11 @@ export default function AppSidebar({ styleMode, activeTab, setActiveTab }: Sideb
 
   const handleLogout = async () => {
     const supabase = createClient();
-    await supabase.auth.signOut();
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error("登出失敗:", error.message);
+      return;
+    }
     router.refresh();
   };
 

@@ -48,7 +48,7 @@
 - [x] 6.1 **[MANDATORY] §6.5 Codex 真派：adversarial_review，CONDITIONAL 6/10**（M1-M5 已修補，修補後初步通過）
 - [x] 6.2 Codex 嚴重疑慮（M1 false-green, M2 scope creep, M3 掛載拓撲, M4 六方案, M5 措辭）已全部修正
 - [x] 6.3 修補後達門檻（原始 6/10 → 修補後 PROCEED）
-- [ ] 6.4 可選：修補後再跑一次確認審查（時程允許）
+- [x] 6.4 §6.7 APPLY 審查完成（Codex 6/10 CONDITIONAL，M1-M5 修補後 PROCEED）
 
 ## §2.8 Stage 7 — Validate + Apply 前
 - [ ] 7.1 `openspec validate auth-fix-and-developer-role --strict`（待執行）
