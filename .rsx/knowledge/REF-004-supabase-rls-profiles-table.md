@@ -8,7 +8,7 @@ version: "Supabase Postgres RLS (2026)"
 last_updated: 2026-05-31
 official: true
 references_to: [REF-002, REF-003]
-referenced_by: [ADR-01, F-001]
+referenced_by: [ADR-01, REF-005, F-001]
 ---
 
 ## 摘要
