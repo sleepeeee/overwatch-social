@@ -18,10 +18,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, Save, Info, AlertTriangle } from "lucide-react";
+import { Sparkles, Save, Info, AlertTriangle, Cpu } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { getMyProfile, saveProfile } from "@/app/actions/profile";
 import type { User } from "@supabase/supabase-js";
+import Link from "next/link";
+import { useDevMode } from "@/hooks/useDevMode";
 
 const DEFAULT_CARD: OWPlayerCard = {
   id: "player-current-user",
@@ -42,6 +44,7 @@ const DEFAULT_CARD: OWPlayerCard = {
 
 
 export default function ProfilePage() {
+  const { isDeveloper } = useDevMode();
   const [cardData, setCardData] = useState<OWPlayerCard>(DEFAULT_CARD);
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -255,8 +258,17 @@ export default function ProfilePage() {
       {/* 頂部裝飾 */}
       <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
         <div className="text-center md:text-left">
-          <h1 className="text-3xl font-extrabold tracking-tight text-[#3e2723] flex items-center justify-center md:justify-start gap-2">
+          <h1 className="text-3xl font-extrabold tracking-tight text-[#3e2723] flex items-center justify-center md:justify-start gap-2 flex-wrap">
             <Sparkles className="text-[#82b7cc] animate-pulse" /> 製作我的特工名片
+            {isDeveloper && (
+              <Link
+                href="/developer"
+                className="inline-flex items-center gap-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-[#82b7cc] hover:text-white px-3 py-1 rounded-xl text-[10px] font-black tracking-widest uppercase transition-all shadow-md active:scale-95 cursor-pointer ml-1 sm:ml-2"
+              >
+                <Cpu size={11} className="animate-pulse text-[#82b7cc]" />
+                <span>開發者後台</span>
+              </Link>
+            )}
           </h1>
           <p className="text-[#8c7c6c] mt-1 font-semibold">自訂高質感視覺名片，在交友廣場吸引志同道合的夥伴！</p>
         </div>

@@ -3,6 +3,7 @@
 import fs from "fs";
 import path from "path";
 import { AlignmentConfig } from "@/data/heroAlignments";
+import { createClient } from "@/lib/supabase/server";
 
 /**
  * 🛡️ [APC - Advanced Process Control] 
@@ -12,6 +13,13 @@ import { AlignmentConfig } from "@/data/heroAlignments";
  */
 export async function saveHeroAlignments(alignments: Record<string, AlignmentConfig>) {
   try {
+    // 🛡️ [Security Defense-in-depth] 伺服器端開發者角色二次校驗
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (user?.app_metadata?.role !== "developer") {
+      return { success: false, error: "未授權：僅限白名單開發者使用對準儀參數調整" };
+    }
     const filePath = path.join(process.cwd(), "src/data/heroAlignments.ts");
     
     let content = `export interface AlignmentConfig {
