@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import { Sparkles, RefreshCw, Compass } from "lucide-react";
 
 interface LuckyPlayer {
@@ -11,6 +12,7 @@ interface LuckyPlayer {
   discord: string;
   quote: string;
   tags: string[];
+  avatarUrl: string;
 }
 
 const luckyGamers: LuckyPlayer[] = [
@@ -21,7 +23,8 @@ const luckyGamers: LuckyPlayer[] = [
     mainHero: "Jett",
     discord: "xiaoxia_jett#1234",
     quote: "希望找個脾氣溫和的煙位搭檔，今晚衝神話！有麥克風，心態極好。",
-    tags: ["歡迎開麥", "拒絕暴躁", "深夜開打"]
+    tags: ["歡迎開麥", "拒絕暴躁", "深夜開打"],
+    avatarUrl: "/images/avatars/avatar_female_cheerful_square.png"
   },
   {
     name: "狂暴補師星奈",
@@ -30,7 +33,8 @@ const luckyGamers: LuckyPlayer[] = [
     mainHero: "露璐 / 納米",
     discord: "hoshina_lol#9999",
     quote: "保人流輔助尋找主力射手雙排。AD敢衝我就敢保，絕不丟下你！",
-    tags: ["團隊至上", "彈性積分", "語音交流"]
+    tags: ["團隊至上", "彈性積分", "語音交流"],
+    avatarUrl: "/images/avatars/avatar_female_elegant_square.png"
   },
   {
     name: "星辰",
@@ -39,7 +43,8 @@ const luckyGamers: LuckyPlayer[] = [
     mainHero: "安娜",
     discord: "star_ow#7777",
     quote: "熟練睡針與禁療瓶，專注後排抬血，找心態成熟的輸出雙排！",
-    tags: ["認真組排", "不開麥OK", "每日上線"]
+    tags: ["認真組排", "不開麥OK", "每日上線"],
+    avatarUrl: "/images/avatars/avatar_male_calm_square.png"
   },
   {
     name: "空之境界 (阿空)",
@@ -48,7 +53,8 @@ const luckyGamers: LuckyPlayer[] = [
     mainHero: "惡靈",
     discord: "sorano_apex#0001",
     quote: "尋找下班後一起開心打派、休閒或RK都可以的夥伴。輕鬆歡樂最重要！",
-    tags: ["輕鬆歡樂", "下班上線", "有麥克風"]
+    tags: ["輕鬆歡樂", "下班上線", "有麥克風"],
+    avatarUrl: "/images/avatars/avatar_male_sunny_square.png"
   }
 ];
 
@@ -109,48 +115,59 @@ export default function LuckyAlly() {
           </button>
         </div>
       ) : (
-        /* 已翻牌狀態：精緻卡面 (解決對齊跑版問題，全面對齊卡片) */
-        <div className="my-auto flex flex-col justify-between flex-grow animate-[fadeIn_0.4s_ease-out] z-10 pt-3 text-left">
-          {/* 第一排：名字 與 聯絡 Discord */}
-          <div className="flex justify-between items-center w-full">
-            <span className="font-bold text-sm text-[#3e2723]">{player?.name}</span>
-            <span className="text-[10px] font-mono text-[#8c7c6c] bg-white/50 px-2 py-0.5 rounded-lg border border-white/50 shrink-0">
-              {player?.discord}
-            </span>
+        /* 已翻牌狀態：玩家身份卡片骨架 */
+        <div className="my-auto flex flex-col justify-between flex-grow animate-[fadeIn_0.4s_ease-out] z-10 pt-3 text-left gap-2.5">
+          <div className="flex items-start gap-3 w-full min-w-0">
+            <div className="relative w-12 h-12 rounded-2xl overflow-hidden border border-white/60 bg-white/45 shadow-sm shrink-0">
+              {player?.avatarUrl && (
+                <Image
+                  src={player.avatarUrl}
+                  alt={`${player.name} 頭貼`}
+                  fill
+                  sizes="48px"
+                  className="object-cover"
+                  draggable={false}
+                />
+              )}
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="flex items-start justify-between gap-2 min-w-0">
+                <span className="font-extrabold text-sm text-[#3e2723] leading-snug truncate">{player?.name}</span>
+                <span className="text-[10px] font-mono text-[#8c7c6c] bg-white/50 px-2.5 py-1 rounded-full border border-white/60 shrink-0 max-w-[132px] truncate">
+                  {player?.discord}
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5 mt-2 flex-wrap w-full">
+                <span className="soft-home-badge bg-[#82b7cc]/85 text-white border-[#82b7cc]/40">
+                  {player?.game}
+                </span>
+                <span className="soft-home-badge soft-home-badge-muted">
+                  段位：{player?.rank}
+                </span>
+                <span className="soft-home-badge soft-home-badge-sand">
+                  主玩：{player?.mainHero}
+                </span>
+              </div>
+            </div>
           </div>
 
-          {/* 第二排：遊戲、段位、主玩的標籤組 (精緻 Badge 水平排版對齊卡片) */}
-          <div className="flex items-center gap-2 mt-2 flex-wrap w-full">
-            <span className="text-[9px] px-1.5 py-0.2 rounded-md font-bold uppercase tracking-wider text-white bg-[#82b7cc] whitespace-nowrap">
-              {player?.game}
-            </span>
-            <span className="text-[9px] px-1.5 py-0.2 rounded-md font-bold text-[#5d4037] bg-white/40 border border-[#8c7c6c]/15 whitespace-nowrap">
-              段位: {player?.rank}
-            </span>
-            <span className="text-[9px] px-1.5 py-0.2 rounded-md font-bold text-[#5d4037] bg-white/40 border border-[#8c7c6c]/15 whitespace-nowrap">
-              主玩: {player?.mainHero}
-            </span>
-          </div>
-
-          {/* 第三排：手感發言區 */}
-          <div className="bg-white/40 border border-white/60 rounded-xl p-2.5 my-2 min-h-[64px] flex items-center shadow-[inset_0_1px_2px_rgba(74,62,61,0.01)] w-full">
-            <p className="text-[#3e2723] text-[12.5px] font-normal leading-relaxed italic opacity-95">
+          <div className="bg-white/40 border border-white/60 rounded-2xl p-3 min-h-[66px] flex items-center shadow-[inset_0_1px_2px_rgba(74,62,61,0.01)] w-full">
+            <p className="text-[#3e2723] text-[12.5px] font-medium leading-relaxed italic opacity-95 line-clamp-2">
               &ldquo;{player?.quote}&rdquo;
             </p>
           </div>
 
-          {/* 第四排：標籤與再次尋找 */}
-          <div className="flex justify-between items-center pt-2.5 border-t border-[#8c7c6c]/10 w-full shrink-0">
-            <div className="flex gap-1.5">
+          <div className="flex justify-between items-center gap-3 pt-2.5 border-t border-[#8c7c6c]/10 w-full shrink-0">
+            <div className="flex flex-wrap gap-1.5 min-w-0">
               {player?.tags.slice(0, 2).map((tag) => (
-                <span key={tag} className="text-[10.5px] font-bold px-2 py-0.5 rounded-full bg-[#82b7cc]/10 text-[#5d4037]/80">
+                <span key={tag} className="soft-home-badge">
                   #{tag}
                 </span>
               ))}
             </div>
             <button
               onClick={handleReset}
-              className="text-[#8c7c6c] hover:text-[#3e2723] text-[10.5px] font-bold tracking-widest uppercase flex items-center gap-1 transition-colors duration-300 cursor-pointer"
+              className="text-[#8c7c6c] hover:text-[#3e2723] text-[10.5px] font-bold tracking-widest uppercase flex items-center gap-1 transition-colors duration-300 cursor-pointer shrink-0"
             >
               <RefreshCw className="w-3 h-3" />
               再次尋找

@@ -32,15 +32,6 @@ const initialProfiles: PlayerCard[] = [
   { id: "p-3", name: "狂暴補師星奈", game: "LoL", rank: "鑽石", hero: "露璐", tags: ["團隊至上", "彈性積分"], message: "保人流輔助尋找主力射手雙排。AD敢衝我就敢保，絕不丟下你！", avatarUrl: "/images/avatars/avatar_female_elegant_square.png" },
 ];
 
-const rankColors: Record<string, string> = {
-  黃金: "text-[#d8a070] font-black",
-  白金: "text-[#82b7cc] font-black",
-  鑽石: "text-blue-600 font-black",
-  超凡入聖: "text-emerald-600 font-black",
-  大師: "text-purple-600 font-black",
-  宗師: "text-[#d8a070] font-black",
-};
-
 // 用於動態生成模擬新加入玩家的池子
 const gamePool = ["Overwatch", "VALORANT", "LoL", "Apex"];
 const rankPool = ["黃金", "白金", "鑽石", "超凡入聖", "大師"];
@@ -242,8 +233,8 @@ export default function Home() {
                           isNew ? "animate-card-slide" : ""
                         }`}
                       >
-                        {/* 卡片頂部：頭像 ＋ 姓名與標籤對齊 ＋ 右側段位 (解決溢出問題) */}
-                        <div className="flex justify-between items-start w-full">
+                        {/* 卡片頂部：頭像 + 姓名 + 段位，遊戲資訊獨立放下一層避免擁擠 */}
+                        <div className="flex justify-between items-start gap-2 w-full">
                           <div className="flex items-center gap-2.5 min-w-0 flex-grow">
                             {/* 真實大頭貼圖片 (與 profile 頁面設定 avatar_url 格式對應，Lorelei 禪意手繪風) */}
                             <div className="w-8.5 h-8.5 rounded-xl overflow-hidden border border-[#8c7c6c]/15 shadow-sm shrink-0">
@@ -258,17 +249,10 @@ export default function Home() {
                               />
                             </div>
                             
-                            {/* 姓名與遊戲標籤 (姓名在上方，標籤在姓名下方，徹底防撐爆溢出) */}
+                            {/* 姓名獨立一層，避免與遊戲和英雄資訊互搶空間 */}
                             <div className="min-w-0 flex-grow text-left">
                               <h4 className="font-bold text-[#3e2723] text-sm truncate">{p.name}</h4>
-                              <div className="flex items-center gap-1.5 mt-0.5 w-full min-w-0">
-                                <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-md uppercase tracking-wider text-white bg-[#82b7cc]/80 whitespace-nowrap shrink-0">
-                                  {p.game}
-                                </span>
-                                <span className="text-[10px] font-bold text-[#8c7c6c] truncate">
-                                  • {p.hero}
-                                </span>
-                              </div>
+                              <p className="text-[10px] font-semibold text-[#8c7c6c]/80 truncate">尋找今日固定隊友</p>
                             </div>
                           </div>
                           
@@ -280,17 +264,26 @@ export default function Home() {
                           </div>
                         </div>
 
+                        <div className="flex items-center gap-1.5 w-full min-w-0">
+                          <span className="soft-home-badge soft-home-badge-compact bg-[#82b7cc]/85 text-white border-[#82b7cc]/40 shrink-0">
+                            {p.game}
+                          </span>
+                          <span className="soft-home-badge soft-home-badge-compact soft-home-badge-muted min-w-0 truncate justify-start">
+                            {p.hero}
+                          </span>
+                        </div>
+
                         {/* 溫潤手感發言區 (高度收窄固定 h-[64px] min-h-[64px]，字體為 text-[12.5px]，釋放空間) */}
-                        <div className="bg-white/30 border border-white/60 rounded-2xl p-3 min-h-[64px] flex items-center shadow-[inset_0_1px_2px_rgba(74,62,61,0.01)] text-left w-full overflow-hidden shrink-0 my-1">
+                        <div className="bg-white/30 border border-white/60 rounded-2xl p-3 min-h-[58px] flex items-center shadow-[inset_0_1px_2px_rgba(74,62,61,0.01)] text-left w-full overflow-hidden shrink-0 my-1">
                           <p className="text-[#3e2723] text-[12.5px] font-normal leading-relaxed italic opacity-95 line-clamp-2">
                             &ldquo;{p.message}&rdquo;
                           </p>
                         </div>
 
-                        {/* 水粉貼紙標籤 (字體大小 text-[10.5px]，Padding 縮小防折行溢出) */}
+                        {/* 水粉貼紙標籤 */}
                         <div className="flex flex-wrap gap-1.5 pt-2 border-t border-[#8c7c6c]/10 mt-1 shrink-0 w-full">
                           {p.tags.map((tag) => (
-                            <span key={tag} className="text-[10.5px] font-bold px-2 py-0.5 rounded-full pastel-tag-blue">
+                            <span key={tag} className="soft-home-badge soft-home-badge-compact">
                               #{tag}
                             </span>
                           ))}
