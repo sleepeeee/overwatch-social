@@ -20,6 +20,7 @@ export default function BrowsePage() {
     setIsMounted(true);
     const supabase = createClient();
 
+
     supabase.auth.getUser().then(({ data }) => {
       setIsLoggedIn(!!data.user);
     });

@@ -45,8 +45,9 @@ export async function getWhitelistEmails() {
 export async function addWhitelistEmail(email: string) {
   try {
     const trimmedEmail = email.trim().toLowerCase();
-    if (!trimmedEmail || !trimmedEmail.includes("@")) {
-      return { success: false, error: "請輸入有效的 Email 地址" };
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!trimmedEmail || !emailRegex.test(trimmedEmail)) {
+      return { success: false, error: "請輸入有效的 Email 地址（格式：user@domain.com）" };
     }
 
     const { supabase, user: currentUser } = await ensureDeveloper();
@@ -80,7 +81,7 @@ export async function removeWhitelistEmail(email: string) {
 
     // 🛡️ 保護性限制：防止開發者不小心刪除自己，造成無法登入後台的死鎖
     // 使用 ensureDeveloper() 已取得的 currentUser，避免多餘的第二次 getUser() 呼叫
-    if (currentUser?.email && currentUser.email.toLowerCase() === email.toLowerCase()) {
+    if (currentUser?.email && currentUser.email.trim().toLowerCase() === email.trim().toLowerCase()) {
       return { success: false, error: "安全保護：您無法在後台將自己從白名單中移除" };
     }
 
