@@ -8,7 +8,7 @@ version: "Next.js 16.2.6"
 last_updated: 2026-05-31
 official: true
 references_to: [REF-002, REF-005]
-referenced_by: []
+referenced_by: [ADR-02, F-003, ADR-03]
 ---
 
 ## 摘要
