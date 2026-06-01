@@ -39,8 +39,15 @@ interface DeveloperConsoleClientProps {
   heroStats?: Array<{ heroId: string; count: number }>;
 }
 
-// 英雄名稱查找表
+// 英雄名稱查找表（module-level，只建一次）
 const heroNameMap = new Map(HEROES_CONFIG.map(h => [h.id, h.name]));
+
+// 台灣時間格式器（module-level，避免每次 render 重新建立 Intl 物件）
+const taipeiFormatter = new Intl.DateTimeFormat("zh-TW", {
+  timeZone: "Asia/Taipei",
+  year: "numeric", month: "2-digit", day: "2-digit",
+  hour: "2-digit", minute: "2-digit",
+});
 
 export default function DeveloperConsoleClient({
   initialWhitelist,
@@ -66,6 +73,13 @@ export default function DeveloperConsoleClient({
   const [usersSearch, setUsersSearch] = useState("");
   const [isPending, startTransition] = useTransition();
   const searchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // debounce cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (searchDebounceRef.current) clearTimeout(searchDebounceRef.current);
+    };
+  }, []);
 
   // 新增白名單處理
   const handleAdd = async (e: React.FormEvent) => {
@@ -113,13 +127,13 @@ export default function DeveloperConsoleClient({
     }
   };
 
-  // Tab 切換（users tab 觸發 on-demand fetch，useTransition 防止 race condition）
+  // Tab 切換：useTransition 包住 async fetch，isPending 正確反映網路等待狀態
   const handleTabChange = (tab: "overview" | "whitelist" | "tools" | "users") => {
-    startTransition(() => {
-      setActiveTab(tab);
-    });
+    setActiveTab(tab);
     if (tab === "users" && !usersData && !usersLoading) {
-      fetchUsers();
+      startTransition(async () => {
+        await fetchUsers();
+      });
     }
   };
 
@@ -160,8 +174,9 @@ export default function DeveloperConsoleClient({
   return (
     <div className="min-h-screen bg-[#0b0f17] text-slate-100 flex flex-col font-sans selection:bg-[#82b7cc] selection:text-slate-900">
       {/* 霓虹發光背景裝飾球 */}
-      <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-[#82b7cc]/10 blur-[150px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-[#f5d46b]/5 blur-[150px] pointer-events-none" />
+      {/* radial-gradient 取代 blur-[150px]，視覺相似但零 GPU compositing 成本 */}
+      <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] pointer-events-none" style={{ background: "radial-gradient(circle, rgba(130,183,204,0.10) 0%, transparent 70%)" }} />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] pointer-events-none" style={{ background: "radial-gradient(circle, rgba(245,212,107,0.05) 0%, transparent 70%)" }} />
 
       {/* 頂部導覽 */}
       <header className="border-b border-slate-800 bg-slate-950/80 backdrop-blur-xl sticky top-0 z-40 px-6 py-4 flex justify-between items-center shadow-[0_1px_10px_rgba(0,0,0,0.4)]">
@@ -418,7 +433,7 @@ export default function DeveloperConsoleClient({
                                 </div>
                               </td>
                               <td className="px-4 py-3.5 text-slate-500">
-                                {new Date(item.created_at).toLocaleString("zh-TW", { timeZone: "Asia/Taipei" })}
+                                {taipeiFormatter.format(new Date(item.created_at))}
                               </td>
                               <td className="px-4 py-3.5 text-right">
                                 <button
@@ -547,7 +562,7 @@ export default function DeveloperConsoleClient({
                                     }
                                   </td>
                                   <td className="px-4 py-3 text-slate-500">
-                                    {new Date(profile.updated_at).toLocaleString("zh-TW", { timeZone: "Asia/Taipei" })}
+                                    {taipeiFormatter.format(new Date(profile.updated_at))}
                                   </td>
                                 </tr>
                               ))
