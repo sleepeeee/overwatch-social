@@ -89,14 +89,17 @@ export default function ProfilePage() {
     }
 
     const supabase = createClient();
+    const cancelled = { current: false };
 
     supabase.auth.getUser().then(async ({ data }) => {
+      if (cancelled.current) return;
       const currentUser = data.user ?? null;
       setUser(currentUser);
       setAuthLoading(false);
 
       if (currentUser) {
         const profile = await getMyProfile();
+        if (cancelled.current) return;
         if (profile) {
           const loadedCard = { ...DEFAULT_CARD, ...profile, social_channels: profile.social_channels || {} };
           setCardData(loadedCard);
@@ -118,7 +121,8 @@ export default function ProfilePage() {
       }
     });
 
-    const { data: listener } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    const { data: listener } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (!["SIGNED_IN", "SIGNED_OUT", "INITIAL_SESSION"].includes(event)) return;
       const currentUser = session?.user ?? null;
       setUser(currentUser);
       setAuthLoading(false);
@@ -149,7 +153,10 @@ export default function ProfilePage() {
     // 從 DB 載入英雄對準參數（fallback 到靜態資料）
     getHeroAlignments().then(setHeroAlignments);
 
-    return () => listener.subscription.unsubscribe();
+    return () => {
+      cancelled.current = true;
+      listener.subscription.unsubscribe();
+    };
   }, []);
 
   // 變更頭像 handler

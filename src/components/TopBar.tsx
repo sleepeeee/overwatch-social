@@ -21,9 +21,9 @@ export default function TopBar() {
   }, []);
 
   const handleLogout = async () => {
-    setUser(null);
     const supabase = createClient();
     await supabase.auth.signOut();
+    // Let onAuthStateChange(SIGNED_OUT) set user=null; push after session cleared
     router.push("/");
   };
 
