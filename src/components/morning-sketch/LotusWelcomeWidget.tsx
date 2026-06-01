@@ -50,11 +50,32 @@ export default function LotusWelcomeWidget({ previewData, activeStepOverride }: 
 
   useEffect(() => {
     if (previewData && previewData.length === 4) return;
-    getAnnouncements().then(data => {
-      if (data && data.length === 4) {
-        setLocalAnnouncements(data);
+
+    const fetchData = () => {
+      getAnnouncements().then(data => {
+        if (data && data.length === 4) {
+          setLocalAnnouncements(data);
+        }
+      });
+    };
+
+    // 初次載入
+    fetchData();
+
+    // 頁面重新可見時 refetch（從 /developer 切回首頁時觸發）
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        fetchData();
       }
-    });
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("focus", fetchData);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("focus", fetchData);
+    };
   }, [previewData]);
 
   const current = announcements[activeStep - 1] || announcements[0];
