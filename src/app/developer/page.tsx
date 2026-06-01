@@ -42,6 +42,7 @@ export default async function Page() {
       currentUserEmail={user?.email || "unknown@developer.com"}
       totalProfiles={stats.totalProfiles}
       completedProfiles={stats.completedProfiles}
+      statsError={stats.success ? undefined : (stats as { error?: string }).error}
     />
   );
 }
