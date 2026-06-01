@@ -83,12 +83,12 @@ export default function FeaturedArtists({ styleMode }: FeaturedArtistsProps) {
                 <div className={`absolute inset-0 bg-gradient-to-r ${artist.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none`} />
 
                 <div className="relative z-10 flex items-center gap-3.5">
-                  {/* 精美水彩頭像 */}
                   <div className="w-12 h-12 rounded-xl overflow-hidden border border-[#8c7c6c]/10 shadow-sm relative">
                     <img 
                       src={artist.img} 
                       alt={artist.name} 
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      draggable={false}
                     />
                   </div>
 
