@@ -11,15 +11,11 @@
 
 ## 現在在做什麼
 
-auth-fix-and-developer-role APPLY 完成，§6.7 Codex + Gemini + Council 審查全 PROCEED。
-§4 ARCHIVE + §Z Gate 完成（FAIL=0，WARN=0）。
-下一步：主代理執行 `openspec archive auth-fix-and-developer-role`。
+空閒。兩個 change 均已 archive。下一步見「下一步開發計畫」。
 
 ## 進行中的 Changes（未 archive）
 
-| Change | 狀態 | 備註 |
-|---|---|---|
-| auth-fix-and-developer-role | APPLY DONE，待 archive | Gate PASS；F-002、ADR-02 已建；crossref 回填完成 |
+（無）
 
 ## 待 Propose Changes
 
@@ -29,7 +25,8 @@ auth-fix-and-developer-role APPLY 完成，§6.7 Codex + Gemini + Council 審查
 
 | Change | 時間 | 備註 |
 |---|---|---|
-| google-oauth-supabase-auth | 2026-06-01 | ADR-01、F-001 已建；可執行 openspec archive |
+| auth-fix-and-developer-role | 2026-06-01 | 登入修復 + developer mode；F-002、ADR-02 已建 |
+| google-oauth-supabase-auth | 2026-06-01 | OAuth 基礎建設；ADR-01、F-001 已建 |
 <!-- ZONE_A_END -->
 
 ---
