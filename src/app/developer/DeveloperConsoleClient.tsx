@@ -19,11 +19,17 @@ import { addWhitelistEmail, removeWhitelistEmail } from "@/app/actions/developer
 interface DeveloperConsoleClientProps {
   initialWhitelist: Array<{ email: string; created_at: string }>;
   currentUserEmail: string;
+  totalProfiles?: number;
+  completedProfiles?: number;
+  statsError?: string;
 }
 
-export default function DeveloperConsoleClient({ 
-  initialWhitelist, 
-  currentUserEmail 
+export default function DeveloperConsoleClient({
+  initialWhitelist,
+  currentUserEmail,
+  totalProfiles = 0,
+  completedProfiles = 0,
+  statsError,
 }: DeveloperConsoleClientProps) {
   const [whitelist, setWhitelist] = useState(initialWhitelist);
   const [newEmail, setNewEmail] = useState("");
@@ -202,12 +208,17 @@ export default function DeveloperConsoleClient({
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="p-4 rounded-xl bg-slate-950/50 border border-slate-800/80 flex flex-col justify-between">
-                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Supabase Database Connection</span>
+                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">已建立名片的特工</span>
                     <div className="flex items-end justify-between mt-3">
-                      <span className="text-lg font-black text-slate-200">正常連線中</span>
-                      <span className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black px-2 py-0.5 rounded-full uppercase flex items-center gap-1">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                        Online
+                      {statsError ? (
+                        <span className="text-sm font-black text-red-400 flex items-center gap-1">
+                          <AlertCircle size={14} /> 查詢失敗
+                        </span>
+                      ) : (
+                        <span className="text-lg font-black text-slate-200">{totalProfiles} 位特工</span>
+                      )}
+                      <span className="bg-[#82b7cc]/10 border border-[#82b7cc]/20 text-[#82b7cc] text-[10px] font-black px-2 py-0.5 rounded-full uppercase">
+                        {statsError ? "—" : `${completedProfiles} 完整名片`}
                       </span>
                     </div>
                   </div>

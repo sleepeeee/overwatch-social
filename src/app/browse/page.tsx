@@ -10,11 +10,15 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, RotateCcw, Users, AlertCircle } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { getHeroAlignments } from "@/app/actions/alignment";
+import type { AlignmentConfig } from "@/data/heroAlignments";
+import { HERO_ALIGNMENTS } from "@/data/heroAlignments";
 
 export default function BrowsePage() {
   const [players, setPlayers] = useState<OWPlayerCard[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [heroAlignments, setHeroAlignments] = useState<Record<string, AlignmentConfig>>(HERO_ALIGNMENTS);
   const [selectedRole, setSelectedRole] = useState("全部");
   const [selectedServer, setSelectedServer] = useState("全部");
   const [selectedMic, setSelectedMic] = useState("全部");
@@ -64,6 +68,9 @@ export default function BrowsePage() {
       setIsLoggedIn(!!session?.user);
       setAuthLoading(false);
     });
+
+    // 從 DB 載入英雄對準參數（fallback 到靜態資料）
+    getHeroAlignments().then(setHeroAlignments);
 
     loadPlayers();
     return () => listener.subscription.unsubscribe();
@@ -135,17 +142,7 @@ export default function BrowsePage() {
           </p>
         </div>
 
-        <div className="bg-white/60 border border-[#8c7c6c]/18 rounded-2xl p-2.5 flex items-center gap-3 text-xs shadow-sm">
-          <span className="text-[#8c7c6c] font-black">🛡️ 登入狀態模擬:</span>
-          <button
-            onClick={() => setIsLoggedIn(!isLoggedIn)}
-            className={`px-3.5 py-1.5 rounded-xl font-black transition-all duration-300 active:scale-95 cursor-pointer shadow-md ${
-              isLoggedIn ? "bg-green-600 hover:bg-green-500 text-white" : "bg-red-600 hover:bg-red-500 text-white"
-            }`}
-          >
-            {isLoggedIn ? "已登入 (完整查閱 & 複製)" : "未登入 (限制並遮罩 UID)"}
-          </button>
-        </div>
+        {/* Debug toggle 已移除：此按鈕讓任何人都能繞過 BattleTag 保護 */}
       </div>
 
       {/* 搜尋與篩選器面板 */}
@@ -246,6 +243,7 @@ export default function BrowsePage() {
                 cardData={player}
                 isLoggedIn={isLoggedIn}
                 isEditable={false}
+                customAlignments={heroAlignments}
                 onLoginRequired={(!authLoading && !isLoggedIn) ? () => setShowLoginModal(true) : undefined}
               />
             </div>
