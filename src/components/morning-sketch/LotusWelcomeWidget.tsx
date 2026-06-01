@@ -117,7 +117,9 @@ export default function LotusWelcomeWidget({ previewData, activeStepOverride }: 
           style={{ 
             color: current.color, 
             borderColor: current.color,
-            backgroundColor: `${current.color.replace("0.85", "0.08")}` 
+            backgroundColor: `${current.color.replace("0.85", "0.08")}`,
+            fontSize: `${current.alignments?.tag_font_size || 10}px`,
+            transform: `translate(${current.alignments?.tag_x || 0}px, ${current.alignments?.tag_y || 0}px)`
           }}
         >
           {current.tag}
