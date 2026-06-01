@@ -366,6 +366,51 @@
   line-height: 1.1;
 }
 
+.browse-tab {
+  min-height: 72px;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 0.28rem;
+  border-radius: 1.1rem;
+  border: 1px solid rgba(140, 124, 108, 0.16);
+  background: rgba(255, 255, 255, 0.48);
+  padding: 0.9rem 1rem;
+  color: #6e655b;
+  box-shadow: 0 10px 30px -18px rgba(140, 124, 108, 0.18);
+  transition: all 0.3s ease;
+  text-align: left;
+}
+
+.browse-tab:hover {
+  border-color: rgba(130, 183, 204, 0.28);
+  background: rgba(255, 255, 255, 0.62);
+  transform: translateY(-1px);
+}
+
+.browse-tab-active {
+  border-color: rgba(130, 183, 204, 0.42);
+  background: linear-gradient(135deg, rgba(130, 183, 204, 0.2), rgba(255, 255, 255, 0.74));
+  color: #3e2723;
+  box-shadow: 0 16px 38px -20px rgba(130, 183, 204, 0.42);
+}
+
+.browse-tab-status {
+  font-size: 0.68rem;
+  line-height: 1;
+  font-weight: 700;
+  opacity: 0.52;
+  letter-spacing: 0;
+}
+
+.browse-preview-card {
+  background: rgba(255, 255, 255, 0.56);
+  border: 1px solid rgba(140, 124, 108, 0.14);
+  border-radius: 1.4rem;
+  box-shadow: 0 16px 42px -26px rgba(140, 124, 108, 0.18);
+}
+
 /* 安靜的無邊框水彩質感按鈕 */
 .calm-btn-primary {
   background-color: rgba(130, 183, 204, 0.25);
