@@ -8,7 +8,7 @@ version: "@supabase/ssr (App Router, 2026)"
 last_updated: 2026-05-31
 official: true
 references_to: []
-referenced_by: [REF-003, REF-004, REF-005, F-001]
+referenced_by: [REF-003, REF-004, REF-005, REF-006, F-001]
 ---
 
 ## 摘要

@@ -11,20 +11,19 @@
 
 ## 現在在做什麼
 
-EXPLORE 完成。下一步：propose `auth-fix-and-developer-role` change。
-（`google-oauth-supabase-auth` archive 仍待執行，可在此次 propose 前或後處理）
+PROPOSE 完成，`openspec validate --strict` PASS。
+下一步：執行 `/rsx:apply auth-fix-and-developer-role` 開始實作。
 
 ## 進行中的 Changes（未 archive）
 
 | Change | 狀態 | 備註 |
 |---|---|---|
-| google-oauth-supabase-auth | Gate PASS，待 archive | 需執行 `openspec archive google-oauth-supabase-auth` |
+| auth-fix-and-developer-role | PROPOSED ✓，待 APPLY | Phase A (Task 0-2) 優先，Phase B (Task 3-7) 依賴 Phase A |
+| google-oauth-supabase-auth | 已 archive（見 openspec/changes/archive/）| 無需處理 |
 
 ## 待 Propose Changes
 
-| Change 名稱 | 摘要 |
-|---|---|
-| auth-fix-and-developer-role | 修復 page.tsx + AppSidebar.tsx alert() 假實作；新增 app_metadata 角色系統 + useDevMode() hook |
+（無）
 
 ## 近期歸檔紀錄
 
