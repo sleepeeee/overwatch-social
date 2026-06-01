@@ -29,6 +29,7 @@ import type { User } from "@supabase/supabase-js";
 import Link from "next/link";
 import { useDevMode } from "@/hooks/useDevMode";
 import LoginModal from "@/components/LoginModal";
+import TopBar from "@/components/TopBar";
 
 const DEFAULT_CARD: OWPlayerCard = {
   card_id: "card-current-user",
@@ -68,14 +69,9 @@ export default function ProfilePage() {
   const [hubSaved, setHubSaved] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [heroRoleFilter, setHeroRoleFilter] = useState<"all" | "tank" | "damage" | "support">("all");
-  const [user, setUser] = useState<User | null>({
-    id: "mock-debug-user-id",
-    email: "agent@overwatch.social",
-    aud: "authenticated",
-    role: "authenticated",
-  } as any);
+  const [user, setUser] = useState<User | null>(null);
   const [isMounted, setIsMounted] = useState(false);
-  const [authLoading, setAuthLoading] = useState(false);
+  const [authLoading, setAuthLoading] = useState(true);
   const [heroAlignments, setHeroAlignments] = useState<Record<string, AlignmentConfig>>(HERO_ALIGNMENTS);
 
   // 載入與初始化
@@ -95,69 +91,58 @@ export default function ProfilePage() {
     const supabase = createClient();
 
     supabase.auth.getUser().then(async ({ data }) => {
-      const activeUser = data.user || {
-        id: "mock-debug-user-id",
-        email: "agent@overwatch.social",
-        aud: "authenticated",
-        role: "authenticated",
-      } as any;
-      
-      setUser(activeUser);
+      const currentUser = data.user ?? null;
+      setUser(currentUser);
       setAuthLoading(false);
-      
-      // 載入名片
-      const profile = await getMyProfile();
-      if (profile) {
-        const loadedCard = { ...DEFAULT_CARD, ...profile, social_channels: profile.social_channels || {} };
-        setCardData(loadedCard);
-        
-        // 若無快取，則基於名片資訊同步初始化 Profile
-        if (!cachedProfile) {
-          const initialName = loadedCard.battle_tag ? loadedCard.battle_tag.split('#')[0] : "愛喝奶茶";
-          const initialProfile = {
-            id: activeUser.id,
-            display_name: initialName,
-            avatar_url: "/images/avatars/avatar_female_elegant_square.png",
-            bio: loadedCard.message || "GGWP！一起加油，推車到底啦 🚀"
-          };
-          setUserProfile(initialProfile);
-          localStorage.setItem("user_profile_hub", JSON.stringify(initialProfile));
+
+      if (currentUser) {
+        const profile = await getMyProfile();
+        if (profile) {
+          const loadedCard = { ...DEFAULT_CARD, ...profile, social_channels: profile.social_channels || {} };
+          setCardData(loadedCard);
+
+          if (!cachedProfile) {
+            const initialName = loadedCard.battle_tag ? loadedCard.battle_tag.split('#')[0] : "愛喝奶茶";
+            const initialProfile = {
+              id: currentUser.id,
+              display_name: initialName,
+              avatar_url: "/images/avatars/avatar_female_elegant_square.png",
+              bio: loadedCard.message || "GGWP！一起加油，推車到底啦 🚀"
+            };
+            setUserProfile(initialProfile);
+            localStorage.setItem("user_profile_hub", JSON.stringify(initialProfile));
+          }
+        } else {
+          setCardData(DEFAULT_CARD);
         }
-      } else {
-        // DB 無資料 fallback
-        setCardData(DEFAULT_CARD);
       }
     });
 
     const { data: listener } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      const activeUser = session?.user || {
-        id: "mock-debug-user-id",
-        email: "agent@overwatch.social",
-        aud: "authenticated",
-        role: "authenticated",
-      } as any;
-      
-      setUser(activeUser);
+      const currentUser = session?.user ?? null;
+      setUser(currentUser);
       setAuthLoading(false);
-      
-      const profile = await getMyProfile();
-      if (profile) {
-        const loadedCard = { ...DEFAULT_CARD, ...profile, social_channels: profile.social_channels || {} };
-        setCardData(loadedCard);
-        
-        if (!localStorage.getItem("user_profile_hub")) {
-          const initialName = loadedCard.battle_tag ? loadedCard.battle_tag.split('#')[0] : "愛喝奶茶";
-          const initialProfile = {
-            id: activeUser.id,
-            display_name: initialName,
-            avatar_url: "/images/avatars/avatar_female_elegant_square.png",
-            bio: loadedCard.message || "GGWP！一起加油，推車到底啦 🚀"
-          };
-          setUserProfile(initialProfile);
-          localStorage.setItem("user_profile_hub", JSON.stringify(initialProfile));
+
+      if (currentUser) {
+        const profile = await getMyProfile();
+        if (profile) {
+          const loadedCard = { ...DEFAULT_CARD, ...profile, social_channels: profile.social_channels || {} };
+          setCardData(loadedCard);
+
+          if (!localStorage.getItem("user_profile_hub")) {
+            const initialName = loadedCard.battle_tag ? loadedCard.battle_tag.split('#')[0] : "愛喝奶茶";
+            const initialProfile = {
+              id: currentUser.id,
+              display_name: initialName,
+              avatar_url: "/images/avatars/avatar_female_elegant_square.png",
+              bio: loadedCard.message || "GGWP！一起加油，推車到底啦 🚀"
+            };
+            setUserProfile(initialProfile);
+            localStorage.setItem("user_profile_hub", JSON.stringify(initialProfile));
+          }
+        } else {
+          setCardData(DEFAULT_CARD);
         }
-      } else {
-        setCardData(DEFAULT_CARD);
       }
     });
 
@@ -355,6 +340,7 @@ export default function ProfilePage() {
   if (activeSection === "hub") {
     return (
       <div className="max-w-4xl mx-auto px-4 py-8 space-y-12">
+        <TopBar />
         {/* 頂部 Hub 標題 */}
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
           <div className="text-center sm:text-left">
@@ -373,10 +359,6 @@ export default function ProfilePage() {
             <p className="text-[#8c7c6c] mt-1 font-semibold text-sm">
               管理您的通用帳戶，並在「遊戲檔案庫」中整理歸檔多款遊戲的名片。
             </p>
-          </div>
-          <div className="bg-white/40 border border-[#8c7c6c]/15 rounded-2xl py-2 px-3 text-xs text-[#8c7c6c] flex items-center gap-2 shadow-sm">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-            <span className="font-extrabold text-[#5d4037]">極致多合一入口網已啟用</span>
           </div>
         </div>
 
@@ -565,6 +547,7 @@ export default function ProfilePage() {
   // 2. 渲染：鬥陣特工名片編輯表單 (ow-edit 段落)
   return (
     <div className="max-w-6xl mx-auto px-4 py-8 space-y-6">
+      <TopBar />
       {/* 返回 Hub 的控制面板 */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <button
