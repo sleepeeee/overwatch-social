@@ -123,22 +123,23 @@
   }
   body {
     @apply text-[#5d4037];
-    background: radial-gradient(circle at 50% 0%, #fcf9f2 0%, #f3ecd8 100%) !important;
+    background: var(--theme-bg-gradient) !important;
+    background-attachment: fixed !important;
     position: relative;
     min-height: 100vh;
     font-family: var(--font-sans);
+    overflow-x: hidden;
   }
   body::before {
     content: "";
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: radial-gradient(rgba(130, 183, 204, 0.09) 1px, transparent 1px);
-    background-size: 24px 24px;
+    width: 100vw;
+    height: 100vh;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.015'/%3E%3C/svg%3E");
     pointer-events: none;
-    z-index: -1;
+    z-index: 999;
   }
   html {
     @apply font-sans;
@@ -252,23 +253,94 @@
   background-size: 24px 24px;
 }
 
-/* 🌸 [Morning Sketch] 高品質毛玻璃卡片樣式 */
+/* 🌸 [Morning Sketch] 有機溫潤玻璃擬態 (Organic Glassmorphism) */
 .glass-panel {
-  background: rgba(255, 255, 255, 0.45) !important;
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.6) !important;
-  border-radius: 1.5rem;
+  background: rgba(255, 255, 255, 0.42) !important;
+  backdrop-filter: blur(32px) saturate(110%);
+  -webkit-backdrop-filter: blur(32px) saturate(110%);
+  border: 1px solid rgba(255, 255, 255, 0.55) !important;
+  border-radius: 32px; /* 溫暖的 32px 大圓角 */
   box-shadow: 
-    0 8px 32px 0 rgba(var(--theme-accent-rgb), 0.08),
-    0 1px 2px 0 rgba(255, 255, 255, 0.8) inset;
-  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    0 8px 30px rgba(var(--theme-accent-rgb), 0.015),
+    0 25px 60px -15px rgba(var(--theme-accent-rgb), 0.04),
+    inset 0 1px 2px rgba(255, 255, 255, 0.7) !important;
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .glass-panel:hover {
-  border-color: rgba(var(--theme-accent-rgb), 0.4) !important;
+  background: rgba(255, 255, 255, 0.55) !important;
+  border-color: rgba(255, 255, 255, 0.8) !important;
+  transform: translateY(-2px);
   box-shadow: 
-    0 15px 45px -10px rgba(var(--theme-accent-rgb), 0.12),
-    0 1px 2px 0 rgba(255, 255, 255, 0.8) inset;
+    0 12px 35px rgba(var(--theme-accent-rgb), 0.02),
+    0 35px 80px -12px rgba(var(--theme-accent-rgb), 0.07),
+    inset 0 1px 2px rgba(255, 255, 255, 0.9) !important;
 }
+
+/* 有機不對稱圓角 (手繪黏土溫潤感) */
+.organic-corners {
+  border-radius: 38px 28px 42px 34px !important;
+}
+
+/* 🌸 背景雲霧斑塊慢漂浮動畫 */
+@keyframes float-mist-a {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(40px, 30px) scale(1.15); }
+}
+@keyframes float-mist-b {
+  0%, 100% { transform: translate(0, 0) scale(1.1); }
+  50% { transform: translate(-30px, -45px) scale(0.9); }
+}
+@keyframes float-mist-c {
+  0%, 100% { transform: translate(0, 0) scale(0.95); }
+  50% { transform: translate(25px, -30px) scale(1.05); }
+}
+
+.animate-mist-a {
+  animation: float-mist-a 22s infinite ease-in-out;
+}
+.animate-mist-b {
+  animation: float-mist-b 28s infinite ease-in-out;
+}
+.animate-mist-c {
+  animation: float-mist-c 25s infinite ease-in-out;
+}
+
+/* 🌸 溫順低飽和標籤貼紙 (Pastel Sticker Tag) */
+.pastel-tag-blue {
+  background-color: rgba(130, 183, 204, 0.18);
+  color: #4a5d66;
+  border: 1px dashed rgba(130, 183, 204, 0.3) !important;
+}
+.pastel-tag-rose {
+  background-color: rgba(235, 220, 216, 0.5);
+  color: #735954;
+  border: 1px dashed rgba(235, 220, 216, 0.7) !important;
+}
+.pastel-tag-sage {
+  background-color: rgba(213, 219, 214, 0.5);
+  color: #535c55;
+  border: 1px dashed rgba(213, 219, 214, 0.7) !important;
+}
+.pastel-tag-sand {
+  background-color: rgba(140, 124, 108, 0.15);
+  color: #635b4f;
+  border: 1px dashed rgba(140, 124, 108, 0.25) !important;
+}
+
+/* 安靜的無邊框水彩質感按鈕 */
+.calm-btn-primary {
+  background-color: rgba(130, 183, 204, 0.25);
+  color: #384d54;
+  border: 1px solid rgba(130, 183, 204, 0.4);
+  border-radius: 18px;
+  box-shadow: 0 4px 15px -3px rgba(130, 183, 204, 0.2);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.calm-btn-primary:hover {
+  background-color: rgba(130, 183, 204, 0.38);
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 0 8px 22px -4px rgba(130, 183, 204, 0.35);
+}
+
 
