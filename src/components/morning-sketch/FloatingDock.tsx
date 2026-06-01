@@ -51,8 +51,8 @@ export default function FloatingDock() {
               </div>
 
               {/* 溫順氣泡提示 */}
-              <span className={`absolute -top-8 px-2 py-0.5 text-[8px] font-bold text-white bg-[#4a3e3d]/80 rounded-md backdrop-blur-sm pointer-events-none transition-all duration-300 origin-bottom ${
-                isHovered ? "scale-100 opacity-100 translate-y-0" : "scale-75 opacity-0 translate-y-2"
+              <span className={`absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-0.5 text-[8px] font-bold text-white bg-[#4a3e3d]/80 rounded-md backdrop-blur-sm pointer-events-none transition-all duration-300 origin-bottom whitespace-nowrap ${
+                isHovered ? "scale-100 opacity-100 translate-y-0 -translate-x-1/2" : "scale-75 opacity-0 translate-y-2 -translate-x-1/2"
               }`}>
                 {item.label}
               </span>

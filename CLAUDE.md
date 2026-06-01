@@ -6,6 +6,33 @@
 - 生產網址：https://overwatch-social.vercel.app
 - Supabase Project ID：`cxoncanfveqtfofcqyqe`
 
+## 統一溝通詞彙表 (Project Glossary)
+
+為了在溝通時更為直覺高效，我們制定了以下統一的代號對照表。在後續的 Prompt 中，您可以直接使用 **AI 溝現代號 (Alias)** 來指稱特定頁面與元件：
+
+### 📌 主要頁面 (Pages)
+
+| 中文名稱 | AI 溝現代號 (Alias) | 實體檔案路徑 | 路由 (Route) | 功能簡述 |
+| :--- | :--- | :--- | :--- | :--- |
+| **首頁頁面** | `home` | `src/app/page.tsx` | `/` | 登入前的Landing Page、朝陽全息視覺主頁 |
+| **鬥陣特攻廣場** | `ow lobby` | `src/app/browse/page.tsx` | `/browse` | 玩家名片交友廣場，讀取公用檔案清單 |
+| **個人檔案頁面** | `profile` | `src/app/profile/page.tsx` | `/profile` | 玩家個人名片編輯與特工檔案設定 |
+| **開發者後台** | `dev console` | `src/app/developer/page.tsx` | `/developer` | 提供給 Admin/開發者的參數管理後台 |
+| **認證跳轉頁** | `auth` | `src/app/auth/` | `/auth/*` | Google OAuth 的 Callback 與錯誤處理頁面 |
+
+### 🧩 核心 UI 元件 (Key Components)
+
+| 中文名稱 | AI 溝現代號 (Alias) | 實體檔案路徑 | 功能簡述 |
+| :--- | :--- | :--- | :--- |
+| **鬥陣特攻卡片** | `ow card` | `src/components/OWCard.tsx` | 手帳風格的玩家名片主元件（含隱私遮蔽） |
+| **鬥陣特攻大廳區塊**| `ow square` | `src/components/square/OverwatchSquare.tsx` | 包裹於大廳內、鬥陣特攻專用的名片渲染器 |
+| **特工名片背景** | `card bg` | `src/components/HeroCardBackground.tsx` | 用於名片元件內，渲染特定英雄特色背景 |
+| **懸浮導覽列** | `floating dock` | `src/components/morning-sketch/FloatingDock.tsx` | 底部圓潤磨砂玻璃懸浮導覽列（首頁/廣場/個人） |
+| **側邊欄** | `sidebar` | `src/components/morning-sketch/AppSidebar.tsx` | 右側或左側的全局側邊欄 |
+| **精選特工展示區** | `featured artists` | `src/components/morning-sketch/FeaturedArtists.tsx`| 大廳下方的精選藝術家/特工展示區塊 |
+| **互動式頭像** | `interactive avatar` | `src/components/InteractiveAvatar.tsx` | 懸停時會顯示動態效果或狀態的玩家頭像 |
+| **風雅樣式選擇器** | `style picker` | `src/components/morning-sketch/StylePicker.tsx` | 調整整體視覺風格、色彩補償的樣式面板 |
+
 ## 環境啟動
 ```bash
 cd "D:/Overwatch專案/overwatch-social"
@@ -69,7 +96,7 @@ src/data/
 
 src/lib/supabase/
 ├── client.ts                     # createBrowserClient（Client Components）
-└── server.ts                     # createServerClient + cookies()（Server）
+├── server.ts                     # createServerClient + cookies()（Server）
 
 src/middleware.ts                  # Session token 刷新（不做 route protection）
 src/types/card.ts                  # OWPlayerCard TypeScript 型別
@@ -145,29 +172,37 @@ public_profiles view：公開可查，DB 層已過濾 is_tag_visible=false 的�
 
 ## 協作規範
 - Commit message 中文，動詞開頭（新增、修正、重構、更新）
-- 主要開發 main branch，功能分支用 feature/功能名稱
+- 主要開發在 main branch，功能分支用 `feature/功能名稱`
 - 溝通語言：繁體中文
+
 <!-- rsx:awareness:begin v=0.10.0 -->
 
 ## rsx 工作流程規範
 
-詳見 rsx skill 的 sop/RSX_SOP.md：
-- ~/.claude/skills/rsx/sop/RSX_SOP.md（Claude Code）
-- ~/.codex/skills/rsx/sop/RSX_SOP.md（Codex）
-- ~/.gemini/skills/rsx/sop/RSX_SOP.md（Gemini）
+詳見 rsx skill 的 `sop/RSX_SOP.md`（任一全域路徑皆可，視當下使用的 AI agent）：
 
-新對話載入順序：1. 本檔 → 2. .rsx/notes/latest.md → 3. RSX_SOP.md §0-§6
+- `~/.claude/skills/rsx/sop/RSX_SOP.md`（Claude Code）
+- `~/.codex/skills/rsx/sop/RSX_SOP.md` (Codex)
+- `~/.gemini/skills/rsx/sop/RSX_SOP.md`（Gemini）
+
+新對話載入順序：
+1. 本檔
+2. `.rsx/notes/latest.md`（若有）
+3. RSX_SOP.md §0-§6 主幹
 
 ## rsx 知識點
-- REF 知識點放 .rsx/knowledge/，schema 見 .rsx/_STANDARDS.md
-- ADR 放 .rsx/decisions/，Finding 放 .rsx/findings/
+
+- REF 知識點放 `.rsx/knowledge/`，schema 見 `.rsx/_STANDARDS.md`
+- ADR 放 `.rsx/decisions/`
+- Finding 放 `.rsx/findings/`
 
 ## rsx 工作流程
+
 | 階段 | 入口 |
 |---|---|
-| init | /rsx:init（已完成）|
-| explore | /rsx:explore |
-| propose | /rsx:propose |
-| apply | /rsx:apply |
-| archive | /rsx:archive |
+| init | `/rsx:init`（已完成）|
+| explore | `/rsx:explore` 或依 RSX_SOP §1 |
+| propose | `/rsx:propose`（內部呼叫 `/opsx:propose`）|
+| apply | `/rsx:apply`（內部呼叫 `/opsx:apply`）|
+| archive | `/rsx:archive`（內部呼叫 `/opsx:archive`）|
 <!-- rsx:awareness:end -->
