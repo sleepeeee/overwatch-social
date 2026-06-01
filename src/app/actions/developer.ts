@@ -13,7 +13,7 @@ async function ensureDeveloper() {
   if (user?.app_metadata?.role !== "developer") {
     throw new Error("Unauthorized: Developer privilege required.");
   }
-  return supabase;
+  return { supabase, user };
 }
 
 /**
@@ -21,7 +21,7 @@ async function ensureDeveloper() {
  */
 export async function getWhitelistEmails() {
   try {
-    const supabase = await ensureDeveloper();
+    const { supabase, user: currentUser } = await ensureDeveloper();
     
     const { data, error } = await supabase
       .from("developer_whitelist")
@@ -49,7 +49,7 @@ export async function addWhitelistEmail(email: string) {
       return { success: false, error: "請輸入有效的 Email 地址" };
     }
 
-    const supabase = await ensureDeveloper();
+    const { supabase, user: currentUser } = await ensureDeveloper();
 
     const { error } = await supabase
       .from("developer_whitelist")
@@ -76,11 +76,11 @@ export async function addWhitelistEmail(email: string) {
  */
 export async function removeWhitelistEmail(email: string) {
   try {
-    const supabase = await ensureDeveloper();
+    const { supabase, user: currentUser } = await ensureDeveloper();
 
     // 🛡️ 保護性限制：防止開發者不小心刪除自己，造成無法登入後台的死鎖
-    const { data: { user } } = await supabase.auth.getUser();
-    if (user?.email && user.email.toLowerCase() === email.toLowerCase()) {
+    // 使用 ensureDeveloper() 已取得的 currentUser，避免多餘的第二次 getUser() 呼叫
+    if (currentUser?.email && currentUser.email.toLowerCase() === email.toLowerCase()) {
       return { success: false, error: "安全保護：您無法在後台將自己從白名單中移除" };
     }
 
@@ -98,5 +98,40 @@ export async function removeWhitelistEmail(email: string) {
     return { success: true };
   } catch (err) {
     return { success: false, error: String(err) };
+  }
+}
+
+/**
+ * 讀取系統真實統計（需要 developer 角色才能查全部 profiles）
+ * 注意：使用 developer-specific SELECT policy（003 migration 已加入）
+ */
+export async function getSystemStats() {
+  try {
+    const { supabase, user: currentUser } = await ensureDeveloper();
+
+    const [totalResult, completedResult] = await Promise.all([
+      supabase.from("profiles").select("*", { count: "exact", head: true }),
+      supabase.from("profiles").select("*", { count: "exact", head: true })
+        .not("battle_tag", "is", null)
+        .neq("battle_tag", "愛喝奶茶#3342") // 排除預設佔位值，只計算真正填寫的名片
+    ]);
+
+    if (totalResult.error) {
+      console.error("getSystemStats total query failed:", totalResult.error.message);
+      return { success: false, totalProfiles: 0, completedProfiles: 0, error: totalResult.error.message };
+    }
+    if (completedResult.error) {
+      console.error("getSystemStats completed query failed:", completedResult.error.message);
+      return { success: false, totalProfiles: 0, completedProfiles: 0, error: completedResult.error.message };
+    }
+
+    return {
+      success: true,
+      totalProfiles: totalResult.count ?? 0,
+      completedProfiles: completedResult.count ?? 0,
+    };
+  } catch (err) {
+    console.error("Failed to get system stats:", err);
+    return { success: false, totalProfiles: 0, completedProfiles: 0 };
   }
 }
