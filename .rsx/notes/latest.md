@@ -33,6 +33,15 @@
 
 ## Zone B — 工作日誌（追加，由新到舊）
 
+<!-- pre-check-log-start -->
+### [Step 0 pre-check] 登入保護 + auth guard + permission-based UI (2026-06-01)
+Tier: grep
+命中：5 筆（REF-002, REF-003, REF-004, REF-005, REF-006）
+使用者選擇：(b) 先讀本地材料（直接做 codebase 分析，不需外部搜尋）
+<!-- pre-check-log-end -->
+
+
+
 ### 2026-06-01 auth-fix-and-developer-role — ARCHIVE 前置（Gate + Finding/ADR）
 
 - **已完成**：§Z Gate 全 PASS；建 F-002（Navbar/AppSidebar dead component 未掛載）；建 ADR-02（app_metadata vs 六方案開發者身分組決策）；雙向 crossref 回填（REF-002/003/004/005 referenced_by 更新）；latest.md Zone A 更新
