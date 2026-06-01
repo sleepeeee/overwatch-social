@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Compass, User, Sliders } from "lucide-react";
+import { Home, Compass, User } from "lucide-react";
 
 export default function FloatingDock() {
   const pathname = usePathname();
@@ -11,22 +11,17 @@ export default function FloatingDock() {
 
   const navItems = [
     { id: "home", path: "/", label: "首頁", icon: Home },
-    { id: "browse", path: "/browse", label: "廣場", icon: Compass },
-    { id: "profile", path: "/profile", label: "特工", icon: User },
-    { id: "adjuster", path: "/adjuster", label: "對準儀", icon: Sliders }
+    { id: "browse", path: "/browse", label: "名片廣場", icon: Compass },
+    { id: "profile", path: "/profile", label: "個人檔案", icon: User }
   ];
 
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
       {/* 鵝卵石圓潤磨砂玻璃 Dock */}
       <div 
-        className="relative px-6 py-2.5 rounded-full flex items-center gap-4 bg-white/35 backdrop-blur-3xl border border-white/50 shadow-[0_8px_32px_rgba(74,62,61,0.03),_0_20px_50px_-10px_rgba(74,62,61,0.06)] h-[58px]"
+        className="relative px-6 py-2.5 rounded-full flex items-center gap-6 bg-white/35 backdrop-blur-3xl border border-white/50 shadow-[0_8px_32px_rgba(74,62,61,0.03),_0_20px_50px_-10px_rgba(74,62,61,0.06)] h-[58px]"
         onMouseLeave={() => setHoveredIdx(null)}
       >
-        {/* 精緻的手繪迷你水印 */}
-        <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-[#faf5eb] border border-[#cbdfe6]/50 text-[7px] font-bold text-[#807371] tracking-widest uppercase shadow-[0_2px_8px_rgba(74,62,61,0.02)]">
-          lotus
-        </div>
 
         {navItems.map((item, idx) => {
           const Icon = item.icon;

@@ -279,28 +279,48 @@ export default function OWCard({
       </div>
 
       <div className="flex flex-col gap-3 pt-3 border-t border-dashed border-[#8c7c6c]/15 mt-auto">
-        <div className="flex justify-between items-center">
-          <div className="flex items-center gap-1 text-xs text-[#5d4037] font-bold">
+        <div className="flex justify-between items-center gap-2">
+          {/* 左側：語言展示區 */}
+          <div className="flex items-center gap-1.5 text-xs text-[#5d4037] font-bold min-w-0">
             <Globe size={14} className="text-[#8c7c6c] shrink-0" />
-            <span className="inline-block truncate max-w-[110px] sm:max-w-[140px] align-middle text-[#8c7c6c]" title={languages.join('、')}>
+            <span className="inline-block truncate max-w-[140px] sm:max-w-[170px] align-middle text-[#8c7c6c]" title={languages.join('、')}>
               {languages.length > 0 ? languages.join('、') : "未設定"}
             </span>
-            <div className="ml-1 pl-2 border-l border-[#8c7c6c]/15 flex items-center">
-              {mic_status === 'mic-on' ? (
-                <Mic size={14} className="text-emerald-600" aria-label="可開麥交流" />
-              ) : mic_status === 'listen-only' ? (
-                <Mic size={14} className="text-blue-500" aria-label="僅能聽麥" />
-              ) : (
-                <MicOff size={14} className="text-gray-400" aria-label="不用語音" />
-              )}
-            </div>
           </div>
 
-          {mbti && (
-            <span className="bg-[#82b7cc]/12 border border-[#82b7cc]/25 text-[#82b7cc] px-2.5 py-0.5 rounded-full text-[10px] font-black tracking-widest uppercase">
-              {mbti}
-            </span>
-          )}
+          {/* 右側：語音狀態膠囊與 MBTI */}
+          <div className="flex items-center gap-1.5 shrink-0">
+            <div className={`flex items-center px-2 py-0.5 rounded-full text-[10px] font-black border transition-all select-none ${
+              mic_status === 'mic-on'
+                ? "bg-emerald-500/8 text-emerald-600 border-emerald-500/15"
+                : mic_status === 'listen-only'
+                ? "bg-blue-500/8 text-blue-600 border-blue-500/15"
+                : "bg-gray-500/8 text-gray-500 border-gray-500/15"
+            }`}>
+              {mic_status === 'mic-on' ? (
+                <>
+                  <Mic size={11} className="mr-0.5 shrink-0" />
+                  <span>可開麥</span>
+                </>
+              ) : mic_status === 'listen-only' ? (
+                <>
+                  <Mic size={11} className="mr-0.5 shrink-0" />
+                  <span>僅聽麥</span>
+                </>
+              ) : (
+                <>
+                  <MicOff size={11} className="mr-0.5 shrink-0" />
+                  <span>不用麥</span>
+                </>
+              )}
+            </div>
+
+            {mbti && (
+              <span className="bg-[#82b7cc]/12 border border-[#82b7cc]/25 text-[#82b7cc] px-2.5 py-0.5 rounded-full text-[10px] font-black tracking-widest uppercase">
+                {mbti}
+              </span>
+            )}
+          </div>
         </div>
 
         {/* 🛡️ [Mitigation] 社交圖示安全容錯展示 (僅告知常用管道，不展示明文) */}
