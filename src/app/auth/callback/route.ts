@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
 function safeRedirectPath(next: string | null, origin: string): string {
-  if (!next) return "/";
+  if (!next) return "/profile";
   try {
     const decoded = decodeURIComponent(next);
     const url = new URL(decoded, origin);
