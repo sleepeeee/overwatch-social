@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { OWPlayerCard } from "@/types/card";
 import { MOCK_PLAYERS, HEROES_CONFIG, SERVER_OPTIONS, MIC_OPTIONS } from "@/data/mockPlayers";
 import OWCard from "@/components/OWCard";
+import LoginModal from "@/components/LoginModal";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -13,10 +14,12 @@ import { createClient } from "@/lib/supabase/client";
 export default function BrowsePage() {
   const [players, setPlayers] = useState<OWPlayerCard[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const [selectedRole, setSelectedRole] = useState("全部");
   const [selectedServer, setSelectedServer] = useState("全部");
   const [selectedMic, setSelectedMic] = useState("全部");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [authLoading, setAuthLoading] = useState(true);
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -53,10 +56,12 @@ export default function BrowsePage() {
 
     supabase.auth.getUser().then(({ data }) => {
       setIsLoggedIn(!!data.user);
+      setAuthLoading(false);
     });
 
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       setIsLoggedIn(!!session?.user);
+      setAuthLoading(false);
     });
 
     loadPlayers();
@@ -236,7 +241,12 @@ export default function BrowsePage() {
               key={player.id} 
               className="w-full flex justify-center hover:-translate-y-1 transition-transform duration-300"
             >
-              <OWCard cardData={player} isLoggedIn={isLoggedIn} isEditable={false} />
+              <OWCard
+                cardData={player}
+                isLoggedIn={isLoggedIn}
+                isEditable={false}
+                onLoginRequired={(!authLoading && !isLoggedIn) ? () => setShowLoginModal(true) : undefined}
+              />
             </div>
           ))}
         </div>
@@ -259,6 +269,12 @@ export default function BrowsePage() {
           </Button>
         </div>
       )}
+
+      {/* 未登入互動 → 登入 Modal */}
+      <LoginModal
+        show={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+      />
     </div>
   );
 }

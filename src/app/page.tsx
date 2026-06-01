@@ -2,9 +2,10 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Compass, Users } from "lucide-react";
+import { Sparkles, Compass, Users, LogOut } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import type { User } from "@supabase/supabase-js";
 
@@ -29,6 +30,7 @@ const rankColors: Record<string, string> = {
 };
 
 export default function Home() {
+  const router = useRouter();
   const [hoveredProfile, setHoveredProfile] = useState<string | null>(null);
   const [loginPending, setLoginPending] = useState(false);
   const [user, setUser] = useState<User | null>(null);
@@ -40,6 +42,12 @@ export default function Home() {
     });
     return () => listener.subscription.unsubscribe();
   }, []);
+
+  const handleLogout = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.refresh();
+  };
 
   const handleGoogleLogin = async () => {
     if (loginPending) return;
@@ -86,13 +94,23 @@ export default function Home() {
 
           {/* 右上角登入/已登入狀態 */}
           {user ? (
-            <Link
-              href="/profile"
-              className="flex items-center gap-2 px-4 py-2 rounded-2xl border border-[#82b7cc]/30 bg-white/40 text-[9px] font-bold tracking-widest uppercase text-[#5d4037] hover:bg-white transition-all duration-300"
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-[#82b7cc]" />
-              我的名片
-            </Link>
+            <div className="flex items-center gap-2">
+              <Link
+                href="/profile"
+                className="flex items-center gap-2 px-4 py-2 rounded-2xl border border-[#82b7cc]/30 bg-white/40 text-[9px] font-bold tracking-widest uppercase text-[#5d4037] hover:bg-white transition-all duration-300"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-[#82b7cc]" />
+                我的名片
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-2xl border border-[#8c7c6c]/20 bg-white/20 text-[9px] font-bold tracking-widest uppercase text-[#8c7c6c]/70 hover:bg-[#8c7c6c]/8 hover:text-[#5d4037] transition-all duration-300"
+                title="登出"
+              >
+                <LogOut size={10} />
+                登出
+              </button>
+            </div>
           ) : (
             <button
               onClick={handleGoogleLogin}

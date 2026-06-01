@@ -24,6 +24,7 @@ import { getMyProfile, saveProfile } from "@/app/actions/profile";
 import type { User } from "@supabase/supabase-js";
 import Link from "next/link";
 import { useDevMode } from "@/hooks/useDevMode";
+import LoginModal from "@/components/LoginModal";
 
 const DEFAULT_CARD: OWPlayerCard = {
   id: "player-current-user",
@@ -52,6 +53,7 @@ export default function ProfilePage() {
   const [heroRoleFilter, setHeroRoleFilter] = useState<"all" | "tank" | "damage" | "support">("all");
   const [user, setUser] = useState<User | null>(null);
   const [isMounted, setIsMounted] = useState(false);
+  const [authLoading, setAuthLoading] = useState(true);
 
   useEffect(() => {
     setIsMounted(true);
@@ -59,6 +61,7 @@ export default function ProfilePage() {
 
     supabase.auth.getUser().then(async ({ data }) => {
       setUser(data.user);
+      setAuthLoading(false);
       if (data.user) {
         // 已登入：從 Supabase 載入名片
         const profile = await getMyProfile();
@@ -70,6 +73,7 @@ export default function ProfilePage() {
 
     const { data: listener } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setUser(session?.user ?? null);
+      setAuthLoading(false);
       if (session?.user) {
         const profile = await getMyProfile();
         if (profile) {
@@ -206,10 +210,7 @@ export default function ProfilePage() {
   };
 
   const handleSave = async () => {
-    if (!user) {
-      setErrorMsg("請先登入 Google 帳號才能儲存名片！");
-      return;
-    }
+    if (!user) return; // overlay 已阻擋未登入操作，此處為防禦性守門
     setErrorMsg(null);
     
     if (!cardData.battle_tag || !cardData.battle_tag.trim()) {
@@ -606,6 +607,14 @@ export default function ProfilePage() {
           </Button>
         </div>
       </div>
+
+      {/* 未登入 overlay（使用 LoginModal，auth 解析完成後才顯示，避免 false-positive） */}
+      <LoginModal
+        show={isMounted && !authLoading && !user}
+        closable={false}
+        title="登入後才能建立名片"
+        description="以 Google 帳號登入，建立你的特工名片並公開到交友廣場"
+      />
     </div>
   );
 }

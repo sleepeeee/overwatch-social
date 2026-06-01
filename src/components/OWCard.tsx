@@ -14,13 +14,15 @@ interface OWCardProps {
   isLoggedIn?: boolean;
   isEditable?: boolean;
   customAlignments?: Record<string, { scale: number; translateX: number; translateY: number }>;
+  onLoginRequired?: () => void;
 }
 
-export default function OWCard({ 
-  cardData, 
-  isLoggedIn = true, 
+export default function OWCard({
+  cardData,
+  isLoggedIn = true,
   isEditable = false,
-  customAlignments
+  customAlignments,
+  onLoginRequired,
 }: OWCardProps) {
   const [copiedTag, setCopiedTag] = useState(false);
   const [activeSocial, setActiveSocial] = useState<string | null>(null);
@@ -40,9 +42,6 @@ export default function OWCard({
     mbti
   } = cardData || {};
 
-  // 🛡️ [Mitigation] 複製 BattleTag 強固保護
-  const [copiedTagError, setCopiedTagError] = useState(false);
-
   const handleCopyTag = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (isEditable) {
@@ -54,9 +53,7 @@ export default function OWCard({
     }
 
     if (!isLoggedIn) {
-      // 未登入，阻斷複製，並顯示警告提示
-      setCopiedTagError(true);
-      setTimeout(() => setCopiedTagError(false), 2000);
+      onLoginRequired?.();
       return;
     }
 
@@ -172,11 +169,7 @@ export default function OWCard({
                   複製成功！
                 </span>
               )}
-              {copiedTagError && (
-                <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-red-600 text-white text-[10px] py-1 px-2 rounded shadow-md whitespace-nowrap z-50">
-                  ⚠️ 請先登入帳號
-                </span>
-              )}
+              {/* copiedTagError 已由 LoginModal 取代 */}
             </button>
           )}
         </div>
