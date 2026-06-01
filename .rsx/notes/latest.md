@@ -7,18 +7,15 @@
 ---
 
 <!-- ZONE_A_START -->
-> **Zone A 最後更新：2026-06-01**
+> **Zone A 最後更新：2026-06-02**
 
 ## 現在在做什麼
 
-`developer-console-backend` PROPOSE 完成，openspec validate PASS。
-下一步：`/rsx:apply developer-console-backend`。
+空閒。三個 change 全部歸檔完成（auth-fix、auth-ux、developer-console）。
 
 ## 進行中的 Changes（未 archive）
 
-| Change | 狀態 | 備註 |
-|---|---|---|
-| developer-console-backend | PROPOSED ✓，待 APPLY | Task 1 需先在 Supabase SQL Editor 執行 migration |
+（無）
 
 ## 待 Propose Changes
 
@@ -28,6 +25,7 @@
 
 | Change | 時間 | 備註 |
 |---|---|---|
+| developer-console-backend | 2026-06-02 | 對準儀改存 Supabase DB + 後台真實統計；F-004、ADR-04 已建 |
 | auth-ux-login-gate | 2026-06-01 | 登出按鈕+LoginModal+Profile overlay；F-003、ADR-03 已建 |
 | auth-fix-and-developer-role | 2026-06-01 | 登入修復+developer mode；F-002、ADR-02 已建 |
 | google-oauth-supabase-auth | 2026-06-01 | OAuth 基礎建設；ADR-01、F-001 已建 |
@@ -36,6 +34,12 @@
 ---
 
 ## Zone B — 工作日誌（追加，由新到舊）
+
+### 2026-06-02 developer-console-backend — ARCHIVE 前置（Gate + Finding/ADR）
+
+- **已完成**：§Z Gate 全 PASS；建 F-004（Vercel serverless 唯讀 filesystem 導致 fs.writeFileSync 靜默失敗，修復改走 Supabase upsert）；建 ADR-04（hero_alignments DB read + static fallback 架構決策）；雙向 crossref 回填（REF-004 referenced_by 加入 F-004、ADR-04；F-004 references_to REF-004 + ADR-04；ADR-04 references_to REF-004 + F-004）；latest.md Zone A 更新
+- **卡關**：無
+- **下次優先**：主代理執行 `openspec archive developer-console-backend`
 
 ### 2026-06-01 auth-ux-login-gate — ARCHIVE 前置（Gate + Finding/ADR）
 
