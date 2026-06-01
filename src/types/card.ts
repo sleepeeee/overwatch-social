@@ -1,5 +1,14 @@
+export interface UserProfile {
+  id: string;                // 使用者唯一 ID (Supabase Auth ID)
+  display_name: string;      // 通用平台暱稱
+  avatar_url: string;        // 通用預設頭像 URL
+  bio?: string;              // 全域個人簡介 (可選)
+  created_at?: string;
+}
+
 export interface OWPlayerCard {
-  id: string;                // 使用者唯一識別碼 (Supabase Auth ID / Mock ID)
+  card_id: string;           // 名片唯一 ID
+  user_id: string;           // 關聯至 UserProfile.id 的外鍵
   server: string;            // 伺服器，例如: 'Asia' | 'America' | 'Europe'
   battle_tag: string;        // 玩家 BattleTag，例如: '愛喝奶茶#3342'
   is_tag_visible: boolean;   // BattleTag 隱私開關，若為 false 則在廣場顯示為 '已隱藏#xxxx'

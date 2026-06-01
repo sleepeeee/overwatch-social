@@ -17,7 +17,8 @@ export async function getMyProfile(): Promise<OWPlayerCard | null> {
   if (!data) return null;
 
   return {
-    id: data.user_id,
+    card_id: data.id ?? `card-${data.user_id}`,
+    user_id: data.user_id,
     server: data.server,
     battle_tag: data.battle_tag,
     is_tag_visible: data.is_tag_visible,
