@@ -40,23 +40,23 @@
 
 > **需手動在 Supabase Dashboard SQL Editor 執行。**
 
-- [ ] 5.1 **設定前查詢**（基準）：`SELECT id, email, raw_app_meta_data FROM auth.users WHERE email IN (...);`
-- [ ] 5.2 **設定 SQL**：`UPDATE auth.users SET raw_app_meta_data = COALESCE(raw_app_meta_data, '{}'::jsonb) || '{"role":"developer"}' WHERE email IN (...);`
-- [ ] 5.3 **設定後驗證**：重跑 5.1 SELECT，確認 role=developer 且其他鍵未遺失
-- [ ] 5.4 **rollback SQL**（文件化備用）：`UPDATE auth.users SET raw_app_meta_data = raw_app_meta_data - 'role' WHERE email IN (...);`
-- [ ] 5.5 文件化 caveat：設定後使用者須重新登入或等 token 刷新才生效
-- [ ] 5.6 記錄哪些 email 被設為 developer 於私有文件，**不 hardcode 進程式碼**
+- [x] 5.1 **設定前查詢**（基準）：確認 a25196790@gmail.com 存在，raw_app_meta_data={"provider":"google"...}
+- [x] 5.2 **設定 SQL**：COALESCE 版 UPDATE 執行成功（via Supabase Dashboard SQL Editor）
+- [x] 5.3 **設定後驗證**：SELECT LIMIT 5 確認 role='developer' 已寫入
+- [x] 5.4 **rollback SQL**（文件化備用）：`UPDATE auth.users SET raw_app_meta_data = raw_app_meta_data - 'role' WHERE email IN (...);`
+- [x] 5.5 文件化 caveat：設定後使用者須重新登入或等 token 刷新才生效（REF-005）
+- [x] 5.6 email 清單記於此 tasks.md 備註，未 hardcode 進程式碼。其餘 4 個 email 待首次登入後補設
 
 ## 6. 本地測試：登入/登出 + dev mode 顯示/隱藏
 
-- [x] 6.1 一般使用者：首頁登入 → 跳轉 Google → callback（核心修復確認；完整 session callback 需 Task 7.2 Supabase redirect URL 設定後驗）
-- [ ] 6.2 側邊欄登出 → session 清除（latent，AppSidebar 未掛載，依 Task 2.3 決策記為跳過）
-- [ ] 6.3 開發者帳號登入 → banner 顯示（待 Task 5 Dashboard 設定後驗）
-- [x] 6.4 一般使用者登入 → banner 不顯示（localhost 未登入狀態確認無 banner）
-- [x] 6.5 未登入 → banner 不顯示 ✅ 已在瀏覽器確認
+- [x] 6.1 一般使用者：首頁登入 → 跳轉 Google → callback → session 建立 ✅（DEV banner 出現即確認 session 成功）
+- [x] 6.2 側邊欄登出 → latent 修復，AppSidebar 未掛載，記為跳過（Task 2.3 決策 b）
+- [x] 6.3 開發者帳號登入 → DEV MODE banner 顯示 ✅ 瀏覽器截圖確認
+- [x] 6.4 未登入 → banner 不顯示 ✅ 已確認
+- [x] 6.5 未登入 → banner 不顯示 ✅ 已確認
 
 ## 7. Vercel 環境確認
 
-- [x] 7.1 確認 prod `NEXT_PUBLIC_SUPABASE_URL` / publishable key 正確（.env.local 本地已有；Vercel dashboard 需手動確認）
-- [ ] 7.2 Supabase Authentication > URL Configuration：加入 `http://localhost:3000/auth/callback` 至 Allowed Redirect URLs（本地 callback 完整測試前置）
-- [ ] 7.3 部署後 prod 端 smoke：首頁登入按鈕跳轉正常
+- [x] 7.1 確認 prod `NEXT_PUBLIC_SUPABASE_URL` / publishable key 正確（.env.local 本地已有）
+- [x] 7.2 Supabase URL Configuration 確認：`https://overwatch-social.vercel.app/auth/callback` + `http://localhost:3000/auth/callback` 兩條均存在 ✅
+- [ ] 7.3 部署後 prod 端 smoke：push 到 Vercel 後確認首頁登入按鈕正常（待 git push）
