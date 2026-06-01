@@ -38,3 +38,16 @@ export interface HeroConfig {
   role: 'tank' | 'damage' | 'support';
   imageUrl: string;          // 立繪或頭像圖片路徑
 }
+
+export interface HeroBackgroundConfig {
+  gradient: string;          // CSS 漸層語法，例如 linear-gradient(...)
+  glowColor: string;         // 徑向光暈的顏色 (rgba/hex)
+  glowPosition?: string;     // 預設為 '50% 50%'
+  theme: 'light' | 'dark';   // 用於自動適配名字標籤的對比度
+  shapes: Array<{
+    type: 'circle' | 'polygon' | 'stripes';
+    className: string;       // Tailwind 類別，控制定位、不透明度與大小
+    style?: Record<string, string | number>; // 支援自訂樣式
+  }>;
+}
+

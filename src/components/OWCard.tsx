@@ -6,6 +6,8 @@ import { HEROES_CONFIG, PRESET_TAGS } from "@/data/mockPlayers";
 import { Copy, Eye, EyeOff, Mic, MicOff, Globe, Sparkles } from "lucide-react";
 import { SocialIcon } from "@/components/ui/SocialIcons";
 import { HERO_ALIGNMENTS, DEFAULT_ALIGNMENT } from "@/data/heroAlignments";
+import { HeroCardBackground } from "./HeroCardBackground";
+import { getHeroBackgroundConfig } from "@/data/heroBackgrounds";
 
 interface OWCardProps {
   cardData: OWPlayerCard;
@@ -188,8 +190,7 @@ export default function OWCard({
       </div>
 
       {/* 常用英雄展示區安全迴圈渲染 */}
-      <div className="relative w-full h-[180px] bg-[#fdfaf3]/60 backdrop-blur-sm border border-[#8c7c6c]/10 rounded-2xl overflow-hidden mb-4 flex shadow-[inset_0_2px_8px_rgba(140,124,108,0.02)]">
-        <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: "repeating-linear-gradient(45deg, #8c7c6c 0, #8c7c6c 1px, transparent 0, transparent 50%)", backgroundSize: "10px 10px" }} />
+      <div className="relative w-full h-[180px] bg-[#fdfaf3]/20 backdrop-blur-[2px] border border-[#8c7c6c]/12 rounded-2xl overflow-hidden mb-4 flex shadow-[inset_0_2px_8px_rgba(140,124,108,0.01)]">
         
         {[0, 1, 2].map((index) => {
           const heroId = selected_heroes[index];
@@ -202,20 +203,34 @@ export default function OWCard({
           };
           
           return (
-            <div key={index} className="relative flex-1 h-full border-r border-[#8c7c6c]/10 last:border-r-0 overflow-hidden group/hero">
+            <div key={index} className="relative flex-1 h-full border-r border-[#8c7c6c]/10 last:border-r-0 overflow-hidden group/hero flex flex-col justify-between">
               {heroInfo ? (
                 <>
-                  <span className="absolute bottom-2.5 left-2.5 text-[10px] font-extrabold text-[#5d4037] bg-white/85 px-2 py-0.5 rounded-lg border border-[#8c7c6c]/12 shadow-sm z-20 transition-all duration-300 group-hover/hero:bg-[#82b7cc] group-hover/hero:text-white group-hover/hero:border-[#82b7cc]">
-                    {heroInfo.name}
-                  </span>
+                  {/* 🌟 每個卡槽獨立渲染專屬極簡幾何背景 */}
+                  {(() => {
+                    const bgConfig = getHeroBackgroundConfig(heroInfo.id, heroInfo.role);
+                    const badgeClass = bgConfig.theme === 'dark'
+                      ? "absolute bottom-2.5 left-2.5 text-[10px] font-extrabold text-white bg-black/40 backdrop-blur-md px-2 py-0.5 rounded-lg border border-white/10 shadow-sm z-20 transition-all duration-300 group-hover/hero:bg-[#82b7cc] group-hover/hero:border-[#82b7cc]"
+                      : "absolute bottom-2.5 left-2.5 text-[10px] font-extrabold text-[#5d4037] bg-white/85 px-2 py-0.5 rounded-lg border border-[#8c7c6c]/12 shadow-sm z-20 transition-all duration-300 group-hover/hero:bg-[#82b7cc] group-hover/hero:text-white group-hover/hero:border-[#82b7cc]";
+                    
+                    return (
+                      <>
+                        <HeroCardBackground config={bgConfig} heroName={heroInfo.name} />
+                        
+                        <span className={badgeClass}>
+                          {heroInfo.name}
+                        </span>
+                      </>
+                    );
+                  })()}
                   
-                  <div className="relative w-full h-[90%] flex justify-center items-start select-none transition-transform duration-500 group-hover/hero:scale-[1.05]">
+                  <div className="relative w-full h-[90%] flex justify-center items-start select-none transition-transform duration-500 group-hover/hero:scale-[1.03] z-10">
                     <img
                       src={`/images/heroes/full/${heroInfo.id}.png`}
                       alt={heroInfo.name}
                       referrerPolicy="no-referrer"
                       style={imgStyle}
-                      className="max-w-[185%] max-h-[135%] object-contain transition-all duration-500 z-10 filter drop-shadow-[0_4px_8px_rgba(140,124,108,0.15)] group-hover/hero:drop-shadow-[0_6px_12px_rgba(130,183,204,0.3)] select-none"
+                      className="max-w-[185%] max-h-[135%] object-contain transition-all duration-500 filter drop-shadow-[0_6px_12px_rgba(0,0,0,0.18)] group-hover/hero:drop-shadow-[0_12px_24px_rgba(0,0,0,0.32)] select-none"
                       draggable="false"
                       onError={(e) => {
                         (e.target as HTMLImageElement).src = '/images/heroes/silhouette.png';
@@ -224,7 +239,7 @@ export default function OWCard({
                   </div>
                 </>
               ) : (
-                <div className="w-full h-full flex flex-col justify-center items-center text-[#8c7c6c]/30 p-2 text-center">
+                <div className="w-full h-full flex flex-col justify-center items-center text-[#8c7c6c]/30 p-2 text-center bg-[#fdfaf3]/10 backdrop-blur-[1px]">
                   <Sparkles size={20} className="mb-1 animate-pulse" />
                   <span className="text-[10px] font-bold">空欄位</span>
                 </div>
