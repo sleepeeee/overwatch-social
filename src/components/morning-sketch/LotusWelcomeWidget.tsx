@@ -100,7 +100,7 @@ export default function LotusWelcomeWidget({ previewData, activeStepOverride }: 
       <div 
         className="relative z-10 w-24 h-24 flex items-center justify-center pt-1 shrink-0"
         style={{
-          transform: `scale(${stableAlignments.iconScale})`
+          transform: `scale(${stableAlignments.iconScale}) translate(${current.alignments?.icon_x || 0}px, ${current.alignments?.icon_y || 0}px)`
         }}
       >
         {current.custom_icon_url ? (
@@ -145,7 +145,8 @@ export default function LotusWelcomeWidget({ previewData, activeStepOverride }: 
             color: current.color, 
             borderColor: current.color,
             backgroundColor: `${current.color.replace("0.85", "0.08")}`,
-            fontSize: `${stableAlignments.tagFontSize}px`
+            fontSize: `${stableAlignments.tagFontSize}px`,
+            transform: `translate(${current.alignments?.tag_x || 0}px, ${current.alignments?.tag_y || 0}px)`
           }}
         >
           {current.tag}
@@ -153,7 +154,8 @@ export default function LotusWelcomeWidget({ previewData, activeStepOverride }: 
         <h4 
           className="text-lg font-extrabold text-[#3e2723] tracking-wide min-h-[28px] flex items-center justify-center"
           style={{
-            fontSize: `${stableAlignments.titleFontSize}px`
+            fontSize: `${stableAlignments.titleFontSize}px`,
+            transform: `translate(${current.alignments?.title_x || 0}px, ${current.alignments?.title_y || 0}px)`
           }}
         >
           {current.title}
@@ -161,7 +163,8 @@ export default function LotusWelcomeWidget({ previewData, activeStepOverride }: 
         <p 
           className="text-[#8c7c6c] text-xs md:text-sm leading-relaxed italic px-2 min-h-[62px] flex items-center justify-center line-clamp-3"
           style={{
-            fontSize: `${stableAlignments.messageFontSize}px`
+            fontSize: `${stableAlignments.messageFontSize}px`,
+            transform: `translate(${current.alignments?.message_x || 0}px, ${current.alignments?.message_y || 0}px)`
           }}
         >
           &ldquo;{current.message}&rdquo;
@@ -171,6 +174,9 @@ export default function LotusWelcomeWidget({ previewData, activeStepOverride }: 
       {/* 01-04 步進圓形按鈕組 */}
       <div 
         className="relative z-10 flex gap-4 pb-2 shrink-0"
+        style={{
+          transform: `translate(${current.alignments?.buttons_x || 0}px, ${current.alignments?.buttons_y || 0}px)`
+        }}
       >
         {announcements.map((s, idx) => {
           const stepNum = idx + 1;
