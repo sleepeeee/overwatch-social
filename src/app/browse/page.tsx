@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Search, RotateCcw, Users, Gamepad2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { createClient } from "@/lib/supabase/client";
+import TopBar from "@/components/TopBar";
 
 // 導入三個獨立子分頁廣場
 import OverwatchSquare from "@/components/square/OverwatchSquare";
@@ -47,6 +48,7 @@ export default function BrowsePage() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8 space-y-8">
+      <TopBar />
       {/* 頂部裝飾標頭 */}
       <div className="flex flex-col md:flex-row justify-between items-center gap-4 border-b border-[#8c7c6c]/10 pb-6">
         <div className="text-center md:text-left">
@@ -56,19 +58,6 @@ export default function BrowsePage() {
           <p className="text-[#8c7c6c] mt-1 font-semibold text-sm">
             跨遊戲與各路特工、英雄異世相逢！切換下方遊戲卡片，開啟專屬交友廣場。
           </p>
-        </div>
-
-        {/* 全域登入狀態模擬開關 */}
-        <div className="bg-white/60 border border-[#8c7c6c]/18 rounded-2xl p-2.5 flex items-center gap-3 text-xs shadow-sm">
-          <span className="text-[#8c7c6c] font-black">🛡️ 登入狀態模擬:</span>
-          <button
-            onClick={() => setIsLoggedIn(!isLoggedIn)}
-            className={`px-3.5 py-1.5 rounded-xl font-black transition-all duration-300 active:scale-95 cursor-pointer shadow-md ${
-              isLoggedIn ? "bg-green-600 hover:bg-green-500 text-white" : "bg-red-600 hover:bg-red-500 text-white"
-            }`}
-          >
-            {isLoggedIn ? "已登入 (完整查閱)" : "未登入 (安全限制)"}
-          </button>
         </div>
       </div>
 
