@@ -27,58 +27,17 @@ const rankColors: Record<string, string> = {
 };
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState("dashboard");
   const [hoveredProfile, setHoveredProfile] = useState<string | null>(null);
-
-  // 用於偏光懸停效果的座標紀錄與節流
-  const requestRef = useRef<number | null>(null);
-  const cardCoords = useRef<{ x: number; y: number }>({ x: 50, y: 50 });
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const card = e.currentTarget;
-    const rect = card.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    
-    cardCoords.current = { x, y };
-
-    if (!requestRef.current) {
-      requestRef.current = requestAnimationFrame(() => {
-        card.style.setProperty("--mouse-x", `${cardCoords.current.x}%`);
-        card.style.setProperty("--mouse-y", `${cardCoords.current.y}%`);
-        requestRef.current = null;
-      });
-    }
-  };
-
-  const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
-    const card = e.currentTarget;
-    card.style.setProperty("--mouse-x", "50%");
-    card.style.setProperty("--mouse-y", "50%");
-    if (requestRef.current) {
-      cancelAnimationFrame(requestRef.current);
-      requestRef.current = null;
-    }
-  };
 
   const handleGoogleLogin = () => {
     alert("實作測試：跳轉至 Google 授權登入流程！");
   };
 
-  useEffect(() => {
-    return () => {
-      if (requestRef.current) cancelAnimationFrame(requestRef.current);
-    };
-  }, []);
-
   return (
     // 全站鎖定使用最美的 A 版本莫蘭迪暖灰沙色系主題
     <div 
       data-style="A"
-      className="min-h-screen relative pb-32 transition-colors duration-500 cyber-dots"
-      style={{
-        background: "var(--theme-bg-gradient)"
-      }}
+      className="min-h-screen relative pb-32 transition-colors duration-500"
     >
       {/* 載入 SVG 液態曲線剪裁定義 */}
       <FluidClipPath />
@@ -90,12 +49,12 @@ export default function Home() {
         <div className="w-full flex items-center justify-between mb-10 z-30 relative animate-[fadeIn_0.6s_ease-out]">
           <div className="flex items-center gap-3">
             {/* 精美 SVG 蓮花 Mini Logo */}
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#82b7cc]/15 to-[#f5d46b]/15 flex items-center justify-center border border-[#82b7cc]/25 shadow-sm">
-              <svg viewBox="0 0 100 100" className="w-5 h-5 text-[#82b7cc]">
+            <div className="w-9 h-9 rounded-full bg-white/30 flex items-center justify-center border border-white/40 shadow-sm">
+              <svg viewBox="0 0 100 100" className="w-4 h-4 text-[#8c7c6c]/80">
                 <path d="M 50,75 C 34,68 36,55 50,35 C 64,55 66,68 50,75 Z" fill="currentColor" />
               </svg>
             </div>
-            <span className="text-xs font-black tracking-widest text-[#3e2723] uppercase">
+            <span className="text-[10px] font-bold tracking-widest text-[#3e2723] uppercase">
               LOTUS
             </span>
           </div>
@@ -103,10 +62,10 @@ export default function Home() {
           {/* 🤖 [Aesthetics] 右上角高強度的 Google 登入引導按鈕 */}
           <button 
             onClick={handleGoogleLogin}
-            className="group relative flex items-center gap-2.5 px-4.5 py-2.5 rounded-xl border border-[#8c7c6c]/20 bg-white/40 text-xs font-black tracking-widest uppercase text-[#5d4037] hover:text-[#3e2723] hover:bg-white hover:border-[#82b7cc]/40 shadow-sm transition-all duration-300 hover:scale-105 hover:shadow-[0_4px_15px_rgba(130,183,204,0.15)]"
+            className="group relative flex items-center gap-2.5 px-4.5 py-2 rounded-2xl border border-[#8c7c6c]/20 bg-white/40 text-[9px] font-bold tracking-widest uppercase text-[#5d4037] hover:text-[#3e2723] hover:bg-white hover:border-[#82b7cc]/40 shadow-sm transition-all duration-300"
           >
             {/* 彩色 Google 標誌 (使用貝茲曲線繪製的高細緻向量 G) */}
-            <svg className="w-4 h-4" viewBox="0 0 24 24">
+            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24">
               <path
                 fill="#EA4335"
                 d="M12.24 10.285V14.4h6.887c-.648 2.41-2.519 4.114-5.136 4.114-3.466 0-6.277-2.81-6.277-6.277 0-3.466 2.81-6.277 6.277-6.277 1.558 0 2.977.569 4.083 1.503l3.14-3.14C19.167 1.83 15.938 1 12.24 1 6.033 1 1 6.033 1 12.24s5.033 11.24 11.24 11.24c6.16 0 10.993-4.32 10.993-10.993 0-.616-.068-1.22-.178-1.78l-10.815-.422z"
@@ -122,53 +81,58 @@ export default function Home() {
         {/* 主控板黃金比例全寬佈局 */}
         <div className="space-y-8 max-w-7xl mx-auto z-10 relative">
 
-          {/* 🤖 [Aesthetics] 雙折射偏光懸停體驗：核心 Hero 展示卡片 */}
+          {/* 🌸 [Hero Area] 有機溫潤大圓角卡片重構 */}
           <div 
-            onMouseMove={handleMouseMove}
-            onMouseLeave={handleMouseLeave}
-            className="relative overflow-hidden p-10 glass-panel animate-[fadeInUp_0.8s_ease-out] w-full flex flex-col md:flex-row items-center justify-between gap-8 h-[260px]"
-            style={{
-              boxShadow: "0 15px 45px -10px rgba(var(--theme-accent-rgb), 0.1)",
-              willChange: "background",
-              background: "radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(var(--theme-accent-rgb), 0.15) 0%, rgba(255,255,255,0.45) 60%)"
-            }}
+            className="relative overflow-hidden p-8 md:p-10 glass-panel organic-corners animate-[fadeInUp_0.8s_ease-out] w-full flex flex-col md:flex-row items-center justify-between gap-8 min-h-[260px]"
           >
             <div className="space-y-4.5 max-w-xl text-center md:text-left relative z-10">
-              <Badge className="bg-[#82b7cc]/12 text-[#82b7cc] border border-[#82b7cc]/25 px-3 py-1.5 text-[9px] font-black tracking-widest uppercase rounded-full">
-                🛡️ OVERWATCH COOPERATION
+              <Badge className="bg-[#82b7cc]/12 text-[#82b7cc] border border-[#82b7cc]/25 px-3 py-1 text-[10.5px] font-bold tracking-widest uppercase rounded-full">
+                🌿 LOTUS COOPERATION
               </Badge>
               
-              <h2 className="text-3xl sm:text-4xl font-extrabold tracking-wider leading-none text-[#3e2723] uppercase">
-                尋找你的 <span className="text-[#82b7cc]">最佳特工戰友</span>
+              <h2 className="text-3xl sm:text-4xl font-bold tracking-wider leading-tight text-[#3e2723]">
+                尋找心靈契合的 <span className="text-[#82b7cc]">最佳特工戰友</span>
               </h2>
               
-              <p className="text-[#8c7c6c] text-xs leading-relaxed font-semibold">
+              <p className="text-[#8c7c6c] text-xs md:text-sm leading-relaxed font-normal">
                 特工之間的默契交匯。建立專屬的磨砂玻璃名片，展示你的本命英雄與社群連結，秒速找到心態成熟的靈魂拍檔！
               </p>
 
-              <div className="flex flex-wrap gap-3 pt-1 justify-center md:justify-start">
+              <div className="flex flex-wrap gap-3 pt-2 justify-center md:justify-start">
                 <Link href="/profile">
-                  <Button className="bg-[#82b7cc] hover:bg-[#82b7cc]/85 text-white font-extrabold text-[10px] tracking-widest uppercase px-6 py-4.5 rounded-xl shadow-sm hover:scale-105 active:scale-98 transition-all duration-300 ow-tech-btn">
-                    <Sparkles size={12} className="mr-1.5" />
+                  <Button className="calm-btn-primary font-bold text-xs tracking-widest uppercase px-6 py-4.5 rounded-2xl cursor-pointer">
+                    <Sparkles size={11} className="mr-1.5" />
                     建立特工名片
                   </Button>
                 </Link>
                 
                 <Link href="/browse">
-                  <Button variant="outline" className="border-[#8c7c6c]/20 text-[#8c7c6c] hover:text-[#5d4037] bg-white/40 hover:bg-white/60 font-extrabold text-[10px] tracking-widest uppercase px-6 py-4.5 rounded-xl shadow-sm hover:scale-105 active:scale-98 transition-all duration-300 ow-tech-btn">
-                    <Compass size={12} className="mr-1.5" />
-                    廣場交友
+                  <Button variant="outline" className="border-[#8c7c6c]/10 text-[#8c7c6c] hover:text-[#5d4037] bg-white/40 hover:bg-white/70 font-bold text-[10px] tracking-widest uppercase px-6 py-4.5 rounded-2xl shadow-sm transition-all duration-300 cursor-pointer">
+                    <Compass size={11} className="mr-1.5" />
+                    漫步名片廣場
                   </Button>
                 </Link>
               </div>
             </div>
 
-            <div className="hidden md:flex relative z-10 pr-6">
-              {/* 精美的全息發光雷達旋轉圖案 */}
-              <div className="w-32 h-32 rounded-full border-2 border-dashed border-[#82b7cc]/30 flex items-center justify-center animate-[spin_25s_linear_infinite]">
-                <div className="w-22 h-22 rounded-full border border-dashed border-[#f5d46b]/40 flex items-center justify-center animate-[spin_12s_linear_infinite_reverse]">
-                  <Compass size={28} className="text-[#82b7cc] transform -rotate-12" />
-                </div>
+            {/* 右側裝飾：手繪禪意同心圓與動態微瀾 */}
+            <div className="hidden md:flex relative z-10 pr-8">
+              <div className="relative w-36 h-36 flex items-center justify-center">
+                {/* 第一層：極淡水粉圓餅 (慢速呼吸) */}
+                <div 
+                  className="absolute inset-2 rounded-full blur-md animate-[pulse_6s_infinite]" 
+                  style={{ backgroundColor: "rgba(var(--theme-accent-rgb), 0.15)" }}
+                />
+                {/* 第二層：極細同心禪意波紋 */}
+                <svg className="w-full h-full text-[#8c7c6c]/30" viewBox="0 0 100 100">
+                  {/* 外圓虛線 */}
+                  <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" strokeWidth="0.8" strokeDasharray="3 4" className="animate-[spin_40s_linear_infinite]" />
+                  {/* 內實線波浪 */}
+                  <circle cx="50" cy="50" r="32" fill="none" stroke="currentColor" strokeWidth="0.6" />
+                  <path d="M 30,50 Q 40,40 50,50 T 70,50" fill="none" stroke="rgba(var(--theme-accent-rgb), 0.8)" strokeWidth="1.2" className="animate-pulse" />
+                  {/* 核心露珠 */}
+                  <circle cx="50" cy="50" r="4" fill="#faf5eb" stroke="rgba(var(--theme-accent-rgb), 0.8)" strokeWidth="1" />
+                </svg>
               </div>
             </div>
           </div>
@@ -194,11 +158,11 @@ export default function Home() {
                       boxShadow: "0 10px 40px -10px rgba(var(--theme-accent-rgb), 0.08)"
                     }}
                   >
-                    <div className="space-y-1">
-                      <h3 className="text-sm font-black text-[#3e2723] uppercase tracking-widest leading-none">
+                    <div className="space-y-1.5">
+                      <h3 className="text-base font-bold text-[#3e2723] uppercase tracking-widest leading-none">
                         Tasks Overview
                       </h3>
-                      <p className="text-[9px] font-black text-[#8c7c6c]/60 uppercase tracking-widest">
+                      <p className="text-xs font-bold text-[#8c7c6c]/60 uppercase tracking-widest">
                         Weekly sketch challenges
                       </p>
                     </div>
@@ -206,44 +170,45 @@ export default function Home() {
                     {/* 環狀進度與狀態指標 */}
                     <div className="flex items-center justify-around my-4">
                       <div className="relative w-24 h-24">
-                        <svg className="w-full h-full transform -rotate-90">
-                          <circle cx="48" cy="48" r="38" className="stroke-[#8c7c6c]/10" strokeWidth="6" fill="none" />
+                        <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                          {/* 底層水筆刷感圓弧 */}
+                          <circle cx="50" cy="50" r="38" className="stroke-[#cbdfe6]/20" style={{ stroke: "rgba(var(--theme-accent-rgb), 0.15)" }} strokeWidth="5.5" fill="none" strokeLinecap="round" />
+                          {/* 上層莫蘭迪霧藍水粉圓弧 (75% completed) */}
                           <circle 
-                            cx="48" 
-                            cy="48" 
+                            cx="50" 
+                            cy="50" 
                             r="38" 
-                            className="stroke-[#82b7cc]" 
-                            strokeWidth="6" 
+                            style={{ stroke: "rgba(var(--theme-accent-rgb), 0.85)" }} 
+                            strokeWidth="5.5" 
                             fill="none" 
                             strokeDasharray="238" 
-                            strokeDashoffset="60" // 75% completed
+                            strokeDashoffset="60" 
                             strokeLinecap="round"
+                            opacity="0.9"
                           />
+                          {/* 畫筆質感修飾點 */}
+                          <circle cx="50" cy="12" r="1.5" fill="#faf5eb" />
                         </svg>
                         <div className="absolute inset-0 flex flex-col items-center justify-center leading-none">
-                          <span className="text-lg font-black text-[#3e2723]">75%</span>
-                          <span className="text-[8px] font-black text-[#8c7c6c]/60 uppercase">Done</span>
+                          <span className="text-xl font-bold text-[#3e2723]">75%</span>
+                          <span className="text-[10px] font-bold text-[#8c7c6c]/60 uppercase tracking-widest">已完成</span>
                         </div>
                       </div>
 
-                      <div className="space-y-2">
+                      <div className="space-y-2.5">
                         <div className="flex items-center gap-2">
-                          <div className="w-2.5 h-2.5 rounded-full bg-[#82b7cc]" />
-                          <span className="text-[9px] font-black text-[#8c7c6c]/80 uppercase">Completed</span>
+                          <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "rgba(var(--theme-accent-rgb), 0.85)" }} />
+                          <span className="text-xs font-bold text-[#8c7c6c]/80 uppercase tracking-widest">藝術挑戰</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <div className="w-2.5 h-2.5 rounded-full bg-[#a0a29f]" />
-                          <span className="text-[9px] font-black text-[#8c7c6c]/80 uppercase">In Progress</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <div className="w-2.5 h-2.5 rounded-full bg-[#f5d46b]" />
-                          <span className="text-[9px] font-black text-[#8c7c6c]/80 uppercase">Pending</span>
+                          <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: "rgba(var(--theme-highlight-rgb), 0.85)" }} />
+                          <span className="text-xs font-bold text-[#8c7c6c]/80 uppercase tracking-widest">排位特工</span>
                         </div>
                       </div>
                     </div>
 
-                    <div className="text-[9px] font-black text-[#8c7c6c]/70 text-center uppercase tracking-widest pt-2 border-t border-[#8c7c6c]/10">
-                      The details are not the details. They make the design.
+                    <div className="text-[10.5px] font-normal italic text-[#8c7c6c]/70 text-center tracking-wider pt-2 border-t border-[#8c7c6c]/10">
+                      "安靜的細節，成就了高級的靈魂。"
                     </div>
                   </div>
                 </div>
@@ -252,50 +217,48 @@ export default function Home() {
 
               {/* 最新特工名片列表 */}
               <section className="space-y-4 w-full">
-                <div className="flex justify-between items-center">
-                  <h3 className="text-xs font-black text-[#3e2723] tracking-widest uppercase flex items-center gap-1.5">
-                    <Users size={14} className="text-[#82b7cc]" /> 最新加入的特工隊友
+                <div className="flex justify-between items-center px-1">
+                  <h3 className="text-sm font-bold text-[#3e2723] tracking-widest uppercase flex items-center gap-1.5">
+                    <Users size={14} className="text-[#82b7cc]" style={{ color: "rgba(var(--theme-accent-rgb), 0.85)" }} /> 最新加入的特工隊友
                   </h3>
-                  <span className="text-[9px] font-black text-[#8c7c6c]/60 uppercase tracking-widest">
+                  <span className="text-xs font-bold text-[#8c7c6c]/50 uppercase tracking-widest">
                     剛剛上線公開
                   </span>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {sampleProfiles.map((p) => {
-                    const isHovered = hoveredProfile === p.name;
-                    
                     return (
                       <div 
                         key={p.name} 
-                        onMouseEnter={() => setHoveredProfile(p.name)}
-                        onMouseLeave={() => setHoveredProfile(null)}
-                        className="glass-panel p-5 transition-all duration-300 border-b-2 border-b-[#82b7cc]/15 hover:border-b-[#82b7cc]/50 hover:-translate-y-1 h-[210px] flex flex-col justify-between shadow-[0_2px_8px_rgba(0,0,0,0.01)]"
+                        className="glass-panel p-5 border border-white/40 flex flex-col justify-between h-[220px] transition-all duration-500"
                       >
                         <div className="flex justify-between items-start">
                           <div className="flex items-center gap-2.5">
-                            <div className="w-9 h-9 rounded-xl bg-[#82b7cc]/12 border border-[#82b7cc]/25 flex items-center justify-center text-xs font-black text-[#82b7cc] shadow-[inset_0_0_6px_rgba(130,183,204,0.15)]">
+                            <div className="w-8.5 h-8.5 rounded-xl bg-[#82b7cc]/12 border border-[#82b7cc]/25 flex items-center justify-center text-xs font-bold text-[#82b7cc]">
                               {p.name[0]}
                             </div>
                             <div>
-                              <h4 className="font-extrabold text-[#5d4037] text-xs tracking-wide">{p.name}</h4>
-                              <span className={`text-[8.5px] font-black uppercase ${rankColors[p.rank]}`}>{p.rank}</span>
+                              <h4 className="font-bold text-[#3e2723] text-sm">{p.name}</h4>
+                              <span className={`text-xs font-bold uppercase ${rankColors[p.rank]}`}>{p.rank}</span>
                             </div>
                           </div>
-                          <Badge className="bg-[#8c7c6c]/8 border-[#8c7c6c]/15 text-[#8c7c6c] text-[8.5px] font-bold px-2 py-0.5">
+                          <Badge className="bg-[#ebdcd8]/50 border-none text-[#735954] text-xs font-bold px-2.5 py-0.5 rounded-lg shadow-sm">
                             主玩 {p.hero}
                           </Badge>
                         </div>
 
-                        <div className="bg-[#fcf9f2]/90 border border-[#8c7c6c]/10 rounded-xl p-3 min-h-[64px] flex items-center shadow-[inset_0_1px_3px_rgba(140,124,108,0.02)]">
-                          <p className="text-[#5d4037] text-[10px] font-semibold leading-relaxed italic">
+                        {/* 溫潤手感紙發言區 (無硬黑邊、無高對比) */}
+                        <div className="bg-white/30 border border-white/60 rounded-2xl p-3 min-h-[64px] flex items-center shadow-[inset_0_1px_2px_rgba(74,62,61,0.01)]">
+                          <p className="text-[#3e2723] text-[12.5px] font-normal leading-relaxed italic opacity-95">
                             &ldquo;{p.message}&rdquo;
                           </p>
                         </div>
 
-                        <div className="flex flex-wrap gap-1 pt-1.5 border-t border-[#8c7c6c]/10">
+                        {/* 水粉貼紙標籤 (無硬刺、極其溫柔) */}
+                        <div className="flex flex-wrap gap-1.5 pt-2 border-t border-[#8c7c6c]/10">
                           {p.tags.map((tag) => (
-                            <span key={tag} className="text-[8px] font-black px-1.5 py-0.5 rounded-md bg-[#82b7cc]/12 text-[#82b7cc] border border-[#82b7cc]/20">
+                            <span key={tag} className="text-[10.5px] font-bold px-2 py-0.5 rounded-full pastel-tag-blue">
                               #{tag}
                             </span>
                           ))}
