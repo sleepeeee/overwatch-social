@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -21,13 +21,14 @@ interface PlayerCard {
   hero: string;
   tags: string[];
   message: string;
+  avatarUrl: string;
 }
 
 // 預設三個核心玩家資料
 const initialProfiles: PlayerCard[] = [
-  { id: "p-1", name: "星辰", game: "Overwatch", rank: "鑽石", hero: "安娜", tags: ["認真組排", "不開麥OK"], message: "熟練睡針與禁療瓶，專注後排抬血，找心態成熟的輸出雙排！" },
-  { id: "p-2", name: "Jett醬 (小夏)", game: "VALORANT", rank: "超凡入聖", hero: "Jett", tags: ["歡迎開麥", "拒絕暴躁"], message: "希望找個脾氣溫和的煙位搭檔，今晚衝神話！有麥克風，心態極好。" },
-  { id: "p-3", name: "狂暴補師星奈", game: "LoL", rank: "鑽石", hero: "露璐", tags: ["團隊至上", "彈性積分"], message: "保人流輔助尋找主力射手雙排。AD敢衝我就敢保，絕不丟下你！" },
+  { id: "p-1", name: "星辰", game: "Overwatch", rank: "鑽石", hero: "安娜", tags: ["認真組排", "不開麥OK"], message: "熟練睡針與禁療瓶，專注後排抬血，找心態成熟的輸出雙排！", avatarUrl: "/images/avatars/avatar_male_calm_square.png" },
+  { id: "p-2", name: "Jett醬 (小夏)", game: "VALORANT", rank: "超凡入聖", hero: "Jett", tags: ["歡迎開麥", "拒絕暴躁"], message: "希望找個脾氣溫和的煙位搭檔，今晚衝神話！有麥克風，心態極好。", avatarUrl: "/images/avatars/avatar_female_cheerful_square.png" },
+  { id: "p-3", name: "狂暴補師星奈", game: "LoL", rank: "鑽石", hero: "露璐", tags: ["團隊至上", "彈性積分"], message: "保人流輔助尋找主力射手雙排。AD敢衝我就敢保，絕不丟下你！", avatarUrl: "/images/avatars/avatar_female_elegant_square.png" },
 ];
 
 const rankColors: Record<string, string> = {
@@ -59,7 +60,46 @@ const messagesPool = [
 const tagsPool = ["快樂排位", "語音交流", "拒絕暴躁", "下班上線", "歡迎新手", "團隊至上"];
 
 export default function Home() {
+  const [profiles, setProfiles] = useState<PlayerCard[]>(initialProfiles);
   const [hoveredProfile, setHoveredProfile] = useState<string | null>(null);
+
+  // 實作「有新卡片加入就替換掉最舊的卡片 (維持3張)」的動態模擬器
+  useEffect(() => {
+    const avatarPool = [
+      "/images/avatars/avatar_female_elegant_square.png",
+      "/images/avatars/avatar_female_cheerful_square.png",
+      "/images/avatars/avatar_male_calm_square.png",
+      "/images/avatars/avatar_male_sunny_square.png",
+    ];
+
+    const interval = setInterval(() => {
+      const randomGame = gamePool[Math.floor(Math.random() * gamePool.length)];
+      const gameHeroes = heroesPool[randomGame];
+      const randomHero = gameHeroes[Math.floor(Math.random() * gameHeroes.length)];
+      const randomName = namesPool[Math.floor(Math.random() * namesPool.length)];
+      const randomRank = rankPool[Math.floor(Math.random() * rankPool.length)];
+      const randomMessage = messagesPool[Math.floor(Math.random() * messagesPool.length)];
+      const randomAvatar = avatarPool[Math.floor(Math.random() * avatarPool.length)];
+      
+      const shuffledTags = [...tagsPool].sort(() => 0.5 - Math.random());
+      const randomTags = shuffledTags.slice(0, 2);
+
+      const newPlayer: PlayerCard = {
+        id: `p-${Date.now()}`,
+        name: randomName,
+        game: randomGame,
+        rank: randomRank,
+        hero: randomHero,
+        tags: randomTags,
+        message: randomMessage,
+        avatarUrl: randomAvatar
+      };
+
+      setProfiles(prev => [newPlayer, prev[0], prev[1]]);
+    }, 7000); // 每 7 秒模擬一次玩家新上線
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div 
@@ -194,7 +234,7 @@ export default function Home() {
                             {/* 真實大頭貼圖片 (與 profile 頁面設定 avatar_url 格式對應，Lorelei 禪意手繪風) */}
                             <div className="w-8.5 h-8.5 rounded-xl overflow-hidden border border-[#8c7c6c]/15 shadow-sm shrink-0">
                               <img 
-                                src={`https://api.dicebear.com/7.x/lorelei/svg?seed=${p.name}`} 
+                                src={p.avatarUrl} 
                                 alt={p.name} 
                                 className="w-full h-full object-cover"
                                 draggable={false}
