@@ -151,7 +151,10 @@ export default function DeveloperConsoleClient({
         message_x: 0,
         message_y: 0,
         buttons_x: 0,
-        buttons_y: 0
+        buttons_y: 0,
+        tag_font_size: 10,
+        tag_x: 0,
+        tag_y: 0
       };
 
       const alignments = { ...defaultAlignments, ...updated[idx].alignments };
@@ -170,6 +173,54 @@ export default function DeveloperConsoleClient({
       };
       return updated;
     });
+  };
+
+  // Reusable Slider + Number Input control rendering helper
+  const renderAlignmentSlider = (
+    label: string,
+    field: keyof AlignmentConfig,
+    currentAlignments: AlignmentConfig,
+    min: number,
+    max: number,
+    unit: string = "px"
+  ) => {
+    const value = currentAlignments[field] ?? 0;
+    return (
+      <div className="space-y-1.5 p-3 rounded-lg bg-white/20 border border-[#8c7c6c]/5">
+        <div className="flex items-center justify-between gap-2">
+          <span className="text-[10.5px] font-semibold text-[#8c7c6c]/90">{label}</span>
+          <div className="flex items-center gap-1">
+            <input
+              type="number"
+              min={min}
+              max={max}
+              value={value}
+              onChange={(e) => {
+                const val = parseInt(e.target.value);
+                if (!isNaN(val)) {
+                  adjustAlignment(field, val - value, min, max);
+                }
+              }}
+              className="w-14 text-center text-xs font-mono text-[#3e2723] bg-white/80 border border-[#8c7c6c]/20 rounded py-0.5 focus:outline-none focus:border-[#82b7cc]"
+            />
+            <span className="text-[10px] text-[#8c7c6c]/60 font-semibold">{unit}</span>
+          </div>
+        </div>
+        <input
+          type="range"
+          min={min}
+          max={max}
+          value={value}
+          onChange={(e) => {
+            const val = parseInt(e.target.value);
+            if (!isNaN(val)) {
+              adjustAlignment(field, val - value, min, max);
+            }
+          }}
+          className="w-full h-1 bg-[#8c7c6c]/20 rounded-lg appearance-none cursor-pointer accent-[#8c7c6c]"
+        />
+      </div>
+    );
   };
 
   // 新增白名單處理
@@ -637,7 +688,8 @@ export default function DeveloperConsoleClient({
                           icon_x: 0, icon_y: 0, icon_scale: 100,
                           title_font_size: 18, title_x: 0, title_y: 0,
                           message_font_size: 13, message_x: 0, message_y: 0,
-                          buttons_x: 0, buttons_y: 0
+                          buttons_x: 0, buttons_y: 0,
+                          tag_font_size: 10, tag_x: 0, tag_y: 0
                         };
 
                         return (
@@ -728,7 +780,7 @@ export default function DeveloperConsoleClient({
                               </div>
                             </div>
 
-                            {/* 3. 精密位置補償調校 */}
+                             {/* 3. 精密位置補償調校 */}
                             <div className="p-5 rounded-xl border border-[#8c7c6c]/15 bg-white/50 space-y-4">
                               <h3 className="text-xs font-black text-[#8c7c6c] uppercase tracking-widest border-b border-[#8c7c6c]/15 pb-2">
                                 ⚙️ 精密位置與字型大小對準 (Closed Loop Calibration)
@@ -738,118 +790,48 @@ export default function DeveloperConsoleClient({
                                 <div className="space-y-4">
                                   <span className="text-[11px] font-black text-[#3e2723] block">💮 圖標設定 (Icon Configs)</span>
                                   <div className="space-y-3">
-                                    <div className="flex items-center justify-between gap-4">
-                                      <span className="text-[10px] font-semibold text-[#8c7c6c]/90">圖標大小比例 (icon_scale)</span>
-                                      <div className="flex items-center gap-1.5">
-                                        <button type="button" onClick={() => adjustAlignment("icon_scale", -5, 50, 150)} className="w-6 h-6 bg-white/80 hover:bg-[#8c7c6c]/10 border border-[#8c7c6c]/20 rounded flex items-center justify-center text-xs font-black text-[#8c7c6c] active:scale-95 cursor-pointer">-</button>
-                                        <span className="w-12 text-center text-xs font-mono text-[#3e2723]">{alignments.icon_scale}%</span>
-                                        <button type="button" onClick={() => adjustAlignment("icon_scale", 5, 50, 150)} className="w-6 h-6 bg-white/80 hover:bg-[#8c7c6c]/10 border border-[#8c7c6c]/20 rounded flex items-center justify-center text-xs font-black text-[#8c7c6c] active:scale-95 cursor-pointer">+</button>
-                                      </div>
-                                    </div>
-                                    {/* X & Y */}
-                                    <div className="flex items-center justify-between gap-4">
-                                      <span className="text-[10px] font-semibold text-[#8c7c6c]/90">圖標 X 軸位移 (icon_x)</span>
-                                      <div className="flex items-center gap-1.5">
-                                        <button type="button" onClick={() => adjustAlignment("icon_x", -1, -50, 50)} className="w-6 h-6 bg-white/80 hover:bg-[#8c7c6c]/10 border border-[#8c7c6c]/20 rounded flex items-center justify-center text-xs font-black text-[#8c7c6c] active:scale-95 cursor-pointer">-</button>
-                                        <span className="w-12 text-center text-xs font-mono text-[#3e2723]">{alignments.icon_x}px</span>
-                                        <button type="button" onClick={() => adjustAlignment("icon_x", 1, -50, 50)} className="w-6 h-6 bg-white/80 hover:bg-[#8c7c6c]/10 border border-[#8c7c6c]/20 rounded flex items-center justify-center text-xs font-black text-[#8c7c6c] active:scale-95 cursor-pointer">+</button>
-                                      </div>
-                                    </div>
-                                    <div className="flex items-center justify-between gap-4">
-                                      <span className="text-[10px] font-semibold text-[#8c7c6c]/90">圖標 Y 軸位移 (icon_y)</span>
-                                      <div className="flex items-center gap-1.5">
-                                        <button type="button" onClick={() => adjustAlignment("icon_y", -1, -50, 50)} className="w-6 h-6 bg-white/80 hover:bg-[#8c7c6c]/10 border border-[#8c7c6c]/20 rounded flex items-center justify-center text-xs font-black text-[#8c7c6c] active:scale-95 cursor-pointer">-</button>
-                                        <span className="w-12 text-center text-xs font-mono text-[#3e2723]">{alignments.icon_y}px</span>
-                                        <button type="button" onClick={() => adjustAlignment("icon_y", 1, -50, 50)} className="w-6 h-6 bg-white/80 hover:bg-[#8c7c6c]/10 border border-[#8c7c6c]/20 rounded flex items-center justify-center text-xs font-black text-[#8c7c6c] active:scale-95 cursor-pointer">+</button>
-                                      </div>
-                                    </div>
+                                    {renderAlignmentSlider("圖標大小比例", "icon_scale", alignments, 50, 150, "%")}
+                                    {renderAlignmentSlider("圖標 X 軸位移", "icon_x", alignments, -50, 50, "px")}
+                                    {renderAlignmentSlider("圖標 Y 軸位移", "icon_y", alignments, -50, 50, "px")}
                                   </div>
                                 </div>
 
-                                {/* B. 標題調校 */}
+                                {/* B. 標籤調校 */}
+                                <div className="space-y-4">
+                                  <span className="text-[11px] font-black text-[#3e2723] block">🏷️ 標籤設定 (Tag Configs)</span>
+                                  <div className="space-y-3">
+                                    {renderAlignmentSlider("標籤字體大小", "tag_font_size", alignments, 8, 18, "px")}
+                                    {renderAlignmentSlider("標籤 X 軸位移", "tag_x", alignments, -50, 50, "px")}
+                                    {renderAlignmentSlider("標籤 Y 軸位移", "tag_y", alignments, -50, 50, "px")}
+                                  </div>
+                                </div>
+
+                                {/* C. 標題調校 */}
                                 <div className="space-y-4">
                                   <span className="text-[11px] font-black text-[#3e2723] block">📝 標題設定 (Title Configs)</span>
                                   <div className="space-y-3">
-                                    <div className="flex items-center justify-between gap-4">
-                                      <span className="text-[10px] font-semibold text-[#8c7c6c]/90">標題字體大小 (title_font_size)</span>
-                                      <div className="flex items-center gap-1.5">
-                                        <button type="button" onClick={() => adjustAlignment("title_font_size", -1, 10, 28)} className="w-6 h-6 bg-white/80 hover:bg-[#8c7c6c]/10 border border-[#8c7c6c]/20 rounded flex items-center justify-center text-xs font-black text-[#8c7c6c] active:scale-95 cursor-pointer">-</button>
-                                        <span className="w-12 text-center text-xs font-mono text-[#3e2723]">{alignments.title_font_size}px</span>
-                                        <button type="button" onClick={() => adjustAlignment("title_font_size", 1, 10, 28)} className="w-6 h-6 bg-white/80 hover:bg-[#8c7c6c]/10 border border-[#8c7c6c]/20 rounded flex items-center justify-center text-xs font-black text-[#8c7c6c] active:scale-95 cursor-pointer">+</button>
-                                      </div>
-                                    </div>
-                                    {/* X & Y */}
-                                    <div className="flex items-center justify-between gap-4">
-                                      <span className="text-[10px] font-semibold text-[#8c7c6c]/90">標題 X 軸位移 (title_x)</span>
-                                      <div className="flex items-center gap-1.5">
-                                        <button type="button" onClick={() => adjustAlignment("title_x", -1, -50, 50)} className="w-6 h-6 bg-white/80 hover:bg-[#8c7c6c]/10 border border-[#8c7c6c]/20 rounded flex items-center justify-center text-xs font-black text-[#8c7c6c] active:scale-95 cursor-pointer">-</button>
-                                        <span className="w-12 text-center text-xs font-mono text-[#3e2723]">{alignments.title_x}px</span>
-                                        <button type="button" onClick={() => adjustAlignment("title_x", 1, -50, 50)} className="w-6 h-6 bg-white/80 hover:bg-[#8c7c6c]/10 border border-[#8c7c6c]/20 rounded flex items-center justify-center text-xs font-black text-[#8c7c6c] active:scale-95 cursor-pointer">+</button>
-                                      </div>
-                                    </div>
-                                    <div className="flex items-center justify-between gap-4">
-                                      <span className="text-[10px] font-semibold text-[#8c7c6c]/90">標題 Y 軸位移 (title_y)</span>
-                                      <div className="flex items-center gap-1.5">
-                                        <button type="button" onClick={() => adjustAlignment("title_y", -1, -50, 50)} className="w-6 h-6 bg-white/80 hover:bg-[#8c7c6c]/10 border border-[#8c7c6c]/20 rounded flex items-center justify-center text-xs font-black text-[#8c7c6c] active:scale-95 cursor-pointer">-</button>
-                                        <span className="w-12 text-center text-xs font-mono text-[#3e2723]">{alignments.title_y}px</span>
-                                        <button type="button" onClick={() => adjustAlignment("title_y", 1, -50, 50)} className="w-6 h-6 bg-white/80 hover:bg-[#8c7c6c]/10 border border-[#8c7c6c]/20 rounded flex items-center justify-center text-xs font-black text-[#8c7c6c] active:scale-95 cursor-pointer">+</button>
-                                      </div>
-                                    </div>
+                                    {renderAlignmentSlider("標題字體大小", "title_font_size", alignments, 10, 28, "px")}
+                                    {renderAlignmentSlider("標題 X 軸位移", "title_x", alignments, -50, 50, "px")}
+                                    {renderAlignmentSlider("標題 Y 軸位移", "title_y", alignments, -50, 50, "px")}
                                   </div>
                                 </div>
 
-                                {/* C. 內文調校 */}
+                                {/* D. 內文調校 */}
                                 <div className="space-y-4">
                                   <span className="text-[11px] font-black text-[#3e2723] block">💬 內文設定 (Message Configs)</span>
                                   <div className="space-y-3">
-                                    <div className="flex items-center justify-between gap-4">
-                                      <span className="text-[10px] font-semibold text-[#8c7c6c]/90">內文字體大小 (message_font_size)</span>
-                                      <div className="flex items-center gap-1.5">
-                                        <button type="button" onClick={() => adjustAlignment("message_font_size", -1, 10, 20)} className="w-6 h-6 bg-white/80 hover:bg-[#8c7c6c]/10 border border-[#8c7c6c]/20 rounded flex items-center justify-center text-xs font-black text-[#8c7c6c] active:scale-95 cursor-pointer">-</button>
-                                        <span className="w-12 text-center text-xs font-mono text-[#3e2723]">{alignments.message_font_size}px</span>
-                                        <button type="button" onClick={() => adjustAlignment("message_font_size", 1, 10, 20)} className="w-6 h-6 bg-white/80 hover:bg-[#8c7c6c]/10 border border-[#8c7c6c]/20 rounded flex items-center justify-center text-xs font-black text-[#8c7c6c] active:scale-95 cursor-pointer">+</button>
-                                      </div>
-                                    </div>
-                                    {/* X & Y */}
-                                    <div className="flex items-center justify-between gap-4">
-                                      <span className="text-[10px] font-semibold text-[#8c7c6c]/90">內文 X 軸位移 (message_x)</span>
-                                      <div className="flex items-center gap-1.5">
-                                        <button type="button" onClick={() => adjustAlignment("message_x", -1, -50, 50)} className="w-6 h-6 bg-white/80 hover:bg-[#8c7c6c]/10 border border-[#8c7c6c]/20 rounded flex items-center justify-center text-xs font-black text-[#8c7c6c] active:scale-95 cursor-pointer">-</button>
-                                        <span className="w-12 text-center text-xs font-mono text-[#3e2723]">{alignments.message_x}px</span>
-                                        <button type="button" onClick={() => adjustAlignment("message_x", 1, -50, 50)} className="w-6 h-6 bg-white/80 hover:bg-[#8c7c6c]/10 border border-[#8c7c6c]/20 rounded flex items-center justify-center text-xs font-black text-[#8c7c6c] active:scale-95 cursor-pointer">+</button>
-                                      </div>
-                                    </div>
-                                    <div className="flex items-center justify-between gap-4">
-                                      <span className="text-[10px] font-semibold text-[#8c7c6c]/90">內文 Y 軸位移 (message_y)</span>
-                                      <div className="flex items-center gap-1.5">
-                                        <button type="button" onClick={() => adjustAlignment("message_y", -1, -50, 50)} className="w-6 h-6 bg-white/80 hover:bg-[#8c7c6c]/10 border border-[#8c7c6c]/20 rounded flex items-center justify-center text-xs font-black text-[#8c7c6c] active:scale-95 cursor-pointer">-</button>
-                                        <span className="w-12 text-center text-xs font-mono text-[#3e2723]">{alignments.message_y}px</span>
-                                        <button type="button" onClick={() => adjustAlignment("message_y", 1, -50, 50)} className="w-6 h-6 bg-white/80 hover:bg-[#8c7c6c]/10 border border-[#8c7c6c]/20 rounded flex items-center justify-center text-xs font-black text-[#8c7c6c] active:scale-95 cursor-pointer">+</button>
-                                      </div>
-                                    </div>
+                                    {renderAlignmentSlider("內文字體大小", "message_font_size", alignments, 10, 20, "px")}
+                                    {renderAlignmentSlider("內文 X 軸位移", "message_x", alignments, -50, 50, "px")}
+                                    {renderAlignmentSlider("內文 Y 軸位移", "message_y", alignments, -50, 50, "px")}
                                   </div>
                                 </div>
 
-                                {/* D. 按鈕組調校 */}
-                                <div className="space-y-4">
+                                {/* E. 按鈕組調校 */}
+                                <div className="space-y-4 md:col-span-2">
                                   <span className="text-[11px] font-black text-[#3e2723] block">🔘 按鈕組設定 (Buttons Configs)</span>
-                                  <div className="space-y-3">
-                                    <div className="flex items-center justify-between gap-4">
-                                      <span className="text-[10px] font-semibold text-[#8c7c6c]/90">按鈕組 X 軸位移 (buttons_x)</span>
-                                      <div className="flex items-center gap-1.5">
-                                        <button type="button" onClick={() => adjustAlignment("buttons_x", -1, -50, 50)} className="w-6 h-6 bg-white/80 hover:bg-[#8c7c6c]/10 border border-[#8c7c6c]/20 rounded flex items-center justify-center text-xs font-black text-[#8c7c6c] active:scale-95 cursor-pointer">-</button>
-                                        <span className="w-12 text-center text-xs font-mono text-[#3e2723]">{alignments.buttons_x}px</span>
-                                        <button type="button" onClick={() => adjustAlignment("buttons_x", 1, -50, 50)} className="w-6 h-6 bg-white/80 hover:bg-[#8c7c6c]/10 border border-[#8c7c6c]/20 rounded flex items-center justify-center text-xs font-black text-[#8c7c6c] active:scale-95 cursor-pointer">+</button>
-                                      </div>
-                                    </div>
-                                    <div className="flex items-center justify-between gap-4">
-                                      <span className="text-[10px] font-semibold text-[#8c7c6c]/90">按鈕組 Y 軸位移 (buttons_y)</span>
-                                      <div className="flex items-center gap-1.5">
-                                        <button type="button" onClick={() => adjustAlignment("buttons_y", -1, -50, 50)} className="w-6 h-6 bg-white/80 hover:bg-[#8c7c6c]/10 border border-[#8c7c6c]/20 rounded flex items-center justify-center text-xs font-black text-[#8c7c6c] active:scale-95 cursor-pointer">-</button>
-                                        <span className="w-12 text-center text-xs font-mono text-[#3e2723]">{alignments.buttons_y}px</span>
-                                        <button type="button" onClick={() => adjustAlignment("buttons_y", 1, -50, 50)} className="w-6 h-6 bg-white/80 hover:bg-[#8c7c6c]/10 border border-[#8c7c6c]/20 rounded flex items-center justify-center text-xs font-black text-[#8c7c6c] active:scale-95 cursor-pointer">+</button>
-                                      </div>
-                                    </div>
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {renderAlignmentSlider("按鈕組 X 軸位移", "buttons_x", alignments, -50, 50, "px")}
+                                    {renderAlignmentSlider("按鈕組 Y 軸位移", "buttons_y", alignments, -50, 50, "px")}
                                   </div>
                                 </div>
                               </div>
