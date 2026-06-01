@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import "./globals.css";
 import FloatingDock from "@/components/morning-sketch/FloatingDock";
+import ArtOrnament from "@/components/morning-sketch/ArtOrnament";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -21,14 +22,17 @@ export default function RootLayout({
   return (
     <html lang="zh-TW" data-style="A" className={`${geistSans.variable} h-full antialiased`}>
       <body 
-        className="min-h-full flex flex-col cyber-dots text-[#5d4037] relative"
+        className="min-h-full flex flex-col text-[#5d4037] relative"
         style={{
           background: "var(--theme-bg-gradient)",
           fontFamily: "var(--font-sans), sans-serif"
         }}
       >
-        <main className="flex-1">{children}</main>
-        <footer className="text-center py-4 text-gray-600 text-sm pb-24">
+        {/* 全站底層藝術裝飾 */}
+        <ArtOrnament />
+
+        <main className="flex-1 relative z-10">{children}</main>
+        <footer className="text-center py-4 text-gray-600 text-sm pb-24 relative z-10">
           © 2026 OW Social · 找到你的最佳特工戰友
         </footer>
         {/* 全局常駐的高質感毛玻璃懸浮導航列 */}
