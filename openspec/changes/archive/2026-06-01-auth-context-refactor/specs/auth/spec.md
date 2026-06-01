@@ -23,13 +23,3 @@
 - **THEN** `authLoading` 為 `true`
 - **AND** profile 頁的 LoginModal `show={!authLoading && !user}` 評估為 `false`（不顯示）
 
-## MODIFIED Requirements
-
-### Requirement: TopBar 登入狀態顯示（原 auth-topbar-unification）
-系統 **SHALL** 在三頁右上角顯示統一的 TopBar，**MODIFIED** 為：TopBar **MUST** 使用 `useAuth()` 取得 user state，而非自行建立 Supabase 訂閱。
-
-#### Scenario: TopBar 無本地 auth 訂閱
-- **WHEN** TopBar 元件 mount
-- **THEN** TopBar 呼叫 `useAuth()` 取得 `user`
-- **AND** TopBar 不建立任何 `onAuthStateChange` 訂閱
-- **AND** Google 登入按鈕與登出按鈕功能不變

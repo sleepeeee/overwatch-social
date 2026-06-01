@@ -99,3 +99,26 @@ TBD - created by archiving change google-oauth-supabase-auth. Update Purpose aft
 - **THEN** 系統 SHALL 仍依舊 JWT 判定（banner 暫不顯示）
 - **AND** 文件 SHALL 註明使用者須重新登入或等待 token 刷新後生效
 
+### Requirement: 全域 AuthContext 單一訂閱
+系統 **SHALL** 透過單一 `AuthProvider`（Client Component）在 `layout.tsx` 層管理 Supabase auth state，且整個 app 執行期間 **MUST** 只存在一個 `onAuthStateChange` 訂閱。
+
+#### Scenario: 所有頁面共享同一 auth state
+- **WHEN** 使用者在任何頁面（`/`、`/browse`、`/profile`）與 app 互動
+- **THEN** TopBar、profile 頁、browse 頁均從同一 `AuthProvider` 取得 `user` 與 `authLoading`
+- **AND** 不存在任何頁面級別的獨立 `onAuthStateChange` 訂閱
+
+---
+
+### Requirement: AuthProvider 提供 useAuth hook
+系統 **SHALL** 提供 `useAuth()` hook，回傳 `{ user: User | null, authLoading: boolean }`，供所有 Client Component 消費 auth state。
+
+#### Scenario: 未登入狀態的 authLoading 初始值
+- **WHEN** AuthProvider 完成初始化（`getUser()` 回傳）
+- **THEN** `authLoading` 設為 `false`
+- **AND** `user` 設為 `null`（未登入）或有效 `User` 物件（已登入）
+
+#### Scenario: hydration 期間不顯示 LoginModal
+- **WHEN** AuthProvider 尚未完成 `getUser()` 呼叫
+- **THEN** `authLoading` 為 `true`
+- **AND** profile 頁的 LoginModal `show={!authLoading && !user}` 評估為 `false`（不顯示）
+

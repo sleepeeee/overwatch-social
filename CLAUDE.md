@@ -124,6 +124,8 @@ public_profiles view：公開可查，DB 層已過濾 is_tag_visible=false 的�
 - ADR-02：app_metadata developer 角色（vs env 白名單）
 - ADR-03：LoginModal 共用元件
 - ADR-04：hero_alignments DB read + static fallback
+- ADR-05：TopBar 統一 Client Component（auth-topbar-unification）→ .rsx/decisions/ADR-02
+- ADR-06：AuthContext at layout + useAuth hook（auth-context-refactor）→ .rsx/decisions/ADR-03
 
 ## 已知 Dead Code（程式碼正確但未掛載）
 - src/components/Navbar.tsx：有完整登入/登出，未掛載
