@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Compass, Users, LogOut } from "lucide-react";
+import { Sparkles, Compass, Users, LogOut, Moon } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import type { User } from "@supabase/supabase-js";
 
@@ -81,14 +81,12 @@ export default function Home() {
         {/* 🌸 [TopBar] 全局頂部導航列：左側 Logo，右側無比吸睛的 Google 登入 */}
         <div className="w-full flex items-center justify-between mb-10 z-30 relative animate-[fadeIn_0.6s_ease-out]">
           <div className="flex items-center gap-3">
-            {/* 精美 SVG 蓮花 Mini Logo */}
-            <div className="w-9 h-9 rounded-full bg-white/30 flex items-center justify-center border border-white/40 shadow-sm">
-              <svg viewBox="0 0 100 100" className="w-4 h-4 text-[#8c7c6c]/80">
-                <path d="M 50,75 C 34,68 36,55 50,35 C 64,55 66,68 50,75 Z" fill="currentColor" />
-              </svg>
+            {/* 精美月亮 Mini Logo */}
+            <div className="w-9 h-9 rounded-full bg-white/30 flex items-center justify-center border border-white/40 shadow-sm hover:rotate-12 hover:scale-105 transition-all duration-500">
+              <Moon className="w-4 h-4 text-[#3e2723] fill-[#3e2723]/10" />
             </div>
-            <span className="text-[10px] font-bold tracking-widest text-[#3e2723] uppercase">
-              LOTUS
+            <span className="text-[10px] font-bold tracking-widest text-[#3e2723] uppercase whitespace-nowrap">
+              After Midnight
             </span>
           </div>
 
@@ -136,8 +134,9 @@ export default function Home() {
             className="relative overflow-hidden p-8 md:p-10 glass-panel organic-corners animate-[fadeInUp_0.8s_ease-out] w-full flex flex-col md:flex-row items-center justify-between gap-8 min-h-[260px]"
           >
             <div className="space-y-4.5 max-w-xl text-center md:text-left relative z-10">
-              <Badge className="bg-[#82b7cc]/12 text-[#82b7cc] border border-[#82b7cc]/25 px-3 py-1 text-[10.5px] font-bold tracking-widest uppercase rounded-full">
-                🌿 LOTUS COOPERATION
+              <Badge className="bg-[#82b7cc]/15 text-[#2a454d] border border-[#82b7cc]/35 px-3 py-1 text-[10.5px] font-bold tracking-widest uppercase rounded-full flex items-center gap-1.5 shadow-[0_1px_8px_rgba(130,183,204,0.05)]">
+                <Moon size={11} className="shrink-0 text-[#2a454d] fill-[#2a454d]/10" />
+                永遠都發生在午夜之後
               </Badge>
               
               <h2 className="text-3xl sm:text-4xl font-bold tracking-wider leading-tight text-[#3e2723]">
