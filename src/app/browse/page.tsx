@@ -42,148 +42,30 @@ export default function BrowsePage() {
       data-theme-expert="true"
       className="max-w-6xl mx-auto px-4 py-8 space-y-6 relative min-h-screen overflow-x-hidden"
     >
-      {/* 🗾 Version B 和紙底紋層 */}
-      <div className="washi-paper-texture" aria-hidden="true" />
+
 
       <TopBar />
 
-      {/* 💗 Premium 水彩裝飾流體背景 (右上與左下雙層暈染) */}
-      <div className="watercolor-mist-bg top-[-10%] right-[-10%] animate-[mistFloatA_20s_infinite_alternate]" />
-      <div className="watercolor-mist-bg bottom-[5%] left-[-15%] scale-125 animate-[mistFloatB_25s_infinite_alternate]" />
-
-      {/* 🌿 D1 浮動竹葉 - 右側遠景裝飾 */}
-      <div
-        className="ms-d1-floating-leaf-bamboo ms-float-slow pointer-events-none select-none"
-        style={{
-          position: 'absolute',
-          top: '8%',
-          right: '-2%',
-          width: '110px',
-          height: '180px',
-          opacity: 0.55,
-          zIndex: 0,
-        }}
-      />
-
-      {/* 🌿 D1 浮動柳葉 - 左下角裝飾 */}
-      <div
-        className="ms-d1-floating-leaf-willow ms-float-slow pointer-events-none select-none"
-        style={{
-          position: 'absolute',
-          bottom: '15%',
-          left: '-1%',
-          width: '80px',
-          height: '140px',
-          opacity: 0.4,
-          zIndex: 0,
-          animationDelay: '3s',
-        }}
-      />
-
-      {/* 🪶 D1 羽毛 - 右上角遠景（版本A獨有） */}
-      <div
-        className="ms-d1-floating-feather-ink ms-float-slow pointer-events-none select-none"
-        style={{
-          position: 'absolute',
-          top: '3%',
-          right: '-3%',
-          width: '90px',
-          height: '170px',
-          opacity: 0.42,
-          zIndex: 0,
-          animationDelay: '6s',
-          willChange: 'transform',
-        }}
-      />
-
-      {/* 🍃 D1 左中段柳葉（版本A獨有） */}
-      <div
-        className="ms-d1-floating-leaf-willow ms-float-slow pointer-events-none select-none"
-        style={{
-          position: 'absolute',
-          top: '38%',
-          left: '-1.5%',
-          width: '65px',
-          height: '115px',
-          opacity: 0.32,
-          zIndex: 0,
-          animationDelay: '0s',
-          willChange: 'transform',
-        }}
-      />
-
-      {/* 💧 D2 漣漪光圈 - 右側中段背景裝飾 */}
-      <div
-        className="ms-d2-circle-ripple-accent ms-ripple-hover pointer-events-none select-none"
-        style={{
-          position: 'absolute',
-          top: '30%',
-          right: '5%',
-          width: '180px',
-          height: '180px',
-          opacity: 0.35,
-          zIndex: 0,
-        }}
-      />
+      {/* 🥞 視覺總監指定：首頁同款 Soft UI + Organic Shapes 背景裝飾層 (只用 ms-blob 類別，不新增漸變色與 icon) */}
+      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden select-none">
+        <div 
+          className="ms-blob ms-blob-sand absolute top-[-5%] right-[-5%] w-[60vw] h-[60vw] max-w-[650px] max-h-[650px] opacity-[0.25] animate-mist-a" 
+          aria-hidden="true"
+        />
+        <div 
+          className="ms-blob ms-blob-yellow absolute bottom-[10%] left-[-8%] w-[65vw] h-[65vw] max-w-[700px] max-h-[700px] opacity-[0.22] animate-mist-b" 
+          aria-hidden="true"
+        />
+        <div 
+          className="ms-blob ms-blob-rose absolute top-[35%] left-[20%] w-[50vw] h-[50vw] max-w-[500px] max-h-[500px] opacity-[0.16] animate-mist-c" 
+          aria-hidden="true"
+        />
+      </div>
 
       {/* 🌸 莫蘭迪紙感手稿標頭 - 垂直層級重構 */}
-      <div className="text-left space-y-2 relative z-10 animate-[fadeIn_0.5s_ease-out] pb-1 select-none">
+      <div className="text-left space-y-2 relative z-10 animate-[fadeIn_0.5s_ease-out] pb-1 select-none mb-12">
         
-        {/* C2 星火裝飾 - 標題右側角落 */}
-        <div
-          className="ms-c2-accent-spark-sand pointer-events-none select-none"
-          style={{
-            position: 'absolute',
-            top: '0px',
-            right: '160px',
-            width: '36px',
-            height: '36px',
-            opacity: 0.7,
-          }}
-        />
-        {/* C2 小星形裝飾 - 副標旁 */}
-        <div
-          className="ms-c2-accent-tiny-star-blue pointer-events-none select-none"
-          style={{
-            position: 'absolute',
-            top: '10px',
-            right: '120px',
-            width: '22px',
-            height: '22px',
-            opacity: 0.55,
-          }}
-        />
-
-        {/* 💛 Version B: 金粉菱形大（標題左上） */}
-        <div
-          className="ms-c2-accent-diamond-sand gold-dust-diamond-lg pointer-events-none select-none"
-          style={{
-            position: 'absolute',
-            top: '-4px',
-            left: '0px',
-            zIndex: 2,
-          }}
-        />
-        {/* 💛 Version B: 金粉星火中（標題右側） */}
-        <div
-          className="ms-c2-accent-spark-sand gold-dust-diamond-md pointer-events-none select-none"
-          style={{
-            position: 'absolute',
-            top: '8px',
-            right: '180px',
-            zIndex: 2,
-          }}
-        />
-        {/* 💛 Version B: 金粉小星（h1 文字右方） */}
-        <div
-          className="ms-c2-accent-tiny-star-sand gold-dust-diamond-sm pointer-events-none select-none"
-          style={{
-            position: 'absolute',
-            top: '20px',
-            left: '230px',
-            zIndex: 2,
-          }}
-        />
+        {/* 📰 Editorial Lobby Heading */}
 
         <div className="text-[10px] md:text-[11px] font-black uppercase tracking-[0.2em] text-[#8c7c6c]/60 flex items-center gap-1.5">
           <span>Lobby Directory</span>
@@ -205,43 +87,13 @@ export default function BrowsePage() {
         </p>
       </div>
 
-      {/* ─── Version B 禪境分隔線 ─── */}
-      <div className="kasumi-zen-divider relative z-10" />
-
-      {/* 🌊 B1 波浪分隔線（版本A獨有） */}
-      <div className="ms-wave-divider-enhanced mt-3 -mx-4" />
+      {/* 📰 Editorial Breeze Line */}
+      <div className="editorial-breeze-line relative z-10 my-4" />
 
       {/* 🔍 獨立太空艙搜尋層 (Capsule Search Box) */}
-      <div className="relative w-full max-w-2xl mx-auto z-10">
-        {/* 🫧 C1 有機圓形 - 搜尋框左側（版本A獨有） */}
-        <div
-          className="ms-c1-organic-circle-blue pointer-events-none select-none"
-          style={{
-            position: 'absolute',
-            left: '-18px',
-            top: '50%',
-            transform: 'translateY(-50%)',
-            width: '52px',
-            height: '52px',
-            opacity: 0.55,
-            zIndex: 1,
-          }}
-        />
-        {/* 💧 Version B: 大漣漪背景（禪境） */}
-        <div
-          className="ms-d2-circle-ripple-accent pointer-events-none select-none"
-          style={{
-            position: 'absolute',
-            left: '50%',
-            top: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: '240px',
-            height: '240px',
-            opacity: 0.10,
-            zIndex: 0,
-          }}
-        />
-        <div className="relative w-full bg-white/45 backdrop-blur-2xl border-2 border-white/70 rounded-[24px] p-1.5 shadow-[0_15px_35px_-20px_rgba(140,124,108,0.15),inset_0_1.5px_2.5px_rgba(255,255,255,0.9)] focus-within:border-[#82b7cc]/60 transition-all duration-300 flex items-center group/search">
+      <div className="relative w-full max-w-2xl mx-auto z-10 my-10">
+        {/* 🔍 Search Input Capsule Container */}
+        <div className="relative w-full bg-[#fefcf8]/90 border border-[#8c7c6c]/18 rounded-full p-1.5 shadow-[0_20px_50px_rgba(140,124,108,0.04),inset_0_1px_0_rgba(255,255,255,0.95)] focus-within:border-[#82b7cc]/50 transition-all duration-300 flex items-center group/search relative z-10">
           <Search className="ml-3.5 text-[#8c7c6c]/70 transition-colors shrink-0 group-focus-within/search:text-[#82b7cc]" size={18} />
           <Input
             type="text"
@@ -263,7 +115,7 @@ export default function BrowsePage() {
       </div>
 
       {/* 🥞 獨立分區 Tab Pills 軌道 */}
-      <div className="flex flex-wrap gap-2.5 justify-center md:justify-start relative z-10 w-full animate-[fadeIn_0.5s_ease-out] relative">
+      <div className="flex flex-wrap gap-3.5 justify-center md:justify-start relative z-10 w-full animate-[fadeIn_0.5s_ease-out] my-10 relative">
         {gameTabs.map((game) => {
           const isSelected = activeGame === game.id;
           return (
@@ -283,20 +135,6 @@ export default function BrowsePage() {
             </button>
           );
         })}
-        {/* 💧 D2 漣漪 - Tab 右端（版本A獨有） */}
-        <div
-          className="ms-d2-circle-ripple-accent pointer-events-none select-none"
-          style={{
-            position: 'absolute',
-            right: '-8px',
-            top: '50%',
-            transform: 'translateY(-50%)',
-            width: '110px',
-            height: '110px',
-            opacity: 0.22,
-            zIndex: 0,
-          }}
-        />
       </div>
 
       {/* 🚀 子廣場元件常駐 DOM 控制，消除 unmount 詭異 Loading 動畫 */}

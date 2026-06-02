@@ -139,7 +139,14 @@ export default function OWCard({
   };
 
   return (
-    <div className="relative w-full max-w-[420px] mx-auto p-5 overflow-hidden flex flex-col justify-between group/card morning-sketch-card" style={{ fontFamily: "var(--font-sans), sans-serif" }}>
+    <div className="relative w-full max-w-[420px] mx-auto p-5 overflow-hidden flex flex-col justify-between group/card floating-paper-card" style={{ fontFamily: "var(--font-sans), sans-serif" }}>
+      {/* 🥞 背景淡淡壓印 Overwatch Symbol (單色、低透明、細線、不可點擊) */}
+      <div className="absolute right-[-20px] bottom-[-20px] w-[180px] h-[180px] text-[#8c7c6c]/3 pointer-events-none select-none z-0">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" className="w-full h-full">
+          <path d="M12 2a10 10 0 0 1 7.54 16.59l-3.23-3.23A5.5 5.5 0 0 0 12 7.5a5.5 5.5 0 0 0-4.31 7.86L4.46 18.59A10 10 0 0 1 12 2z" />
+          <path d="M7.78 19.34a7.5 7.5 0 0 0 8.44 0L12 15.12z" />
+        </svg>
+      </div>
       
       <div className="flex justify-between items-center border-b border-dashed border-[#8c7c6c]/15 pb-3 mb-4 gap-2">
         <span className="text-[#8c7c6c]/80 font-extrabold text-[11px] sm:text-xs tracking-widest uppercase whitespace-nowrap shrink-0">Overwatch | 鬥陣特工</span>
@@ -194,11 +201,6 @@ export default function OWCard({
           
           return (
             <div key={index} className="relative flex-1 h-full border-r border-dashed border-[#8c7c6c]/15 last:border-r-0 overflow-hidden group/hero flex flex-col justify-between">
-              {/* 晶圓裁切對角線標記 */}
-              <div className="wafer-mark-tl pointer-events-none" />
-              <div className="wafer-mark-tr pointer-events-none" />
-              <div className="wafer-mark-bl pointer-events-none" />
-              <div className="wafer-mark-br pointer-events-none" />
               {heroInfo ? (
                 <>
                   {/* 🌟 每個卡槽獨立渲染專屬極簡幾何背景 */}
@@ -246,24 +248,21 @@ export default function OWCard({
 
       <div className="flex flex-wrap justify-center gap-2 mb-4 px-1 min-h-[34px] items-center">
         {tags.length > 0 ? (
-          tags.map((tagText, idx) => {
-            const rotation = idx === 0 ? '-rotate-1' : idx === 1 ? 'rotate-1' : 'rotate-0';
-            return (
-              <span
-                key={tagText}
-                className={`inline-flex items-center text-xs font-black px-3 py-1 rounded-lg border shadow-sm transition-all duration-300 hover:scale-105 hover:rotate-0 ${rotation} ${getTagType(tagText)}`}
-                style={{ fontFamily: "var(--font-sans), sans-serif" }}
-              >
-                {tagText.startsWith('#') ? tagText : `#${tagText}`}
-              </span>
-            );
-          })
+          tags.map((tagText) => (
+            <span
+              key={tagText}
+              className={`inline-flex items-center text-xs font-black px-3 py-1 rounded-full border shadow-sm transition-all duration-300 hover:scale-[1.03] ${getTagType(tagText)}`}
+              style={{ fontFamily: "var(--font-sans), sans-serif" }}
+            >
+              {tagText.startsWith('#') ? tagText : `#${tagText}`}
+            </span>
+          ))
         ) : (
           <span className="text-xs text-[#8c7c6c]/60 italic font-bold">尚未設定標籤</span>
         )}
       </div>
 
-      <div className="relative bg-[#fcf9f2]/90 border border-[#8c7c6c]/10 rounded-2xl p-3.5 mb-4 flex-grow flex flex-col justify-between shadow-[inset_0_1px_4px_rgba(140,124,108,0.02)]">
+      <div className="relative bg-[#faf8f5]/95 border border-[#8c7c6c]/10 rounded-2xl p-3.5 mb-4 flex-grow flex flex-col justify-between shadow-[inset_0_1px_4px_rgba(140,124,108,0.02)]">
         <div className="text-[#8c7c6c] text-xs font-bold flex gap-1 items-start mb-2">
           <span className="text-sm leading-none">💬</span>
           <span className="text-[11px] uppercase tracking-widest text-[#8c7c6c]/80 font-black">留言</span>
@@ -326,7 +325,7 @@ export default function OWCard({
             return (
               <div 
                 key={platform} 
-                className={`w-8 h-8 rounded-full flex items-center justify-center shadow-sm border border-[#8c7c6c]/10 transition-all duration-300 hover:scale-110 select-none social-glow-btn social-glow-btn-${platform} ${getSocialIconStyle(platform)}`}
+                className={`w-8 h-8 rounded-full flex items-center justify-center shadow-sm border border-[#8c7c6c]/10 transition-all duration-300 hover:scale-110 select-none ${getSocialIconStyle(platform)}`}
                 title={`我經常使用 ${getPlatformLabel(platform)} 交流！`}
               >
                 <SocialIcon platform={platform} className="w-4 h-4" />
