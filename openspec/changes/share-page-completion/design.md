@@ -83,7 +83,14 @@ export async function getPublicProfile(userId: string): Promise<OWPlayerCard | n
 - Fallback：若無英雄選擇，用 `${NEXT_PUBLIC_SITE_URL}/images/heroes/avatars/ana.png`（最常見英雄）
 - `twitter:card = "summary"`（400x400 頭像圖片）
 
-**env var 要求**：`NEXT_PUBLIC_SITE_URL=https://overwatch-social.vercel.app` 已在 Vercel 設定（確認）。
+**env var 要求**：`NEXT_PUBLIC_SITE_URL=https://overwatch-social.vercel.app` 已在 Vercel 設定。
+
+**`undefined` fallback 防護**：使用 `?? ""` 而非直接內插，避免 `${undefined}/images/...` 產生字面 "undefined" 字串：
+```typescript
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "";
+const ogImage = siteUrl ? `${siteUrl}/images/heroes/avatars/${heroId}.png` : undefined;
+// og:image 只在 siteUrl 存在時設定，避免壞連結
+```
 
 ### D4：layout.tsx og meta
 

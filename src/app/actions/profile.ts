@@ -32,6 +32,30 @@ export async function getMyProfile(): Promise<OWPlayerCard | null> {
   };
 }
 
+export async function getPublicProfile(userId: string): Promise<OWPlayerCard | null> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("public_profiles")
+    .select("*")
+    .eq("user_id", userId)
+    .single();
+  if (!data) return null;
+  return {
+    card_id: `card-${data.user_id}`,
+    user_id: data.user_id as string,
+    server: data.server as string,
+    battle_tag: data.battle_tag as string,
+    is_tag_visible: data.is_tag_visible as boolean,
+    selected_heroes: (data.selected_heroes as string[]) ?? [],
+    tags: (data.tags as string[]) ?? [],
+    message: (data.message as string) ?? "",
+    languages: (data.languages as string[]) ?? [],
+    mic_status: data.mic_status as OWPlayerCard["mic_status"],
+    social_channels: {},
+    mbti: (data.mbti as string) ?? undefined,
+  };
+}
+
 export async function saveProfile(card: OWPlayerCard): Promise<{ error?: string }> {
   // 伺服器端輸入驗證（防止繞過前端直接呼叫 Server Action）
   if (!card.battle_tag?.trim()) return { error: "BattleTag 不可為空" };

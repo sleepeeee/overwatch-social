@@ -22,9 +22,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const player = await getPlayer(id);
   if (!player) return { title: "玩家不存在 | OW Social" };
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "";
+  const firstHero = (player.selected_heroes as string[])?.[0] ?? "ana";
+  const ogImage = siteUrl ? `${siteUrl}/images/heroes/avatars/${firstHero}.png` : undefined;
+
   return {
     title: `${player.battle_tag} | OW Social`,
     description: player.message || "查看這位特工的遊戲名片",
+    openGraph: {
+      ...(ogImage ? { images: [{ url: ogImage }] } : {}),
+    },
   };
 }
 
@@ -76,14 +84,22 @@ export default async function PlayerDetailPage({ params }: Props) {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8 space-y-6">
-      {/* 返回按鈕 */}
-      <Link
-        href="/browse"
-        className="inline-flex items-center gap-1.5 text-[#8c7c6c] hover:text-[#5d4037] text-xs font-bold transition-colors"
-      >
-        <ArrowLeft size={14} />
-        返回廣場
-      </Link>
+      {/* 導航按鈕列 */}
+      <div className="flex items-center justify-between">
+        <Link
+          href="/browse"
+          className="inline-flex items-center gap-1.5 text-[#8c7c6c] hover:text-[#5d4037] text-xs font-bold transition-colors"
+        >
+          <ArrowLeft size={14} />
+          返回廣場
+        </Link>
+        <Link
+          href={`/share/${id}`}
+          className="inline-flex items-center gap-1.5 text-[#82b7cc] hover:text-[#5d9ab0] text-xs font-bold transition-colors"
+        >
+          分享名片 →
+        </Link>
+      </div>
 
       {/* 主卡片 */}
       <div className="glass-panel p-6 md:p-8 space-y-6">

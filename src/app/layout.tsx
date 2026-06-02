@@ -19,9 +19,18 @@ const notoSansTC = Noto_Sans_TC({
   weight: ["400", "500", "600", "700", "800", "900"],
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "";
+
 export const metadata: Metadata = {
   title: "OW Social - 鬥陣特工交友平台",
   description: "找到你的最佳隊友！鬥陣特工主題交友社群",
+  openGraph: {
+    siteName: "OW Social",
+    locale: "zh_TW",
+    type: "website",
+    ...(siteUrl ? { images: [{ url: `${siteUrl}/images/heroes/avatars/ana.png` }] } : {}),
+  },
+  twitter: { card: "summary" },
 };
 
 export default function RootLayout({

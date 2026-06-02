@@ -42,9 +42,9 @@ delta: replace
 - THEN og:image URL 包含完整 domain（例如 `https://overwatch-social.vercel.app/images/heroes/avatars/ana.png`）
 - AND 在部署後，curl 請求 `/share/{id}` 的 HTML 中可查到含 domain 的 og:image meta tag
 
-#### Scenario: og:image NEXT_PUBLIC_SITE_URL 前置條件
-- WHEN `NEXT_PUBLIC_SITE_URL` 未設定（空字串）
-- THEN og:image 為相對路徑（`/images/...`）——此為開發環境可接受的降級，不影響功能
+#### Scenario: NEXT_PUBLIC_SITE_URL 未設定時 og:image 省略
+- WHEN `NEXT_PUBLIC_SITE_URL` 未設定（undefined 或空字串）
+- THEN generateMetadata 的 og:image 欄位省略（不設定壞連結）
 - AND 生產環境（Vercel）MUST 設定此 env var
 
 ### Requirement: share 頁面顯示真實名片
@@ -58,6 +58,11 @@ delta: replace
 #### Scenario: 導出圖片功能保留
 - WHEN 使用者點擊「保存此卡片為圖片」
 - THEN 可下載包含名片內容的 PNG 圖片
+
+#### Scenario: social_channels = {} 型別相容性
+- WHEN `getPublicProfile` 回傳 `social_channels: {}`
+- THEN `OWCard` 元件接受 empty object（`social_channels` 預設值為 `{}`）
+- AND TypeScript 編譯無 error（`OWCard` 的 `social_channels` 欄位允許空物件）
 
 ### Requirement: layout.tsx 全站 og meta
 `layout.tsx` SHALL 包含全站 openGraph 預設設定（siteName / locale / type / 預設圖片）。
