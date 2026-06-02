@@ -1,20 +1,5 @@
 ## ADDED Requirements
 
-### Requirement: VAL/LoL 廣場誠實標示
-系統 **SHALL** 在 Valorant 和 League of Legends 廣場 tab 中，以「敬請期待」畫面取代假玩家卡片，不得渲染任何 Mock 玩家資料。
-
-#### Scenario: 點選 Valorant tab
-- **WHEN** 使用者在廣場點選「特戰英豪 Valorant」tab
-- **THEN** 系統 SHALL 顯示「特戰英豪廣場」標題 + 說明文字 + 「敬請期待」badge
-- **AND** 系統 SHALL NOT 渲染任何玩家名片或模擬資料
-
-#### Scenario: 點選 LoL tab
-- **WHEN** 使用者在廣場點選「英雄聯盟 League of Legends」tab
-- **THEN** 系統 SHALL 顯示「英雄聯盟廣場」標題 + 說明文字 + 「敬請期待」badge
-- **AND** 系統 SHALL NOT 渲染任何玩家名片或模擬資料
-
----
-
 ### Requirement: 廣場示範模式明確告知
 當鬥陣特工廣場顯示示範資料（Supabase 空資料或連線失敗）時，系統 **SHALL** 顯示告知橫幅。
 

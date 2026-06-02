@@ -13,23 +13,23 @@
 
 ## What Changes
 
-1. **ValorantSquare.tsx / LoLSquare.tsx**：移除所有 MOCK_*_PLAYERS 陣列，替換為誠實的「敬請期待」畫面（icon + 說明文字 + badge）
-2. **刪除 Navbar.tsx + AppSidebar.tsx**：確認無任何 import 後直接刪除
-3. **OverwatchSquare.tsx**：加入 `isShowingMockData` state，連線失敗或空資料時顯示提示條
-4. **useDevMode.ts**：移除獨立 onAuthStateChange 訂閱，改用 `useAuth()` 讀取 user
+1. **刪除 Navbar.tsx + AppSidebar.tsx**：確認無任何 import 後直接刪除
+2. **OverwatchSquare.tsx**：加入 `isShowingMockData` state，連線失敗或空資料時顯示提示條
+3. **useDevMode.ts**：移除獨立 onAuthStateChange 訂閱，改用 `useAuth()` 讀取 user
+
+> **注意**：VAL/LoL 假卡片暫時保留（當前作為測試用途），不在本 change 範疇。
 
 ## Capabilities After Change
 
-- VAL/LoL tab 清楚告知用戶「這個功能還在開發」，不再有誤導性的假卡片
 - Dead code 清除，維護負擔降低
 - 廣場在示範模式時有明確告知，真實資料出現後自動消失
 - auth 訂閱從 3 個減少到 2 個（AuthContext + TopBar 的 Google login 動作）
 
 ## Impact
 
-- **破壞性**：零（VAL/LoL tabs 外觀改變，但功能本就是空的）
+- **破壞性**：零
 - **刪除文件**：2 個（Navbar.tsx、AppSidebar.tsx）
-- **修改文件**：3 個（ValorantSquare、LoLSquare、OverwatchSquare、useDevMode）
+- **修改文件**：2 個（OverwatchSquare.tsx、useDevMode.ts）
 
 ## Related REFs
 
