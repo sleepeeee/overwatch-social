@@ -523,112 +523,90 @@ html, body {
   }
 }
 
-/* 1.2 表單輸入控制項與可編輯區域豁免，確保正常編輯 */
-input, 
-textarea, 
-[contenteditable="true"],
-.selectable {
-  -webkit-user-select: text;
-  -moz-user-select: text;
-  -ms-user-select: text;
-  user-select: text;
-}
-
-/* 2.2 關鍵視覺圖片防拖曳保護 */
-img, 
-.no-drag,
-.ow-card,
-.glass-panel {
-  -webkit-user-drag: none;
-  -khtml-user-drag: none;
-  -moz-user-drag: none;
-  -o-user-drag: none;
-  user-drag: none;
-}
-
-/* 🎨 CSS SKILL (Premium) 風格對比樣式微調 */
 [data-theme-expert="true"] .ow-glass-panel {
-  background: rgba(255, 255, 255, 0.48) !important;
-  backdrop-filter: blur(28px) saturate(110%);
-  border: 1px solid rgba(255, 255, 255, 0.6) !important;
+  background: #fefcf8 !important;
+  border: 1px solid rgba(140, 124, 108, 0.12) !important;
   box-shadow: 
-    0 22px 60px -15px rgba(140, 124, 108, 0.08), 
-    0 0 45px rgba(130, 183, 204, 0.05),
-    inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
-  border-radius: 28px !important;
+    0 20px 50px rgba(140, 124, 108, 0.04), 
+    0 2px 8px rgba(140, 124, 108, 0.015),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+  border-radius: 24px !important;
 }
  
 [data-theme-expert="true"] .group\/search:focus-within input {
-  border-color: rgba(130, 183, 204, 0.65) !important;
+  border-color: rgba(130, 183, 204, 0.4) !important;
   box-shadow: 
-    0 12px 30px -10px rgba(130, 183, 204, 0.18),
-    0 0 15px rgba(130, 183, 204, 0.1) !important;
+    0 12px 30px -10px rgba(130, 183, 204, 0.15) !important;
 }
  
 [data-theme-expert="true"] .browse-tab-active {
-  background: linear-gradient(135deg, rgba(130, 183, 204, 0.22) 0%, rgba(245, 212, 107, 0.15) 60%, rgba(255, 255, 255, 0.8) 100%) !important;
-  border-color: rgba(130, 183, 204, 0.48) !important;
+  background: #fefcf8 !important;
+  border-color: rgba(130, 183, 204, 0.45) !important;
+  color: #3e2723 !important;
   box-shadow: 
-    0 16px 40px -15px rgba(130, 183, 204, 0.32),
-    inset 0 1px 1px rgba(255, 255, 255, 0.5) !important;
+    0 12px 30px -10px rgba(130, 183, 204, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+  border-bottom: 2px solid rgba(130, 183, 204, 0.5) !important;
 }
  
 [data-theme-expert="true"] .browse-tab {
-  border-radius: 1.25rem !important;
+  border-radius: 16px !important;
+  background: rgba(254, 252, 248, 0.7) !important;
+  border: 1px solid rgba(140, 124, 108, 0.12) !important;
+  box-shadow: 0 10px 30px -18px rgba(140, 124, 108, 0.18) !important;
   transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1) !important;
 }
  
 [data-theme-expert="true"] .browse-tab:hover {
   transform: translateY(-2px) !important;
-  border-color: rgba(130, 183, 204, 0.35) !important;
-  background: rgba(255, 255, 255, 0.68) !important;
+  border-color: rgba(130, 183, 204, 0.3) !important;
+  background: #fefcf8 !important;
   box-shadow: 0 12px 28px -14px rgba(140, 124, 108, 0.22) !important;
 }
  
 [data-theme-expert="true"] .browse-preview-card {
-  background: rgba(255, 255, 255, 0.45) !important;
-  backdrop-filter: blur(12px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.5) !important;
+  background: #fefcf8 !important;
+  border: 1px solid rgba(140, 124, 108, 0.12) !important;
   border-radius: 24px !important;
-  box-shadow: 0 12px 36px -15px rgba(140, 124, 108, 0.08) !important;
+  box-shadow: 0 15px 45px rgba(140, 124, 108, 0.03) !important;
   transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1) !important;
 }
  
 [data-theme-expert="true"] .browse-preview-card:hover {
   transform: translateY(-3px) !important;
-  border-color: rgba(130, 183, 204, 0.32) !important;
-  box-shadow: 0 18px 45px -12px rgba(130, 183, 204, 0.15) !important;
+  border-color: rgba(130, 183, 204, 0.25) !important;
+  box-shadow: 0 25px 55px rgba(130, 183, 204, 0.08) !important;
 }
-
-[data-theme-expert="true"] .browse-preview-card .bg-\[\#fcf9f2\]\/90 {
-  background: rgba(255, 255, 255, 0.4) !important;
-  backdrop-filter: blur(8px) !important;
-  border-color: rgba(140, 124, 108, 0.1) !important;
+ 
+[data-theme-expert="true"] .browse-preview-card .bg-\[\#faf8f5\]\/95 {
+  background: #faf8f5 !important;
+  border-color: rgba(140, 124, 108, 0.08) !important;
 }
-
+ 
 [data-theme-expert="true"] .browse-preview-card .bg-\[\#fdfaf3\]\/20 {
-  background: rgba(255, 255, 255, 0.25) !important;
-  border-color: rgba(130, 183, 204, 0.2) !important;
+  background: rgba(254, 252, 248, 0.3) !important;
+  border-color: rgba(130, 183, 204, 0.15) !important;
 }
 
 /* 🎨 Morning Sketch - 藝術家手稿畫框與晶圓對準 L 型裁切線樣式 */
 .morning-sketch-card {
-  border-radius: 38px 24px 42px 28px !important;
-  background: rgba(253, 250, 243, 0.85) !important;
-  border: 1.2px solid rgba(140, 124, 108, 0.16) !important;
+  border-radius: 36px 24px 40px 28px !important;
+  background: #fefcf8 !important;
+  border: 1px solid rgba(140, 124, 108, 0.12) !important;
   box-shadow: 
-    0 20px 48px -20px rgba(140, 124, 108, 0.1),
-    inset 0 1.5px 2px rgba(255, 255, 255, 0.9) !important;
-  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    0 20px 50px rgba(140, 124, 108, 0.04),
+    0 4px 12px rgba(140, 124, 108, 0.015),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
 .morning-sketch-card:hover {
-  transform: translateY(-4px) scale(1.01) !important;
-  border-color: rgba(130, 183, 204, 0.38) !important;
+  transform: translateY(-5px) scale(1.005) !important;
+  border-color: rgba(130, 183, 204, 0.28) !important;
   box-shadow: 
-    0 28px 60px -15px rgba(130, 183, 204, 0.18),
-    0 4px 15px -4px rgba(130, 183, 204, 0.05),
-    inset 0 1.5px 2px rgba(255, 255, 255, 0.95) !important;
+    0 30px 65px rgba(130, 183, 204, 0.08),
+    0 6px 20px rgba(140, 124, 108, 0.025),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
 }
 
 .watercolor-avatar-bg {
@@ -694,26 +672,26 @@ img,
   z-index: 5;
 }
 
-/* 🎨 Morning Sketch - 日式霞紋拉絲細線 */
-.kasumi-mist-line {
+/* 📰 Editorial - 微風紙質感細線 */
+.editorial-breeze-line {
   height: 1px;
   background: linear-gradient(90deg, 
     transparent 0%, 
-    rgba(140, 124, 108, 0.22) 15%, 
-    rgba(140, 124, 108, 0.22) 85%, 
+    rgba(140, 124, 108, 0.15) 15%, 
+    rgba(140, 124, 108, 0.15) 85%, 
     transparent 100%
   );
   position: relative;
 }
 
-.kasumi-double-line::after {
+.editorial-double-line::after {
   content: "";
   display: block;
   height: 1px;
   width: 60%;
   margin-top: 3px;
   margin-left: 20%;
-  background: linear-gradient(90deg, transparent, rgba(140, 124, 108, 0.15), transparent);
+  background: linear-gradient(90deg, transparent, rgba(140, 124, 108, 0.1), transparent);
 }
 
 :root {
@@ -866,144 +844,105 @@ img,
   background-size: contain;
 }
 
-/* ═══════════════════════════════════════════════════════════════════
-   🍃 Morning Sketch SVG - D 類：浮動動態裝飾素材（GPT 精緻版）
-   ═══════════════════════════════════════════════════════════════════ */
+/* 📰 Dreamy Morning Editorial Lobby Override */
+.editorial-paper-shadow {
+  box-shadow: 
+    0 25px 55px rgba(140, 124, 108, 0.05),
+    0 4px 15px rgba(140, 124, 108, 0.02),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+}
 
-/* D1: 浮動植物線稿（手繪葉脈） */
-.ms-d1-floating-leaf-willow {
-  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjAgMjIwIj4KICA8cGF0aCBkPSJNNjIgMTQgQzUyIDQyLDQ1IDc2LDQ4IDExMiBDNTEgMTUwLDY4IDE4MCw4NyAyMDUiCiAgICAgICAgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjOGM3YzZjIiBzdHJva2Utb3BhY2l0eT0iMC4zNCIKICAgICAgICBzdHJva2Utd2lkdGg9IjIuMSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPHBhdGggZD0iTTU4IDM1IEMzMiA1NCwyNCA4Miw0NyAxMTEgQzcwIDgzLDc5IDU4LDU4IDM1WiIKICAgICAgICBmaWxsPSIjOGM3YzZjIiBmaWxsLW9wYWNpdHk9IjAuMTYiIHN0cm9rZT0iIzhjN2M2YyIKICAgICAgICBzdHJva2Utb3BhY2l0eT0iMC4zMCIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KICA8cGF0aCBkPSJNNTEgNzIgQzQxIDc5LDM2IDg4LDM1IDk5IE01NSA5MSBDNDggOTgsNDYgMTA3LDQ4IDExNiIKICAgICAgICBmaWxsPSJub25lIiBzdHJva2U9IiM4YzdjNmMiIHN0cm9rZS1vcGFjaXR5PSIwLjIwIgogICAgICAgIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+Cjwvc3ZnPgo=");
+.browse-tab-active {
+  border-bottom: 2px solid rgba(130, 183, 204, 0.5) !important;
+  background: #fefcf8 !important;
+  color: #3e2723 !important;
+  box-shadow: 0 12px 30px -10px rgba(130, 183, 204, 0.22) !important;
+}
+
+/* 📰 Dreamy Morning Editorial Lobby Override */
+.editorial-tab-active-override {
+  border-bottom: 2px solid rgba(130, 183, 204, 0.5) !important;
+  position: relative;
+}
+
+/* 📰 Dreamy Morning Editorial Lobby Additional Classes */
+.editorial-blob {
+  position: absolute;
+  pointer-events: none;
+  z-index: 0;
   background-repeat: no-repeat;
   background-size: contain;
+  filter: blur(80px);
+  will-change: transform;
+  opacity: 0.65;
 }
 
-.ms-d1-floating-feather-ink {
-  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMzAgMjMwIj4KICA8cGF0aCBkPSJNNjYgMTggQzU0IDU0LDUxIDk2LDYxIDEzOCBDNjggMTY4LDg0IDE5MiwxMDQgMjE0IgogICAgICAgIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzhjN2M2YyIgc3Ryb2tlLW9wYWNpdHk9IjAuMzgiCiAgICAgICAgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8cGF0aCBkPSJNNjIgMjQgQzM1IDUwLDI0IDkyLDM4IDEzMCBDNDggMTU4LDcxIDE3MCw4OCAxNDkgQzEwMyAxMjcsOTkgNzksNjIgMjRaIgogICAgICAgIGZpbGw9IiM4YzdjNmMiIGZpbGwtb3BhY2l0eT0iMC4xMSIgc3Ryb2tlPSIjOGM3YzZjIgogICAgICAgIHN0cm9rZS1vcGFjaXR5PSIwLjI4IiBzdHJva2Utd2lkdGg9IjEuNiIvPgogIDxwYXRoIGQ9Ik01NyA1NSBDNDggNjQsNDIgNzQsMzggODggTTYwIDc4IEM1MCA4OCw0NSAxMDEsNDMgMTE2IE02NSAxMDEgQzU2IDExMiw1MyAxMjQsNTQgMTM4CiAgICAgICAgICAgTTcwIDYyIEM4MCA3NSw4NyA4OSw5MSAxMDQgTTczIDg4IEM4MyAxMDAsODkgMTE0LDkxIDEyOCIKICAgICAgICBmaWxsPSJub25lIiBzdHJva2U9IiM4YzdjNmMiIHN0cm9rZS1vcGFjaXR5PSIwLjE4IgogICAgICAgIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+Cjwvc3ZnPgo=");
-  background-repeat: no-repeat;
-  background-size: contain;
+.editorial-blob-a {
+  width: 800px;
+  height: 800px;
+  border-radius: 65% 35% 45% 55% / 55% 45% 65% 35%;
+  background: radial-gradient(circle at 45% 45%, rgba(245, 212, 107, 0.16) 0%, rgba(235, 220, 216, 0.06) 50%, transparent 80%);
 }
 
-.ms-d1-floating-leaf-bamboo {
-  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNTAgMjEwIj4KICA8cGF0aCBkPSJNNDIgMTg2IEM2OCAxNDUsODIgOTYsMTA2IDI1IgogICAgICAgIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzhjN2M2YyIgc3Ryb2tlLW9wYWNpdHk9IjAuMzIiCiAgICAgICAgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8cGF0aCBkPSJNMTA1IDI2IEM3OCA0Miw2MyA2Niw2OCA5NyBDMTAwIDg5LDEyMSA2MywxMDUgMjZaIgogICAgICAgIGZpbGw9IiM4YzdjNmMiIGZpbGwtb3BhY2l0eT0iMC4xMyIgc3Ryb2tlPSIjOGM3YzZjIgogICAgICAgIHN0cm9rZS1vcGFjaXR5PSIwLjMwIiBzdHJva2Utd2lkdGg9IjEuNSIvPgogIDxwYXRoIGQ9Ik03NSAxMTEgQzQ5IDEyNCwzNCAxNDUsMzYgMTc0IEM2OCAxNzAsODggMTQ0LDc1IDExMVoiCiAgICAgICAgZmlsbD0iIzhjN2M2YyIgZmlsbC1vcGFjaXR5PSIwLjEwIiBzdHJva2U9IiM4YzdjNmMiCiAgICAgICAgc3Ryb2tlLW9wYWNpdHk9IjAuMjQiIHN0cm9rZS13aWR0aD0iMS4zIi8+CiAgPHBhdGggZD0iTTkyIDU1IEM4NCA2NSw3OCA3Nyw3NSA5MSBNNTggMTM4IEM1MSAxNDYsNDYgMTU2LDQzIDE2OCIKICAgICAgICBmaWxsPSJub25lIiBzdHJva2U9IiM4YzdjNmMiIHN0cm9rZS1vcGFjaXR5PSIwLjE3IgogICAgICAgIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+Cjwvc3ZnPgo=");
-  background-repeat: no-repeat;
-  background-size: contain;
+.editorial-blob-b {
+  width: 900px;
+  height: 900px;
+  border-radius: 45% 55% 65% 35% / 60% 40% 60% 40%;
+  background: radial-gradient(circle at 50% 50%, rgba(235, 220, 216, 0.18) 0%, rgba(254, 252, 248, 0.08) 60%, transparent 100%);
 }
 
-/* D2: 圓形漣漪光圈（同心圓裝飾） */
-.ms-d2-circle-ripple-accent {
-  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNDAgMjQwIj4KICA8Y2lyY2xlIGN4PSIxMjAiIGN5PSIxMjAiIHI9IjM2IiBmaWxsPSJub25lIiBzdHJva2U9IiM4MmI3Y2MiIHN0cm9rZS1vcGFjaXR5PSIwLjMwIiBzdHJva2Utd2lkdGg9IjEuNiIvPgogIDxjaXJjbGUgY3g9IjEyMCIgY3k9IjEyMCIgcj0iNjIiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzgyYjdjYyIgc3Ryb2tlLW9wYWNpdHk9IjAuMjQiIHN0cm9rZS13aWR0aD0iMS4zIi8+CiAgPGNpcmNsZSBjeD0iMTIwIiBjeT0iMTIwIiByPSI4OCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjODJiN2NjIiBzdHJva2Utb3BhY2l0eT0iMC4xOCIgc3Ryb2tlLXdpZHRoPSIxLjEiLz4KICA8Y2lyY2xlIGN4PSIxMjAiIGN5PSIxMjAiIHI9IjExMiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjODJiN2NjIiBzdHJva2Utb3BhY2l0eT0iMC4xMiIgc3Ryb2tlLXdpZHRoPSIxIi8+CiAgPHBhdGggZD0iTTU1IDExOCBDNzUgMTEzLDkzIDExMiwxMTEgMTE2IiBmaWxsPSJub25lIiBzdHJva2U9IiM4MmI3Y2MiIHN0cm9rZS1vcGFjaXR5PSIwLjE0IiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8L3N2Zz4K");
-  background-repeat: no-repeat;
-  background-size: contain;
+.editorial-blob-c {
+  width: 700px;
+  height: 700px;
+  border-radius: 55% 45% 35% 65% / 40% 60% 50% 50%;
+  background: radial-gradient(circle at 35% 55%, rgba(130, 183, 204, 0.08) 0%, transparent 70%);
 }
 
-/* D 類動畫工具 */
-.ms-float-slow {
-  animation: ms-float-slow 8s ease-in-out infinite alternate;
-}
-
-.ms-ripple-hover {
-  transition: transform 420ms ease, opacity 420ms ease;
-}
-
-.ms-ripple-hover:hover {
-  transform: scale(1.06);
-  opacity: 0.9;
-}
-
-@keyframes ms-float-slow {
-  from { transform: translate3d(0, 0, 0) rotate(-2deg); }
-  to   { transform: translate3d(8px, -18px, 0) rotate(4deg); }
-}
-
-/* 🌿 Version A: Botanical Bloom 強化 */
-.watercolor-mist-blue { background-image: var(--ms-a1-blob-blue); }
-.watercolor-mist-sand { background-image: var(--ms-a1-blob-sand); }
-.watercolor-mist-yellow { background-image: var(--ms-a1-blob-yellow); }
-.watercolor-mist-rose { background-image: var(--ms-a1-blob-rose); }
-
-.ms-wave-divider-enhanced {
+.editorial-wave-divider {
   width: 100%;
-  height: 52px;
-  background-image: var(--ms-b1-wave-sand);
+  height: 48px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 60' preserveAspectRatio='none'%3E%3Cpath d='M0,30 Q360,60 720,30 T1440,30 L1440,60 L0,60 Z' fill='none' stroke='%238c7c6c' stroke-opacity='0.08' stroke-width='1.2'/%3E%3C/svg%3E");
   background-size: 100% 100%;
   background-repeat: no-repeat;
   pointer-events: none;
-  opacity: 0.9;
-  filter: drop-shadow(0 2px 4px rgba(140,124,108,0.08));
+  opacity: 0.8;
 }
 
-/* 🗾 Version B: Washi Zen Elite */
-
-/* 和紙底紋 - 全頁平鋪 */
-.washi-paper-texture {
-  position: absolute;
-  inset: 0;
-  background-image: var(--ms-a3-sketch-line);
-  background-size: 48px 48px;
-  background-repeat: repeat;
-  pointer-events: none;
-  opacity: 0.045;
-  z-index: 0;
+.organic-paper-panel {
+  background: #fefcf8 !important;
+  border: 1px solid rgba(140, 124, 108, 0.15) !important;
+  border-radius: 9999px !important; /* 精緻成熟 capsule 造型 */
+  box-shadow: 
+    0 20px 50px rgba(140, 124, 108, 0.04), 
+    inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
 }
 
-/* 精英玻璃卡片 */
-.elite-glass-card {
-  background: rgba(252, 249, 242, 0.38) !important;
-  backdrop-filter: blur(16px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
-  border: 1px solid rgba(245, 212, 107, 0.22) !important;
-  box-shadow:
-    0 8px 32px -8px rgba(140, 124, 108, 0.12),
-    0 2px 8px -2px rgba(130, 183, 204, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.85) !important;
+.cloud-paper-panel {
+  background: #fefcf8 !important;
+  border: 1px solid rgba(140, 124, 108, 0.12) !important;
+  border-radius: 28px !important; /* 精緻成熟 28px 圓角面板 */
+  box-shadow: 
+    0 20px 50px rgba(140, 124, 108, 0.04), 
+    0 2px 10px rgba(140, 124, 108, 0.015),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
 }
 
-/* 金粉菱形三尺寸 */
-.gold-dust-diamond-lg {
-  width: 52px; height: 52px;
-  opacity: 0.65;
-}
-.gold-dust-diamond-md {
-  width: 34px; height: 34px;
-  opacity: 0.48;
-}
-.gold-dust-diamond-sm {
-  width: 20px; height: 20px;
-  opacity: 0.35;
+.floating-paper-card {
+  border-radius: 28px !important; /* 精緻 28px 圓角 */
+  background: #fefcf8 !important;
+  border: 1px solid rgba(140, 124, 108, 0.11) !important;
+  box-shadow: 
+    0 15px 45px rgba(140, 124, 108, 0.03), 
+    0 2px 8px rgba(140, 124, 108, 0.01),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
-/* 禪境波浪分隔（更細膩） */
-.kasumi-zen-divider {
-  position: relative;
-  width: 100%;
-  height: 1px;
-  background: linear-gradient(90deg,
-    transparent 0%,
-    rgba(245, 212, 107, 0.20) 20%,
-    rgba(140, 124, 108, 0.25) 50%,
-    rgba(245, 212, 107, 0.20) 80%,
-    transparent 100%
-  );
-  margin: 12px 0;
-}
-
-.kasumi-zen-divider::after {
-  content: '';
-  display: block;
-  position: absolute;
-  top: 3px;
-  left: 15%;
-  width: 70%;
-  height: 1px;
-  background: linear-gradient(90deg,
-    transparent 0%,
-    rgba(140, 124, 108, 0.12) 40%,
-    transparent 100%
-  );
-}
-
-/* Tab 金色底條 */
-.browse-tab-active {
-  border-bottom: 2px solid rgba(245, 212, 107, 0.75) !important;
-  position: relative;
+.floating-paper-card:hover {
+  transform: translateY(-6px) scale(1.004) !important; /* 成熟精緻微幅漂浮 */
+  border-color: rgba(130, 183, 204, 0.25) !important;
+  box-shadow: 
+    0 28px 60px rgba(130, 183, 204, 0.07), 
+    0 6px 18px rgba(140, 124, 108, 0.02),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
 }

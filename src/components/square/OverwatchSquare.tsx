@@ -156,12 +156,7 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
     return isSearchMatched && isRoleMatched && isServerMatched && isMicMatched;
   });
 
-  const roleRadii: Record<string, string> = {
-    "全部": "16px 12px 14px 18px",
-    "坦克": "12px 16px 15px 13px",
-    "輸出": "15px 13px 16px 12px",
-    "支援": "13px 15px 12px 16px"
-  };
+
 
   if (!isMounted) {
     // 🛡️ [Anti-flicker] 為了防抖，我們在!isMounted時只返回一個高度為 0 的 placeholder，避免 layout jump 與 Loading 轉圈閃現！
@@ -169,47 +164,18 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
   }
 
   return (
-    <div className="space-y-6 w-full animate-[fadeIn_0.4s_ease-out] relative">
-      {/* 🌕 C1 有機圓形 - 廣場右上角（版本A獨有） */}
-      <div
-        className="ms-c1-organic-circle-yellow pointer-events-none select-none"
-        style={{
-          position: 'absolute',
-          top: '-20px',
-          right: '-10px',
-          width: '80px',
-          height: '80px',
-          opacity: 0.28,
-          zIndex: 0,
-        }}
-      />
-      {/* ✨ C2 菱形 - 廣場左上角（版本A獨有） */}
-      <div
-        className="ms-c2-accent-diamond-sand pointer-events-none select-none"
-        style={{
-          position: 'absolute',
-          top: '4px',
-          left: '4px',
-          width: '24px',
-          height: '24px',
-          opacity: 0.58,
-          zIndex: 1,
-        }}
-      />
-      {/* 🚀 獨立懸浮篩選絲帶 (Floating Filter Ribbon) */}
-      <div className="w-full bg-white/40 backdrop-blur-3xl border-2 border-white/60 rounded-[28px] p-5 md:py-4 md:px-6 shadow-[0_18px_45px_-18px_rgba(140,124,108,0.12),inset_0_1.5px_2px_rgba(255,255,255,0.85)] flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10 elite-glass-card">
+    <div className="space-y-8 w-full animate-[fadeIn_0.4s_ease-out] relative pb-36">
+      {/* 📰 Overwatch Lobby Layout */}
+      {/* 🚀 獨立懸浮篩選紙帶 (Floating Cloud Filter Ribbon) */}
+      <div className="w-full p-5 md:py-4 md:px-6 flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10 cloud-paper-panel">
         
-        {/* 🌸 [Aesthetics] 手稿星芒與偏光微光氣泡點綴 */}
+        {/* 🌸 [Aesthetics] 手稿星芒 */}
         <div className="absolute -top-3 -left-3 pointer-events-none z-20">
           <PencilStar className="w-6 h-6 text-[#82b7cc]/60" />
         </div>
         <div className="absolute -bottom-2.5 -right-2.5 pointer-events-none z-20">
           <PencilStar className="w-5 h-5 text-[#f5d46b]/60 rotate-[15deg]" />
         </div>
-        
-        {/* 偏光氣泡 (右側邊角) */}
-        <div className="glass-bubble-dot w-3 h-3 -top-1.5 right-12 opacity-60" />
-        <div className="glass-bubble-dot w-2 h-2 top-8 -right-1 opacity-45" />
 
         {/* 左翼：遊玩伺服器 */}
         <div className="space-y-1.5 w-full md:w-[22%]">
@@ -242,12 +208,11 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
               <button
                 key={role}
                 onClick={() => setSelectedRole(role)}
-                className={`px-4 py-2.5 text-[10px] font-extrabold transition-all duration-500 hover:scale-[1.04] hover:-rotate-1 active:scale-[0.98] outline-1 outline-offset-[-3.5px] cursor-pointer flex-1 text-center flex items-center justify-center gap-1 ${
+                className={`px-4 py-2.5 text-[10px] font-extrabold transition-all duration-500 hover:scale-[1.03] active:scale-[0.98] outline-1 outline-offset-[-3.5px] cursor-pointer flex-1 text-center flex items-center justify-center gap-1 rounded-xl ${
                   selectedRole === role
-                    ? "bg-gradient-to-br from-[#82b7cc]/22 to-[#f5d46b]/15 text-[#384d54] border-2 border-[#82b7cc]/45 outline-dashed outline-[#82b7cc]/30 shadow-[0_8px_20px_-8px_rgba(130,183,204,0.3),inset_0_1.5px_2px_rgba(255,255,255,0.9)]"
-                    : "bg-white/45 text-[#8c7c6c] border border-[#8c7c6c]/20 outline-dashed outline-[#8c7c6c]/12 hover:bg-white/75"
+                    ? "bg-[#82b7cc]/15 text-[#384d54] border border-[#82b7cc]/40 shadow-[inset_0_1px_2.5px_rgba(130,183,204,0.1),0_4px_12px_rgba(130,183,204,0.04)]"
+                    : "bg-white/50 text-[#8c7c6c] border border-[#8c7c6c]/18 hover:bg-white/80"
                 }`}
-                style={{ borderRadius: roleRadii[role] }}
               >
                 <span>{role === "坦克" ? "🛡️" : role === "輸出" ? "⚔️" : role === "支援" ? "➕" : ""}</span>
                 <span>{role}</span>
@@ -293,19 +258,6 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
               key={player.card_id} 
               className="w-full flex justify-center hover:-translate-y-1 transition-transform duration-300 relative"
             >
-              {/* ⧡ Version B: 六邂形框裝飾（卡片右上，超低opacity） */}
-              <div
-                className="ms-c3-organic-hexagon-frame-soft pointer-events-none select-none"
-                style={{
-                  position: 'absolute',
-                  top: '-8px',
-                  right: '-8px',
-                  width: '56px',
-                  height: '56px',
-                  opacity: 0.10,
-                  zIndex: 0,
-                }}
-              />
               <OWCard
                 cardData={player}
                 isLoggedIn={isLoggedIn}
@@ -317,7 +269,7 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
           ))}
         </div>
       ) : (
-        <div className="ow-glass-panel elite-glass-card py-16 px-4 text-center max-w-xl mx-auto flex flex-col items-center justify-center gap-4">
+        <div className="bg-[#fefcf8] border border-[#8c7c6c]/15 rounded-[28px] py-16 px-4 text-center max-w-xl mx-auto flex flex-col items-center justify-center gap-4 shadow-[0_20px_50px_rgba(140,124,108,0.04)]">
           <div className="w-16 h-16 rounded-full bg-white/60 flex items-center justify-center text-[#82b7cc] border border-[#8c7c6c]/15 shadow-sm">
             <AlertCircle size={28} />
           </div>
