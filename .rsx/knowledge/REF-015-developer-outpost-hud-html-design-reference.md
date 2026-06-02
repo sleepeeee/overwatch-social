@@ -5,7 +5,7 @@ title: Developer Outpost HUD 完整設計規格（HTML 原始稿分析）
 url: n/a
 status: active
 references_to: [REF-002, REF-005]
-referenced_by: []
+referenced_by: [F-008, ADR-08]
 ---
 
 ## 摘要

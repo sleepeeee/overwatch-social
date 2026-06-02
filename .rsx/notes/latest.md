@@ -11,13 +11,14 @@
 
 ## 現在在做什麼
 
-`share-page-completion` ARCHIVE 前置完成（Pre-archive Gate PASS、F-007/ADR-07 已建）。等待主代理執行 `openspec archive share-page-completion`。
+`capture-hud-full-reimplementation` ARCHIVE 前置完成（Pre-archive Gate PASS、F-008/F-009/ADR-08/ADR-09 已建）。等待主代理執行 `openspec archive capture-hud-full-reimplementation`。
 
 ## 進行中的 Changes（未 archive）
 
 | Change | 狀態 | 備註 |
 |---|---|---|
 | share-page-completion | Gate PASS，等待 archive | F-007/ADR-07 已建；雙向 crossref 回填完成 |
+| capture-hud-full-reimplementation | Gate PASS，等待 archive | F-008/F-009/ADR-08/ADR-09 已建；雙向 crossref 回填完成 |
 
 ## 待 Propose Changes
 
@@ -36,6 +37,12 @@
 ---
 
 ## Zone B — 工作日誌（追加，由新到舊）
+
+### 2026-06-03 capture-hud-full-reimplementation — ARCHIVE 前置（Gate + Finding/ADR）
+
+- **已完成**：§Z Gate PASS；建 F-008（TS template literal 中 Bash 變數 `\${}` 轉義規則）；建 F-009（SSR 安全初始化 deterministic default + useEffect 模式）；建 ADR-08（HTML 原始設計稿作為 canonical 移植規格決策）；建 ADR-09（SSR 安全初始化模式架構決策）；雙向 crossref 回填：REF-015 referenced_by 加 F-008/ADR-08；REF-006 referenced_by 加 F-009/ADR-09；ADR-08 referenced_by 加 F-008；ADR-09 referenced_by 加 F-009；latest.md Zone A 更新
+- **卡關**：無
+- **下次優先**：主代理執行 `openspec archive capture-hud-full-reimplementation`
 
 ### 2026-06-03 share-page-completion — ARCHIVE 前置（Gate + Finding/ADR）
 
