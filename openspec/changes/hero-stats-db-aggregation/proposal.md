@@ -23,23 +23,23 @@ OW Social 開發者後台在 `developer-console-enhancements` change 完成後�
 
 ## What Changes
 
-1. **新增 migration 009**：PostgreSQL function `get_hero_stats()` — `unnest + GROUP BY` DB 端聚合，含 `auth.jwt()` 開發者角色確認（defense-in-depth）
-2. **修改 `developer.ts:getHeroStats()`**：改用 `supabase.rpc('get_hero_stats')`，移除 LIMIT 500 + JS forEach
-3. **修改 `developer/page.tsx`**：移除 inline JS 聚合邏輯，直接 `supabase.rpc('get_hero_stats')`
+1. **新增 migration 009**：PostgreSQL function `get_hero_stats()`，使用 LATERAL unnest + GROUP BY（`sql` language，SECURITY DEFINER + `SET search_path = public`），GRANT TO authenticated
+2. **修改 `developer.ts:getHeroStats()`**：改用 `supabase.rpc('get_hero_stats')`，移除 LIMIT 500 + JS forEach；`ensureDeveloper()` 仍為主要授權邊界
+3. **修改 `developer/page.tsx`**：移除 inline JS 聚合邏輯，改用 `getHeroStats()` Server Action（含欄位對照與錯誤處理）
 
 ## Capabilities（修復後）
 
 - 統計覆蓋**全量玩家**（無 LIMIT 截斷）
 - DB 端聚合回傳最多 20 row，而非 500 row
-- 開發者角色雙層確認：Server Action `ensureDeveloper()` + SQL function `auth.jwt()` check
 - 英雄統計展示可升至 Top 10（原為 Top 5，SQL LIMIT 20 支援）
+- 計數語意升級：`COUNT(DISTINCT user_id)` 統計「有多少玩家選擇此英雄」，非累計次數
 
 ## Impact
 
-- 修改範圍：`supabase/migrations/009_hero_stats_function.sql`（新增）、`src/app/actions/developer.ts`（修改）、`src/app/developer/page.tsx`（修改）
+- 修改範圍：`supabase/migrations/009_hero_stats_function.sql`（新增）、`src/app/actions/developer.ts`（修改）、`src/app/developer/page.tsx`（修改）、`src/app/developer/DeveloperConsoleClient.tsx`（改 Top 10）
 - 無 DB schema 結構變更（只加 function，不加/改 table）
-- 無前端視覺破壞性變更（同一個統計區塊，數值更正確）
-- 不影響 RLS 現有 policy（`get_hero_stats` 以 SECURITY DEFINER 執行，不觸發 profile row-level policy）
+- 無前端視覺破壞性變更（同一個統計區塊，數值更正確，展示數量升至 Top 10）
+- 授權設計：`GRANT TO authenticated`（anon 無法呼叫）+ Server Action `ensureDeveloper()` 為主要授權邊界；SQL function 本身無 JWT role check（記錄為已知 debt）
 
 ## novelty claim（可偽證）
 

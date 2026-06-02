@@ -610,15 +610,15 @@ export default function DeveloperConsoleClient({
 
                 <CaptureMeter state={captureState} />
 
-                {/* Hero Top 5 */}
+                {/* Hero Top 10 */}
                 {heroStats.length > 0 && (
                   <div className="space-y-3">
                     <div className="flex items-center gap-2">
                       <TrendingUp size={14} className="text-[var(--theme-primary-text)]" />
-                      <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest">英雄流行度 Top 5</h3>
+                      <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest">英雄流行度 Top 10</h3>
                     </div>
                     <div className="space-y-2">
-                      {heroStats.map((stat, idx) => {
+                      {heroStats.slice(0, 10).map((stat, idx) => {
                         const heroName = heroNameMap.get(stat.heroId) || stat.heroId;
                         const maxCount = heroStats[0]?.count || 1;
                         const barWidth = Math.round((stat.count / maxCount) * 100);

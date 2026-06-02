@@ -13,7 +13,7 @@ OW Social 的開發者後台（`/developer`）顯示英雄流行度 Top 5 統計
 
 - G1：統計覆蓋全量玩家，無截斷
 - G2：聚合在 DB 端完成，edge function 只收結果 row
-- G3：保持開發者角色雙層授權（Server Action 層 + DB function 層）
+- G3：授權由 Server Action `ensureDeveloper()` 把關（主要邊界）；SQL function 本身對 authenticated 開放（aggregate 屬非敏感統計，詳見 design D1 trade-off）
 - G4：消除重複邏輯（`developer.ts` 和 `developer/page.tsx` 兩份相同缺陷代碼）
 
 ## Non-Goals
@@ -34,25 +34,43 @@ OW Social 的開發者後台（`/developer`）顯示英雄流行度 Top 5 統計
 
 ### D1：聚合位置 — PostgreSQL function（採用）
 
-**選項 A（採用）**：PostgreSQL `get_hero_stats()` function（`unnest + GROUP BY`，SECURITY DEFINER）+ `supabase.rpc()`
+**選項 A（採用）**：PostgreSQL `get_hero_stats()` function（`plpgsql` language，LATERAL unnest + GROUP BY，SECURITY DEFINER + SET search_path）+ `supabase.rpc()`
 
 ```sql
 CREATE OR REPLACE FUNCTION get_hero_stats()
-RETURNS TABLE(hero_id text, hero_count bigint) AS $$
-DECLARE user_role text;
-BEGIN
-  SELECT coalesce(auth.jwt() -> 'app_metadata' ->> 'role', '') INTO user_role;
-  IF user_role != 'developer' THEN
-    RAISE EXCEPTION 'Permission denied: developer role required';
-  END IF;
-  RETURN QUERY
-    SELECT unnest(selected_heroes)::text, COUNT(*)
-    FROM profiles GROUP BY 1 ORDER BY 2 DESC LIMIT 20;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+RETURNS TABLE(hero_id text, hero_count bigint)
+SECURITY DEFINER
+SET search_path = public        -- C1 修正：防止 schema 注入
+AS $$
+  SELECT h_id, COUNT(*) AS hero_count
+  FROM profiles,
+       unnest(selected_heroes) AS h_id   -- C2 修正：LATERAL 形式，避免 SRF in GROUP BY
+  GROUP BY h_id
+  ORDER BY 2 DESC
+  LIMIT 20;
+$$ LANGUAGE sql;   -- sql language（非 plpgsql）：無 jwt check，靠 Server Action 層授權
+
+REVOKE ALL ON FUNCTION get_hero_stats() FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION get_hero_stats() TO authenticated;
 ```
 
-**選項 B（拒絕）**：`service_role` key 在 Server Action 直查，移除 LIMIT
+**§6.5 修正記錄**：
+- C1：加 `SET search_path = public`（Supabase managed 環境雖低風險，仍採最佳實踐）
+- C2：改用 LATERAL 形式 `FROM profiles, unnest(...) AS h_id`，避免 `GROUP BY 1` 配合 SRF 的語意歧義
+- M3：developer_whitelist RLS 已由 migration 002 `FOR ALL USING (auth.jwt() -> 'app_metadata' ->> 'role' = 'developer')` 保護，無需額外補充
+
+**授權層次**：
+1. `GRANT TO authenticated`（anon 無法呼叫）
+2. Server Action `ensureDeveloper()`（主要授權邊界）
+3. `/developer` 頁面 server-side redirect（已有）
+
+trade-off：一般 authenticated（非 developer）可直接呼叫 RPC（英雄流行度屬非敏感 aggregate）。記錄為已知 debt；若未來需強化，可改回 `plpgsql` + `auth.jwt()` check 並解決 SQL Editor 測試的 JWT context 問題。
+
+**選項 B（拒絕）**：`plpgsql` + `auth.jwt()` developer role check 在函式內
+
+- 拒絕理由：SQL Editor 測試時（postgres superuser）無 JWT context → `auth.jwt()` 返回 NULL → RAISE EXCEPTION，驗收自相矛盾
+
+**選項 C（拒絕）**：`service_role` key 在 Server Action 直查，移除 LIMIT
 
 - 拒絕理由：service_role key 不應出現在 Next.js edge runtime（暴露風險）
 
@@ -66,14 +84,20 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 ### D2：developer/page.tsx 改用何種入口
 
-**選項 A（採用）**：`developer/page.tsx` 直接 `supabase.rpc('get_hero_stats')`
+**選項 A（採用）**：`page.tsx` 改用 `getHeroStats()` Server Action
 
-- 不經過 `developer.ts:getHeroStats()` Server Action
-- 理由：`page.tsx` 已有 `ensureDeveloper()` 確認（開發者只能到達此頁），避免重複 `getUser()` round-trip
+- `getHeroStats()` 已包含 `ensureDeveloper()` + RPC + snake_case mapping（`hero_id → heroId`, `hero_count → Number()`）
+- DRY：欄位對照邏輯集中一處，不重複
+- 錯誤處理：Server Action 有統一的 try-catch
 
-**選項 B（拒絕）**：`page.tsx` 改用 `getHeroStats()` Server Action
+**§6.5 M1/M2 修正記錄**（Codex/Gemini 共同確認）：
+- 原本計畫「直呼 RPC 避免 getUser round-trip」理由不成立：Supabase SSR 的 `auth.getUser()` 每次仍會聯絡 Auth server（無自動 cache）
+- 直呼 RPC 需重複寫欄位對照；開發環境未登入 bypass 後若 RPC 報錯，`Promise.all` 無 catch 會導致 500
+- 改回 `getHeroStats()` Server Action 是更安全的選擇
 
-- 問題：`getHeroStats()` 內部又呼叫 `ensureDeveloper()`，多一次 `getUser()` 呼叫
+**選項 B（拒絕）**：`developer/page.tsx` 直接 `supabase.rpc('get_hero_stats')`
+
+- 問題：需重複寫欄位對照邏輯；開發環境 bypass 後 500 風險；無統一錯誤處理
 
 ### D3：Top N 展示數量
 
