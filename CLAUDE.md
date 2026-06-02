@@ -186,6 +186,18 @@ social_channels 讀取：需登入，透過 authenticated RLS policy 直接查 p
 - ADR-09：AuthContext 同時使用 getUser() + onAuthStateChange（React 19 Strict Mode 修正）→ .rsx/decisions/ADR-07-authcontext-getuser-plus-onauthstatechange-dual-init
 - ADR-10：英雄統計採 SQL function SECURITY DEFINER + LATERAL unnest（vs Server Action 端聚合）→ .rsx/decisions/ADR-05-hero-stats-sql-rpc-security-definer
 - ADR-11：per-user localStorage key + AuthContext.userProfile 作為 UserProfile 事實來源（userprofile-auth-metadata-sync）→ .rsx/decisions/ADR-06-per-user-localstorage-key-with-authcontext-userprofile
+- ADR-12：share 頁 Server Component 包 Client Component 邊界（generateMetadata + html-to-image 共存）→ .rsx/decisions/ADR-07-server-component-wraps-client-component-generatemetadata-boundary
+- ADR-13：以 HTML 原始設計稿作為 Git Outpost HUD 移植規格唯一準則 → .rsx/decisions/ADR-08-html-design-spec-as-canonical-migration-source
+- ADR-14：SSR 安全初始化模式（deterministic default + useEffect 讀 localStorage）→ .rsx/decisions/ADR-09-ssr-safe-init-deterministic-default-useeffect
+
+## 新增頁面與元件（2026-06）
+
+| 頁面/元件 | 路由/路徑 | 功能 |
+|---|---|---|
+| **分享名片頁** | `/share/[id]` | Server Component + generateMetadata + og meta；讓名片分享到社群有預覽卡 |
+| **AuthContext.userProfile** | `src/context/AuthContext.tsx` | 從 Google OAuth user_metadata 衍生 UserProfile；per-user localStorage seed |
+| **GIT Outpost HUD 調整器** | `/developer/capture-hud` | 完整移植 HTML 設計稿：4 Tab（手冊/資源/規格/向量代碼）+ git hook 腳本 |
+| **HomeCaptureHud** | `src/components/morning-sketch/HomeCaptureHud.tsx` | 首頁縮小版據點佔領 HUD，整合至 FeaturedArtists |
 
 ## 下一步開發計畫
 1. 完成 串接 Supabase
@@ -196,8 +208,14 @@ social_channels 讀取：需登入，透過 authenticated RLS policy 直接查 p
 6. 完成 多遊戲廣場架構（OverwatchSquare / LoLSquare / ValorantSquare）
 7. 完成 玩家詳細頁面：/player/[id]（server-side ilike 搜尋 + 詳細頁）
 8. 完成 搜尋後端化：OverwatchSquare 改用 Supabase ilike + Load More
-9. 待做 名片收藏 / Favorites
-10. 待做 多遊戲廣場資料接入：LoL / Valorant 接真實後端
+9. 完成 名片分享連結 + og meta（/share/[id] Server Component）
+10. 完成 Git Outpost HUD 完整移植（/developer/capture-hud 4 Tab 面板）
+11. 完成 AuthContext userProfile（Google OAuth user_metadata 自動填入）
+12. 完成 英雄統計 DB 端聚合（get_hero_stats() RPC，migration 009）
+13. 待做 Vercel + GitHub Webhook 後端：讓 HomeCaptureHud 在生產環境顯示真實 commit 統計
+14. 待做 名片收藏 / Favorites
+15. 待做 多遊戲廣場資料接入：LoL / Valorant 接真實後端
+16. 待做 display_name 跨裝置持久化（upsert 到 Supabase user_metadata）
 
 ## 協作規範
 - Commit message 中文，動詞開頭（新增、修正、重構、更新）
