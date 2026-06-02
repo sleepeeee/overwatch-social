@@ -1,0 +1,17 @@
+#!/bin/sh
+# Git bare repository 的 hooks/post-receive 範本。
+# 推送完成後會重新結算據點，不需要 GitHub API，也不需要 GitHub token。
+
+export CAPTURE_REPO_PATH="/absolute/path/to/worktree-or-bare-repo"
+export CAPTURE_STATE_PATH="/absolute/path/to/overwatch-social/data/developer-capture-state.json"
+export CAPTURE_TARGET_REPOSITORY_URL="https://github.com/sleepeeee/overwatch-social"
+export CAPTURE_TARGET_REPOSITORY_OWNER="right"
+export CAPTURE_LEFT_NAME="Shadowmaster6g"
+export CAPTURE_LEFT_GITHUB_URL="https://github.com/Shadowmaster6g"
+export CAPTURE_LEFT_AUTHORS="Shadowmaster6g"
+export CAPTURE_RIGHT_NAME="sleepeeee"
+export CAPTURE_RIGHT_GITHUB_URL="https://github.com/sleepeeee"
+export CAPTURE_RIGHT_AUTHORS="sleepeeee"
+
+cd /absolute/path/to/overwatch-social || exit 1
+node scripts/recalculate-capture-meter.js >> logs/capture-meter-hook.log 2>&1

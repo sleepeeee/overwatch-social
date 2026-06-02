@@ -9,7 +9,9 @@
     "lint": "eslint",
     "storybook": "storybook dev -p 6006 -h 127.0.0.1",
     "build-storybook": "storybook build",
+    "test:unit": "node tests/unit/developer-capture-meter.test.mjs",
     "test:e2e": "playwright test",
+    "capture:recalculate": "node scripts/recalculate-capture-meter.js",
     "lighthouse": "lighthouse http://127.0.0.1:3000 --view"
   },
   "dependencies": {
