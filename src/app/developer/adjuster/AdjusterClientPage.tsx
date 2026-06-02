@@ -53,7 +53,7 @@ export default function AdjusterPage() {
     return initial;
   });
 
-  // 初始化時加載鎖定記錄
+  // 初始化時加載鎖定記錄並解鎖選取限制
   useEffect(() => {
     try {
       const stored = localStorage.getItem("ow_locked_heroes");
@@ -63,6 +63,16 @@ export default function AdjusterPage() {
     } catch (e) {
       console.error("Failed to parse locked heroes:", e);
     }
+
+    // 🔓 豁免全站防選取限制，允許開發者在後台點選與複製文字
+    document.body.style.userSelect = "text";
+    document.body.style.webkitUserSelect = "text";
+    
+    return () => {
+      // 還原全站防選取防護
+      document.body.style.userSelect = "";
+      document.body.style.webkitUserSelect = "";
+    };
   }, []);
 
   // 2. 當切換選擇英雄時，自動載入該英雄已儲存的微調參數
