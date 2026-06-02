@@ -60,6 +60,7 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
   const [selectedMic, setSelectedMic] = useState("全部");
   const [isMounted, setIsMounted] = useState(false);
   const [heroAlignments, setHeroAlignments] = useState<Record<string, AlignmentConfig>>(HERO_ALIGNMENTS);
+  const [isShowingMockData, setIsShowingMockData] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
@@ -81,6 +82,7 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
         .order("updated_at", { ascending: false });
 
       if (!error && data && data.length > 0) {
+        setIsShowingMockData(false);
         setPlayers(data.map(row => ({
           card_id: row.card_id ?? row.user_id,
           user_id: row.user_id,
@@ -96,6 +98,7 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
           mbti: row.mbti ?? undefined,
         })));
       } else {
+        setIsShowingMockData(true);
         setPlayers(MOCK_PLAYERS);
       }
     };
@@ -185,6 +188,14 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
           zIndex: 1,
         }}
       />
+      {/* 示範資料提示條（真實資料出現後自動消失）*/}
+      {isShowingMockData && (
+        <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[#d8a070]/30 bg-[#d8a070]/8 text-[11px] font-bold text-[#8c7c6c]">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#d8a070] shrink-0 animate-pulse" />
+          目前顯示的是示範資料，廣場尚無真實玩家名片。成為第一個建立名片的特工吧！
+        </div>
+      )}
+
       {/* 🚀 獨立懸浮篩選絲帶 (Floating Filter Ribbon) */}
       <div className="w-full bg-white/40 backdrop-blur-3xl border-2 border-white/60 rounded-[28px] p-5 md:py-4 md:px-6 shadow-[0_18px_45px_-18px_rgba(140,124,108,0.12),inset_0_1.5px_2px_rgba(255,255,255,0.85)] flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10 elite-glass-card">
         

@@ -38,12 +38,12 @@ export default function RootLayout({
           fontFamily: "var(--font-noto-sans-tc), var(--font-geist-sans), sans-serif"
         }}
       >
-        {/* 開發者模式 banner（Server Component，不需要 auth）*/}
-        <DevModeBanner />
         {/* 全站底層藝術裝飾 */}
         <ArtOrnament />
 
         <AuthProvider>
+          {/* 開發者模式 banner（需要在 AuthProvider 內，因為使用 useAuth()）*/}
+          <DevModeBanner />
           <main className="flex-1 relative z-10">{children}</main>
           <footer className="text-center py-4 text-gray-600 text-sm pb-24 relative z-10">
             © 2026 OW Social · 找到你的最佳特工戰友
