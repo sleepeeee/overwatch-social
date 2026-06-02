@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { getAnnouncements, type AnnouncementItem } from "@/app/actions/homepage";
 
 interface LotusWelcomeWidgetProps {
@@ -47,11 +47,16 @@ export default function LotusWelcomeWidget({ previewData, activeStepOverride }: 
   ]);
 
   const announcements = (previewData && previewData.length === 4) ? previewData : localAnnouncements;
+  const lastFetchTimeRef = useRef<number>(0);
+  const FETCH_COOLDOWN_MS = 30_000; // 30 秒內重複切換視窗不重複打 Server Action
 
   useEffect(() => {
     if (previewData && previewData.length === 4) return;
 
     const fetchData = () => {
+      const now = Date.now();
+      if (now - lastFetchTimeRef.current < FETCH_COOLDOWN_MS) return;
+      lastFetchTimeRef.current = now;
       getAnnouncements().then(data => {
         if (data && data.length === 4) {
           setLocalAnnouncements(data);
@@ -59,14 +64,12 @@ export default function LotusWelcomeWidget({ previewData, activeStepOverride }: 
       });
     };
 
-    // 初次載入
+    // 初次載入（lastFetchTimeRef.current = 0，一定執行）
     fetchData();
 
-    // 頁面重新可見時 refetch（從 /developer 切回首頁時觸發）
+    // 頁面重新可見時 refetch（從 /developer 切回首頁時觸發，有 cooldown 保護）
     const handleVisibilityChange = () => {
-      if (document.visibilityState === "visible") {
-        fetchData();
-      }
+      if (document.visibilityState === "visible") fetchData();
     };
 
     document.addEventListener("visibilitychange", handleVisibilityChange);
