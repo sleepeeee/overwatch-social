@@ -1,8 +1,9 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, unstable_noStore as noStore } from "next/cache";
 import { saveCaptureDisplayLabels, saveCaptureDisplaySettings } from "@/lib/developer-capture/settings";
+import { readCaptureState } from "@/lib/developer-capture/state";
 import type { CaptureHudTheme, CaptureSide } from "@/lib/developer-capture/types";
 
 async function ensureDeveloper() {
@@ -84,4 +85,9 @@ export async function saveCaptureHudSettings(input: {
       error: error instanceof Error ? error.message : "儲存 HUD 設定時發生未知錯誤",
     };
   }
+}
+
+export async function getCaptureStateSnapshot() {
+  noStore();
+  return readCaptureState();
 }
