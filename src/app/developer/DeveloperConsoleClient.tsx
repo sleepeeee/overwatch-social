@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import React, { useState, useEffect, useRef, useTransition } from "react";
@@ -26,7 +25,6 @@ import {
   Sun
 } from "lucide-react";
 import { addWhitelistEmail, removeWhitelistEmail, getAllProfilesForDeveloper } from "@/app/actions/developer";
-import { getGameSpecialTags, addGameSpecialTag, deleteGameSpecialTag } from "@/app/actions/tags";
 import { HEROES_CONFIG } from "@/data/mockPlayers";
 
 interface ProfileRow {
@@ -35,14 +33,6 @@ interface ProfileRow {
   is_tag_visible: boolean;
   selected_heroes: string[];
   updated_at: string;
-}
-
-interface TagItem {
-  id: string;
-  game_id: string;
-  tag_name: string;
-  style_class: string;
-  created_at: string;
 }
 
 interface DeveloperConsoleClientProps {
@@ -110,18 +100,12 @@ export default function DeveloperConsoleClient({
   const [isDarkMode, setIsDarkMode] = useState(true);
 
   // Tab 狀態管理
-  const [activeTab, setActiveTab] = useState<"overview" | "whitelist" | "tags" | "tools" | "users">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "whitelist" | "tools" | "users">("overview");
 
   // RLS 狀態與提升權限模擬
   const [rlsEnabled, setRlsEnabled] = useState(true);
   const [showOverlay, setShowOverlay] = useState(false);
   const [overlayText, setOverlayText] = useState("");
-
-  // 標籤管理狀態
-  const [tags, setTags] = useState<TagItem[]>([]);
-  const [newTagName, setNewTagName] = useState("");
-  const [newTagStyle, setNewTagStyle] = useState<"sage" | "rose" | "blue" | "clay">("sage");
-  const [selectedGame, setSelectedGame] = useState("overwatch");
 
   // Users tab
   const [usersData, setUsersData] = useState<ProfileRow[] | null>(null);
@@ -131,16 +115,16 @@ export default function DeveloperConsoleClient({
   const [isPending, startTransition] = useTransition();
   const searchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // 載入特色標籤
-  const loadTags = async () => {
-    const res = await getGameSpecialTags();
-    if (res.success && res.data) {
-      setTags(res.data as TagItem[]);
-    }
-  };
-
   useEffect(() => {
-    loadTags();
+    // 🔓 豁免全站防選取限制，允許開發者在後台點選與複製文字
+    document.body.style.userSelect = "text";
+    document.body.style.webkitUserSelect = "text";
+    
+    return () => {
+      // 還原全站防選取防護
+      document.body.style.userSelect = "";
+      document.body.style.webkitUserSelect = "";
+    };
   }, []);
 
   // 監聽並套用 html body 樣式，避免前台污染
@@ -249,60 +233,6 @@ export default function DeveloperConsoleClient({
     }
   };
 
-  // 新增特色標籤
-  const handleAddTag = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newTagName.trim()) return;
-
-    setLoading(true);
-    // 根據選擇的莫蘭迪風格產生對應的 CSS 樣式
-    const stylesMap = {
-      sage: "bg-[#8fa8a2]/15 text-[#59756f] border-[#8fa8a2]/30",
-      rose: "bg-[#bfa1a1]/15 text-[#8c6c6c] border-[#bfa1a1]/30",
-      blue: "bg-[#8ca9b3]/15 text-[#5c7c88] border-[#8ca9b3]/30",
-      clay: "bg-[#b4a091]/15 text-[#8c6c5c] border-[#b4a091]/30"
-    };
-
-    const styleClass = stylesMap[newTagStyle];
-
-    try {
-      const res = await addGameSpecialTag(selectedGame, newTagName, styleClass);
-      if (res.success) {
-        triggerToast(`成功新增標籤「${newTagName}」`);
-        setNewTagName("");
-        loadTags();
-      } else {
-        triggerToast(res.error || "新增失敗", true);
-      }
-    } catch {
-      triggerToast("執行 Server Action 發生未知錯誤", true);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // 刪除特色標籤
-  const handleDeleteTag = async (tagId: string, name: string) => {
-    if (!confirm(`確定要刪除標籤「${name}」嗎？`)) {
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const res = await deleteGameSpecialTag(tagId);
-      if (res.success) {
-        triggerToast(`已成功刪除標籤「${name}」`);
-        loadTags();
-      } else {
-        triggerToast(res.error || "刪除失敗", true);
-      }
-    } catch {
-      triggerToast("執行 Server Action 發生未知錯誤", true);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   // 用戶查詢
   const fetchUsers = async (search?: string) => {
     setUsersLoading(true);
@@ -321,7 +251,7 @@ export default function DeveloperConsoleClient({
     }
   };
 
-  const handleTabChange = (tab: "overview" | "whitelist" | "tags" | "tools" | "users") => {
+  const handleTabChange = (tab: "overview" | "whitelist" | "tools" | "users") => {
     startTransition(() => {
       setActiveTab(tab);
     });
@@ -342,13 +272,13 @@ export default function DeveloperConsoleClient({
     <div 
       className="min-h-screen flex flex-col font-sans transition-colors duration-300 bg-[#f4f3f0] dark:bg-[#1a1d20] text-slate-800 dark:text-slate-100"
       style={{
-        ["--theme-primary" as any]: scheme.primary,
-        ["--theme-primary-hover" as any]: scheme.hover,
-        ["--theme-primary-dark" as any]: scheme.dark,
-        ["--theme-primary-light" as any]: scheme.light,
-        ["--theme-primary-text" as any]: scheme.text,
-        ["--theme-primary-dark-text" as any]: scheme.darkText,
-      }}
+        "--theme-primary": scheme.primary,
+        "--theme-primary-hover": scheme.hover,
+        "--theme-primary-dark": scheme.dark,
+        "--theme-primary-light": scheme.light,
+        "--theme-primary-text": scheme.text,
+        "--theme-primary-dark-text": scheme.darkText,
+      } as React.CSSProperties}
     >
       
       {/* 提權加載動畫 */}
@@ -390,7 +320,7 @@ export default function DeveloperConsoleClient({
               return (
                 <button
                   key={colorKey}
-                  onClick={() => setActiveThemeColor(colorKey as any)}
+                  onClick={() => setActiveThemeColor(colorKey as "sage" | "rose" | "blue" | "clay")}
                   className="w-5 h-5 rounded-full relative group border-2 transition-all duration-300"
                   style={{
                     backgroundColor: col.primary,
@@ -449,7 +379,7 @@ export default function DeveloperConsoleClient({
         <aside className="w-64 bg-white/40 dark:bg-[#202428]/40 border-r border-slate-200 dark:border-slate-800 flex flex-col justify-between shrink-0 hidden md:flex transition-colors duration-300">
           <div className="p-4 space-y-6">
             <div>
-              <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest pl-2">控制中心導覽</span>
+              <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest pl-2">後台功能導覽</span>
               <nav className="mt-2 space-y-1">
                 
                 {/* Nav: Overview */}
@@ -483,24 +413,8 @@ export default function DeveloperConsoleClient({
                   </div>
                   <span className="bg-slate-200 dark:bg-slate-800 text-slate-500 px-1.5 py-0.5 rounded text-[9px] font-mono font-bold">{whitelist.length}</span>
                 </button>
-
-                {/* Nav: Tags */}
-                <button 
-                  onClick={() => handleTabChange("tags")} 
-                  className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-medium transition-all duration-300 cursor-pointer ${
-                    activeTab === "tags"
-                      ? "bg-[var(--theme-primary-light)] text-[var(--theme-primary-text)] font-semibold border-l-4 border-[var(--theme-primary)]"
-                      : "text-slate-600 dark:text-slate-400 hover:bg-slate-100/50 dark:hover:bg-slate-800/40"
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <Tags size={14} />
-                    <span>標籤管理 (Tags)</span>
-                  </div>
-                  <span className="bg-slate-200 dark:bg-slate-800 text-slate-500 px-1.5 py-0.5 rounded text-[9px] font-mono font-bold">{tags.length}</span>
-                </button>
                 
-                {/* Nav: APC Tools */}
+                {/* Nav: Tools */}
                 <button 
                   onClick={() => handleTabChange("tools")} 
                   className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-medium transition-all duration-300 cursor-pointer ${
@@ -511,9 +425,9 @@ export default function DeveloperConsoleClient({
                 >
                   <div className="flex items-center gap-3">
                     <Sliders size={14} />
-                    <span>高階製程工具 (APC Tools)</span>
+                    <span>後台工具箱 (Tools)</span>
                   </div>
-                  <span className="bg-amber-100 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 px-1.5 py-0.5 rounded text-[9px] font-mono font-bold">APC</span>
+                  <span className="bg-amber-100 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 px-1.5 py-0.5 rounded text-[9px] font-mono font-bold">TOOLS</span>
                 </button>
                 
                 {/* Nav: Users */}
@@ -594,13 +508,12 @@ export default function DeveloperConsoleClient({
             <span className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">功能分區</span>
             <select 
               value={activeTab}
-              onChange={(e) => handleTabChange(e.target.value as any)} 
+              onChange={(e) => handleTabChange(e.target.value as "overview" | "whitelist" | "tools" | "users")} 
               className="text-xs bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded-lg font-medium border-none text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-[var(--theme-primary)]"
             >
               <option value="overview">系統概覽 (Overview)</option>
               <option value="whitelist">白名單維護 (Whitelist)</option>
-              <option value="tags">標籤管理 (Tags)</option>
-              <option value="tools">高階製程工具 (APC Tools)</option>
+              <option value="tools">後台工具箱 (Tools)</option>
               <option value="users">用戶管理 (Users)</option>
             </select>
           </div>
@@ -723,7 +636,7 @@ export default function DeveloperConsoleClient({
                     <AlertCircle size={20} />
                   </div>
                   <div className="space-y-1.5">
-                    <h4 className="text-sm font-bold text-amber-800 dark:text-amber-300">先進製程控制 (APC) 安全提示</h4>
+                    <h4 className="text-sm font-bold text-amber-800 dark:text-amber-300">開發者後台安全提示</h4>
                     <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
                       白名單內的所有帳戶在登入系統時，會被資料庫 <code className="bg-amber-100/50 dark:bg-amber-900/40 px-1 py-0.5 rounded font-mono text-[11px]">Trigger</code> 自動更新為 <code className="font-bold">role = &apos;developer&apos;</code>。
                       非開發團隊成員切勿任意加入白名單，以免造成敏感工具被非授權使用者利用。
@@ -816,137 +729,17 @@ export default function DeveloperConsoleClient({
               </div>
             )}
 
-            {/* TAB 3: 特色標籤管理 */}
-            {activeTab === "tags" && (
-              <div className="space-y-6">
-                <div>
-                  <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 tracking-wider block uppercase">Game Customization</span>
-                  <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-800 dark:text-slate-100 mt-0.5">
-                    特色標籤管理 <span className="font-mono text-slate-400 font-normal">(TAGS MANAGEMENT)</span>
-                  </h2>
-                  <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">維護不同遊戲下的特色標籤，供玩家在設定個人名片時選取（如：鬥陣特攻）</p>
-                </div>
 
-                {/* 新增標籤表單 */}
-                <div className="bg-white dark:bg-[#202428] rounded-xl p-5 border border-slate-200 dark:border-slate-800/80 shadow-sm">
-                  <form onSubmit={handleAddTag} className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                      {/* 選擇遊戲 */}
-                      <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">遊戲項目</label>
-                        <select 
-                          value={selectedGame}
-                          onChange={(e) => setSelectedGame(e.target.value)}
-                          className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-[var(--theme-primary)]"
-                        >
-                          <option value="overwatch">鬥陣特攻 (Overwatch)</option>
-                        </select>
-                      </div>
 
-                      {/* 標籤名稱 */}
-                      <div className="space-y-1.5 md:col-span-2">
-                        <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">標籤名稱</label>
-                        <input 
-                          type="text" 
-                          value={newTagName}
-                          onChange={(e) => setNewTagName(e.target.value)}
-                          placeholder="例如: 槍神, 輔助天花板"
-                          className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-[var(--theme-primary)]"
-                          required
-                        />
-                      </div>
-
-                      {/* 莫蘭迪風格 */}
-                      <div className="space-y-1.5">
-                        <label className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase">配色風格</label>
-                        <select 
-                          value={newTagStyle}
-                          onChange={(e) => setNewTagStyle(e.target.value as any)}
-                          className="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-[var(--theme-primary)]"
-                        >
-                          <option value="sage">經典灰綠 (Sage)</option>
-                          <option value="rose">乾燥玫瑰 (Rose)</option>
-                          <option value="blue">冷冽藍灰 (Blue)</option>
-                          <option value="clay">溫潤暖沙 (Clay)</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    <div className="flex justify-end">
-                      <button 
-                        type="submit"
-                        disabled={loading || !newTagName.trim()}
-                        className="px-5 py-2.5 rounded-lg text-xs font-bold text-white shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 bg-gradient-to-r from-[var(--theme-primary)] to-[var(--theme-primary-dark)] hover:opacity-90 cursor-pointer disabled:opacity-50"
-                      >
-                        <Plus size={14} />
-                        <span>新增標籤</span>
-                      </button>
-                    </div>
-                  </form>
-                </div>
-
-                {/* 標籤清單表格 */}
-                <div className="bg-white dark:bg-[#202428] rounded-xl border border-slate-200 dark:border-slate-800/80 shadow-sm overflow-hidden">
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
-                      <thead>
-                        <tr className="bg-slate-50/50 dark:bg-slate-900/30 text-slate-400 text-[10px] font-bold uppercase tracking-wider border-b border-slate-200/50 dark:border-slate-800/50">
-                          <th className="px-6 py-4">遊戲項目</th>
-                          <th className="px-6 py-4">標籤樣式預覽</th>
-                          <th className="px-6 py-4">Style Class (CSS)</th>
-                          <th className="px-6 py-4 text-right">操作</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-100 dark:divide-slate-800/50 text-xs text-slate-600 dark:text-slate-300">
-                        {tags.length > 0 ? (
-                          tags.map((tag) => (
-                            <tr key={tag.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-900/10 transition-colors">
-                              <td className="px-6 py-4 font-semibold capitalize">{tag.game_id}</td>
-                              <td className="px-6 py-4">
-                                <span className={`px-2.5 py-1 rounded-full text-xs border font-bold ${tag.style_class}`}>
-                                  {tag.tag_name}
-                                </span>
-                              </td>
-                              <td className="px-6 py-4 font-mono text-[11px] text-slate-400">{tag.style_class}</td>
-                              <td className="px-6 py-4 text-right">
-                                <button 
-                                  onClick={() => handleDeleteTag(tag.id, tag.tag_name)}
-                                  disabled={loading}
-                                  className="text-xs font-bold text-rose-500 hover:text-rose-600 dark:text-rose-400 dark:hover:text-rose-300 bg-rose-500/10 hover:bg-rose-500/20 px-3 py-1.5 rounded-lg transition-all cursor-pointer disabled:opacity-30"
-                                >
-                                  <Trash2 size={13} className="inline mr-1" />
-                                  <span>刪除</span>
-                                </button>
-                              </td>
-                            </tr>
-                          ))
-                        ) : (
-                          <tr>
-                            <td colSpan={4} className="px-6 py-12 text-center text-slate-400">
-                              <div className="flex flex-col items-center justify-center gap-3">
-                                <AlertCircle className="text-3xl opacity-60 text-slate-400" />
-                                <span className="text-xs">尚無任何特色標籤項目。</span>
-                              </div>
-                            </td>
-                          </tr>
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-
-              </div>
-            )}
-
-            {/* TAB 4: APC Tools */}
+            {/* TAB 4: Tools */}
             {activeTab === "tools" && (
               <div className="space-y-6">
                 <div>
                   <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 tracking-wider block uppercase">Control Suite</span>
                   <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-800 dark:text-slate-100 mt-0.5">
-                    高階製程工具 <span className="font-mono text-slate-400 font-normal">(ADVANCED APC TOOLS)</span>
+                    後台工具箱 <span className="font-mono text-slate-400 font-normal">(DEVELOPER TOOLS)</span>
                   </h2>
-                  <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">系統研發與版面位置對準調校專用的進階控制儀</p>
+                  <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">用於系統研發、版面位置調校與標籤維護的開發者工具箱</p>
                 </div>
 
                 <div className="grid grid-cols-1 gap-6">
@@ -959,19 +752,21 @@ export default function DeveloperConsoleClient({
                       </div>
                       <div className="space-y-1">
                         <h3 className="text-sm font-bold text-slate-800 dark:text-slate-100">
-                          精密立繪對準補償儀 <span className="font-mono text-[11px] text-slate-400">(APC Aligner)</span>
+                          英雄立繪對準工具 <span className="font-mono text-[11px] text-slate-400">(Portrait Aligner)</span>
                         </h3>
                         <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                          對準儀是用於精密調整《鬥陣特攻 2》英雄半身頭像立繪在卡槽中的 <strong>縮放比 (Scale)</strong> 與 <strong>X/Y 軸位移補償參數</strong> 的開發者專屬工具。保存後會即時寫入系統設定，全站無縫同步。
+                          用於精密調整《鬥陣特攻 2》英雄半身頭像立繪在卡槽中的 <strong>縮放比 (Scale)</strong> 與 <strong>X/Y 軸位移補償參數</strong>。保存後會即時寫入系統設定，全站無縫同步。
                         </p>
                       </div>
                     </div>
                     <div className="flex items-center justify-end border-t border-slate-100 dark:border-slate-800/50 pt-3">
                       <Link 
                         href="/developer/adjuster" 
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="px-4 py-2 rounded-lg text-xs font-semibold text-white shadow-md hover:shadow-lg flex items-center gap-1.5 transition-all bg-gradient-to-r from-[var(--theme-primary)] to-[var(--theme-primary-dark)] hover:opacity-90"
                       >
-                        <span>啟動對準儀</span>
+                        <span>啟動對準工具</span>
                         <ArrowRight size={12} />
                       </Link>
                     </div>
@@ -985,19 +780,49 @@ export default function DeveloperConsoleClient({
                       </div>
                       <div className="space-y-1">
                         <h3 className="text-sm font-bold text-slate-800 dark:text-slate-100">
-                          首頁內容精密調校儀 <span className="font-mono text-[11px] text-slate-400">(Homepage APC Aligner)</span>
+                          首頁內容調校工具 <span className="font-mono text-[11px] text-slate-400">(Homepage Aligner)</span>
                         </h3>
                         <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                          調校儀用於精密調整首頁「站長隨筆手札」各區塊元件的 <strong>X/Y 軸平移像素</strong>、<strong>縮放比例</strong> 與 <strong>字級大小</strong>，並支援上傳自訂圖片圖標。
+                          用於精密調整首頁「站長隨筆手札」各區塊元件的 <strong>X/Y 軸平移像素</strong>、<strong>縮放比例</strong> 與 <strong>字級大小</strong>，並支援上傳自訂圖片圖標。
                         </p>
                       </div>
                     </div>
                     <div className="flex items-center justify-end border-t border-slate-100 dark:border-slate-800/50 pt-3">
                       <Link 
                         href="/developer/homepage-aligner" 
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="px-4 py-2 rounded-lg text-xs font-semibold text-white shadow-md hover:shadow-lg flex items-center gap-1.5 transition-all bg-gradient-to-r from-[var(--theme-primary)] to-[var(--theme-primary-dark)] hover:opacity-90"
                       >
-                        <span>啟動首頁調校儀</span>
+                        <span>啟動調校工具</span>
+                        <ArrowRight size={12} />
+                      </Link>
+                    </div>
+                  </div>
+
+                  {/* Tool 3 */}
+                  <div className="bg-white dark:bg-[#202428] rounded-xl p-5 border border-slate-200 dark:border-slate-800/80 shadow-sm flex flex-col justify-between gap-4">
+                    <div className="flex items-start gap-4">
+                      <div className="p-3 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl shrink-0">
+                        <Tags size={20} />
+                      </div>
+                      <div className="space-y-1">
+                        <h3 className="text-sm font-bold text-slate-800 dark:text-slate-100">
+                          特色標籤管理工具 <span className="font-mono text-[11px] text-slate-400">(Tags Manager)</span>
+                        </h3>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                          用於維護不同遊戲下的特色標籤，供玩家在設定個人名片時選取（例如：鬥陣特攻）。支援新增特色標籤與物理刪除。
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-end border-t border-slate-100 dark:border-slate-800/50 pt-3">
+                      <Link 
+                        href="/developer/tags-manager" 
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-4 py-2 rounded-lg text-xs font-semibold text-white shadow-md hover:shadow-lg flex items-center gap-1.5 transition-all bg-gradient-to-r from-[var(--theme-primary)] to-[var(--theme-primary-dark)] hover:opacity-90"
+                      >
+                        <span>啟動標籤管理</span>
                         <ArrowRight size={12} />
                       </Link>
                     </div>
@@ -1158,7 +983,7 @@ export default function DeveloperConsoleClient({
               <span>API RESPONSE: OK</span>
             </div>
             <div className="text-[10px] font-bold text-slate-400 dark:text-slate-500">
-              Overwatch Social © 2026 Admin Panel • Closed Loop Process Control
+              Overwatch Social © 2026 Admin Panel • Developer Console
             </div>
           </footer>
 
