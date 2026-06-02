@@ -40,6 +40,7 @@ export async function saveCaptureDisplayNames(input: {
       rightLabel,
     });
     revalidatePath("/developer");
+    revalidatePath("/developer/capture-hud");
 
     return { success: true };
   } catch (error) {

@@ -1,6 +1,7 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import { getCaptureConfig, hasAuthorMapping } from "./config";
+import { readCaptureDisplaySettingsSync } from "./settings";
 import { getTaipeiDateLabel, readTodayGitAuthorStats } from "./git";
 import { buildPlayerStats } from "./scoring";
 import type { CaptureConfig, CaptureState } from "./types";
@@ -47,6 +48,11 @@ function createNeutralState(
 
 export async function readCaptureState(): Promise<CaptureState> {
   const config = getCaptureConfig();
+  const displaySettings = readCaptureDisplaySettingsSync({
+    leftLabel: config.players[0].label,
+    rightLabel: config.players[1].label,
+    targetRepositoryOwnerSide: config.targetRepositoryOwnerSide,
+  });
 
   try {
     const content = await fs.readFile(config.statePath, "utf8");
@@ -54,22 +60,36 @@ export async function readCaptureState(): Promise<CaptureState> {
     return {
       ...state,
       targetRepositoryUrl: state.targetRepositoryUrl || config.targetRepositoryUrl,
-      targetRepositoryOwnerSide: state.targetRepositoryOwnerSide || config.targetRepositoryOwnerSide,
+      targetRepositoryOwnerSide: displaySettings.targetRepositoryOwnerSide || state.targetRepositoryOwnerSide || config.targetRepositoryOwnerSide,
       players: [
         {
           ...state.players[0],
-          label: state.players[0].label || config.players[0].label,
+          label: displaySettings.leftLabel || state.players[0].label || config.players[0].label,
           githubUrl: state.players[0].githubUrl || config.players[0].githubUrl,
         },
         {
           ...state.players[1],
-          label: state.players[1].label || config.players[1].label,
+          label: displaySettings.rightLabel || state.players[1].label || config.players[1].label,
           githubUrl: state.players[1].githubUrl || config.players[1].githubUrl,
         },
       ],
     };
   } catch {
-    return createNeutralState(config, "neutral", "尚未產生據點戰報，請先執行後端重算。");
+    const fallbackState = createNeutralState(config, "neutral", "尚未產生據點戰報，請先執行後端重算。");
+    return {
+      ...fallbackState,
+      targetRepositoryOwnerSide: displaySettings.targetRepositoryOwnerSide,
+      players: [
+        {
+          ...fallbackState.players[0],
+          label: displaySettings.leftLabel,
+        },
+        {
+          ...fallbackState.players[1],
+          label: displaySettings.rightLabel,
+        },
+      ],
+    };
   }
 }
 

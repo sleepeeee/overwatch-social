@@ -26,7 +26,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           full_name: "測試特工",
           avatar_url: "/images/avatars/avatar_male_calm_square.png"
         }
-      } as any);
+      } as User);
       setAuthLoading(false);
       return;
     }

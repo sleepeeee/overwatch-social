@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { AlertTriangle, ArrowLeft, Copy, Download, ExternalLink, Moon, Package, Save, Sun } from "lucide-react";
+import { AlertTriangle, ArrowLeft, Copy, Download, Moon, Package, Save, Sun } from "lucide-react";
 import { saveCaptureDisplayNames } from "@/app/actions/developerCapture";
 import type { CapturePlayerStats, CaptureSide, CaptureState } from "@/lib/developer-capture/types";
 
@@ -57,15 +57,6 @@ const svgAssetList: Array<{ key: keyof typeof svgSources; name: string; tone: st
 
 function clampPercent(value: number): number {
   return Math.max(0, Math.min(100, Math.round(value)));
-}
-
-function getRepositoryLabel(url: string): string {
-  try {
-    const parsed = new URL(url);
-    return parsed.pathname.replace(/^\/|\.git$/g, "") || url;
-  } catch {
-    return url;
-  }
 }
 
 function formatUpdatedAt(value: string): string {
@@ -290,7 +281,6 @@ export default function CaptureHudAdjusterClient({ initialState }: CaptureHudAdj
   );
 
   const [left, right] = displayState.players;
-  const repositoryLabel = getRepositoryLabel(displayState.targetRepositoryUrl);
   const markerLeft = clampPercent(left.percent);
   const isWarning = displayState.status === "missing-config" || displayState.status === "git-error";
   const knobColor = left.percent > right.percent ? "#00f0ff" : right.percent > left.percent ? "#f97316" : "#94a3b8";
@@ -341,7 +331,7 @@ export default function CaptureHudAdjusterClient({ initialState }: CaptureHudAdj
 
   return (
     <div className={`min-h-screen bg-[#f8fafc] text-slate-800 transition-colors duration-300 dark:bg-[#0b0f19] dark:text-slate-100 ${isDarkPreview ? "dark" : ""}`}>
-      <div className="min-h-screen bg-[linear-gradient(to_right,rgba(148,163,184,0.12)_1px,transparent_1px),linear-gradient(to_bottom,rgba(148,163,184,0.12)_1px,transparent_1px)] bg-[size:22px_22px] pb-10 dark:bg-[linear-gradient(to_right,rgba(31,41,55,0.45)_1px,transparent_1px),linear-gradient(to_bottom,rgba(31,41,55,0.45)_1px,transparent_1px)]">
+      <div className="min-h-screen bg-[linear-gradient(to_right,rgba(148,163,184,0.06)_1px,transparent_1px),linear-gradient(to_bottom,rgba(148,163,184,0.06)_1px,transparent_1px)] bg-[size:24px_24px] pb-10 dark:bg-[linear-gradient(to_right,rgba(31,41,55,0.22)_1px,transparent_1px),linear-gradient(to_bottom,rgba(31,41,55,0.22)_1px,transparent_1px)]">
         <header className="border-b border-slate-200 bg-white/85 px-5 py-3 shadow-sm backdrop-blur dark:border-slate-800 dark:bg-[#111827]/85">
           <div className="mx-auto flex max-w-7xl flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
             <div className="min-w-0">
@@ -350,7 +340,7 @@ export default function CaptureHudAdjusterClient({ initialState }: CaptureHudAdj
                 GIT OUTPOST CONSOLE
               </h1>
               <p className="mt-1 text-xs font-semibold text-slate-500 dark:text-slate-400">
-                開發者據點佔領動態 HUD 視覺設計系統，後台工具箱專用調整頁。
+                GIT OUTPOST LIVE HUD 視覺設計系統，後台工具箱專用調整頁。
               </p>
             </div>
 
@@ -425,7 +415,7 @@ export default function CaptureHudAdjusterClient({ initialState }: CaptureHudAdj
           <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-[#111827]">
             <div className="mb-4 flex items-center gap-2 text-xs font-black text-slate-500 dark:text-slate-300">
               <span className="h-3 w-1.5 rounded-sm bg-indigo-500" />
-              主控台設定：變更名稱與標示「倉庫所有者」
+              主控台設定：變更名稱
             </div>
             <div className="grid gap-4 lg:grid-cols-[1fr_1fr_1.15fr]">
               <label className="space-y-2">
@@ -484,13 +474,13 @@ export default function CaptureHudAdjusterClient({ initialState }: CaptureHudAdj
                 <span>[ HUD 戰場即時渲染 ]</span>
                 <span>STATE: {isWarning ? "ALERT" : "READY"}</span>
               </div>
-              <div className="relative overflow-hidden rounded-lg border border-cyan-300 bg-white p-6 shadow-[0_0_0_1px_rgba(0,240,255,0.12)] dark:border-cyan-400 dark:bg-[#111827]">
-                <div aria-hidden className="pointer-events-none absolute inset-0 opacity-20 [background-image:linear-gradient(rgba(18,24,38,0)_50%,rgba(0,0,0,0.18)_50%)] [background-size:100%_4px]" />
+              <div className="relative overflow-hidden rounded-lg border border-cyan-300 bg-[#f7fafc] p-6 shadow-[0_0_0_1px_rgba(0,240,255,0.08)] dark:border-cyan-400 dark:bg-[#0d1220]">
+                <div aria-hidden className="pointer-events-none absolute inset-0 opacity-10 [background-image:linear-gradient(rgba(18,24,38,0)_50%,rgba(0,0,0,0.10)_50%)] [background-size:100%_5px] dark:opacity-12 dark:[background-image:linear-gradient(rgba(18,24,38,0)_50%,rgba(0,0,0,0.16)_50%)]" />
                 <div className="relative z-10">
                   <div className="mb-8 flex items-center justify-between">
                     <p className="flex items-center gap-2 font-mono text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">
                       <span className="h-4 w-1.5 bg-blue-500" />
-                      Git Outpost Console v1.0
+                        GIT OUTPOST LIVE HUD v1.0
                     </p>
                     <div className="rounded border border-cyan-400/40 bg-cyan-400/10 px-3 py-1 text-[11px] font-black text-cyan-500">
                       ● {statusText(displayState)}
@@ -564,10 +554,7 @@ export default function CaptureHudAdjusterClient({ initialState }: CaptureHudAdj
                   <div className="mt-8 flex flex-col gap-2 border-t border-slate-200 pt-3 font-mono text-[10px] font-black text-slate-400 dark:border-slate-800 sm:flex-row sm:items-center sm:justify-between">
                     <span>TIMEZONE: {displayState.timezone}</span>
                     <span>UPDATED: {formatUpdatedAt(displayState.updatedAt)}</span>
-                    <a href={displayState.targetRepositoryUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-emerald-500 hover:underline">
-                      <ExternalLink size={11} />
-                      {repositoryLabel}
-                    </a>
+                    <span className="text-emerald-500">HOMEPAGE_SAFE</span>
                   </div>
                 </div>
               </div>

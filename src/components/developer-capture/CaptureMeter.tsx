@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Activity, AlertTriangle, Crown, Crosshair, ExternalLink, GitBranch, GitCommitHorizontal, RadioTower } from "lucide-react";
+import { Activity, AlertTriangle, Crown, Crosshair, GitBranch, GitCommitHorizontal, RadioTower } from "lucide-react";
 import { saveCaptureDisplayNames } from "@/app/actions/developerCapture";
 import type { CapturePlayerStats, CaptureState } from "@/lib/developer-capture/types";
 
@@ -28,15 +28,6 @@ function formatDateTime(value: string): string {
     return `${month}/${day} ${hour}:${minute}`;
   } catch {
     return "尚未同步";
-  }
-}
-
-function getRepositoryLabel(url: string): string {
-  try {
-    const parsed = new URL(url);
-    return parsed.pathname.replace(/^\/|\.git$/g, "") || url;
-  } catch {
-    return url;
   }
 }
 
@@ -192,7 +183,6 @@ export default function CaptureMeter({ state, showEditor = false }: CaptureMeter
   const right = { ...state.players[1], label: rightName || state.players[1].label };
   const displayState: CaptureState = { ...state, targetRepositoryOwnerSide: ownerSide, players: [left, right] };
   const meta = getStatusMeta(displayState);
-  const repositoryLabel = getRepositoryLabel(state.targetRepositoryUrl);
   const markerColor = left.percent > right.percent
     ? "text-cyan-400"
     : right.percent > left.percent
@@ -229,16 +219,16 @@ export default function CaptureMeter({ state, showEditor = false }: CaptureMeter
 
   return (
     <section
-      aria-label="開發者據點佔領"
-      className={`relative overflow-hidden rounded-lg border bg-white text-slate-900 transition-all duration-500 dark:bg-[#111827] dark:text-slate-100 ${meta.glowClass}`}
+      aria-label="GIT OUTPOST LIVE HUD"
+      className={`relative overflow-hidden rounded-lg border bg-[#f8fafc] text-slate-900 transition-all duration-500 dark:bg-[#111827] dark:text-slate-100 ${meta.glowClass}`}
     >
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 opacity-[0.18] [background-image:linear-gradient(rgba(15,23,42,0)_50%,rgba(15,23,42,0.08)_50%),linear-gradient(90deg,rgba(34,211,238,0.06),rgba(16,185,129,0.02),rgba(249,115,22,0.06))] [background-size:100%_4px,8px_100%] dark:opacity-[0.22] dark:[background-image:linear-gradient(rgba(18,24,38,0)_50%,rgba(0,0,0,0.28)_50%),linear-gradient(90deg,rgba(34,211,238,0.06),rgba(16,185,129,0.02),rgba(249,115,22,0.06))]"
+        className="pointer-events-none absolute inset-0 opacity-[0.06] [background-image:linear-gradient(rgba(255,255,255,0)_50%,rgba(148,163,184,0.025)_50%)] [background-size:100%_5px] dark:opacity-[0.12] dark:[background-image:linear-gradient(rgba(18,24,38,0)_50%,rgba(0,0,0,0.18)_50%),linear-gradient(90deg,rgba(34,211,238,0.06),rgba(16,185,129,0.02),rgba(249,115,22,0.06))] dark:[background-size:100%_5px,8px_100%]"
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 opacity-40 [background-image:linear-gradient(to_right,rgba(148,163,184,0.08)_1px,transparent_1px),linear-gradient(to_bottom,rgba(148,163,184,0.08)_1px,transparent_1px)] [background-size:22px_22px] dark:opacity-25"
+        className="pointer-events-none absolute inset-0 opacity-20 [background-image:linear-gradient(to_right,rgba(148,163,184,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(148,163,184,0.05)_1px,transparent_1px)] [background-size:24px_24px] dark:opacity-20 dark:[background-image:linear-gradient(to_right,rgba(51,65,85,0.3)_1px,transparent_1px),linear-gradient(to_bottom,rgba(51,65,85,0.3)_1px,transparent_1px)]"
       />
 
       <HudCorner position="tl" className={meta.accentClass} />
@@ -251,11 +241,11 @@ export default function CaptureMeter({ state, showEditor = false }: CaptureMeter
           <div className="min-w-0">
             <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400">
               <span className="h-3 w-1.5 bg-cyan-400" />
-              <span>Git Outpost Console v1.0</span>
+              <span>GIT OUTPOST LIVE HUD v1.0</span>
             </div>
             <h3 className="mt-1 flex items-center gap-2 text-base font-black tracking-tight text-slate-900 dark:text-white">
               <Crosshair size={16} className={meta.accentClass} />
-              開發者據點佔領
+              GIT OUTPOST LIVE HUD
             </h3>
           </div>
 
@@ -454,16 +444,6 @@ export default function CaptureMeter({ state, showEditor = false }: CaptureMeter
 
         <div className="mt-4 flex flex-col gap-2 border-t border-slate-200/80 pt-3 font-mono text-[10px] font-bold text-slate-400 dark:border-slate-800/80 sm:flex-row sm:items-center sm:justify-between">
           <span>TIMEZONE: {state.timezone}</span>
-          <a
-            href={state.targetRepositoryUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex max-w-full items-center gap-1.5 truncate text-slate-500 hover:text-slate-700 hover:underline dark:text-slate-400 dark:hover:text-slate-200"
-            title={state.targetRepositoryUrl}
-          >
-            <ExternalLink size={11} className="shrink-0" />
-            <span className="truncate">REPO: {repositoryLabel}</span>
-          </a>
           <span className="flex items-center gap-1.5">
             <Activity size={11} />
             UPDATED: {formatDateTime(state.updatedAt)}

@@ -4,10 +4,10 @@ test.describe("開發者據點佔領插件", () => {
   test("在開發者主控台顯示只讀據點 HUD", async ({ page }) => {
     await page.goto("/developer");
 
-    await expect(page.getByRole("heading", { name: "開發者據點佔領" })).toBeVisible();
-    await expect(page.getByLabel("開發者據點佔領")).toContainText(/Shadowmaster6g\s*50%/);
-    await expect(page.getByLabel("開發者據點佔領")).toContainText(/sleepeeee\s*50%/);
-    await expect(page.getByLabel("開發者據點佔領")).toContainText("REPO: sleepeeee/overwatch-social");
+    await expect(page.getByRole("heading", { name: "GIT OUTPOST LIVE HUD" })).toBeVisible();
+    await expect(page.getByLabel("GIT OUTPOST LIVE HUD")).toContainText(/Shadowmaster6g\s*50%/);
+    await expect(page.getByLabel("GIT OUTPOST LIVE HUD")).toContainText(/sleepeeee\s*50%/);
+    await expect(page.getByLabel("GIT OUTPOST LIVE HUD")).not.toContainText("REPO:");
     await expect(page.getByText("儲存顯示名稱")).toHaveCount(0);
   });
 
