@@ -1,7 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { HERO_ALIGNMENTS, DEFAULT_ALIGNMENT, AlignmentConfig } from "@/data/heroAlignments";
+import { HERO_ALIGNMENTS, AlignmentConfig } from "@/data/heroAlignments";
 
 /**
  * 從 Supabase hero_alignments 表讀取英雄對準參數。
@@ -39,4 +39,5 @@ export async function getHeroAlignments(): Promise<Record<string, AlignmentConfi
   }
 }
 
-export { DEFAULT_ALIGNMENT };
+// DEFAULT_ALIGNMENT 不可在 "use server" 檔案中 re-export（Next.js 限制：只能匯出 async function）
+// 請直接從 "@/data/heroAlignments" 匯入 DEFAULT_ALIGNMENT

@@ -1,14 +1,22 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import { Geist, Noto_Sans_TC } from "next/font/google";
 import "./globals.css";
 import FloatingDock from "@/components/morning-sketch/FloatingDock";
 import ArtOrnament from "@/components/morning-sketch/ArtOrnament";
 import DevModeBanner from "@/components/DevModeBanner";
 import { AuthProvider } from "@/context/AuthContext";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+});
+
+const notoSansTC = Noto_Sans_TC({
+  variable: "--font-noto-sans-tc",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800", "900"],
 });
 
 export const metadata: Metadata = {
@@ -22,12 +30,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="zh-TW" data-style="A" className={`${geistSans.variable} h-full antialiased`}>
+    <html lang="zh-TW" data-style="A" className={`${geistSans.variable} ${notoSansTC.variable} h-full antialiased`}>
       <body 
         className="min-h-full flex flex-col text-[#5d4037] relative"
         style={{
           background: "var(--theme-bg-gradient)",
-          fontFamily: "var(--font-sans), sans-serif"
+          fontFamily: "var(--font-noto-sans-tc), var(--font-geist-sans), sans-serif"
         }}
       >
         {/* 開發者模式 banner（Server Component，不需要 auth）*/}
@@ -43,6 +51,8 @@ export default function RootLayout({
           {/* 全局常駐的高質感毛玻璃懸浮導航列 */}
           <FloatingDock />
         </AuthProvider>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
