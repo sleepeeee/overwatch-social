@@ -191,7 +191,6 @@ function StatPanel({
   );
 }
 
-export default function CaptureMeter({ state, showEditor = false }: CaptureMeterProps) {
 export default function CaptureMeter({ state, showEditor = false, showLinks = true }: CaptureMeterProps) {
   const [liveNow, setLiveNow] = useState(() => new Date());
   const [leftName, setLeftName] = useState(state.players[0].label);

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { toPng } from "html-to-image";
 import { OWPlayerCard, UserProfile, type HeroConfig } from "@/types/card";
 import {
   HEROES_CONFIG,
@@ -126,7 +127,8 @@ export default function ProfilePage() {
     setErrorMsg(null);
     setSharing(true);
     try {
-      const payload: ProfileUpdatePayload = {
+      const payload: OWPlayerCard = {
+        card_id: cardData.card_id,
         user_id: user?.id || "mock-user-id",
         server: cardData.server,
         battle_tag: cardData.battle_tag,
@@ -134,12 +136,13 @@ export default function ProfilePage() {
         selected_heroes: cardData.selected_heroes,
         tags: cardData.tags,
         message: cardData.message,
+        languages: cardData.languages,
         mic_status: cardData.mic_status,
-        mbti: cardData.mbti || null
+        social_channels: cardData.social_channels,
+        mbti: cardData.mbti ?? undefined
       };
 
-      // 觸發對接用的 Mock 函數
-      await saveCardToDatabase(payload);
+      await saveProfile(payload);
 
       const shareUrl = `${window.location.origin}/share/${user?.id || "mock-user-id"}`;
       await navigator.clipboard.writeText(shareUrl);

@@ -44,7 +44,6 @@ export default async function Page() {
 
   const totalProfiles = totalResult.count ?? 0;
   const completedProfiles = completedResult.count ?? 0;
-  const statsError = totalResult.error?.message || completedResult.error?.message || heroStatsResult.error?.message;
 
   // 🛡️ 容錯與型別安全轉換，若 RPC 失敗（如開發環境下未登入）降級為空陣列，防止頁面崩潰
   const heroStats = heroStatsResult.error 
