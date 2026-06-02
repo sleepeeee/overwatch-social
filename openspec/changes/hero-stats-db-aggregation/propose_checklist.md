@@ -45,6 +45,16 @@ rg "getHeroStats|selected_heroes.*limit|hero_stats" --type md docs/ README* CLAU
 
 結果：無命中（機械層命中數為零）→ 不加 [DOC] 任務。
 
+## §6.7 APPLY 完成審查
+
+| 審查 | 結果 | 備註 |
+|---|---|---|
+| Gemini §6.7 | **10/10 PASS** | SQL/型別/error handling/TypeScript 全通過 |
+| Codex §6.7 | **5/10 FAIL** | C1：page.tsx 直呼 RPC 未改用 Server Action；C2：migration JWT check 比 spec 更嚴格 |
+| §6.7 分類處理 | **(b) spec/impl 漂移** | 實作比 spec 更健壯；依全域規則修 spec.md，不改實作 |
+| spec.md 更新 | **已完成** | R2 場景改為「非 developer 被 JWT check 拒絕」；R4 場景改為「直呼 RPC + error handling」 |
+| tasks.md 更新 | **已完成** | Task 3 說明對齊實際實作 |
+
 ## §6.8 Council Mode 合成 + §6.3 Option C 決策
 
 **Codex §6.5 連續 5 輪 FAIL（5/10），Gemini §6.5 最後 2 輪 10/10 PASS。**

@@ -41,13 +41,13 @@ GRANT EXECUTE ON FUNCTION get_hero_stats() TO authenticated;
 - [x] **rg 驗收**：`rg "\.limit\(500\)" src/app/actions/developer.ts` 無命中
 - [x] **rg 驗收**：`rg "forEach" src/app/actions/developer.ts` 無殘留聚合 forEach
 
-## Task 3 — 修改 `developer/page.tsx`（改用 Server Action）
+## Task 3 — 修改 `developer/page.tsx`（移除 inline JS 聚合）
 
 - [x] 找到 `page.tsx` 內的 inline JS 聚合邏輯（`select("selected_heroes").limit(500)` + forEach）
-- [x] 替換為呼叫 `getHeroStats()` Server Action（import 自 `@/app/actions/developer`）
-- [x] 調整 `Promise.all` 內的 heroStats 取得方式，加錯誤降級（`heroStats || []`）
+- [x] 替換為 `supabase.rpc('get_hero_stats')` 直呼（加入 `Promise.all`），含 error handling 降級：`heroStatsResult.error ? [] : (...)`
 - [x] **rg 驗收**：`rg "\.limit\(500\)" src/app/developer/page.tsx` 無命中
 - [x] **rg 驗收**：`rg "selected_heroes" src/app/developer/page.tsx` 無 JS 展平邏輯
+- 注：§6.7 (b) spec/impl 對齊 — 直呼 RPC 而非透過 Server Action，spec 已同步更新
 
 ## Task 4 — 前端展示升至 Top 10
 

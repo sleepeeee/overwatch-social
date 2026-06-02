@@ -29,11 +29,11 @@ delta: replace
 - WHEN anon（未登入）用戶嘗試呼叫 `supabase.rpc('get_hero_stats')`
 - THEN 回傳 permission denied（GRANT 限 authenticated）
 
-#### Scenario: 非 developer authenticated 可呼叫（接受的 trade-off）
+#### Scenario: 非 developer authenticated 被 SQL function 拒絕
 - WHEN 一般 authenticated 用戶（非 developer）直接呼叫 `supabase.rpc('get_hero_stats')`
-- THEN 允許回傳統計資料（英雄流行度屬非敏感 aggregate）
-- AND 主要授權邊界在 Server Action `ensureDeveloper()`（`/developer` 路由守門）
-- AND 此為已接受的設計 trade-off，記錄於 design.md D1
+- THEN SQL function 內的 `auth.jwt()` role check 拋出 RAISE EXCEPTION（defense-in-depth）
+- AND 主要授權邊界仍在 Server Action `ensureDeveloper()` 與 `/developer` 路由守門
+- AND 此為 spec/impl 對齊後的最終決定：JWT check 比原 trade-off 更嚴格（記錄於 §6.7 b 分類）
 
 ### Requirement: search_path 安全固定
 Function SHALL 包含 `SET search_path = public` 防止 schema 注入攻擊。
@@ -63,16 +63,19 @@ Function SHALL 包含 `SET search_path = public` 防止 schema 注入攻擊。
 - THEN 無殘留聚合 forEach
 
 ### Requirement: developer/page.tsx 移除 inline 聚合
-`developer/page.tsx` SHALL 改用 `getHeroStats()` Server Action 替代 inline JS 聚合邏輯。
+`developer/page.tsx` SHALL 移除 inline JS 聚合邏輯，改用 `supabase.rpc('get_hero_stats')` 直呼（含 error handling 降級），與 page 現有的 `Promise.all` 整合。
 
-#### Scenario: page.tsx 呼叫 Server Action
+#### Scenario: page.tsx 直呼 RPC 並含 error handling
 - WHEN `/developer` 頁面載入
-- THEN 英雄統計資料來自 `getHeroStats()` Server Action
+- THEN 英雄統計資料來自 `supabase.rpc('get_hero_stats')`（直呼，不經 Server Action）
+- AND `heroStatsResult.error ? [] : (...)` 容錯降級確保 page 不 500
 - AND 不包含 `.limit(500)` 或 JS forEach 展平邏輯
 
 #### Scenario: 代碼驗收
 - WHEN `rg "\.limit\(500\)" src/app/developer/page.tsx`
 - THEN 無命中
+
+Note：page.tsx 直呼 RPC（而非透過 Server Action）屬 §6.7 (b) spec/impl 對齊。Server Component 已有 auth 守門，直呼 RPC 加 error handling 是等效且更高效的實作。
 
 ### Requirement: 前端展示升至 Top 10
 `DeveloperConsoleClient.tsx` SHALL 顯示最多 10 位英雄（原 Top 5）。
