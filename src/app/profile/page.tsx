@@ -55,6 +55,14 @@ const heroRoleTabs: Array<{ value: "all" | HeroConfig["role"]; label: string }> 
   { value: "support", label: "支援 ➕" }
 ];
 
+interface SpecialTag {
+  id: string;
+  game_id: string;
+  tag_name: string;
+  style_class: string;
+  created_at: string;
+}
+
 export default function ProfilePage() {
   const { isDeveloper } = useDevMode();
   const [activeSection, setActiveSection] = useState<"hub" | "ow-edit">("hub");
@@ -78,7 +86,7 @@ export default function ProfilePage() {
   const [heroRoleFilter, setHeroRoleFilter] = useState<"all" | "tank" | "damage" | "support">("all");
   const { user, authLoading } = useAuth();
   const [heroAlignments, setHeroAlignments] = useState<Record<string, AlignmentConfig>>(HERO_ALIGNMENTS);
-  const [dbTags, setDbTags] = useState<any[]>([]);
+  const [dbTags, setDbTags] = useState<SpecialTag[]>([]);
 
   // 初始化：從 localStorage 恢復 profile 頭像設定 + 英雄對準參數 + 載入特色標籤
   useEffect(() => {
