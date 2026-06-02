@@ -2,8 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
-import { saveCaptureDisplaySettings } from "@/lib/developer-capture/settings";
-import type { CaptureSide } from "@/lib/developer-capture/types";
+import { saveCaptureDisplayLabels } from "@/lib/developer-capture/settings";
 
 async function ensureDeveloper() {
   if (process.env.CAPTURE_REQUIRE_AUTH !== "true") {
@@ -25,7 +24,6 @@ function normalizeLabel(value: string): string {
 export async function saveCaptureDisplayNames(input: {
   leftLabel: string;
   rightLabel: string;
-  targetRepositoryOwnerSide: CaptureSide;
 }): Promise<{ success: boolean; error?: string }> {
   try {
     await ensureDeveloper();
@@ -37,10 +35,9 @@ export async function saveCaptureDisplayNames(input: {
       return { success: false, error: "左右顯示名稱都要填" };
     }
 
-    await saveCaptureDisplaySettings({
+    await saveCaptureDisplayLabels({
       leftLabel,
       rightLabel,
-      targetRepositoryOwnerSide: input.targetRepositoryOwnerSide,
     });
     revalidatePath("/developer");
 

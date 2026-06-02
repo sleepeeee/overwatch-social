@@ -85,3 +85,16 @@ export async function saveCaptureDisplaySettings(
   await fs.writeFile(SETTINGS_PATH, `${JSON.stringify(settings, null, 2)}\n`, "utf8");
   return settings;
 }
+
+export async function saveCaptureDisplayLabels(input: {
+  leftLabel: string;
+  rightLabel: string;
+}): Promise<CaptureDisplaySettings> {
+  const current = readCaptureDisplaySettingsSync();
+
+  return saveCaptureDisplaySettings({
+    leftLabel: input.leftLabel,
+    rightLabel: input.rightLabel,
+    targetRepositoryOwnerSide: current.targetRepositoryOwnerSide,
+  });
+}

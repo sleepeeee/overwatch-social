@@ -211,7 +211,6 @@ export default function CaptureMeter({ state }: CaptureMeterProps) {
       const result = await saveCaptureDisplayNames({
         leftLabel: leftName,
         rightLabel: rightName,
-        targetRepositoryOwnerSide: ownerSide,
       });
 
       if (!result.success) {
