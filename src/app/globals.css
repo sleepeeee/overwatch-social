@@ -946,3 +946,12 @@ html, body {
     0 6px 18px rgba(140, 124, 108, 0.02),
     inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
 }
+
+/* 首頁玩家卡片滑入動畫 */
+@keyframes slideInLeft {
+  from { transform: translateX(-40px) scale(0.92); opacity: 0; }
+  to   { transform: translateX(0) scale(1); opacity: 1; }
+}
+.animate-card-slide {
+  animation: slideInLeft 0.65s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
