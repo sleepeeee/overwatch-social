@@ -11,13 +11,13 @@
 
 ## 現在在做什麼
 
-`hero-stats-db-aggregation` ARCHIVE 前置完成（Pre-archive Gate PASS、F-005/ADR-05 已建）。等待主代理執行 `openspec archive hero-stats-db-aggregation`。
+`userprofile-auth-metadata-sync` ARCHIVE 前置完成（Pre-archive Gate PASS、F-006/ADR-06 已建）。等待主代理執行 `openspec archive userprofile-auth-metadata-sync`。
 
 ## 進行中的 Changes（未 archive）
 
 | Change | 狀態 | 備註 |
 |---|---|---|
-| hero-stats-db-aggregation | Gate PASS，等待 archive | F-005/ADR-05 已建；雙向 crossref 回填完成 |
+| userprofile-auth-metadata-sync | Gate PASS，等待 archive | F-006/ADR-06 已建；雙向 crossref 回填完成 |
 
 ## 待 Propose Changes
 
@@ -36,6 +36,12 @@
 ---
 
 ## Zone B — 工作日誌（追加，由新到舊）
+
+### 2026-06-03 userprofile-auth-metadata-sync — ARCHIVE 前置（Gate + Finding/ADR）
+
+- **已完成**：§Z Gate PASS；建 F-006（UserProfile localStorage 跨用戶 key 污染根因 + per-user key 修復確認）；建 ADR-06（per-user localStorage key + AuthContext.userProfile 事實來源決策）；雙向 crossref 回填（REF-013 referenced_by 加 F-006/ADR-06；F-006 referenced_by 加 ADR-06；ADR-06 referenced_by 加 F-006）；latest.md Zone A 更新
+- **卡關**：無
+- **下次優先**：主代理執行 `openspec archive userprofile-auth-metadata-sync`
 
 ### 2026-06-03 hero-stats-db-aggregation — ARCHIVE 前置（Gate + Finding/ADR）
 

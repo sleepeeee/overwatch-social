@@ -1,0 +1,3 @@
+per-user localStorage key + AuthContext.userProfile 作為 UserProfile 事實來源 ADR-06 Accepted userprofile-auth-metadata-sync 2026-06-03 ['REF-013', 'F-006'] [] ## 決策
+
+`profile/page.tsx` 的 `UserProfile` 初始化改為：AuthContext 從 `user.user_metadata` 衍生 `userProfile` 並向下傳遞，`profile/page.tsx` 的 Auth seed useEffect 以 `user_profile_hub_${authUserProfile.id}` 為 

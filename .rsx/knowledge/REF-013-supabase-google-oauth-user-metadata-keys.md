@@ -8,7 +8,7 @@ version: "Supabase Auth 2026 + Google OAuth 2.0"
 last_updated: 2026-06-03
 official: true
 references_to: [REF-003, REF-005]
-referenced_by: []
+referenced_by: [F-006, ADR-06]
 ---
 
 ## 摘要

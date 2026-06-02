@@ -185,6 +185,7 @@ social_channels 讀取：需登入，透過 authenticated RLS policy 直接查 p
 - ADR-08：玩家詳細頁 social_channels 透過 authenticated 直接查 profiles 表（不放入 public view）→ .rsx/decisions/ADR-06-player-detail-social-channels-via-authenticated-direct-query
 - ADR-09：AuthContext 同時使用 getUser() + onAuthStateChange（React 19 Strict Mode 修正）→ .rsx/decisions/ADR-07-authcontext-getuser-plus-onauthstatechange-dual-init
 - ADR-10：英雄統計採 SQL function SECURITY DEFINER + LATERAL unnest（vs Server Action 端聚合）→ .rsx/decisions/ADR-05-hero-stats-sql-rpc-security-definer
+- ADR-11：per-user localStorage key + AuthContext.userProfile 作為 UserProfile 事實來源（userprofile-auth-metadata-sync）→ .rsx/decisions/ADR-06-per-user-localstorage-key-with-authcontext-userprofile
 
 ## 下一步開發計畫
 1. 完成 串接 Supabase

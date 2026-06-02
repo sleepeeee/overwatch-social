@@ -41,7 +41,7 @@ delta: replace
 - WHEN `getUser()` 回傳 user 或 `onAuthStateChange` 觸發
 - THEN `userProfile` 均同步更新（不只依賴其中一條路徑）
 
-## MODIFIED Requirements
+## ADDED Requirements
 
 ### Requirement: profile/page.tsx userProfile 初始化改源
 `profile/page.tsx` SHALL 從 `useAuth().userProfile` 初始化本地 `userProfile` state，取代 `localStorage.getItem("user_profile_hub")`。
