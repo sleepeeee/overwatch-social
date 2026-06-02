@@ -18,6 +18,19 @@ import type { AlignmentConfig } from "@/data/heroAlignments";
 import { HERO_ALIGNMENTS } from "@/data/heroAlignments";
 import { Card, CardContent } from "@/components/ui/card";
 import { SocialIcon } from "@/components/ui/SocialIcons";
+import { toPng } from "html-to-image";
+
+type ProfileUpdatePayload = {
+  user_id: string;
+  server: string;
+  battle_tag: string;
+  is_tag_visible: boolean;
+  selected_heroes: string[];
+  tags: string[];
+  message: string;
+  mic_status: string;
+  mbti: string | null;
+};
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -126,21 +139,6 @@ export default function ProfilePage() {
     setErrorMsg(null);
     setSharing(true);
     try {
-      const payload: ProfileUpdatePayload = {
-        user_id: user?.id || "mock-user-id",
-        server: cardData.server,
-        battle_tag: cardData.battle_tag,
-        is_tag_visible: cardData.is_tag_visible,
-        selected_heroes: cardData.selected_heroes,
-        tags: cardData.tags,
-        message: cardData.message,
-        mic_status: cardData.mic_status,
-        mbti: cardData.mbti || null
-      };
-
-      // 觸發對接用的 Mock 函數
-      await saveCardToDatabase(payload);
-
       const shareUrl = `${window.location.origin}/share/${user?.id || "mock-user-id"}`;
       await navigator.clipboard.writeText(shareUrl);
       setShareSuccess(true);
