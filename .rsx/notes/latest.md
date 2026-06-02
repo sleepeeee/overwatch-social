@@ -125,3 +125,15 @@ Tier: grep
 - 三段：已完成 / 卡關 / 下次優先（任一無內容則寫「無」）
 - 超過 30 天的舊條目自動歸檔到 notes/archive/YYYY-MM.md（跑 `python packs/rsx/scripts/maintain.py rotate-zone-b --apply`）
 -->
+
+<!-- pre-check-log-start -->
+### [Step 0 pre-check] 專案目錄清理整理 (2026-06-03)
+Tier: grep
+命中：2 筆（REF-007 純UI/架構清理、REF-009 session structure）— 均為無關命中
+使用者選擇：直接 inline 分析（無需外部搜尋，問題在本地目錄結構）
+
+問題摘要：
+- 根目錄（D:\Overwatch專案\）有 Claude工作區/ + 雜散 html/md
+- overwatch-social/ 內有 src_backup_default(440KB)、196KB log、28個 openspec archive、13份報告、_drafts 草稿、rsx-bak 備份
+- .gitignore 未涵蓋 log/cache/test-results/playwright-report
+<!-- pre-check-log-end -->

@@ -36,6 +36,13 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
+# dev server logs
+dev-server.*.log
+
+# auto-generated / temp
+/cache/
+/scratch/
+
 # env files (can opt-in for committing if needed)
 .env*
 
