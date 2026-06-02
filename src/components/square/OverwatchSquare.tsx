@@ -11,6 +11,7 @@ import { createClient } from "@/lib/supabase/client";
 import { getHeroAlignments } from "@/app/actions/alignment";
 import type { AlignmentConfig } from "@/data/heroAlignments";
 import { HERO_ALIGNMENTS } from "@/data/heroAlignments";
+import { useAuth } from "@/context/AuthContext";
 
 interface OverwatchSquareProps {
   searchQuery: string;
@@ -49,13 +50,14 @@ function DoodleLine({ className = "w-10 h-1.5" }: { className?: string }) {
 }
 
 export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: OverwatchSquareProps) {
+  const { user, authLoading } = useAuth();
+  const isLoggedIn = !!user;
+
   const [players, setPlayers] = useState<OWPlayerCard[]>([]);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [selectedRole, setSelectedRole] = useState("全部");
   const [selectedServer, setSelectedServer] = useState("全部");
   const [selectedMic, setSelectedMic] = useState("全部");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [authLoading, setAuthLoading] = useState(true);
   const [isMounted, setIsMounted] = useState(false);
   const [heroAlignments, setHeroAlignments] = useState<Record<string, AlignmentConfig>>(HERO_ALIGNMENTS);
 
@@ -75,11 +77,10 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
       const { data, error } = await supabase
         .from("public_profiles")
         .select("*")
-        .eq("is_tag_visible", true) // DB 層過濾，隱私選擇不送至 client（安全修復）
+        .eq("is_tag_visible", true)
         .order("updated_at", { ascending: false });
 
       if (!error && data && data.length > 0) {
-        // 將 DB row 轉為 OWPlayerCard 格式
         setPlayers(data.map(row => ({
           card_id: row.card_id ?? row.user_id,
           user_id: row.user_id,
@@ -95,23 +96,11 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
           mbti: row.mbti ?? undefined,
         })));
       } else {
-        // Fallback: 顯示 Mock 數據
         setPlayers(MOCK_PLAYERS);
       }
     };
 
-    supabase.auth.getUser().then(({ data }) => {
-      setIsLoggedIn(!!data.user);
-      setAuthLoading(false);
-    });
-
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setIsLoggedIn(!!session?.user);
-      setAuthLoading(false);
-    });
-
     loadPlayers();
-    return () => listener.subscription.unsubscribe();
   }, []);
 
   const getHeroRole = (heroId: string) => {
