@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   Sliders,
@@ -44,6 +44,18 @@ export default function HomepageAlignerClient({
     message: false,
     buttons: false
   });
+
+  // 🔓 豁免全站防選取限制，允許開發者在後台點選與複製文字
+  useEffect(() => {
+    document.body.style.userSelect = "text";
+    document.body.style.webkitUserSelect = "text";
+    
+    return () => {
+      // 還原全站防選取防護
+      document.body.style.userSelect = "";
+      document.body.style.webkitUserSelect = "";
+    };
+  }, []);
 
   const handleAnnouncementChange = (idx: number, field: string, val: string) => {
     setAnnouncements(prev => {
