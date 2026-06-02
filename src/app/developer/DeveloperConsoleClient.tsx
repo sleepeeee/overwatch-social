@@ -25,7 +25,9 @@ import {
   Sun
 } from "lucide-react";
 import { addWhitelistEmail, removeWhitelistEmail, getAllProfilesForDeveloper } from "@/app/actions/developer";
+import CaptureMeter from "@/components/developer-capture/CaptureMeter";
 import { HEROES_CONFIG } from "@/data/mockPlayers";
+import type { CaptureState } from "@/lib/developer-capture/types";
 
 interface ProfileRow {
   user_id: string;
@@ -42,6 +44,7 @@ interface DeveloperConsoleClientProps {
   completedProfiles?: number;
   statsError?: string;
   heroStats?: Array<{ heroId: string; count: number }>;
+  captureState: CaptureState;
 }
 
 // 英雄名稱查找表（module-level）
@@ -96,6 +99,7 @@ export default function DeveloperConsoleClient({
   completedProfiles = 0,
   statsError,
   heroStats = [],
+  captureState,
 }: DeveloperConsoleClientProps) {
   const [whitelist, setWhitelist] = useState(initialWhitelist);
   const [newEmail, setNewEmail] = useState("");
@@ -603,6 +607,8 @@ export default function DeveloperConsoleClient({
                   </div>
 
                 </div>
+
+                <CaptureMeter state={captureState} />
 
                 {/* Hero Top 5 */}
                 {heroStats.length > 0 && (
