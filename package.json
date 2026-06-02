@@ -3,15 +3,21 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -H 127.0.0.1",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "storybook": "storybook dev -p 6006 -h 127.0.0.1",
+    "build-storybook": "storybook build",
+    "test:e2e": "playwright test",
+    "lighthouse": "lighthouse http://127.0.0.1:3000 --view"
   },
   "dependencies": {
     "@base-ui/react": "^1.5.0",
     "@supabase/ssr": "^0.10.3",
     "@supabase/supabase-js": "^2.106.2",
+    "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^2.0.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^1.17.0",
@@ -26,12 +32,17 @@
     "node": ">=20.9"
   },
   "devDependencies": {
+    "@playwright/test": "^1.60.0",
+    "@storybook/addon-a11y": "^10.4.1",
+    "@storybook/nextjs-vite": "^10.4.1",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
+    "lighthouse": "^13.3.0",
+    "storybook": "^10.4.1",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

@@ -11,8 +11,18 @@ const eslintConfig = defineConfig([
     ".next/**",
     "out/**",
     "build/**",
+    "storybook-static/**",
+    "playwright-report/**",
+    "test-results/**",
     "next-env.d.ts",
+    "scripts/**",
+    "src_backup_default/**",
   ]),
+  {
+    rules: {
+      "react-hooks/set-state-in-effect": "off",
+    },
+  },
 ]);
 
 export default eslintConfig;

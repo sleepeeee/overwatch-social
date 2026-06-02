@@ -139,11 +139,8 @@ export default function OWCard({
   };
 
   return (
-    <div className="relative w-full max-w-[420px] mx-auto bg-white/70 backdrop-blur-md border border-[#8c7c6c]/18 rounded-[24px] shadow-[0_15px_45px_rgba(140,124,108,0.06)] p-5 overflow-hidden transition-all duration-500 hover:border-[#82b7cc]/40 hover:shadow-[0_20px_50px_rgba(130,183,204,0.18)] hover:-translate-y-2 hover:scale-[1.015] flex flex-col justify-between group/card" style={{ fontFamily: "var(--font-sans), sans-serif" }}>
+    <div className="relative w-full max-w-[420px] mx-auto p-5 overflow-hidden flex flex-col justify-between group/card morning-sketch-card" style={{ fontFamily: "var(--font-sans), sans-serif" }}>
       
-      {/* 頂部全息發光高光線 */}
-      <div className="absolute top-0 right-0 h-[3px] w-24 bg-gradient-to-l from-[#82b7cc] via-[#f5d46b] to-transparent pointer-events-none" />
-
       <div className="flex justify-between items-center border-b border-dashed border-[#8c7c6c]/15 pb-3 mb-4 gap-2">
         <span className="text-[#8c7c6c]/80 font-extrabold text-[11px] sm:text-xs tracking-widest uppercase whitespace-nowrap shrink-0">Overwatch | 鬥陣特工</span>
         <span className="bg-[#82b7cc]/12 text-[#82b7cc] border border-[#82b7cc]/20 px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-black tracking-widest whitespace-nowrap shrink-0 uppercase">
@@ -183,7 +180,7 @@ export default function OWCard({
       </div>
 
       {/* 常用英雄展示區安全迴圈渲染 */}
-      <div className="relative w-full h-[180px] bg-[#fdfaf3]/20 backdrop-blur-[2px] border border-[#8c7c6c]/12 rounded-2xl overflow-hidden mb-4 flex shadow-[inset_0_2px_8px_rgba(140,124,108,0.01)]">
+      <div className="relative w-full h-[180px] border border-[#8c7c6c]/15 rounded-2xl overflow-hidden mb-4 flex watercolor-avatar-bg shadow-[inset_0_2px_8px_rgba(140,124,108,0.01)]">
         
         {[0, 1, 2].map((index) => {
           const heroId = selected_heroes[index];
@@ -196,7 +193,12 @@ export default function OWCard({
           };
           
           return (
-            <div key={index} className="relative flex-1 h-full border-r border-[#8c7c6c]/10 last:border-r-0 overflow-hidden group/hero flex flex-col justify-between">
+            <div key={index} className="relative flex-1 h-full border-r border-dashed border-[#8c7c6c]/15 last:border-r-0 overflow-hidden group/hero flex flex-col justify-between">
+              {/* 晶圓裁切對角線標記 */}
+              <div className="wafer-mark-tl pointer-events-none" />
+              <div className="wafer-mark-tr pointer-events-none" />
+              <div className="wafer-mark-bl pointer-events-none" />
+              <div className="wafer-mark-br pointer-events-none" />
               {heroInfo ? (
                 <>
                   {/* 🌟 每個卡槽獨立渲染專屬極簡幾何背景 */}

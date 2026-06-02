@@ -1,0 +1,98 @@
+[
+  {
+    "num": "01",
+    "tag": "ADMIN'S COLUMN",
+    "title": "站長隨筆手札 ✍️",
+    "color": "rgba(130, 183, 204, 0.85)",
+    "message": "給深夜還在線上的硬派玩家。在這裡，我們用名片點亮孤單的星空，幫助你找到能在耳麥裡分享勝負的靈魂伴侶。",
+    "custom_icon_url": "",
+    "alignments": {
+      "icon_x": 0,
+      "icon_y": 0,
+      "icon_scale": 100,
+      "title_font_size": 18,
+      "title_x": 8,
+      "title_y": -26,
+      "message_font_size": 12,
+      "message_x": 6,
+      "message_y": -24,
+      "buttons_x": 0,
+      "buttons_y": -20,
+      "tag_font_size": 11,
+      "tag_x": 0,
+      "tag_y": -27
+    }
+  },
+  {
+    "num": "02",
+    "tag": "CHANGELOG",
+    "title": "最新改版日誌 🚀",
+    "color": "rgba(245, 212, 107, 0.85)",
+    "message": "v0.12.0 大改版：首頁全面解耦鬥陣特攻，支持跨遊戲大廳！新增『每日幸友翻牌』與『揪團活動行事曆』。",
+    "custom_icon_url": "",
+    "alignments": {
+      "icon_x": 0,
+      "icon_y": 0,
+      "icon_scale": 100,
+      "title_font_size": 18,
+      "title_x": 8,
+      "title_y": -26,
+      "message_font_size": 12,
+      "message_x": 6,
+      "message_y": -24,
+      "buttons_x": 0,
+      "buttons_y": -20,
+      "tag_font_size": 11,
+      "tag_x": 0,
+      "tag_y": -27
+    }
+  },
+  {
+    "num": "03",
+    "tag": "CONTACT US",
+    "title": "加入玩家語音 ✉️",
+    "color": "rgba(235, 220, 216, 0.85)",
+    "message": "Discord 全局官方語音群已就緒！點擊頭像即可前往，與各路特工、召喚師與休閒大師一同暢聊開黑。",
+    "custom_icon_url": "",
+    "alignments": {
+      "icon_x": 0,
+      "icon_y": 0,
+      "icon_scale": 100,
+      "title_font_size": 18,
+      "title_x": 8,
+      "title_y": -26,
+      "message_font_size": 12,
+      "message_x": 8,
+      "message_y": -24,
+      "buttons_x": 0,
+      "buttons_y": -20,
+      "tag_font_size": 11,
+      "tag_x": 0,
+      "tag_y": -27
+    }
+  },
+  {
+    "num": "04",
+    "tag": "SUPPORT US",
+    "title": "請站長喝杯咖啡 ☕",
+    "color": "rgba(140, 124, 108, 0.85)",
+    "message": "如果這個禪意手帳風的小站溫暖了你，歡迎買杯咖啡支持本站。我們將持續開發更多有趣、精美的遊戲社群小工具！",
+    "custom_icon_url": "",
+    "alignments": {
+      "icon_x": 0,
+      "icon_y": 0,
+      "icon_scale": 100,
+      "title_font_size": 18,
+      "title_x": 8,
+      "title_y": -26,
+      "message_font_size": 13,
+      "message_x": 6,
+      "message_y": -24,
+      "buttons_x": 0,
+      "buttons_y": -20,
+      "tag_font_size": 11,
+      "tag_x": 0,
+      "tag_y": -27
+    }
+  }
+]

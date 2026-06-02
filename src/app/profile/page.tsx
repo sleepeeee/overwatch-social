@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { OWPlayerCard, UserProfile } from "@/types/card";
+import { OWPlayerCard, UserProfile, type HeroConfig } from "@/types/card";
 import {
   HEROES_CONFIG,
   PRESET_TAGS,
@@ -46,6 +46,13 @@ const DEFAULT_CARD: OWPlayerCard = {
   },
   mbti: "INFJ"
 };
+
+const heroRoleTabs: Array<{ value: "all" | HeroConfig["role"]; label: string }> = [
+  { value: "all", label: "全部" },
+  { value: "tank", label: "肉盾 🛡️" },
+  { value: "damage", label: "攻擊 ⚔️" },
+  { value: "support", label: "支援 ➕" }
+];
 
 export default function ProfilePage() {
   const { isDeveloper } = useDevMode();
@@ -632,7 +639,7 @@ export default function ProfilePage() {
                       key={opt.value}
                       type="button"
                       variant="secondary"
-                      onClick={() => setCardData({ ...cardData, mic_status: opt.value as any })}
+                      onClick={() => setCardData({ ...cardData, mic_status: opt.value as OWPlayerCard["mic_status"] })}
                       className={`text-xs font-bold py-2 rounded-xl border transition-all duration-300 active:scale-95 cursor-pointer shadow-sm ${
                         cardData.mic_status === opt.value
                           ? "bg-[#82b7cc] border-[#82b7cc] text-white"
@@ -704,16 +711,11 @@ export default function ProfilePage() {
                 </span>
               </div>
               <div className="flex flex-wrap gap-1.5 pb-3 border-b border-[#8c7c6c]/10">
-                {[
-                  { value: "all", label: "全部" },
-                  { value: "tank", label: "肉盾 🛡️" },
-                  { value: "damage", label: "攻擊 ⚔️" },
-                  { value: "support", label: "支援 ➕" }
-                ].map((tab) => (
+                {heroRoleTabs.map((tab) => (
                   <button
                     key={tab.value}
                     type="button"
-                    onClick={() => setHeroRoleFilter(tab.value as any)}
+                    onClick={() => setHeroRoleFilter(tab.value)}
                     className={`text-[10px] font-bold px-3 py-1.5 rounded-lg transition-colors border cursor-pointer ${
                       heroRoleFilter === tab.value
                         ? "bg-[#82b7cc] border-[#82b7cc] text-white"
