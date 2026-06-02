@@ -24,6 +24,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Sparkles, Save, Info, AlertTriangle, ArrowLeft, Gamepad2, ShieldAlert, Cpu } from "lucide-react";
 import { getMyProfile, saveProfile } from "@/app/actions/profile";
+import { getGameSpecialTags } from "@/app/actions/tags";
 import Link from "next/link";
 import { useDevMode } from "@/hooks/useDevMode";
 import LoginModal from "@/components/LoginModal";
@@ -77,9 +78,16 @@ export default function ProfilePage() {
   const [heroRoleFilter, setHeroRoleFilter] = useState<"all" | "tank" | "damage" | "support">("all");
   const { user, authLoading } = useAuth();
   const [heroAlignments, setHeroAlignments] = useState<Record<string, AlignmentConfig>>(HERO_ALIGNMENTS);
+  const [dbTags, setDbTags] = useState<any[]>([]);
 
-  // 初始化：從 localStorage 恢復 profile 頭像設定 + 英雄對準參數
+  // 初始化：從 localStorage 恢復 profile 頭像設定 + 英雄對準參數 + 載入特色標籤
   useEffect(() => {
+    getGameSpecialTags("overwatch").then(res => {
+      if (res.success && res.data) {
+        setDbTags(res.data);
+      }
+    });
+
     const cachedProfile = localStorage.getItem("user_profile_hub");
     if (cachedProfile) {
       try {
@@ -774,23 +782,26 @@ export default function ProfilePage() {
                 </span>
               </div>
               <div className="flex flex-wrap gap-2">
-                {PRESET_TAGS.map((tag) => {
-                  const isSelected = cardData.tags.includes(tag.text);
+                {dbTags.map((tag) => {
+                  const isSelected = cardData.tags.includes(tag.tag_name);
                   return (
                     <button
                       key={tag.id}
                       type="button"
-                      onClick={() => handleToggleTag(tag.text)}
-                      className={`cursor-pointer px-3 py-1.5 text-xs font-extrabold rounded-xl border shadow-sm transition-all duration-300 ${
+                      onClick={() => handleToggleTag(tag.tag_name)}
+                      className={`cursor-pointer px-3 py-1.5 text-xs font-extrabold rounded-full border shadow-sm transition-all duration-300 ${
                         isSelected
-                          ? "bg-[#82b7cc] text-white border-[#82b7cc]"
+                          ? `${tag.style_class} scale-105 shadow-inner`
                           : "bg-white/40 text-[#8c7c6c] hover:bg-white border-[#8c7c6c]/15"
                       }`}
                     >
-                      #{tag.text}
+                      #{tag.tag_name}
                     </button>
                   );
                 })}
+                {dbTags.length === 0 && (
+                  <span className="text-xs text-[#8c7c6c]/60 italic font-semibold">載入特色標籤中...</span>
+                )}
               </div>
             </CardContent>
           </Card>
