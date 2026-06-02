@@ -197,7 +197,7 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
         }}
       />
       {/* 🚀 獨立懸浮篩選絲帶 (Floating Filter Ribbon) */}
-      <div className="w-full bg-white/40 backdrop-blur-3xl border-2 border-white/60 rounded-[28px] p-5 md:py-4 md:px-6 shadow-[0_18px_45px_-18px_rgba(140,124,108,0.12),inset_0_1.5px_2px_rgba(255,255,255,0.85)] flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
+      <div className="w-full bg-white/40 backdrop-blur-3xl border-2 border-white/60 rounded-[28px] p-5 md:py-4 md:px-6 shadow-[0_18px_45px_-18px_rgba(140,124,108,0.12),inset_0_1.5px_2px_rgba(255,255,255,0.85)] flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10 elite-glass-card">
         
         {/* 🌸 [Aesthetics] 手稿星芒與偏光微光氣泡點綴 */}
         <div className="absolute -top-3 -left-3 pointer-events-none z-20">
@@ -291,8 +291,21 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
           {filteredPlayers.map((player) => (
             <div 
               key={player.card_id} 
-              className="w-full flex justify-center hover:-translate-y-1 transition-transform duration-300"
+              className="w-full flex justify-center hover:-translate-y-1 transition-transform duration-300 relative"
             >
+              {/* ⧡ Version B: 六邂形框裝飾（卡片右上，超低opacity） */}
+              <div
+                className="ms-c3-organic-hexagon-frame-soft pointer-events-none select-none"
+                style={{
+                  position: 'absolute',
+                  top: '-8px',
+                  right: '-8px',
+                  width: '56px',
+                  height: '56px',
+                  opacity: 0.10,
+                  zIndex: 0,
+                }}
+              />
               <OWCard
                 cardData={player}
                 isLoggedIn={isLoggedIn}
@@ -304,7 +317,7 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
           ))}
         </div>
       ) : (
-        <div className="ow-glass-panel py-16 px-4 text-center max-w-xl mx-auto flex flex-col items-center justify-center gap-4">
+        <div className="ow-glass-panel elite-glass-card py-16 px-4 text-center max-w-xl mx-auto flex flex-col items-center justify-center gap-4">
           <div className="w-16 h-16 rounded-full bg-white/60 flex items-center justify-center text-[#82b7cc] border border-[#8c7c6c]/15 shadow-sm">
             <AlertCircle size={28} />
           </div>

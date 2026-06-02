@@ -42,6 +42,9 @@ export default function BrowsePage() {
       data-theme-expert="true"
       className="max-w-6xl mx-auto px-4 py-8 space-y-6 relative min-h-screen overflow-x-hidden"
     >
+      {/* 🗾 Version B 和紙底紋層 */}
+      <div className="washi-paper-texture" aria-hidden="true" />
+
       <TopBar />
 
       {/* 💗 Premium 水彩裝飾流體背景 (右上與左下雙層暈染) */}
@@ -151,6 +154,37 @@ export default function BrowsePage() {
           }}
         />
 
+        {/* 💛 Version B: 金粉菱形大（標題左上） */}
+        <div
+          className="ms-c2-accent-diamond-sand gold-dust-diamond-lg pointer-events-none select-none"
+          style={{
+            position: 'absolute',
+            top: '-4px',
+            left: '0px',
+            zIndex: 2,
+          }}
+        />
+        {/* 💛 Version B: 金粉星火中（標題右側） */}
+        <div
+          className="ms-c2-accent-spark-sand gold-dust-diamond-md pointer-events-none select-none"
+          style={{
+            position: 'absolute',
+            top: '8px',
+            right: '180px',
+            zIndex: 2,
+          }}
+        />
+        {/* 💛 Version B: 金粉小星（h1 文字右方） */}
+        <div
+          className="ms-c2-accent-tiny-star-sand gold-dust-diamond-sm pointer-events-none select-none"
+          style={{
+            position: 'absolute',
+            top: '20px',
+            left: '230px',
+            zIndex: 2,
+          }}
+        />
+
         <div className="text-[10px] md:text-[11px] font-black uppercase tracking-[0.2em] text-[#8c7c6c]/60 flex items-center gap-1.5">
           <span>Lobby Directory</span>
           <span className="w-1.5 h-1.5 rounded-full bg-[#82b7cc]/40" />
@@ -171,6 +205,9 @@ export default function BrowsePage() {
         </p>
       </div>
 
+      {/* ─── Version B 禪境分隔線 ─── */}
+      <div className="kasumi-zen-divider relative z-10" />
+
       {/* 🌊 B1 波浪分隔線（版本A獨有） */}
       <div className="ms-wave-divider-enhanced mt-3 -mx-4" />
 
@@ -188,6 +225,20 @@ export default function BrowsePage() {
             height: '52px',
             opacity: 0.55,
             zIndex: 1,
+          }}
+        />
+        {/* 💧 Version B: 大漣漪背景（禪境） */}
+        <div
+          className="ms-d2-circle-ripple-accent pointer-events-none select-none"
+          style={{
+            position: 'absolute',
+            left: '50%',
+            top: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '240px',
+            height: '240px',
+            opacity: 0.10,
+            zIndex: 0,
           }}
         />
         <div className="relative w-full bg-white/45 backdrop-blur-2xl border-2 border-white/70 rounded-[24px] p-1.5 shadow-[0_15px_35px_-20px_rgba(140,124,108,0.15),inset_0_1.5px_2.5px_rgba(255,255,255,0.9)] focus-within:border-[#82b7cc]/60 transition-all duration-300 flex items-center group/search">

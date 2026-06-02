@@ -931,3 +931,79 @@ img,
   opacity: 0.9;
   filter: drop-shadow(0 2px 4px rgba(140,124,108,0.08));
 }
+
+/* 🗾 Version B: Washi Zen Elite */
+
+/* 和紙底紋 - 全頁平鋪 */
+.washi-paper-texture {
+  position: absolute;
+  inset: 0;
+  background-image: var(--ms-a3-sketch-line);
+  background-size: 48px 48px;
+  background-repeat: repeat;
+  pointer-events: none;
+  opacity: 0.045;
+  z-index: 0;
+}
+
+/* 精英玻璃卡片 */
+.elite-glass-card {
+  background: rgba(252, 249, 242, 0.38) !important;
+  backdrop-filter: blur(16px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+  border: 1px solid rgba(245, 212, 107, 0.22) !important;
+  box-shadow:
+    0 8px 32px -8px rgba(140, 124, 108, 0.12),
+    0 2px 8px -2px rgba(130, 183, 204, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85) !important;
+}
+
+/* 金粉菱形三尺寸 */
+.gold-dust-diamond-lg {
+  width: 52px; height: 52px;
+  opacity: 0.65;
+}
+.gold-dust-diamond-md {
+  width: 34px; height: 34px;
+  opacity: 0.48;
+}
+.gold-dust-diamond-sm {
+  width: 20px; height: 20px;
+  opacity: 0.35;
+}
+
+/* 禪境波浪分隔（更細膩） */
+.kasumi-zen-divider {
+  position: relative;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(245, 212, 107, 0.20) 20%,
+    rgba(140, 124, 108, 0.25) 50%,
+    rgba(245, 212, 107, 0.20) 80%,
+    transparent 100%
+  );
+  margin: 12px 0;
+}
+
+.kasumi-zen-divider::after {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 3px;
+  left: 15%;
+  width: 70%;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(140, 124, 108, 0.12) 40%,
+    transparent 100%
+  );
+}
+
+/* Tab 金色底條 */
+.browse-tab-active {
+  border-bottom: 2px solid rgba(245, 212, 107, 0.75) !important;
+  position: relative;
+}
