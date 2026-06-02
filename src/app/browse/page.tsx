@@ -48,10 +48,77 @@ export default function BrowsePage() {
       <div className="watercolor-mist-bg top-[-10%] right-[-10%] animate-[mistFloatA_20s_infinite_alternate]" />
       <div className="watercolor-mist-bg bottom-[5%] left-[-15%] scale-125 animate-[mistFloatB_25s_infinite_alternate]" />
 
+      {/* 🌿 D1 浮動竹葉 - 右側遠景裝飾 */}
+      <div
+        className="ms-d1-floating-leaf-bamboo ms-float-slow pointer-events-none select-none"
+        style={{
+          position: 'absolute',
+          top: '8%',
+          right: '-2%',
+          width: '110px',
+          height: '180px',
+          opacity: 0.55,
+          zIndex: 0,
+        }}
+      />
+
+      {/* 🌿 D1 浮動柳葉 - 左下角裝飾 */}
+      <div
+        className="ms-d1-floating-leaf-willow ms-float-slow pointer-events-none select-none"
+        style={{
+          position: 'absolute',
+          bottom: '15%',
+          left: '-1%',
+          width: '80px',
+          height: '140px',
+          opacity: 0.4,
+          zIndex: 0,
+          animationDelay: '3s',
+        }}
+      />
+
+      {/* 💧 D2 漣漪光圈 - 右側中段背景裝飾 */}
+      <div
+        className="ms-d2-circle-ripple-accent ms-ripple-hover pointer-events-none select-none"
+        style={{
+          position: 'absolute',
+          top: '30%',
+          right: '5%',
+          width: '180px',
+          height: '180px',
+          opacity: 0.35,
+          zIndex: 0,
+        }}
+      />
+
       {/* 🌸 莫蘭迪紙感手稿標頭 - 垂直層級重構 */}
       <div className="text-left space-y-2 relative z-10 animate-[fadeIn_0.5s_ease-out] pb-1 select-none">
         
-        {/* 1. 極簡小副標 (Low-profile Subtitle) */}
+        {/* C2 星火裝飾 - 標題右側角落 */}
+        <div
+          className="ms-c2-accent-spark-sand pointer-events-none select-none"
+          style={{
+            position: 'absolute',
+            top: '0px',
+            right: '160px',
+            width: '36px',
+            height: '36px',
+            opacity: 0.7,
+          }}
+        />
+        {/* C2 小星形裝飾 - 副標旁 */}
+        <div
+          className="ms-c2-accent-tiny-star-blue pointer-events-none select-none"
+          style={{
+            position: 'absolute',
+            top: '10px',
+            right: '120px',
+            width: '22px',
+            height: '22px',
+            opacity: 0.55,
+          }}
+        />
+
         <div className="text-[10px] md:text-[11px] font-black uppercase tracking-[0.2em] text-[#8c7c6c]/60 flex items-center gap-1.5">
           <span>Lobby Directory</span>
           <span className="w-1.5 h-1.5 rounded-full bg-[#82b7cc]/40" />
