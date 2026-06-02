@@ -42,7 +42,7 @@ RETURNS TABLE(hero_id text, hero_count bigint)
 SECURITY DEFINER
 SET search_path = public        -- C1 修正：防止 schema 注入
 AS $$
-  SELECT h_id, COUNT(*) AS hero_count
+  SELECT h_id, COUNT(DISTINCT profiles.user_id)::bigint AS hero_count
   FROM profiles,
        unnest(selected_heroes) AS h_id   -- C2 修正：LATERAL 形式，避免 SRF in GROUP BY
   GROUP BY h_id
@@ -78,9 +78,10 @@ trade-off：一般 authenticated（非 developer）可直接呼叫 RPC（英雄�
 
 | 選擇 | 依據 |
 |---|---|
-| PostgreSQL unnest + GROUP BY | REF-010（Postgres array aggregation 標準模式）|
-| SECURITY DEFINER + auth.jwt() | REF-011（Supabase RPC security pattern）|
-| GRANT TO authenticated（非 anon）| REF-005（最小權限原則）|
+| PostgreSQL LATERAL unnest + GROUP BY | REF-010（Postgres array aggregation 標準模式）|
+| SECURITY DEFINER + SET search_path | REF-011（Supabase RPC security pattern，無 jwt check）|
+| GRANT TO authenticated（非 anon）| REF-005（最小權限原則；非 developer authenticated 可呼叫，屬接受的 trade-off）|
+| COUNT(DISTINCT user_id) | Gemini N2 建議：語意為「選擇此英雄的唯一玩家數」，防止重複 hero_id 膨脹計數 |
 
 ### D2：developer/page.tsx 改用何種入口
 

@@ -14,8 +14,9 @@ BEGIN
   END IF;
 
   RETURN QUERY
-    -- 🛠️ 修復 unnest 搭配 GROUP BY 在 SELECT 中導致的語法錯誤，改用 lateral cross join 展開
-    SELECT h_id, COUNT(*)
+    -- LATERAL cross join 展開 text[] 陣列
+    -- COUNT(DISTINCT user_id)：統計「選擇此英雄的唯一玩家數」，防止重複 hero_id 計數膨脹
+    SELECT h_id, COUNT(DISTINCT profiles.user_id)::bigint AS hero_count
     FROM profiles,
          unnest(selected_heroes) AS h_id
     GROUP BY h_id

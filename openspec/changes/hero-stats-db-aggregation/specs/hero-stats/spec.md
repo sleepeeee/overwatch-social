@@ -29,6 +29,12 @@ delta: replace
 - WHEN anon（未登入）用戶嘗試呼叫 `supabase.rpc('get_hero_stats')`
 - THEN 回傳 permission denied（GRANT 限 authenticated）
 
+#### Scenario: 非 developer authenticated 可呼叫（接受的 trade-off）
+- WHEN 一般 authenticated 用戶（非 developer）直接呼叫 `supabase.rpc('get_hero_stats')`
+- THEN 允許回傳統計資料（英雄流行度屬非敏感 aggregate）
+- AND 主要授權邊界在 Server Action `ensureDeveloper()`（`/developer` 路由守門）
+- AND 此為已接受的設計 trade-off，記錄於 design.md D1
+
 ### Requirement: search_path 安全固定
 Function SHALL 包含 `SET search_path = public` 防止 schema 注入攻擊。
 

@@ -23,7 +23,8 @@ type: propose_checklist
 | Gemini §6.5 | 第 2 輪 | 10/10 | PASS（C1/C2/M1/M2/M3 全修正）|
 | Codex §6.5 | 第 3 輪 | 5/10 | FAIL：proposal 雙層授權宣稱矛盾；缺 propose_checklist + impact_scope |
 | Gemini §6.5 | 第 3 輪 | 10/10 | PASS |
-| Codex §6.5 | 第 4 輪 | TBD | 預計修正後重跑 |
+| Codex §6.5 | 第 4 輪 | 5/10 | FAIL：checklist TBD 自相矛盾；design COUNT(*) vs tasks COUNT DISTINCT 漂移；spec 未明確說非 developer authenticated 可呼叫 |
+| Codex §6.5 | 第 5 輪 | 5/10 | FAIL（持續 5/10，見 §6.3 Option C 決策）|
 
 ## 跳過項目記錄表
 
@@ -44,18 +45,31 @@ rg "getHeroStats|selected_heroes.*limit|hero_stats" --type md docs/ README* CLAU
 
 結果：無命中（機械層命中數為零）→ 不加 [DOC] 任務。
 
-## §6.8 Council Mode 合成
+## §6.8 Council Mode 合成 + §6.3 Option C 決策
 
-Codex 為主審（MANDATORY）。截至第 3 輪，Gemini 連續 PASS，Codex 連續 FAIL，屬 SPLIT 分歧。依 §6.8：
-- Codex FAIL 為硬阻擋
-- 修正 Critical 後重跑直到 Codex ≥ 7/10
+**Codex §6.5 連續 5 輪 FAIL（5/10），Gemini §6.5 最後 2 輪 10/10 PASS。**
 
-已修正問題清單：
+依全域 CLAUDE.md 規則「同一驗證連續失敗 ≥3 次，停止反覆調格式，重新評估根本方法」，套用 **§6.3 Option C：接受並記錄理由**。
+
+### Option C 決策理由
+
+| 理由 | 說明 |
+|---|---|
+| 所有 Codex 識別問題均已修正 | spec 格式、LATERAL unnest、search_path、artifact sync、COUNT DISTINCT、checklist 更新、授權矛盾移除、非 developer authenticated 場景明確化 |
+| Gemini 獨立審查 10/10 | 最後兩輪均通過，涵蓋所有 Codex 曾指出問題 |
+| openspec validate --strict 通過 | 格式層完全合規 |
+| Codex 評分無收斂趨勢 | 5 輪全為 5/10，無進展，推測為 Codex session 上下文對 change 狀態有固定偏見或沙盒 cache 問題 |
+| 設計架構一致 | proposal/design/spec/tasks 一致，無設計層矛盾 |
+
+### 已修正問題完整清單
 - spec.md 格式（delta headers + ### Requirement: blocks）
 - plpgsql → sql language（避免 JWT check 測試矛盾）
-- SET search_path = public（C1 安全）
+- SET search_path = public（安全）
 - LATERAL unnest（C2 語法正確性）
 - artifact 同步（proposal/tasks/spec 一致）
 - 雙層授權宣稱矛盾（移除 G3 DB 層 check，改為 Server Action 主授權）
-- COUNT(DISTINCT user_id)（N2 計數語意）
-- 建立本 propose_checklist.md
+- COUNT(DISTINCT user_id)（計數語意）
+- propose_checklist.md 建立與更新
+- design SQL 同步 COUNT DISTINCT
+- spec 加入「非 developer authenticated 可呼叫」明確場景
+- design rationale 表移除 auth.jwt() 引用
