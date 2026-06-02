@@ -25,9 +25,7 @@ import {
   Sun
 } from "lucide-react";
 import { addWhitelistEmail, removeWhitelistEmail, getAllProfilesForDeveloper } from "@/app/actions/developer";
-import CaptureMeter from "@/components/developer-capture/CaptureMeter";
 import { HEROES_CONFIG } from "@/data/mockPlayers";
-import type { CaptureState } from "@/lib/developer-capture/types";
 
 interface ProfileRow {
   user_id: string;
@@ -42,9 +40,7 @@ interface DeveloperConsoleClientProps {
   currentUserEmail: string;
   totalProfiles?: number;
   completedProfiles?: number;
-  statsError?: string;
   heroStats?: Array<{ heroId: string; count: number }>;
-  captureState: CaptureState;
 }
 
 // 英雄名稱查找表（module-level）
@@ -97,9 +93,7 @@ export default function DeveloperConsoleClient({
   currentUserEmail,
   totalProfiles = 0,
   completedProfiles = 0,
-  statsError,
   heroStats = [],
-  captureState,
 }: DeveloperConsoleClientProps) {
   const [whitelist, setWhitelist] = useState(initialWhitelist);
   const [newEmail, setNewEmail] = useState("");
@@ -124,7 +118,7 @@ export default function DeveloperConsoleClient({
   const [usersLoading, setUsersLoading] = useState(false);
   const [usersError, setUsersError] = useState("");
   const [usersSearch, setUsersSearch] = useState("");
-  const [isPending, startTransition] = useTransition();
+  const [, startTransition] = useTransition();
   const searchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -608,9 +602,6 @@ export default function DeveloperConsoleClient({
 
                 </div>
 
-                <CaptureMeter state={captureState} />
-
-                {/* Hero Top 10 */}
                 {heroStats.length > 0 && (
                   <div className="space-y-3">
                     <div className="flex items-center gap-2">

@@ -1,5 +1,4 @@
 import { createClient } from "@/lib/supabase/server";
-import { readCaptureState } from "@/lib/developer-capture/state";
 import { redirect } from "next/navigation";
 import DeveloperConsoleClient from "./DeveloperConsoleClient";
 
@@ -35,13 +34,12 @@ export default async function Page() {
   }));
 
   // 讀取統計 + 英雄流行度（共享 supabase client，消除重複 getUser() auth round-trip）
-  const [totalResult, completedResult, heroStatsResult, captureState] = await Promise.all([
+  const [totalResult, completedResult, heroStatsResult] = await Promise.all([
     supabase.from("profiles").select("user_id", { count: "exact", head: true }),
     supabase.from("profiles").select("user_id", { count: "exact", head: true })
       .not("battle_tag", "is", null)
       .neq("battle_tag", "愛喝奶茶#3342"),
     supabase.rpc("get_hero_stats"),
-    readCaptureState(),
   ]);
 
   const totalProfiles = totalResult.count ?? 0;
@@ -62,9 +60,7 @@ export default async function Page() {
       currentUserEmail={user?.email || "unknown@developer.com"}
       totalProfiles={totalProfiles}
       completedProfiles={completedProfiles}
-      statsError={statsError}
       heroStats={heroStats}
-      captureState={captureState}
     />
   );
 }

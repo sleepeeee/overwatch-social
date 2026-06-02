@@ -1,14 +1,19 @@
 import { expect, test } from "@playwright/test";
 
 test.describe("開發者據點佔領插件", () => {
-  test("在開發者主控台顯示據點 HUD", async ({ page }) => {
+  test("系統概覽不再顯示據點 HUD", async ({ page }) => {
     await page.goto("/developer");
 
-    await expect(page.getByRole("heading", { name: "GIT OUTPOST LIVE HUD" })).toBeVisible();
-    await expect(page.getByLabel("GIT OUTPOST LIVE HUD")).toContainText(/Shadowmaster6g\s*50%/);
-    await expect(page.getByLabel("GIT OUTPOST LIVE HUD")).toContainText(/sleepeeee\s*50%/);
-    await expect(page.getByLabel("GIT OUTPOST LIVE HUD")).not.toContainText("REPO:");
+    await expect(page.getByRole("heading", { name: "GIT OUTPOST LIVE HUD" })).toHaveCount(0);
+    await expect(page.getByLabel("GIT OUTPOST LIVE HUD")).toHaveCount(0);
     await expect(page.getByText("儲存顯示名稱")).toHaveCount(0);
+
+    await page.locator("select").evaluate((element, value) => {
+      const select = element as HTMLSelectElement;
+      select.value = value as string;
+      select.dispatchEvent(new Event("change", { bubbles: true }));
+    }, "tools");
+    await expect(page.getByText("開發者據點 HUD 調整器")).toBeVisible();
   });
 
   test("HUD 調整器在工具頁可開啟", async ({ page }) => {
