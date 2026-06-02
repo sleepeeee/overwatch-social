@@ -309,15 +309,8 @@ export default function ProfilePage() {
     setTimeout(() => setSaved(false), 2000);
   };
 
-  // auth 解析中（由 AuthContext 管理）
-  if (authLoading) {
-    return (
-      <div className="max-w-6xl mx-auto px-4 py-8 flex flex-col items-center justify-center min-h-[500px] gap-4">
-        <div className="w-12 h-12 border-4 border-[#82b7cc] border-t-transparent rounded-full animate-spin"></div>
-        <p className="text-[#8c7c6c] text-sm font-bold animate-pulse">正在開啟特工主控台...</p>
-      </div>
-    );
-  }
+  // 移除 authLoading spinner：LoginModal show={!authLoading && !user} 已足夠守門
+  // 不再阻擋整個頁面渲染，避免 Supabase 連線慢時卡在 spinner
 
   // 1. 渲染：主入口 UserProfile Hub
   if (activeSection === "hub") {

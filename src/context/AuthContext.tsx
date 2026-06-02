@@ -18,15 +18,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const supabase = createClient();
+    let cancelled = false;
 
-    // INITIAL_SESSION is the canonical Supabase v2 initial auth source
-    // Drop getUser() to avoid dual-path race with INITIAL_SESSION
+    // getUser() 提供即時的初始 auth 狀態（解決 Strict Mode 下 onAuthStateChange 延遲問題）
+    supabase.auth.getUser().then(({ data }) => {
+      if (cancelled) return;
+      setUser(data.user ?? null);
+      setAuthLoading(false);
+    });
+
+    // onAuthStateChange 處理後續變化（登入、登出、token 刷新等）
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (cancelled) return;
       setUser(session?.user ?? null);
       setAuthLoading(false);
     });
 
-    return () => listener.subscription.unsubscribe();
+    return () => {
+      cancelled = true;
+      listener.subscription.unsubscribe();
+    };
   }, []);
 
   return (
