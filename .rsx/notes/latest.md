@@ -11,13 +11,13 @@
 
 ## 現在在做什麼
 
-`userprofile-auth-metadata-sync` ARCHIVE 前置完成（Pre-archive Gate PASS、F-006/ADR-06 已建）。等待主代理執行 `openspec archive userprofile-auth-metadata-sync`。
+`share-page-completion` ARCHIVE 前置完成（Pre-archive Gate PASS、F-007/ADR-07 已建）。等待主代理執行 `openspec archive share-page-completion`。
 
 ## 進行中的 Changes（未 archive）
 
 | Change | 狀態 | 備註 |
 |---|---|---|
-| userprofile-auth-metadata-sync | Gate PASS，等待 archive | F-006/ADR-06 已建；雙向 crossref 回填完成 |
+| share-page-completion | Gate PASS，等待 archive | F-007/ADR-07 已建；雙向 crossref 回填完成 |
 
 ## 待 Propose Changes
 
@@ -36,6 +36,12 @@
 ---
 
 ## Zone B — 工作日誌（追加，由新到舊）
+
+### 2026-06-03 share-page-completion — ARCHIVE 前置（Gate + Finding/ADR）
+
+- **已完成**：§Z Gate PASS；建 F-007（og:image 必須絕對 URL + NEXT_PUBLIC_SITE_URL env var 設計確認）；建 ADR-07（Server Component 包 Client Component 邊界：generateMetadata + html-to-image 共存設計）；雙向 crossref 回填（REF-014 referenced_by 加 F-007/ADR-07；F-007 references_to REF-014/ADR-07；ADR-07 references_to REF-014/F-007；F-007 referenced_by 加 ADR-07；ADR-07 referenced_by 加 F-007）；latest.md Zone A 更新
+- **卡關**：無
+- **下次優先**：主代理執行 `openspec archive share-page-completion`
 
 ### 2026-06-03 userprofile-auth-metadata-sync — ARCHIVE 前置（Gate + Finding/ADR）
 
