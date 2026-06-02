@@ -11,6 +11,7 @@ import { createClient } from "@/lib/supabase/client";
 import { getHeroAlignments } from "@/app/actions/alignment";
 import type { AlignmentConfig } from "@/data/heroAlignments";
 import { HERO_ALIGNMENTS } from "@/data/heroAlignments";
+import { useAuth } from "@/context/AuthContext";
 
 interface OverwatchSquareProps {
   searchQuery: string;
@@ -49,15 +50,17 @@ function DoodleLine({ className = "w-10 h-1.5" }: { className?: string }) {
 }
 
 export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: OverwatchSquareProps) {
+  const { user, authLoading } = useAuth();
+  const isLoggedIn = !!user;
+
   const [players, setPlayers] = useState<OWPlayerCard[]>([]);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [selectedRole, setSelectedRole] = useState("全部");
   const [selectedServer, setSelectedServer] = useState("全部");
   const [selectedMic, setSelectedMic] = useState("全部");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [authLoading, setAuthLoading] = useState(true);
   const [isMounted, setIsMounted] = useState(false);
   const [heroAlignments, setHeroAlignments] = useState<Record<string, AlignmentConfig>>(HERO_ALIGNMENTS);
+  const [isShowingMockData, setIsShowingMockData] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
@@ -75,11 +78,11 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
       const { data, error } = await supabase
         .from("public_profiles")
         .select("*")
-        .eq("is_tag_visible", true) // DB 層過濾，隱私選擇不送至 client（安全修復）
+        .eq("is_tag_visible", true)
         .order("updated_at", { ascending: false });
 
       if (!error && data && data.length > 0) {
-        // 將 DB row 轉為 OWPlayerCard 格式
+        setIsShowingMockData(false);
         setPlayers(data.map(row => ({
           card_id: row.card_id ?? row.user_id,
           user_id: row.user_id,
@@ -95,23 +98,12 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
           mbti: row.mbti ?? undefined,
         })));
       } else {
-        // Fallback: 顯示 Mock 數據
+        setIsShowingMockData(true);
         setPlayers(MOCK_PLAYERS);
       }
     };
 
-    supabase.auth.getUser().then(({ data }) => {
-      setIsLoggedIn(!!data.user);
-      setAuthLoading(false);
-    });
-
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setIsLoggedIn(!!session?.user);
-      setAuthLoading(false);
-    });
-
     loadPlayers();
-    return () => listener.subscription.unsubscribe();
   }, []);
 
   const getHeroRole = (heroId: string) => {
@@ -164,8 +156,15 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
   }
 
   return (
-    <div className="space-y-8 w-full animate-[fadeIn_0.4s_ease-out] relative pb-36">
-      {/* 📰 Overwatch Lobby Layout */}
+    <div className="space-y-6 w-full animate-[fadeIn_0.4s_ease-out] relative pb-36">
+      {/* 示範資料提示條（真實資料出現後自動消失）*/}
+      {isShowingMockData && (
+        <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[#d8a070]/30 bg-[#d8a070]/8 text-[11px] font-bold text-[#8c7c6c] relative z-10">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#d8a070] shrink-0 animate-pulse" />
+          目前顯示的是示範資料，廣場尚無真實玩家名片。成為第一個建立名片的特工吧！
+        </div>
+      )}
+
       {/* 🚀 獨立懸浮篩選紙帶 (Floating Cloud Filter Ribbon) */}
       <div className="w-full p-5 md:py-4 md:px-6 flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10 cloud-paper-panel">
         

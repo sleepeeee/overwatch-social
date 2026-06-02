@@ -44,7 +44,15 @@ interface DeveloperConsoleClientProps {
   heroStats?: Array<{ heroId: string; count: number }>;
 }
 
+// 英雄名稱查找表（module-level）
 const heroNameMap = new Map(HEROES_CONFIG.map(h => [h.id, h.name]));
+
+// 台灣時間格式器（module-level，避免每次 render 重新建立 Intl 物件）
+const taipeiFormatter = new Intl.DateTimeFormat("zh-TW", {
+  timeZone: "Asia/Taipei",
+  year: "numeric", month: "2-digit", day: "2-digit",
+  hour: "2-digit", minute: "2-digit",
+});
 
 const themeSchemes = {
   sage: {
@@ -695,9 +703,18 @@ export default function DeveloperConsoleClient({
                         {whitelist.length > 0 ? (
                           whitelist.map((item) => (
                             <tr key={item.email} className="hover:bg-slate-50/50 dark:hover:bg-slate-900/10 transition-colors">
-                              <td className="px-6 py-4 font-mono font-medium">{item.email}</td>
+                              <td className="px-6 py-4 font-mono font-medium">
+                                <div className="flex items-center gap-2">
+                                  <span>{item.email}</span>
+                                  {item.email.toLowerCase() === currentUserEmail.toLowerCase() && (
+                                    <span className="bg-[var(--theme-primary-light)] text-[var(--theme-primary-text)] border border-[var(--theme-primary)]/20 text-[9px] font-bold px-1.5 py-0.5 rounded-md">
+                                      您自己
+                                    </span>
+                                  )}
+                                </div>
+                              </td>
                               <td className="px-6 py-4 text-slate-400 font-mono">
-                                {new Date(item.created_at).toLocaleString("zh-TW", { timeZone: "Asia/Taipei" })}
+                                {taipeiFormatter.format(new Date(item.created_at))}
                               </td>
                               <td className="px-6 py-4 text-right">
                                 <button 
@@ -944,7 +961,7 @@ export default function DeveloperConsoleClient({
                                       )}
                                     </td>
                                     <td className="px-6 py-3.5 text-slate-400">
-                                      {new Date(profile.updated_at).toLocaleString("zh-TW", { timeZone: "Asia/Taipei" })}
+                                      {taipeiFormatter.format(new Date(profile.updated_at))}
                                     </td>
                                   </tr>
                                 ))}

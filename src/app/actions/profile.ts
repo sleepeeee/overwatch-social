@@ -42,13 +42,13 @@ export async function saveProfile(card: OWPlayerCard): Promise<{ error?: string 
   if ((card.languages ?? []).length > 3) return { error: "語言最多 3 個" };
 
   const supabase = await createClient();
-  const { data: claimsData, error: claimsError } = await supabase.auth.getClaims();
+  const { data: { user }, error: userError } = await supabase.auth.getUser();
 
-  if (claimsError || !claimsData?.claims?.sub) {
+  if (userError || !user?.id) {
     return { error: "未登入，無法儲存" };
   }
 
-  const userId = claimsData.claims.sub;
+  const userId = user.id;
 
   const { error } = await supabase
     .from("profiles")
