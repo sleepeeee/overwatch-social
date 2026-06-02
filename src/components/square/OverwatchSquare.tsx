@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { OWPlayerCard } from "@/types/card";
 import { MOCK_PLAYERS, HEROES_CONFIG, SERVER_OPTIONS, MIC_OPTIONS } from "@/data/mockPlayers";
 import OWCard from "@/components/OWCard";
@@ -52,6 +53,7 @@ function DoodleLine({ className = "w-10 h-1.5" }: { className?: string }) {
 const PAGE_SIZE = 20;
 
 export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: OverwatchSquareProps) {
+  const router = useRouter();
   const { user, authLoading } = useAuth();
   const isLoggedIn = !!user;
 
@@ -65,7 +67,7 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
   const [isShowingMockData, setIsShowingMockData] = useState(false);
   const [hasMore, setHasMore] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const latestRequestRef = useRef<number>(0);
+  const requestCounterRef = useRef<number>(0);  // 遞增計數器，比 Date.now() 更可靠
   const searchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const toPlayerCard = (row: Record<string, unknown>): OWPlayerCard => ({
@@ -84,8 +86,7 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
   });
 
   const loadPlayers = async (searchQ: string, offset: number, append = false) => {
-    const requestId = Date.now();
-    latestRequestRef.current = requestId;
+    const requestId = ++requestCounterRef.current;
 
     if (append) setIsLoadingMore(true);
 
@@ -104,7 +105,7 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
 
     const { data, error } = await query;
 
-    if (latestRequestRef.current !== requestId) return; // 丟棄過期請求結果
+    if (requestCounterRef.current !== requestId) return; // 丟棄過期請求結果
 
     if (append) setIsLoadingMore(false);
 
@@ -297,15 +298,12 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
             {filteredPlayers.map((player) => (
-              <a
+              <div
                 key={player.card_id}
-                href={`/player/${player.user_id}`}
                 className="w-full flex justify-center hover:-translate-y-1 transition-transform duration-300 relative cursor-pointer"
                 onClick={(e) => {
-                  // 讓 OWCard 的複製按鈕事件冒泡時不觸發跳轉
-                  if ((e.target as HTMLElement).closest('[data-no-navigate]')) {
-                    e.preventDefault();
-                  }
+                  if ((e.target as HTMLElement).closest('[data-no-navigate]')) return;
+                  router.push(`/player/${player.user_id}`);
                 }}
               >
                 <OWCard
@@ -315,7 +313,7 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
                   customAlignments={heroAlignments}
                   onLoginRequired={(!authLoading && !isLoggedIn) ? () => setShowLoginModal(true) : undefined}
                 />
-              </a>
+              </div>
             ))}
           </div>
           {/* Load More 按鈕 */}

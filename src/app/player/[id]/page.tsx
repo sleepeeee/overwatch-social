@@ -46,8 +46,16 @@ export default async function PlayerDetailPage({ params }: Props) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
-  // social_channels 從 public_profiles view 讀取（migration 007 已加入）
-  const socialChannels = (player.social_channels as Record<string, string>) ?? {};
+  // social_channels 從 profiles 表直接讀取（需登入；migration 008 的 RLS policy 允許讀取 is_tag_visible=true 的玩家）
+  let socialChannels: Record<string, string> = {};
+  if (user) {
+    const { data: profileData } = await supabase
+      .from("profiles")
+      .select("social_channels")
+      .eq("user_id", id)
+      .single();
+    socialChannels = (profileData?.social_channels as Record<string, string>) ?? {};
+  }
   const hasSocial = Object.values(socialChannels).some(v => v && v !== "true");
 
   const heroConfigs = (player.selected_heroes as string[] ?? [])
