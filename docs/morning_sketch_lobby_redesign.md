@@ -396,3 +396,52 @@ style={{ borderRadius: roleRadii[role] }}
   ```
 
 
+
+
+---
+
+## 九、 莫蘭迪晨霧手稿風 (Morning Sketch) 素材購物清單 (Prompts 指引)
+
+為了解決「大面積主題氛圍感」的根本底襯需求，本清單整理了在 Booth (日系手撕紙裝飾)、Pinterest (手帳方眼紙與和紙膠帶) 與 DeviantArt (光學儀器繞射刻度) 啟發下的五組大面積與細節裝飾素材。
+
+使用者可直接將以下的 **英文 Prompts** 提供給 GPT-4o / Midjourney / DALL-E 3 來生成透明背景的 PNG/SVG 檔案，我們將隨時把這些素材導入網頁中：
+
+### 🧱 A組：大面積紙質與裝飾中軸 (Background & Textures)
+* **1. 和紙纖維無縫大背景 (Seamless Washi Paper Texture)**
+  * *美學作用*：作為全站最底層背景，取代 CSS 數位漸層，提供實體紙張的凹凸顆粒與有機纖維。
+  * *Prompt*：`Seamless high-resolution light warm grey washi paper texture, organic fibrous paper grain, watercolor paper surface, subtle folds, clean, white background, flat lay --tile`
+* **2. 素描本金屬線圈中軸 (Spiral Binding Spine)**
+  * *美學作用*：定位在螢幕左側或中央，模擬打開的活頁線圈素描本。
+  * *Prompt*：`Minimalist metal silver spiral notebook binding rings, isolated on transparent background, top view, realistic soft drop shadows, clean vertical row`
+
+### 🌊 B組：大孔徑流體與波浪背板 (Large Fluid Shapes & Backplates)
+* **3. 手工撕紙水平邊緣 (Torn Paper Edge Border)**
+  * *美學作用*：置於大廳標頭下方，卡片在滾動時從撕紙邊緣後方穿出，形成紙張重疊的視差。
+  * *Prompt*：`Torn paper edge overlay, rough deckle edge texture, horizontal strip, white washi paper, soft realistic drop shadow, isolated on transparent background`
+* **4. 大面積抽象黏土流體塊 (Macro Clay Fluid Blobs)**
+  * *美學作用*：作為大廳標題及分區大背景的半透明裝飾底圖。
+  * *Prompt*：`Large abstract organic fluid clay blob shape, smooth curves, minimalist 3D rendering, light Morandi sky blue and warm ivory gradient, soft studio light, isolated on transparent background`
+
+### ✏️ C組：精緻手稿線條與光學光柵 (Sketched Lines & Wafer Gratings)
+* **5. 晶圓光學繞射同心圓弧 (Concentric Diffraction Rings)**
+  * *美學作用*：模擬偏光顯微鏡下的 Airy 斑與對準刻度，置於邊角作為極精細的水印。
+  * *Prompt*：`Minimalist technical line art, concentric circle diffraction pattern, optical lens grating grid, fine 0.5px line width, hand-drawn sketch style, slate grey, transparent background`
+* **6. 手作感半透明和紙膠帶 (Handmade Washi Tape strips)**
+  * *美學作用*：斜角黏貼在名片卡片（OWCard）四角，模擬「手帳黏貼」的實體工藝感。
+  * *Prompt*：`Translucent washi tape strips, torn edges, pastel colors of Morandi blue and cream sand, realistic paper texture, isolated on transparent background`
+
+### 🎨 D組：水彩局部大面積暈染 (Watercolor Splashes & Paint Washes)
+* **7. 莫蘭迪雙色暈染斑塊 (Morandi Sky-Blue & Gold Paint Wash)**
+  * *美學作用*：墊在卡片網格正後方，破壞直角網格的數位生硬感。
+  * *Prompt*：`High-resolution watercolor splash, Morandi sky blue and soft gold pigment dispersion, wet-on-wet paint bleeding effect, subtle gold glitter flakes, isolated on transparent background`
+* **8. 水彩潑墨噴點 (Fine Watercolor Paint Splatter)**
+  * *美學作用*：散落在版面邊緣的微小莫蘭迪褐色水滴與潑痕。
+  * *Prompt*：`Artistic watercolor paint splatter, fine droplets, low saturation ochre and sage green, isolated on transparent background`
+
+### 🔬 E組：偏光鏡與晶圓雙折射光學裝飾 (Birefringence & Optical Ornaments)
+* **9. 光學雙折射干涉條紋圖 (Polarization Birefringence Pattern)**
+  * *美學作用*：作為大背景的干涉光彩偏光水印。
+  * *Prompt*：`Birefringence optical interference pattern, polarization microscope style concentric spectrum rings, muted Morandi cyan, gold, and soft pink, transparent overlay`
+* **10. 高折射率玻璃微透鏡 (High-Refraction Glass Spheres)**
+  * *美學作用*：漂浮在網頁兩側邊緣的透明立體氣泡，當文字穿過時會有高折射率折射效果。
+  * *Prompt*：`Realistic transparent glass sphere, high refraction index, beautiful double refraction light rays, soft shadow, 3d render, isolated on transparent background`

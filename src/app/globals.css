@@ -633,4 +633,64 @@ img,
   border-right: 1px solid rgba(140, 124, 108, 0.3) !important;
 }
 
+/* 🎨 Morning Sketch - 水彩雙色流體背景 */
+.watercolor-mist-bg {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  border-radius: 53% 47% 70% 30% / 40% 60% 40% 60%;
+  background: radial-gradient(circle at 30% 30%, rgba(130, 183, 204, 0.08) 0%, transparent 65%),
+              radial-gradient(circle at 70% 70%, rgba(245, 212, 107, 0.05) 0%, transparent 70%);
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: 0;
+  transform-gpu: translate3d(0, 0, 0);
+  will-change: transform;
+}
+
+@keyframes mistFloatA {
+  0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+  100% { transform: translate(30px, -20px) scale(1.1) rotate(4deg); }
+}
+
+@keyframes mistFloatB {
+  0% { transform: translate(0, 0) scale(1.2) rotate(0deg); }
+  100% { transform: translate(-20px, 30px) scale(1.05) rotate(-4deg); }
+}
+
+/* 🎨 Morning Sketch - 雙折射微光氣泡 */
+.glass-bubble-dot {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.88) 0%, rgba(255, 255, 255, 0.15) 60%, transparent 100%);
+  border: 0.8px solid rgba(255, 255, 255, 0.55) !important;
+  box-shadow: 
+    inset -1px -1px 3px rgba(130, 183, 204, 0.2),
+    0 6px 15px -4px rgba(140, 124, 108, 0.1);
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* 🎨 Morning Sketch - 日式霞紋拉絲細線 */
+.kasumi-mist-line {
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(140, 124, 108, 0.22) 15%, 
+    rgba(140, 124, 108, 0.22) 85%, 
+    transparent 100%
+  );
+  position: relative;
+}
+
+.kasumi-double-line::after {
+  content: "";
+  display: block;
+  height: 1px;
+  width: 60%;
+  margin-top: 3px;
+  margin-left: 20%;
+  background: linear-gradient(90deg, transparent, rgba(140, 124, 108, 0.15), transparent);
+}
+
 
