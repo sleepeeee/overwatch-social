@@ -97,7 +97,7 @@ export default function ProfilePage() {
   const [hubSaved, setHubSaved] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [heroRoleFilter, setHeroRoleFilter] = useState<"all" | "tank" | "damage" | "support">("all");
-  const { user, authLoading } = useAuth();
+  const { user, authLoading, userProfile: authUserProfile } = useAuth();
   const [heroAlignments, setHeroAlignments] = useState<Record<string, AlignmentConfig>>(HERO_ALIGNMENTS);
   const [dbTags, setDbTags] = useState<SpecialTag[]>([]);
 
@@ -152,47 +152,42 @@ export default function ProfilePage() {
   };
 
 
-  // 初始化：從 localStorage 恢復 profile 頭像設定 + 英雄對準參數 + 載入特色標籤
+  // 初始化：載入特色標籤 + 英雄對準參數
   useEffect(() => {
     getGameSpecialTags("overwatch").then(res => {
       if (res.success && res.data) {
         setDbTags(res.data);
       }
     });
-
-    const cachedProfile = localStorage.getItem("user_profile_hub");
-    if (cachedProfile) {
-      try {
-        setUserProfile(JSON.parse(cachedProfile));
-      } catch (e) {
-        console.error("恢復 profile 快取失敗", e);
-      }
-    }
     getHeroAlignments().then(setHeroAlignments);
   }, []);
+
+  // Auth seed：以 per-user localStorage 優先，無快取時使用 Auth metadata
+  useEffect(() => {
+    if (!authUserProfile) return;
+    const key = `user_profile_hub_${authUserProfile.id}`;
+    const cached = localStorage.getItem(key);
+    if (cached) {
+      try {
+        const parsed = JSON.parse(cached);
+        if (parsed?.id === authUserProfile.id) {
+          setUserProfile(parsed);
+          return;
+        }
+      } catch {
+        localStorage.removeItem(key);
+      }
+    }
+    setUserProfile(authUserProfile);
+  }, [authUserProfile]);
 
   // user 變化時載入名片資料（auth state 由 AuthContext 統一管理）
   useEffect(() => {
     if (!user) return;
-
-    const cachedProfile = localStorage.getItem("user_profile_hub");
-
     getMyProfile().then(profile => {
       if (profile) {
         const loadedCard = { ...DEFAULT_CARD, ...profile, social_channels: profile.social_channels || {} };
         setCardData(loadedCard);
-
-        if (!cachedProfile) {
-          const initialName = loadedCard.battle_tag ? loadedCard.battle_tag.split('#')[0] : "愛喝奶茶";
-          const initialProfile = {
-            id: user.id,
-            display_name: initialName,
-            avatar_url: "/images/avatars/avatar_female_elegant_square.png",
-            bio: loadedCard.message || "GGWP！一起加油，推車到底啦 🚀"
-          };
-          setUserProfile(initialProfile);
-          localStorage.setItem("user_profile_hub", JSON.stringify(initialProfile));
-        }
       } else {
         setCardData(DEFAULT_CARD);
       }
@@ -203,7 +198,8 @@ export default function ProfilePage() {
   const handleAvatarChange = (newUrl: string) => {
     setUserProfile((prev) => {
       const updated = { ...prev, avatar_url: newUrl };
-      localStorage.setItem("user_profile_hub", JSON.stringify(updated));
+      const key = `user_profile_hub_${updated.id}`;
+      localStorage.setItem(key, JSON.stringify(updated));
       return updated;
     });
   };
@@ -211,7 +207,8 @@ export default function ProfilePage() {
   // 儲存通用帳戶檔案 handler
   const handleSaveHub = () => {
     setHubSaved(true);
-    localStorage.setItem("user_profile_hub", JSON.stringify(userProfile));
+    const key = `user_profile_hub_${userProfile.id}`;
+    localStorage.setItem(key, JSON.stringify(userProfile));
     setTimeout(() => setHubSaved(false), 2000);
   };
 

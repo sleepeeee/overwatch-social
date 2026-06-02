@@ -3,10 +3,28 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { User } from "@supabase/supabase-js";
+import type { UserProfile } from "@/types/auth";
+
+function deriveUserProfile(user: User | null): UserProfile | null {
+  if (!user) return null;
+  return {
+    id: user.id,
+    display_name:
+      user.user_metadata?.full_name ??
+      user.user_metadata?.name ??
+      user.email?.split("@")[0] ??
+      "特工",
+    avatar_url:
+      user.user_metadata?.avatar_url ??
+      user.user_metadata?.picture ??
+      "/images/avatars/avatar_female_elegant_square.png",
+  };
+}
 
 interface AuthContextType {
   user: User | null;
   authLoading: boolean;
+  userProfile: UserProfile | null;
 }
 
 // null default so useAuth() can detect usage outside Provider
@@ -15,18 +33,21 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
 
   useEffect(() => {
     // 💡 在開發環境下自動模擬登入，防止在本地測試時卡在 Google 登入限制中
     if (process.env.NODE_ENV === "development") {
-      setUser({
+      const mockUser = {
         id: "mock-user-id",
         email: "agent@overwatch.dev",
         user_metadata: {
           full_name: "測試特工",
           avatar_url: "/images/avatars/avatar_male_calm_square.png"
         }
-      } as any);
+      } as any;
+      setUser(mockUser);
+      setUserProfile(deriveUserProfile(mockUser));
       setAuthLoading(false);
       return;
     }
@@ -38,6 +59,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     supabase.auth.getUser().then(({ data }) => {
       if (cancelled) return;
       setUser(data.user ?? null);
+      setUserProfile(deriveUserProfile(data.user ?? null));
       setAuthLoading(false);
     });
 
@@ -45,6 +67,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       if (cancelled) return;
       setUser(session?.user ?? null);
+      setUserProfile(deriveUserProfile(session?.user ?? null));
       setAuthLoading(false);
     });
 
@@ -55,7 +78,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, authLoading }}>
+    <AuthContext.Provider value={{ user, authLoading, userProfile }}>
       {children}
     </AuthContext.Provider>
   );

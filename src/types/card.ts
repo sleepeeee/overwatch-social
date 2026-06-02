@@ -1,10 +1,4 @@
-export interface UserProfile {
-  id: string;                // 使用者唯一 ID (Supabase Auth ID)
-  display_name: string;      // 通用平台暱稱
-  avatar_url: string;        // 通用預設頭像 URL
-  bio?: string;              // 全域個人簡介 (可選)
-  created_at?: string;
-}
+export type { UserProfile } from "@/types/auth";
 
 export interface OWPlayerCard {
   card_id: string;           // 名片唯一 ID
