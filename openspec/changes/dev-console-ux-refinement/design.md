@@ -55,3 +55,10 @@ useEffect(() => {
 - Process Live Monitor -> 即時排版預覽
 - Closed Loop Calibration -> 元件精密位置微調
 - Closed Loop Process Control -> 開發者主控台
+
+### 6. DevModeBanner 置頂與滾動重疊解決方案
+為使 Banner 常駐置頂而不遮擋全站 Header，我們採用 **fixed + CSS 變數動態偏移** 的設計：
+- **Banner 定位**：設為 `fixed top-0 left-0 right-0 z-[100]`，使其在頁面滑動時不被捲走。
+- **動態變數注入**：在 `DevModeBanner` 元件載入時，透過 JS 動態在 document 根節點注入 `--dev-banner-height: 32px`；在未載入或卸載時設為 `0px`。
+- **全站 Body 佔位**：在 `src/app/layout.tsx` 的 `body` 加上 `pt-[var(--dev-banner-height,0px)]`，防止初始狀態下 Banner 蓋住內容。
+- **Header 偏移自適應**：將全站 4 個 `sticky top-0` 的 Header 改為 `sticky top-[var(--dev-banner-height,0px)]`。如此一來，滾動時 Header 將自動停在 Banner 下方（32px 處），且無 Banner 時（一般玩家）依然卡在 top-0，完美解耦。

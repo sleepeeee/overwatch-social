@@ -141,7 +141,7 @@ export default function TagsManagerClient({
       <div className="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-[#b4a091]/8 blur-[150px] pointer-events-none" />
 
       {/* 頂部導覽 */}
-      <header className="sticky top-0 z-40 px-6 py-4 flex justify-between items-center border-b border-[#8c7c6c]/15 bg-white/70 backdrop-blur-xl text-[#3e2723] shadow-[0_1px_10px_rgba(140,124,108,0.05)]">
+      <header className="sticky top-[var(--dev-banner-height,0px)] z-40 px-6 py-4 flex justify-between items-center border-b border-[#8c7c6c]/15 bg-white/70 backdrop-blur-xl text-[#3e2723] shadow-[0_1px_10px_rgba(140,124,108,0.05)]">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#b4a091] to-[#8c7c6c] flex items-center justify-center shadow-[0_4px_12px_rgba(180,160,145,0.3)]">
             <Tags size={20} className="text-white" />

@@ -292,7 +292,7 @@ export default function DeveloperConsoleClient({
       )}
 
       {/* Main Header */}
-      <header className="h-16 border-b border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-[#202428]/70 backdrop-blur-md flex items-center justify-between px-6 shrink-0 transition-colors duration-300 sticky top-0 z-30">
+      <header className="h-16 border-b border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-[#202428]/70 backdrop-blur-md flex items-center justify-between px-6 shrink-0 transition-colors duration-300 sticky top-[var(--dev-banner-height,0px)] z-30">
         
         {/* Left Side Logo */}
         <div className="flex items-center gap-3">
