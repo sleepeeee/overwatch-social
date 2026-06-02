@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { useAuth } from "@/context/AuthContext";
 
 interface DevModeState {
   isDeveloper: boolean;
@@ -13,28 +12,14 @@ interface DevModeState {
 // re-validate the role via RLS policy (auth.jwt()->'app_metadata'->>'role').
 export function useDevMode(): DevModeState {
   const isDev = process.env.NODE_ENV === "development";
-  const [state, setState] = useState<DevModeState>({ 
-    isDeveloper: isDev, 
-    loading: !isDev 
-  });
+  const { user, authLoading } = useAuth();
 
-  useEffect(() => {
-    // 🛡️ 開發環境下已在初始化 state 時直接 Bypass，在此處無需執行 supabase 監聽
-    if (isDev) return;
+  // Dev bypass: allow testing without a Supabase session locally.
+  // If a real session exists, respect the actual role even in dev.
+  if (isDev && !user) return { isDeveloper: true, loading: false };
 
-    const supabase = createClient();
-
-    // onAuthStateChange 在 mount 時會觸發 INITIAL_SESSION，作為單一 state 來源
-    // 避免 getUser() 與 listener callback 的 race condition
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setState({
-        isDeveloper: session?.user?.app_metadata?.role === "developer",
-        loading: false,
-      });
-    });
-
-    return () => listener.subscription.unsubscribe();
-  }, [isDev]);
-
-  return state;
+  return {
+    isDeveloper: user?.app_metadata?.role === "developer",
+    loading: authLoading,
+  };
 }
