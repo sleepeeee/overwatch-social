@@ -1,0 +1,169 @@
+⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+[browser] Uncaught Error: Hydration failed because the server rendered text didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <RedirectErrorBoundary router={{...}}>
+      <InnerLayoutRouter url="/developer..." tree={[...]} params={{}} cacheNode={{rsc:{...}, ...}} segmentPath={[...]} ...>
+        <SegmentViewNode type="page" pagePath="developer/...">
+          <SegmentTrieNode>
+          <Page>
+            <CaptureHudAdjusterClient initialState={{date:"2026...", ...}}>
+              <div className="min-h-scre..." style={{...}}>
+                <div className="min-h-scre...">
+                  <header>
+                  <main className="mx-auto gr...">
+                    <section>
+                    <section>
+                    <section className="grid gap-5...">
+                      <div>
+                        <div>
+                        <div className="home-hud-l..." style={{...}}>
+                          <div>
+                          <div className="relative z-10">
+                            <div>
+                            <div>
+                            <div>
+                            <div>
+                            <div className="mt-8 flex ...">
+                              <span>
+                              <span>
++                               06/03 03:56
+-                               06/03 03:56
+                              ...
+                      ...
+                    ...
+        ...
+      ...
+
+    at <unknown> (https://react.dev/link/hydration-mismatch)
+    at <unknown> (+                               06/03 03:56)
+    at <unknown> (-                               06/03 03:56)
+    at span (<anonymous>)
+    at CaptureHudAdjusterClient (src/app/developer/capture-hud/CaptureHudAdjusterClient.tsx:690:21)
+    at Page (src\app\developer\capture-hud\page.tsx:22:10)
+  688 |                   <div className="mt-8 flex flex-col gap-2 border-t border-slate-200 pt-3...
+  689 |                     <span>TIMEZONE: {displayState.timezone}</span>
+> 690 |                     <span>UPDATED: {formatDateTime(liveNow)}</span>
+      |                     ^
+  691 |                     <span className="text-emerald-500">HOMEPAGE_SAFE</span>
+  692 |                   </div>
+  693 |                 </div>
+[browser] React has detected a change in the order of Hooks called by HomeCaptureHud. This will lead to bugs and errors if not fixed. For more information, read the Rules of Hooks: https://react.dev/link/rules-of-hooks
+
+   Previous render            Next render
+   ------------------------------------------------------
+1. useState                   useState
+2. useState                   useState
+3. useState                   useState
+4. useEffect                  useEffect
+5. undefined                  useMemo
+   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ 
+    at HomeCaptureHud (src/components/morning-sketch/HomeCaptureHud.tsx:110:25)
+  108 |     "--hud-home-scale": String(layout.scale),
+  109 |   } as CSSProperties;
+> 110 |   const hudKey = useMemo(
+      |                         ^
+  111 |     () =>
+  112 |       [
+  113 |         captureState.players[0].label, (src/components/morning-sketch/HomeCaptureHud.tsx:110:25)
+[browser] Uncaught Error: Rendered more hooks than during the previous render.
+    at HomeCaptureHud (src/components/morning-sketch/HomeCaptureHud.tsx:110:25)
+    at CaptureHudAdjusterClient (file://D:/AI/overwatch/overwatch-social/.next/dev/static/chunks/src_07e2v4g._.js?id=%255Bproject%255D%252Fsrc%252Fapp%252Fdeveloper%252Fcapture-hud%252FCaptureHudAdjusterClient.tsx+%255Bapp-client%255D+%2528ecmascript%2529:1175:257)
+    at Page (src\app\developer\capture-hud\page.tsx:22:10)
+  108 |     "--hud-home-scale": String(layout.scale),
+  109 |   } as CSSProperties;
+> 110 |   const hudKey = useMemo(
+      |                         ^
+  111 |     () =>
+  112 |       [
+  113 |         captureState.players[0].label,
+[browser] React has detected a change in the order of Hooks called by HomeCaptureHud. This will lead to bugs and errors if not fixed. For more information, read the Rules of Hooks: https://react.dev/link/rules-of-hooks
+
+   Previous render            Next render
+   ------------------------------------------------------
+1. useState                   useState
+2. useState                   useState
+3. useState                   useState
+4. useEffect                  useEffect
+5. undefined                  useMemo
+   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ 
+    at HomeCaptureHud (src/components/morning-sketch/HomeCaptureHud.tsx:110:25)
+  108 |     "--hud-home-scale": String(layout.scale),
+  109 |   } as CSSProperties;
+> 110 |   const hudKey = useMemo(
+      |                         ^
+  111 |     () =>
+  112 |       [
+  113 |         captureState.players[0].label, (src/components/morning-sketch/HomeCaptureHud.tsx:110:25)
+[browser] Uncaught Error: Rendered more hooks than during the previous render.
+    at HomeCaptureHud (src/components/morning-sketch/HomeCaptureHud.tsx:110:25)
+    at CaptureHudAdjusterClient (file://D:/AI/overwatch/overwatch-social/.next/dev/static/chunks/src_07e2v4g._.js:1926:257)
+    at Page (src\app\developer\capture-hud\page.tsx:22:10)
+  108 |     "--hud-home-scale": String(layout.scale),
+  109 |   } as CSSProperties;
+> 110 |   const hudKey = useMemo(
+      |                         ^
+  111 |     () =>
+  112 |       [
+  113 |         captureState.players[0].label,
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+⨯ Error: aborted
+    at ignore-listed frames
+Failed to query game special tags: TypeError: fetch failed
+[getHeroAlignments] DB error, using static fallback: TypeError: fetch failed
+Failed to query game special tags: TypeError: fetch failed
+[getHeroAlignments] DB error, using static fallback: TypeError: fetch failed
+[browser] ./src/app/globals.css
+Error evaluating Node.js code
+CssSyntaxError: D:\AI\overwatch\overwatch-social\src\app\globals.css:908:5: Unknown word 0
+    [at Input.error (turbopack:///[project]/node_modules/postcss/lib/input.js:135:16)]
+    [at Parser.unknownWord (turbopack:///[project]/node_modules/postcss/lib/parser.js:602:22)]
+    [at Parser.other (turbopack:///[project]/node_modules/postcss/lib/parser.js:444:12)]
+    [at Parser.parse (turbopack:///[project]/node_modules/postcss/lib/parser.js:479:16)]
+    [at parser (turbopack:///[project]/node_modules/postcss/lib/parse.js:11:12)]
+    [at new LazyResult (turbopack:///[project]/node_modules/postcss/lib/lazy-result.js:165:16)]
+    [at Processor.process (turbopack:///[project]/node_modules/postcss/lib/processor.js:53:14)]
+    [at transform (turbopack:///[turbopack-node]/transforms/postcss.ts:70:51)]
+    [at run (turbopack:///[turbopack-node]/child_process/evaluate.ts:89:29)]
+    [at run (turbopack:///[turbopack-node]/child_process/evaluate.ts:112:11)]
+
+Import trace:
+  Client Component Browser:
+    ./src/app/globals.css [Client Component Browser]
+    ./src/app/layout.tsx [Server Component] 
+⨯ Error: aborted
+    at ignore-listed frames
+[getHeroAlignments] DB error, using static fallback: TypeError: fetch failed
+[getHeroAlignments] DB error, using static fallback: TypeError: fetch failed
+[getHeroAlignments] DB error, using static fallback: TypeError: fetch failed
+[getHeroAlignments] DB error, using static fallback: TypeError: fetch failed
+[getHeroAlignments] DB error, using static fallback: TypeError: fetch failed
+Failed to query game special tags: TypeError: fetch failed
+[getHeroAlignments] DB error, using static fallback: TypeError: fetch failed
+Failed to query game special tags: TypeError: fetch failed
+[getHeroAlignments] DB error, using static fallback: TypeError: fetch failed
+[getHeroAlignments] DB error, using static fallback: TypeError: fetch failed
+[getHeroAlignments] DB error, using static fallback: TypeError: fetch failed
+Failed to query game special tags: TypeError: fetch failed
+[getHeroAlignments] DB error, using static fallback: TypeError: fetch failed
+Failed to query game special tags: TypeError: fetch failed
+[getHeroAlignments] DB error, using static fallback: TypeError: fetch failed
+[getHeroAlignments] DB error, using static fallback: TypeError: fetch failed
+[getHeroAlignments] DB error, using static fallback: TypeError: fetch failed

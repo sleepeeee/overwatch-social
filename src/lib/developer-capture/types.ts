@@ -1,5 +1,20 @@
 export type CaptureSide = "left" | "right";
 
+export interface CaptureHudTheme {
+  darkBackground: string;
+  darkCard: string;
+  lightBackground: string;
+  lightCard: string;
+  leftAccent: string;
+  rightAccent: string;
+}
+
+export interface CaptureHudLayout {
+  offsetX: number;
+  offsetY: number;
+  scale: number;
+}
+
 export interface CapturePlayerConfig {
   side: CaptureSide;
   label: string;
@@ -12,6 +27,8 @@ export interface CaptureConfig {
   statePath: string;
   targetRepositoryUrl: string;
   targetRepositoryOwnerSide: CaptureSide;
+  hudTheme: CaptureHudTheme;
+  hudLayout: CaptureHudLayout;
   players: [CapturePlayerConfig, CapturePlayerConfig];
 }
 
@@ -33,6 +50,8 @@ export interface CaptureState {
   repositoryPath: string;
   targetRepositoryUrl: string;
   targetRepositoryOwnerSide: CaptureSide;
+  hudTheme: CaptureHudTheme;
+  hudLayout: CaptureHudLayout;
   players: [CapturePlayerStats, CapturePlayerStats];
   status: "ready" | "neutral" | "missing-config" | "git-error";
   message: string;

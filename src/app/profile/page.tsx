@@ -139,6 +139,7 @@ export default function ProfilePage() {
     setErrorMsg(null);
     setSharing(true);
     try {
+      await saveProfile(cardData);
       const shareUrl = `${window.location.origin}/share/${user?.id || "mock-user-id"}`;
       await navigator.clipboard.writeText(shareUrl);
       setShareSuccess(true);

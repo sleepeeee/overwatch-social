@@ -40,12 +40,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (process.env.NODE_ENV === "development") {
       const mockUser = {
         id: "mock-user-id",
+        app_metadata: {},
+        aud: "authenticated",
+        created_at: new Date().toISOString(),
         email: "agent@overwatch.dev",
         user_metadata: {
           full_name: "測試特工",
           avatar_url: "/images/avatars/avatar_male_calm_square.png"
         }
-      } as any;
+      } as User;
       setUser(mockUser);
       setUserProfile(deriveUserProfile(mockUser));
       setAuthLoading(false);

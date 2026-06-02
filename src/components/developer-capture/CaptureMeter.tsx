@@ -1,16 +1,17 @@
 "use client";
 
-import { useState } from "react";
-import { Activity, AlertTriangle, Crown, Crosshair, ExternalLink, GitBranch, GitCommitHorizontal, RadioTower } from "lucide-react";
+import { useEffect, useState, type CSSProperties } from "react";
+import { Activity, AlertTriangle, Crown, Crosshair, GitBranch, GitCommitHorizontal, RadioTower } from "lucide-react";
 import { saveCaptureDisplayNames } from "@/app/actions/developerCapture";
 import type { CapturePlayerStats, CaptureState } from "@/lib/developer-capture/types";
 
 interface CaptureMeterProps {
   state: CaptureState;
   showEditor?: boolean;
+  showLinks?: boolean;
 }
 
-function formatDateTime(value: string): string {
+function formatDateTime(value: string | Date): string {
   try {
     const parts = new Intl.DateTimeFormat("en-CA", {
       timeZone: "Asia/Taipei",
@@ -19,7 +20,7 @@ function formatDateTime(value: string): string {
       hour: "2-digit",
       minute: "2-digit",
       hourCycle: "h23",
-    }).formatToParts(new Date(value));
+    }).formatToParts(value instanceof Date ? value : new Date(value));
 
     const month = parts.find(part => part.type === "month")?.value ?? "--";
     const day = parts.find(part => part.type === "day")?.value ?? "--";
@@ -28,15 +29,6 @@ function formatDateTime(value: string): string {
     return `${month}/${day} ${hour}:${minute}`;
   } catch {
     return "尚未同步";
-  }
-}
-
-function getRepositoryLabel(url: string): string {
-  try {
-    const parsed = new URL(url);
-    return parsed.pathname.replace(/^\/|\.git$/g, "") || url;
-  } catch {
-    return url;
   }
 }
 
@@ -113,7 +105,7 @@ function HudCorner({ position, className }: { position: "tl" | "tr" | "bl" | "br
   return <span aria-hidden="true" className={`absolute h-3 w-3 ${positionClass} ${className}`} />;
 }
 
-function CaptureMarker({ percent, colorClass }: { percent: number; colorClass: string }) {
+function CaptureMarker({ percent, colorClass, color }: { percent: number; colorClass?: string; color?: string }) {
   const markerPosition = Math.min(96, Math.max(4, percent));
 
   return (
@@ -122,7 +114,7 @@ function CaptureMarker({ percent, colorClass }: { percent: number; colorClass: s
       style={{ left: `${markerPosition}%` }}
       aria-hidden="true"
     >
-      <svg viewBox="0 0 28 28" className={`h-8 w-8 drop-shadow-[0_0_14px_rgba(34,211,238,0.3)] ${colorClass}`}>
+      <svg viewBox="0 0 28 28" className={`h-8 w-8 drop-shadow-[0_0_14px_rgba(34,211,238,0.3)] ${colorClass ?? ""}`} style={{ color }}>
         <circle
           cx="14"
           cy="14"
@@ -140,23 +132,41 @@ function CaptureMarker({ percent, colorClass }: { percent: number; colorClass: s
   );
 }
 
-function StatPanel({ player, tone, isOwner }: { player: CapturePlayerStats; tone: "left" | "right"; isOwner: boolean }) {
+function StatPanel({
+  player,
+  tone,
+  isOwner,
+  showLinks = true,
+}: {
+  player: CapturePlayerStats;
+  tone: "left" | "right";
+  isOwner: boolean;
+  showLinks?: boolean;
+}) {
   const toneClass = tone === "left" ? "text-cyan-500 dark:text-cyan-300" : "text-orange-500 dark:text-orange-300";
+  const nameNode = showLinks ? (
+    <a
+      href={player.githubUrl}
+      target="_blank"
+      rel="noreferrer"
+      className={`inline-flex max-w-full items-center gap-1 truncate text-xs font-black hover:underline ${toneClass}`}
+      title={player.githubUrl}
+    >
+      <GitBranch size={11} className="shrink-0" />
+      <span className="truncate">{player.label}</span>
+    </a>
+  ) : (
+    <span className={`inline-flex max-w-full items-center gap-1 truncate text-xs font-black ${toneClass}`}>
+      <GitBranch size={11} className="shrink-0" />
+      <span className="truncate">{player.label}</span>
+    </span>
+  );
 
   return (
     <div className="min-w-0 rounded-lg border border-slate-200/80 bg-slate-50 p-3 dark:border-slate-800/70 dark:bg-slate-950/35">
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
-          <a
-            href={player.githubUrl}
-            target="_blank"
-            rel="noreferrer"
-            className={`inline-flex max-w-full items-center gap-1 truncate text-xs font-black hover:underline ${toneClass}`}
-            title={player.githubUrl}
-          >
-            <GitBranch size={11} className="shrink-0" />
-            <span className="truncate">{player.label}</span>
-          </a>
+          {nameNode}
           {isOwner && (
             <span className="mt-1 inline-flex items-center gap-1 rounded border border-amber-400/30 bg-amber-400/10 px-1.5 py-0.5 text-[9px] font-black text-amber-500">
               <Crown size={10} />
@@ -181,7 +191,8 @@ function StatPanel({ player, tone, isOwner }: { player: CapturePlayerStats; tone
   );
 }
 
-export default function CaptureMeter({ state, showEditor = false }: CaptureMeterProps) {
+export default function CaptureMeter({ state, showEditor = false, showLinks = true }: CaptureMeterProps) {
+  const [liveNow, setLiveNow] = useState(() => new Date());
   const [leftName, setLeftName] = useState(state.players[0].label);
   const [rightName, setRightName] = useState(state.players[1].label);
   const [ownerSide, setOwnerSide] = useState<"left" | "right">(state.targetRepositoryOwnerSide);
@@ -192,12 +203,25 @@ export default function CaptureMeter({ state, showEditor = false }: CaptureMeter
   const right = { ...state.players[1], label: rightName || state.players[1].label };
   const displayState: CaptureState = { ...state, targetRepositoryOwnerSide: ownerSide, players: [left, right] };
   const meta = getStatusMeta(displayState);
-  const repositoryLabel = getRepositoryLabel(state.targetRepositoryUrl);
   const markerColor = left.percent > right.percent
-    ? "text-cyan-400"
+    ? ""
     : right.percent > left.percent
-      ? "text-orange-400"
+      ? ""
       : "text-slate-400";
+  const markerColorValue = left.percent > right.percent
+    ? state.hudTheme.leftAccent
+    : right.percent > left.percent
+      ? state.hudTheme.rightAccent
+      : "#94a3b8";
+  const hudStyle = {
+    "--hud-light-card": state.hudTheme.lightCard,
+    "--hud-dark-card": state.hudTheme.darkCard,
+  } as CSSProperties;
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setLiveNow(new Date()), 1000);
+    return () => window.clearInterval(timer);
+  }, []);
 
   const handleSaveDisplayNames = async () => {
     if (isSaving) {
@@ -229,16 +253,17 @@ export default function CaptureMeter({ state, showEditor = false }: CaptureMeter
 
   return (
     <section
-      aria-label="開發者據點佔領"
-      className={`relative overflow-hidden rounded-lg border bg-white text-slate-900 transition-all duration-500 dark:bg-[#111827] dark:text-slate-100 ${meta.glowClass}`}
+      aria-label="GIT OUTPOST LIVE HUD"
+      className={`relative overflow-hidden rounded-lg border bg-[var(--hud-light-card)] text-slate-900 transition-all duration-500 dark:bg-[var(--hud-dark-card)] dark:text-slate-100 ${meta.glowClass}`}
+      style={hudStyle}
     >
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 opacity-[0.18] [background-image:linear-gradient(rgba(15,23,42,0)_50%,rgba(15,23,42,0.08)_50%),linear-gradient(90deg,rgba(34,211,238,0.06),rgba(16,185,129,0.02),rgba(249,115,22,0.06))] [background-size:100%_4px,8px_100%] dark:opacity-[0.22] dark:[background-image:linear-gradient(rgba(18,24,38,0)_50%,rgba(0,0,0,0.28)_50%),linear-gradient(90deg,rgba(34,211,238,0.06),rgba(16,185,129,0.02),rgba(249,115,22,0.06))]"
+        className="pointer-events-none absolute inset-0 opacity-[0.06] [background-image:linear-gradient(rgba(255,255,255,0)_50%,rgba(148,163,184,0.025)_50%)] [background-size:100%_5px] dark:opacity-[0.12] dark:[background-image:linear-gradient(rgba(18,24,38,0)_50%,rgba(0,0,0,0.18)_50%),linear-gradient(90deg,rgba(34,211,238,0.06),rgba(16,185,129,0.02),rgba(249,115,22,0.06))] dark:[background-size:100%_5px,8px_100%]"
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 opacity-40 [background-image:linear-gradient(to_right,rgba(148,163,184,0.08)_1px,transparent_1px),linear-gradient(to_bottom,rgba(148,163,184,0.08)_1px,transparent_1px)] [background-size:22px_22px] dark:opacity-25"
+        className="pointer-events-none absolute inset-0 opacity-20 [background-image:linear-gradient(to_right,rgba(148,163,184,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(148,163,184,0.05)_1px,transparent_1px)] [background-size:24px_24px] dark:opacity-20 dark:[background-image:linear-gradient(to_right,rgba(51,65,85,0.3)_1px,transparent_1px),linear-gradient(to_bottom,rgba(51,65,85,0.3)_1px,transparent_1px)]"
       />
 
       <HudCorner position="tl" className={meta.accentClass} />
@@ -251,11 +276,11 @@ export default function CaptureMeter({ state, showEditor = false }: CaptureMeter
           <div className="min-w-0">
             <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400">
               <span className="h-3 w-1.5 bg-cyan-400" />
-              <span>Git Outpost Console v1.0</span>
+              <span>GIT OUTPOST LIVE HUD v1.0</span>
             </div>
             <h3 className="mt-1 flex items-center gap-2 text-base font-black tracking-tight text-slate-900 dark:text-white">
               <Crosshair size={16} className={meta.accentClass} />
-              開發者據點佔領
+              GIT OUTPOST LIVE HUD
             </h3>
           </div>
 
@@ -338,36 +363,50 @@ export default function CaptureMeter({ state, showEditor = false }: CaptureMeter
           <div className="flex flex-col items-center justify-center gap-4 py-7 text-center">
             <div className="grid w-full max-w-md grid-cols-[minmax(58px,86px)_1fr_minmax(58px,86px)] items-center gap-3">
               <div className="min-w-0 text-left">
-                <a
-                  href={left.githubUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex max-w-full items-center gap-1 truncate text-xs font-black text-cyan-500 hover:underline dark:text-cyan-300"
-                  title={left.githubUrl}
-                >
-                  <GitBranch size={11} className="shrink-0" />
-                  <span className="truncate">{left.label}</span>
-                </a>
+                {showLinks ? (
+                  <a
+                    href={left.githubUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex max-w-full items-center gap-1 truncate text-xs font-black text-cyan-500 hover:underline dark:text-cyan-300"
+                    title={left.githubUrl}
+                  >
+                    <GitBranch size={11} className="shrink-0" />
+                    <span className="truncate">{left.label}</span>
+                  </a>
+                ) : (
+                  <span className="inline-flex max-w-full items-center gap-1 truncate text-xs font-black text-cyan-500 dark:text-cyan-300">
+                    <GitBranch size={11} className="shrink-0" />
+                    <span className="truncate">{left.label}</span>
+                  </span>
+                )}
                 <p className="text-xl font-black tabular-nums text-slate-900 dark:text-white">{left.percent}%</p>
               </div>
               <div className="relative h-8">
                 <div className="absolute left-0 right-0 top-1/2 h-2 -translate-y-1/2 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-900">
-                  <div className="h-full rounded-l-full bg-cyan-400/70" style={{ width: `${left.percent}%` }} />
-                  <div className="ml-auto h-full rounded-r-full bg-orange-400/70" style={{ width: `${right.percent}%` }} />
+                  <div className="h-full rounded-l-full" style={{ width: `${left.percent}%`, backgroundColor: state.hudTheme.leftAccent }} />
+                  <div className="ml-auto h-full rounded-r-full" style={{ width: `${right.percent}%`, backgroundColor: state.hudTheme.rightAccent }} />
                 </div>
-                <CaptureMarker percent={left.percent} colorClass={markerColor} />
+                <CaptureMarker percent={left.percent} colorClass={markerColor} color={markerColorValue} />
               </div>
               <div className="min-w-0 text-right">
-                <a
-                  href={right.githubUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="ml-auto inline-flex max-w-full items-center gap-1 truncate text-xs font-black text-orange-500 hover:underline dark:text-orange-300"
-                  title={right.githubUrl}
-                >
-                  <GitBranch size={11} className="shrink-0" />
-                  <span className="truncate">{right.label}</span>
-                </a>
+                {showLinks ? (
+                  <a
+                    href={right.githubUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="ml-auto inline-flex max-w-full items-center gap-1 truncate text-xs font-black text-orange-500 hover:underline dark:text-orange-300"
+                    title={right.githubUrl}
+                  >
+                    <GitBranch size={11} className="shrink-0" />
+                    <span className="truncate">{right.label}</span>
+                  </a>
+                ) : (
+                  <span className="ml-auto inline-flex max-w-full items-center gap-1 truncate text-xs font-black text-orange-500 dark:text-orange-300">
+                    <GitBranch size={11} className="shrink-0" />
+                    <span className="truncate">{right.label}</span>
+                  </span>
+                )}
                 <p className="text-xl font-black tabular-nums text-slate-900 dark:text-white">{right.percent}%</p>
               </div>
             </div>
@@ -424,22 +463,16 @@ export default function CaptureMeter({ state, showEditor = false }: CaptureMeter
 
               <div className="relative h-12">
                 <div className="absolute left-0 right-0 top-1/2 flex h-3 -translate-y-1/2 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-900">
-                  <div
-                    className="h-full rounded-l-full bg-gradient-to-r from-blue-600 via-sky-500 to-cyan-300 transition-[width] duration-500"
-                    style={{ width: `${left.percent}%` }}
-                  />
-                  <div
-                    className="ml-auto h-full rounded-r-full bg-gradient-to-l from-rose-600 via-orange-500 to-amber-300 transition-[width] duration-500"
-                    style={{ width: `${right.percent}%` }}
-                  />
+                  <div className="h-full rounded-l-full transition-[width] duration-500" style={{ width: `${left.percent}%`, backgroundColor: state.hudTheme.leftAccent }} />
+                  <div className="ml-auto h-full rounded-r-full transition-[width] duration-500" style={{ width: `${right.percent}%`, backgroundColor: state.hudTheme.rightAccent }} />
                 </div>
                 <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 border-t border-dashed border-white/70 dark:border-slate-600/70" />
-                <CaptureMarker percent={left.percent} colorClass={markerColor} />
+                <CaptureMarker percent={left.percent} colorClass={markerColor} color={markerColorValue} />
               </div>
             </div>
 
             <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
-              <StatPanel player={left} tone="left" isOwner={ownerSide === "left"} />
+              <StatPanel player={left} tone="left" isOwner={ownerSide === "left"} showLinks={showLinks} />
               <div className="rounded-lg border border-slate-200/80 bg-slate-50 p-3 dark:border-slate-800/70 dark:bg-slate-950/35">
                 <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">據點狀態</p>
                 <p className="mt-1 text-sm font-black text-slate-900 dark:text-white">{meta.leader}</p>
@@ -447,26 +480,16 @@ export default function CaptureMeter({ state, showEditor = false }: CaptureMeter
                   {meta.message}
                 </p>
               </div>
-              <StatPanel player={right} tone="right" isOwner={ownerSide === "right"} />
+              <StatPanel player={right} tone="right" isOwner={ownerSide === "right"} showLinks={showLinks} />
             </div>
           </>
         )}
 
         <div className="mt-4 flex flex-col gap-2 border-t border-slate-200/80 pt-3 font-mono text-[10px] font-bold text-slate-400 dark:border-slate-800/80 sm:flex-row sm:items-center sm:justify-between">
           <span>TIMEZONE: {state.timezone}</span>
-          <a
-            href={state.targetRepositoryUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex max-w-full items-center gap-1.5 truncate text-slate-500 hover:text-slate-700 hover:underline dark:text-slate-400 dark:hover:text-slate-200"
-            title={state.targetRepositoryUrl}
-          >
-            <ExternalLink size={11} className="shrink-0" />
-            <span className="truncate">REPO: {repositoryLabel}</span>
-          </a>
           <span className="flex items-center gap-1.5">
             <Activity size={11} />
-            UPDATED: {formatDateTime(state.updatedAt)}
+            UPDATED: {formatDateTime(liveNow)}
           </span>
           <span className="flex items-center gap-1.5 text-emerald-500">
             <span className="h-1.5 w-1.5 rounded-full bg-current" />
