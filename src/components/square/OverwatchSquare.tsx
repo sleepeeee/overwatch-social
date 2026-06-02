@@ -169,7 +169,33 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
   }
 
   return (
-    <div className="space-y-6 w-full animate-[fadeIn_0.4s_ease-out]">
+    <div className="space-y-6 w-full animate-[fadeIn_0.4s_ease-out] relative">
+      {/* 🌕 C1 有機圓形 - 廣場右上角（版本A獨有） */}
+      <div
+        className="ms-c1-organic-circle-yellow pointer-events-none select-none"
+        style={{
+          position: 'absolute',
+          top: '-20px',
+          right: '-10px',
+          width: '80px',
+          height: '80px',
+          opacity: 0.28,
+          zIndex: 0,
+        }}
+      />
+      {/* ✨ C2 菱形 - 廣場左上角（版本A獨有） */}
+      <div
+        className="ms-c2-accent-diamond-sand pointer-events-none select-none"
+        style={{
+          position: 'absolute',
+          top: '4px',
+          left: '4px',
+          width: '24px',
+          height: '24px',
+          opacity: 0.58,
+          zIndex: 1,
+        }}
+      />
       {/* 🚀 獨立懸浮篩選絲帶 (Floating Filter Ribbon) */}
       <div className="w-full bg-white/40 backdrop-blur-3xl border-2 border-white/60 rounded-[28px] p-5 md:py-4 md:px-6 shadow-[0_18px_45px_-18px_rgba(140,124,108,0.12),inset_0_1.5px_2px_rgba(255,255,255,0.85)] flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
         

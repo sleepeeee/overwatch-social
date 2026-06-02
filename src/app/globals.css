@@ -914,3 +914,20 @@ img,
   from { transform: translate3d(0, 0, 0) rotate(-2deg); }
   to   { transform: translate3d(8px, -18px, 0) rotate(4deg); }
 }
+
+/* 🌿 Version A: Botanical Bloom 強化 */
+.watercolor-mist-blue { background-image: var(--ms-a1-blob-blue); }
+.watercolor-mist-sand { background-image: var(--ms-a1-blob-sand); }
+.watercolor-mist-yellow { background-image: var(--ms-a1-blob-yellow); }
+.watercolor-mist-rose { background-image: var(--ms-a1-blob-rose); }
+
+.ms-wave-divider-enhanced {
+  width: 100%;
+  height: 52px;
+  background-image: var(--ms-b1-wave-sand);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  opacity: 0.9;
+  filter: drop-shadow(0 2px 4px rgba(140,124,108,0.08));
+}
