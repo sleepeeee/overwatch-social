@@ -63,10 +63,12 @@ export default function ShareCardClient({ cardData }: Props) {
               </Button>
             </Link>
 
-            <div className="bg-[#82b7cc]/10 border border-[#82b7cc]/25 rounded-2xl py-1.5 px-3.5 text-xs text-[#82b7cc] font-bold flex items-center gap-2 shadow-sm animate-pulse">
-              <Sparkles size={12} />
-              <span>已成功載入特工分享名片</span>
-            </div>
+            {cardData && (
+              <div className="bg-[#82b7cc]/10 border border-[#82b7cc]/25 rounded-2xl py-1.5 px-3.5 text-xs text-[#82b7cc] font-bold flex items-center gap-2 shadow-sm animate-pulse">
+                <Sparkles size={12} />
+                <span>已成功載入特工分享名片</span>
+              </div>
+            )}
           </div>
 
           {!cardData ? (
