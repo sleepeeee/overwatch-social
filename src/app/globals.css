@@ -588,3 +588,49 @@ img,
   border-color: rgba(130, 183, 204, 0.2) !important;
 }
 
+/* 🎨 Morning Sketch - 藝術家手稿畫框與晶圓對準 L 型裁切線樣式 */
+.morning-sketch-card {
+  border-radius: 38px 24px 42px 28px !important;
+  background: rgba(253, 250, 243, 0.85) !important;
+  border: 1.2px solid rgba(140, 124, 108, 0.16) !important;
+  box-shadow: 
+    0 20px 48px -20px rgba(140, 124, 108, 0.1),
+    inset 0 1.5px 2px rgba(255, 255, 255, 0.9) !important;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.morning-sketch-card:hover {
+  transform: translateY(-4px) scale(1.01) !important;
+  border-color: rgba(130, 183, 204, 0.38) !important;
+  box-shadow: 
+    0 28px 60px -15px rgba(130, 183, 204, 0.18),
+    0 4px 15px -4px rgba(130, 183, 204, 0.05),
+    inset 0 1.5px 2px rgba(255, 255, 255, 0.95) !important;
+}
+
+.watercolor-avatar-bg {
+  background: radial-gradient(circle at 65% 35%, rgba(130, 183, 204, 0.18) 0%, rgba(245, 212, 107, 0.12) 40%, transparent 80%) !important;
+}
+
+.wafer-mark-tl {
+  position: absolute; top: 6px; left: 6px; width: 6px; height: 6px;
+  border-top: 1px solid rgba(140, 124, 108, 0.3) !important;
+  border-left: 1px solid rgba(140, 124, 108, 0.3) !important;
+}
+.wafer-mark-tr {
+  position: absolute; top: 6px; right: 6px; width: 6px; height: 6px;
+  border-top: 1px solid rgba(140, 124, 108, 0.3) !important;
+  border-right: 1px solid rgba(140, 124, 108, 0.3) !important;
+}
+.wafer-mark-bl {
+  position: absolute; bottom: 6px; left: 6px; width: 6px; height: 6px;
+  border-bottom: 1px solid rgba(140, 124, 108, 0.3) !important;
+  border-left: 1px solid rgba(140, 124, 108, 0.3) !important;
+}
+.wafer-mark-br {
+  position: absolute; bottom: 6px; right: 6px; width: 6px; height: 6px;
+  border-bottom: 1px solid rgba(140, 124, 108, 0.3) !important;
+  border-right: 1px solid rgba(140, 124, 108, 0.3) !important;
+}
+
+

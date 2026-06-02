@@ -125,6 +125,13 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
     return isSearchMatched && isRoleMatched && isServerMatched && isMicMatched;
   });
 
+  const roleRadii: Record<string, string> = {
+    "全部": "16px 12px 14px 18px",
+    "坦克": "12px 16px 15px 13px",
+    "輸出": "15px 13px 16px 12px",
+    "支援": "13px 15px 12px 16px"
+  };
+
   if (!isMounted) {
     // 🛡️ [Anti-flicker] 為了防抖，我們在!isMounted時只返回一個高度為 0 的 placeholder，避免 layout jump 與 Loading 轉圈閃現！
     return <div className="min-h-0 h-0 opacity-0" />;
@@ -132,82 +139,77 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
 
   return (
     <div className="space-y-6 w-full animate-[fadeIn_0.4s_ease-out]">
-      <div className="ow-glass-panel p-5 md:p-6 space-y-5">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-          <div className="space-y-1">
-            <span className="soft-home-badge uppercase">Overwatch 活躍分區</span>
-            <p className="text-sm font-semibold text-[#8c7c6c]">
-              用同一套晨霧材質整理篩選條件，讓你更快掃到今天想排的隊友。
-            </p>
-          </div>
+      {/* 🚀 獨立懸浮篩選絲帶 (Floating Filter Ribbon) */}
+      <div className="w-full bg-white/40 backdrop-blur-3xl border-2 border-white/60 rounded-[28px] p-5 md:py-4 md:px-6 shadow-[0_18px_45px_-18px_rgba(140,124,108,0.12),inset_0_1.5px_2px_rgba(255,255,255,0.85)] flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
+        
+        {/* 左翼：遊玩伺服器 */}
+        <div className="space-y-1.5 w-full md:w-[22%]">
+          <label className="text-[10px] font-black uppercase tracking-widest text-[#8c7c6c]/80 flex justify-between">
+            <span>遊玩伺服器</span>
+            <span className="text-[9px] text-[#82b7cc] lowercase">({filteredPlayers.length} active)</span>
+          </label>
+          <select
+            className="w-full bg-white/60 border border-[#8c7c6c]/18 rounded-2xl py-2.5 px-3 text-xs focus:border-[#82b7cc] text-[#5d4037] font-semibold shadow-[0_10px_24px_-20px_rgba(140,124,108,0.22)] focus-visible:outline-none"
+            value={selectedServer}
+            onChange={(e) => setSelectedServer(e.target.value)}
+          >
+            <option value="全部">全部伺服器</option>
+            {SERVER_OPTIONS.map((opt) => (
+              <option key={opt} value={opt}>
+                {opt}
+              </option>
+            ))}
+          </select>
+        </div>
 
-          <div className="rounded-full border border-white/60 bg-white/40 px-4 py-2 text-[#8c7c6c] shadow-[0_12px_26px_-20px_rgba(140,124,108,0.25)]">
-            <span className="text-xs font-black tracking-wide uppercase">共有 {filteredPlayers.length} 位玩家符合條件</span>
+        {/* 中腹：常用定位黏土按鈕 */}
+        <div className="space-y-1.5 w-full md:w-[48%] flex flex-col items-center">
+          <label className="text-[10px] font-black uppercase tracking-widest text-[#8c7c6c]/80 w-full text-center md:text-left md:pl-2">常用定位</label>
+          <div className="flex gap-2 w-full justify-center">
+            {["全部", "坦克", "輸出", "支援"].map((role) => (
+              <button
+                key={role}
+                onClick={() => setSelectedRole(role)}
+                className={`px-4 py-2.5 text-[10px] font-extrabold transition-all duration-500 hover:scale-[1.04] hover:-rotate-1 active:scale-[0.98] outline-1 outline-offset-[-3.5px] cursor-pointer flex-1 text-center flex items-center justify-center gap-1 ${
+                  selectedRole === role
+                    ? "bg-gradient-to-br from-[#82b7cc]/22 to-[#f5d46b]/15 text-[#384d54] border-2 border-[#82b7cc]/45 outline-dashed outline-[#82b7cc]/30 shadow-[0_8px_20px_-8px_rgba(130,183,204,0.3),inset_0_1.5px_2px_rgba(255,255,255,0.9)]"
+                    : "bg-white/45 text-[#8c7c6c] border border-[#8c7c6c]/20 outline-dashed outline-[#8c7c6c]/12 hover:bg-white/75"
+                }`}
+                style={{ borderRadius: roleRadii[role] }}
+              >
+                <span>{role === "坦克" ? "🛡️" : role === "輸出" ? "⚔️" : role === "支援" ? "➕" : ""}</span>
+                <span>{role}</span>
+              </button>
+            ))}
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="space-y-1">
-            <label className="text-[10px] font-black uppercase tracking-widest text-[#8c7c6c]/80">遊玩伺服器</label>
+        {/* 右翼：語音溝通習慣 + 重置按鈕 */}
+        <div className="space-y-1.5 w-full md:w-[30%]">
+          <label className="text-[10px] font-black uppercase tracking-widest text-[#8c7c6c]/80">語音溝通習慣</label>
+          <div className="flex gap-2">
             <select
-              className="w-full bg-white/60 border border-[#8c7c6c]/18 rounded-2xl py-2.5 px-3 text-xs focus:border-[#82b7cc] text-[#5d4037] font-semibold shadow-[0_10px_24px_-20px_rgba(140,124,108,0.22)]"
-              value={selectedServer}
-              onChange={(e) => setSelectedServer(e.target.value)}
+              className="w-full bg-white/60 border border-[#8c7c6c]/18 rounded-2xl py-2.5 px-3 text-xs focus:border-[#82b7cc] text-[#5d4037] font-semibold shadow-[0_10px_24px_-20px_rgba(140,124,108,0.22)] focus-visible:outline-none"
+              value={selectedMic}
+              onChange={(e) => setSelectedMic(e.target.value)}
             >
-              <option value="全部">全部伺服器</option>
-              {SERVER_OPTIONS.map((opt) => (
-                <option key={opt} value={opt}>
-                  {opt}
+              <option value="全部">全部語音狀態</option>
+              {MIC_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
                 </option>
               ))}
             </select>
-          </div>
 
-          <div className="space-y-1">
-            <label className="text-[10px] font-black uppercase tracking-widest text-[#8c7c6c]/80">常用定位</label>
-            <div className="grid grid-cols-4 gap-1">
-              {["全部", "坦克", "輸出", "支援"].map((role) => (
-                <button
-                  key={role}
-                  onClick={() => setSelectedRole(role)}
-                  className={`text-[10px] font-extrabold py-2.5 rounded-2xl transition-all border cursor-pointer ${
-                    selectedRole === role
-                      ? "bg-[#82b7cc]/85 border-[#82b7cc]/30 text-white backdrop-blur-sm shadow-sm"
-                      : "bg-white/60 border-[#8c7c6c]/18 text-[#8c7c6c] hover:bg-white/80"
-                  }`}
-                >
-                  {role === "坦克" ? "🛡️" : role === "輸出" ? "⚔️" : role === "支援" ? "➕" : ""} {role}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="space-y-1">
-            <label className="text-[10px] font-black uppercase tracking-widest text-[#8c7c6c]/80">語音溝通習慣</label>
-            <div className="flex gap-2">
-              <select
-                className="w-full bg-white/60 border border-[#8c7c6c]/18 rounded-2xl py-2.5 px-3 text-xs focus:border-[#82b7cc] text-[#5d4037] font-semibold shadow-[0_10px_24px_-20px_rgba(140,124,108,0.22)]"
-                value={selectedMic}
-                onChange={(e) => setSelectedMic(e.target.value)}
+            {(selectedRole !== "全部" || selectedServer !== "全部" || selectedMic !== "全部") && (
+              <button
+                onClick={handleResetFilters}
+                className="flex items-center justify-center p-2.5 bg-white/60 border border-[#8c7c6c]/18 hover:bg-white/80 rounded-2xl text-xs font-bold text-[#8c7c6c] transition-colors shrink-0 cursor-pointer shadow-[0_10px_24px_-20px_rgba(140,124,108,0.22)]"
+                title="重置篩選"
               >
-                <option value="全部">全部語音狀態</option>
-                {MIC_OPTIONS.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-              </select>
-
-              {(selectedRole !== "全部" || selectedServer !== "全部" || selectedMic !== "全部") && (
-                <button
-                  onClick={handleResetFilters}
-                  className="flex items-center justify-center p-2.5 bg-white/60 border border-[#8c7c6c]/18 hover:bg-white/80 rounded-2xl text-xs font-bold text-[#8c7c6c] transition-colors shrink-0 cursor-pointer shadow-[0_10px_24px_-20px_rgba(140,124,108,0.22)]"
-                  title="重置篩選"
-                >
-                  <RotateCcw size={14} />
-                </button>
-              )}
-            </div>
+                <RotateCcw size={14} />
+              </button>
+            )}
           </div>
         </div>
       </div>
