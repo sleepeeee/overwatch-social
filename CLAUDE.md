@@ -154,6 +154,7 @@ public_profiles view：公開可查，DB 層已過濾 is_tag_visible=false 的�
 - ADR-05：TopBar 統一 Client Component（auth-topbar-unification）→ .rsx/decisions/ADR-02
 - ADR-06：AuthContext at layout + useAuth hook（auth-context-refactor）→ .rsx/decisions/ADR-03
 - ADR-07：開發者用戶管理使用 on-demand Server Action（developer-console-enhancements）→ .rsx/decisions/ADR-04
+- ADR-08：玩家詳細頁 social_channels 透過 authenticated 直接查 profiles 表（不放入 public view）→ .rsx/decisions/ADR-06
 
 ## 已知 Dead Code（程式碼正確但未掛載）
 - src/components/Navbar.tsx：有完整登入/登出，未掛載
