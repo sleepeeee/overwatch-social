@@ -279,3 +279,85 @@ style={{ borderRadius: roleRadii[role] }}
 3. **無損向量優勢 (Web Optimization)**：
    * 所有素材一律只使用純 SVG (代碼內嵌 `path` 或本地 SVG 靜態資源)，避免加載重型 PNG/JPG 導致的頁面跳動（Layout Shift）與效能降低。
 
+---
+
+## 八、 大面積主題氛圍美化方案 (Macro Visual Substrate Passivation)
+
+為了響應使用者對於「大面積主題氛圍感」的期望，我們在微細點綴之外，進行全局的宏觀視覺重構：
+
+### 1. 全局水彩渲染融合畫布 (`.macro-watercolor-canvas`)
+* **設計意象**：在底層固定定位鋪設超大半徑的四色莫蘭迪徑向漸變，並以 `mix-blend-mode: multiply` 融合手工紙張的噪點，使整個網頁展現出自然墨水在宣紙上暈染擴散的大片手寫質感。
+* **CSS 實作 (`globals.css`)**：
+  ```css
+  .macro-watercolor-canvas {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: -2;
+    background-image: 
+      radial-gradient(circle at -5% 5%, rgba(130, 183, 204, 0.16) 0%, transparent 55%),
+      radial-gradient(circle at 105% 35%, rgba(245, 212, 107, 0.14) 0%, transparent 50%),
+      radial-gradient(circle at 20% 90%, rgba(235, 220, 216, 0.22) 0%, transparent 65%),
+      radial-gradient(circle at 80% -5%, rgba(140, 124, 108, 0.08) 0%, transparent 40%);
+    opacity: 0.9;
+    mix-blend-mode: multiply;
+  }
+  ```
+
+### 2. 頂部大面積流體鏤空 Banner
+* **設計意象**：利用 `clip-path: ellipse` 裁切出一個高達 420px 的半透明柔霧背板，在大廳頂部提供溫潤的大門感與視差深度。
+* **React 元件應用 (`page.tsx`)**：
+  ```tsx
+  <div 
+    className="absolute top-0 left-0 w-full h-[420px] pointer-events-none z-0 opacity-80"
+    style={{
+      background: "linear-gradient(180deg, rgba(255, 255, 255, 0.6) 0%, rgba(253, 250, 243, 0.3) 70%, transparent 100%)",
+      clipPath: "ellipse(95% 65% at 50% 0%)",
+      borderBottom: "1.5px solid rgba(255, 255, 255, 0.55)",
+      backdropFilter: "blur(4px)"
+    }}
+  />
+  ```
+
+### 3. 左右側大面積手繪荷花插畫
+* **設計意象**：在招募大廳兩側嵌入寬達 320px~350px 的極細線條手稿荷花，以 `fixed` 定位固定在視窗兩側，超低不透明度使其像紙張水印，使大廳兩側有如展開的手稿繪本。
+* **左側 SVG (花苞莖桿 - `page.tsx`)**：
+  ```tsx
+  <svg 
+    className="fixed left-[-80px] top-[15%] w-[320px] h-[650px] text-[#8c7c6c]/15 pointer-events-none z-0 select-none animate-[fadeIn_2s_ease-out]" 
+    fill="none" 
+    stroke="currentColor" 
+    strokeWidth="0.8" 
+    viewBox="0 0 100 200"
+  >
+    <path d="M 50 200 C 45 150, 55 100, 48 50" strokeDasharray="1.5 1.5" />
+    <path d="M 48 50 C 32 40, 28 20, 48 10 C 68 20, 64 40, 48 50 Z" />
+    <path d="M 48 50 C 38 45, 40 30, 48 22 C 56 30, 58 45, 48 50 Z" />
+    <path d="M 48 52 C 44 48, 45 38, 48 30 C 51 38, 52 48, 48 52 Z" />
+    <path d="M 50 120 C 15 110, 5 140, 28 160 C 45 171, 50 150, 50 120 Z" />
+    <path d="M 28 160 C 23 150, 32 130, 50 120" />
+    <path d="M 15 190 Q 25 185, 35 190" />
+    <path d="M 65 195 Q 75 190, 85 195" />
+  </svg>
+  ```
+* **右側 SVG (盛開蓮花 - `page.tsx`)**：
+  ```tsx
+  <svg 
+    className="fixed right-[-90px] bottom-[5%] w-[350px] h-[650px] text-[#82b7cc]/12 pointer-events-none z-0 select-none animate-[fadeIn_2.2s_ease-out]" 
+    fill="none" 
+    stroke="currentColor" 
+    strokeWidth="0.8" 
+    viewBox="0 0 100 200"
+  >
+    <path d="M 50 200 C 55 140, 45 90, 52 40" strokeDasharray="1.5 1.5" />
+    <path d="M 52 40 C 15 30, 25 5, 52 25 C 79 5, 89 30, 52 40 Z" />
+    <path d="M 52 40 C 32 35, 38 18, 52 28 C 66 18, 72 35, 52 40 Z" />
+    <path d="M 52 40 C 8 50, 22 70, 52 40 C 82 70, 96 50, 52 40 Z" />
+    <path d="M 48 100 C 10 90, 5 130, 48 142 C 91 130, 86 90, 48 100 Z" />
+    <path d="M 48 100 L 48 142" />
+    <path d="M 48 120 C 28 115, 18 125, 12 110" />
+    <path d="M 48 120 C 68 115, 78 125, 84 110" />
+  </svg>
+  ```
+
+
