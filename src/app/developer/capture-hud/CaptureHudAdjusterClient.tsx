@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { AlertTriangle, ArrowLeft, Crosshair, ExternalLink, Moon, Save, Sun } from "lucide-react";
+import { AlertTriangle, ArrowLeft, Copy, Download, ExternalLink, Moon, Package, Save, Sun } from "lucide-react";
 import { saveCaptureDisplayNames } from "@/app/actions/developerCapture";
 import type { CapturePlayerStats, CaptureSide, CaptureState } from "@/lib/developer-capture/types";
 
 type PresetId = "live" | "winning" | "neutral" | "losing" | "missing" | "error" | "custom";
-type TabId = "spec" | "structure" | "svg";
+type TabId = "exporter" | "spec" | "code";
 
 interface CaptureHudAdjusterClientProps {
   initialState: CaptureState;
@@ -23,9 +23,36 @@ const presetButtons: Array<{ id: PresetId; label: string }> = [
 ];
 
 const tabs: Array<{ id: TabId; label: string }> = [
-  { id: "spec", label: "UX 狀態 & 規格" },
-  { id: "structure", label: "HTML/CSS 結構" },
-  { id: "svg", label: "SVG 核心元件" },
+  { id: "exporter", label: "資源打包下載" },
+  { id: "spec", label: "UX 狀態規格" },
+  { id: "code", label: "向量代碼明細" },
+];
+
+const svgSources = {
+  radarKnob: `<svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="14" cy="14" r="11" stroke="#00f0ff" stroke-width="1.5" stroke-dasharray="3 2" />
+  <circle cx="14" cy="14" r="6" fill="#00f0ff" />
+  <path d="M14 2V5" stroke="#00f0ff" stroke-width="1" />
+  <path d="M14 23V26" stroke="#00f0ff" stroke-width="1" />
+</svg>`,
+  repoOwner: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>`,
+  warningShield: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>`,
+  commitNode: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/>
+  <line x1="1.05" y1="12" x2="7" y2="12" stroke="currentColor" stroke-width="2"/>
+  <line x1="17" y1="12" x2="22.95" y2="12" stroke="currentColor" stroke-width="2"/>
+</svg>`,
+} as const;
+
+const svgAssetList: Array<{ key: keyof typeof svgSources; name: string; tone: string }> = [
+  { key: "radarKnob", name: "1. 控制雷達指針.svg", tone: "text-cyan-400" },
+  { key: "repoOwner", name: "2. 倉庫所有權徽章.svg", tone: "text-blue-500" },
+  { key: "warningShield", name: "3. 警告引導盾牌.svg", tone: "text-amber-500" },
+  { key: "commitNode", name: "4. Git提交節點.svg", tone: "text-indigo-500" },
 ];
 
 function clampPercent(value: number): number {
@@ -178,6 +205,73 @@ function ColorSwatch({ label, value, color, dark = false }: { label: string; val
   );
 }
 
+function RepoOwnerIcon({ className = "h-3 w-3" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2.5"
+        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+      />
+    </svg>
+  );
+}
+
+function RadarKnobSvg({ color }: { color: string }) {
+  return (
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" className="drop-shadow-[0_0_12px_rgba(0,240,255,0.35)]" aria-hidden="true">
+      <circle cx="14" cy="14" r="11" stroke={color} strokeWidth="1.5" strokeDasharray="3 2" className="origin-center animate-[spin_10s_linear_infinite]" />
+      <circle cx="14" cy="14" r="6" fill={color} className="animate-pulse" />
+      <path d="M14 2V5" stroke={color} strokeWidth="1" />
+      <path d="M14 23V26" stroke={color} strokeWidth="1" />
+    </svg>
+  );
+}
+
+function SvgPreviewIcon({ assetKey, tone }: { assetKey: keyof typeof svgSources; tone: string }) {
+  if (assetKey === "radarKnob") {
+    return <RadarKnobSvg color="#00f0ff" />;
+  }
+
+  if (assetKey === "repoOwner") {
+    return <RepoOwnerIcon className={`h-7 w-7 ${tone}`} />;
+  }
+
+  if (assetKey === "warningShield") {
+    return <AlertTriangle className={tone} size={28} />;
+  }
+
+  return (
+    <svg className={`h-7 w-7 ${tone}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+      <circle cx="12" cy="12" r="4" />
+      <line x1="1.05" y1="12" x2="7" y2="12" />
+      <line x1="17" y1="12" x2="22.95" y2="12" />
+    </svg>
+  );
+}
+
+function buildProductionHtmlSnippet(): string {
+  return `<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Git Outpost HUD Component</title>
+  <style>
+    body { margin: 0; background: #0b0f19; color: white; font-family: monospace; }
+    .hud { padding: 24px; border: 1px solid #00f0ff; background: #111827; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <section class="hud">
+    <strong>GIT OUTPOST CONSOLE</strong>
+    <p>SVG 資源已內建，可移植至正式插件。</p>
+  </section>
+</body>
+</html>`;
+}
+
 export default function CaptureHudAdjusterClient({ initialState }: CaptureHudAdjusterClientProps) {
   const [preset, setPreset] = useState<PresetId>("live");
   const [isDarkPreview, setIsDarkPreview] = useState(true);
@@ -185,9 +279,10 @@ export default function CaptureHudAdjusterClient({ initialState }: CaptureHudAdj
   const [leftName, setLeftName] = useState(initialState.players[0].label);
   const [rightName, setRightName] = useState(initialState.players[1].label);
   const [ownerSide, setOwnerSide] = useState<CaptureSide>(initialState.targetRepositoryOwnerSide);
-  const [activeTab, setActiveTab] = useState<TabId>("spec");
+  const [activeTab, setActiveTab] = useState<TabId>("exporter");
   const [isSaving, setIsSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState("本頁先預覽，按下保存後前台 HUD 才會更新。");
+  const [assetMessage, setAssetMessage] = useState("SVG 素材只在本機下載或複製，不會寫入後端。");
 
   const displayState = useMemo(
     () => buildDisplayState(initialState, preset, leftPercent, leftName, rightName, ownerSide),
@@ -198,6 +293,7 @@ export default function CaptureHudAdjusterClient({ initialState }: CaptureHudAdj
   const repositoryLabel = getRepositoryLabel(displayState.targetRepositoryUrl);
   const markerLeft = clampPercent(left.percent);
   const isWarning = displayState.status === "missing-config" || displayState.status === "git-error";
+  const knobColor = left.percent > right.percent ? "#00f0ff" : right.percent > left.percent ? "#f97316" : "#94a3b8";
 
   const handleSave = async () => {
     if (isSaving) {
@@ -214,6 +310,32 @@ export default function CaptureHudAdjusterClient({ initialState }: CaptureHudAdj
       setSaveMessage("Server Action 發生未知錯誤。");
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const downloadFile = (content: string, filename: string, contentType: string) => {
+    const blob = new Blob([content], { type: contentType });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = filename;
+    document.body.appendChild(anchor);
+    anchor.click();
+    document.body.removeChild(anchor);
+    URL.revokeObjectURL(url);
+    setAssetMessage(`已打包下載：${filename}`);
+  };
+
+  const downloadSvgAsset = (assetKey: keyof typeof svgSources) => {
+    downloadFile(`<?xml version="1.0" encoding="utf-8"?>\n${svgSources[assetKey]}`, `${assetKey}.svg`, "image/svg+xml");
+  };
+
+  const copySvgAsset = async (assetKey: keyof typeof svgSources) => {
+    try {
+      await navigator.clipboard.writeText(svgSources[assetKey]);
+      setAssetMessage(`已複製 SVG 原始碼：${assetKey}`);
+    } catch {
+      setAssetMessage("複製失敗，請直接選取下方原始碼。");
     }
   };
 
@@ -380,6 +502,12 @@ export default function CaptureHudAdjusterClient({ initialState }: CaptureHudAdj
                       <p className="font-mono text-xs font-black uppercase text-slate-400">● LEFT CAMP</p>
                       <div className="mt-1 flex flex-wrap items-baseline gap-2">
                         <h2 className="truncate text-2xl font-black text-slate-950 dark:text-white">{left.label}</h2>
+                        {ownerSide === "left" && (
+                          <span className="inline-flex items-center gap-1 rounded-sm border border-cyan-400/30 bg-cyan-400/10 px-1.5 py-0.5 text-[9px] font-black text-cyan-500">
+                            <RepoOwnerIcon />
+                            倉庫所有者
+                          </span>
+                        )}
                         <span className="font-mono text-xs font-black text-blue-600">{left.score} PTS</span>
                       </div>
                     </div>
@@ -390,6 +518,12 @@ export default function CaptureHudAdjusterClient({ initialState }: CaptureHudAdj
                       <p className="font-mono text-xs font-black uppercase text-slate-400">RIGHT CAMP ●</p>
                       <div className="mt-1 flex flex-wrap items-baseline justify-end gap-2">
                         <span className="font-mono text-xs font-black text-orange-500">{right.score} PTS</span>
+                        {ownerSide === "right" && (
+                          <span className="inline-flex items-center gap-1 rounded-sm border border-orange-400/30 bg-orange-400/10 px-1.5 py-0.5 text-[9px] font-black text-orange-500">
+                            <RepoOwnerIcon />
+                            倉庫所有者
+                          </span>
+                        )}
                         <h2 className="truncate text-2xl font-black text-slate-950 dark:text-white">{right.label}</h2>
                       </div>
                     </div>
@@ -406,9 +540,11 @@ export default function CaptureHudAdjusterClient({ initialState }: CaptureHudAdj
                         <div className="h-full bg-gradient-to-l from-rose-600 to-orange-400 transition-[width] duration-500" style={{ width: `${right.percent}%` }} />
                       </div>
                       <div
-                        className="absolute top-1/2 h-8 w-8 -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-cyan-300 bg-cyan-400 shadow-[0_0_22px_rgba(0,240,255,0.45)] transition-[left] duration-500"
+                        className="absolute top-1/2 grid h-8 w-8 -translate-x-1/2 -translate-y-1/2 place-items-center transition-[left] duration-500"
                         style={{ left: `${Math.min(98, Math.max(2, markerLeft))}%` }}
-                      />
+                      >
+                        <RadarKnobSvg color={knobColor} />
+                      </div>
                     </div>
                   </div>
 
@@ -452,41 +588,87 @@ export default function CaptureHudAdjusterClient({ initialState }: CaptureHudAdj
                   </button>
                 ))}
               </div>
-              <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-[#111827]">
+              <div className="max-h-[560px] overflow-y-auto rounded-lg border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-[#111827]">
+                {activeTab === "exporter" && (
+                  <div className="space-y-5 text-sm font-semibold leading-relaxed text-slate-600 dark:text-slate-300">
+                    <div className="rounded-md border border-blue-500/30 bg-blue-500/10 p-4 text-blue-500 dark:text-cyan-300">
+                      <h2 className="text-sm font-black">資源打包器</h2>
+                      <p className="mt-2 text-xs leading-relaxed">
+                        本插件視覺素材採用純 SVG 向量渲染，不使用外部 PNG/JPG。下載與複製都只在瀏覽器本機執行。
+                      </p>
+                      <p className="mt-2 text-[11px] font-black text-slate-400">{assetMessage}</p>
+                    </div>
+
+                    <div className="space-y-3">
+                      <h3 className="font-mono text-xs font-black uppercase tracking-wider text-slate-400">{"// 一鍵打包方案"}</h3>
+                      <button
+                        type="button"
+                        onClick={() => downloadFile(buildProductionHtmlSnippet(), "git-outpost-hud-component.html", "text/html")}
+                        className="flex w-full items-center justify-between gap-3 rounded-md bg-blue-600 p-3 text-left text-white shadow-sm transition hover:bg-blue-700"
+                      >
+                        <span className="flex items-center gap-3">
+                          <Package size={20} />
+                          <span>
+                            <span className="block text-xs font-black">下載整合版單一 HTML 檔案</span>
+                            <span className="block text-[10px] font-semibold text-blue-100">包含 CSS、SVG 與插件外殼範本</span>
+                          </span>
+                        </span>
+                        <Download size={16} />
+                      </button>
+                    </div>
+
+                    <div className="space-y-3 border-t border-slate-200 pt-4 dark:border-slate-800">
+                      <h3 className="font-mono text-xs font-black uppercase tracking-wider text-slate-400">{"// 獨立 SVG 素材包下載"}</h3>
+                      <div className="grid gap-2 sm:grid-cols-2">
+                        {svgAssetList.map(asset => (
+                          <div key={asset.key} className="flex items-center justify-between gap-2 rounded-md border border-slate-200 bg-slate-50 p-2.5 dark:border-slate-800 dark:bg-slate-950">
+                            <div className="flex min-w-0 items-center gap-2">
+                              <SvgPreviewIcon assetKey={asset.key} tone={asset.tone} />
+                              <span className="truncate font-mono text-[10px] font-bold">{asset.name}</span>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => downloadSvgAsset(asset.key)}
+                              className="rounded bg-slate-200 px-2 py-1 text-[10px] font-black text-slate-700 transition hover:bg-slate-300 dark:bg-slate-800 dark:text-slate-300"
+                            >
+                              下載
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
                 {activeTab === "spec" && (
                   <div className="space-y-4 text-sm font-semibold leading-relaxed text-slate-600 dark:text-slate-300">
-                    <h2 className="text-lg font-black text-slate-950 dark:text-white">{"// 狀態規格"}</h2>
-                    <p>這一頁是後台工具箱的 HUD 調整器。上方按鈕像遊戲測試房，可以切換不同戰況來檢查畫面。</p>
+                    <h2 className="text-lg font-black text-slate-950 dark:text-white">{"// 專利級防錯機制 (Repo Owner)"}</h2>
+                    <p>多人協作後台常會因為分支、作者或倉庫來源混亂而看錯指標。倉庫所有者徽章像戰場上的旗標，用來告訴你目前主要目標倉庫屬於哪一方。</p>
                     <ul className="space-y-2 text-xs">
-                      <li>● 真實資料：讀後端 Git 戰報產生的目前據點狀態。</li>
-                      <li>● 模擬狀態：只影響前端預覽，不會保存戰報數值。</li>
-                      <li>● 儲存顯示名稱：只保存插件名稱，不改 GitHub 連結、作者或倉庫。</li>
+                      <li>● 真實資料：讀後端 Git 戰報產生目前據點狀態。</li>
+                      <li>● 模擬狀態：只影響後台預覽，不保存戰報數值。</li>
+                      <li>● 儲存顯示名稱：保存後，前台 HUD 才會更新插件顯示名。</li>
+                      <li>● 倉庫所有者標章：目前為後台預覽用途，不會改 GitHub 遠端設定。</li>
                     </ul>
                   </div>
                 )}
-                {activeTab === "structure" && (
-                  <div className="space-y-4 text-sm font-semibold leading-relaxed text-slate-600 dark:text-slate-300">
-                    <h2 className="text-lg font-black text-slate-950 dark:text-white">{"// HTML/CSS 結構"}</h2>
-                    <p>頁面分成控制列、模擬滑軌、名稱設定、HUD 即時渲染、說明分頁、色相設定六個區塊。</p>
-                    <div className="rounded-md bg-slate-950 p-3 font-mono text-[11px] text-cyan-100">
-                      <p>&lt;controller /&gt;</p>
-                      <p>&lt;simulator-range /&gt;</p>
-                      <p>&lt;hud-preview /&gt;</p>
-                      <p>&lt;color-palette /&gt;</p>
-                    </div>
-                  </div>
-                )}
-                {activeTab === "svg" && (
-                  <div className="space-y-4 text-sm font-semibold leading-relaxed text-slate-600 dark:text-slate-300">
-                    <h2 className="text-lg font-black text-slate-950 dark:text-white">{"// 核心控制點 SVG 設計詳解"}</h2>
-                    <div className="grid place-items-center rounded-md bg-slate-950 py-6">
-                      <Crosshair className="text-cyan-400 drop-shadow-[0_0_18px_rgba(0,240,255,0.55)]" size={44} />
-                    </div>
-                    <ul className="space-y-2 text-xs">
-                      <li>● 外層圓點代表據點核心。</li>
-                      <li>● 青藍色代表你方壓制，橙紅色代表朋友壓制。</li>
-                      <li>● 滑軌位置會依照百分比向左或向右偏移。</li>
-                    </ul>
+                {activeTab === "code" && (
+                  <div className="space-y-4">
+                    {svgAssetList.map(asset => (
+                      <div key={asset.key} className="text-xs">
+                        <div className="mb-2 flex items-center justify-between gap-3">
+                          <h2 className="font-black text-blue-600 dark:text-cyan-300">{`// ${asset.name.replace(/^\d+\.\s*/, "")} 原始碼`}</h2>
+                          <button
+                            type="button"
+                            onClick={() => copySvgAsset(asset.key)}
+                            className="inline-flex items-center gap-1 rounded bg-slate-100 px-2 py-1 text-[10px] font-black text-slate-600 transition hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300"
+                          >
+                            <Copy size={11} />
+                            複製
+                          </button>
+                        </div>
+                        <pre className="overflow-x-auto rounded-md bg-slate-950 p-3 font-mono text-[10px] leading-relaxed text-slate-300">{svgSources[asset.key]}</pre>
+                      </div>
+                    ))}
                   </div>
                 )}
               </div>
