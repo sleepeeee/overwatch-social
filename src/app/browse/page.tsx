@@ -40,7 +40,7 @@ export default function BrowsePage() {
   return (
     <div 
       data-theme-expert="true"
-      className="max-w-6xl mx-auto px-4 py-8 space-y-6 relative min-h-screen"
+      className="max-w-6xl mx-auto px-4 py-8 space-y-6 relative min-h-screen overflow-x-hidden"
     >
       <TopBar />
 
@@ -74,6 +74,38 @@ export default function BrowsePage() {
           opacity: 0.4,
           zIndex: 0,
           animationDelay: '3s',
+        }}
+      />
+
+      {/* 🪶 D1 羽毛 - 右上角遠景（版本A獨有） */}
+      <div
+        className="ms-d1-floating-feather-ink ms-float-slow pointer-events-none select-none"
+        style={{
+          position: 'absolute',
+          top: '3%',
+          right: '-3%',
+          width: '90px',
+          height: '170px',
+          opacity: 0.42,
+          zIndex: 0,
+          animationDelay: '6s',
+          willChange: 'transform',
+        }}
+      />
+
+      {/* 🍃 D1 左中段柳葉（版本A獨有） */}
+      <div
+        className="ms-d1-floating-leaf-willow ms-float-slow pointer-events-none select-none"
+        style={{
+          position: 'absolute',
+          top: '38%',
+          left: '-1.5%',
+          width: '65px',
+          height: '115px',
+          opacity: 0.32,
+          zIndex: 0,
+          animationDelay: '0s',
+          willChange: 'transform',
         }}
       />
 
@@ -139,29 +171,48 @@ export default function BrowsePage() {
         </p>
       </div>
 
+      {/* 🌊 B1 波浪分隔線（版本A獨有） */}
+      <div className="ms-wave-divider-enhanced mt-3 -mx-4" />
+
       {/* 🔍 獨立太空艙搜尋層 (Capsule Search Box) */}
-      <div className="relative w-full max-w-2xl mx-auto bg-white/45 backdrop-blur-2xl border-2 border-white/70 rounded-[24px] p-1.5 shadow-[0_15px_35px_-20px_rgba(140,124,108,0.15),inset_0_1.5px_2.5px_rgba(255,255,255,0.9)] focus-within:border-[#82b7cc]/60 transition-all duration-300 relative z-10 flex items-center group/search">
-        <Search className="ml-3.5 text-[#8c7c6c]/70 transition-colors shrink-0 group-focus-within/search:text-[#82b7cc]" size={18} />
-        <Input
-          type="text"
-          placeholder="搜尋玩家 BattleTag、常用英雄、留言關鍵字或 MBTI..."
-          className="w-full bg-transparent border-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus:border-none focus-visible:border-none shadow-none text-[#5d4037] text-sm py-4 pl-3 pr-10"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+      <div className="relative w-full max-w-2xl mx-auto z-10">
+        {/* 🫧 C1 有機圓形 - 搜尋框左側（版本A獨有） */}
+        <div
+          className="ms-c1-organic-circle-blue pointer-events-none select-none"
+          style={{
+            position: 'absolute',
+            left: '-18px',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            width: '52px',
+            height: '52px',
+            opacity: 0.55,
+            zIndex: 1,
+          }}
         />
-        {searchQuery && (
-          <button
-            onClick={handleResetSearch}
-            className="absolute right-4 top-1/2 -translate-y-1/2 p-1 text-[#8c7c6c] hover:text-red-500 transition-colors cursor-pointer border-none bg-transparent"
-            title="清空搜尋"
-          >
-            <RotateCcw size={14} />
-          </button>
-        )}
+        <div className="relative w-full bg-white/45 backdrop-blur-2xl border-2 border-white/70 rounded-[24px] p-1.5 shadow-[0_15px_35px_-20px_rgba(140,124,108,0.15),inset_0_1.5px_2.5px_rgba(255,255,255,0.9)] focus-within:border-[#82b7cc]/60 transition-all duration-300 flex items-center group/search">
+          <Search className="ml-3.5 text-[#8c7c6c]/70 transition-colors shrink-0 group-focus-within/search:text-[#82b7cc]" size={18} />
+          <Input
+            type="text"
+            placeholder="搜尋玩家 BattleTag、常用英雄、留言關鍵字或 MBTI..."
+            className="w-full bg-transparent border-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus:border-none focus-visible:border-none shadow-none text-[#5d4037] text-sm py-4 pl-3 pr-10"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          {searchQuery && (
+            <button
+              onClick={handleResetSearch}
+              className="absolute right-4 top-1/2 -translate-y-1/2 p-1 text-[#8c7c6c] hover:text-red-500 transition-colors cursor-pointer border-none bg-transparent"
+              title="清空搜尋"
+            >
+              <RotateCcw size={14} />
+            </button>
+          )}
+        </div>
       </div>
 
       {/* 🥞 獨立分區 Tab Pills 軌道 */}
-      <div className="flex flex-wrap gap-2.5 justify-center md:justify-start relative z-10 w-full animate-[fadeIn_0.5s_ease-out]">
+      <div className="flex flex-wrap gap-2.5 justify-center md:justify-start relative z-10 w-full animate-[fadeIn_0.5s_ease-out] relative">
         {gameTabs.map((game) => {
           const isSelected = activeGame === game.id;
           return (
@@ -181,6 +232,20 @@ export default function BrowsePage() {
             </button>
           );
         })}
+        {/* 💧 D2 漣漪 - Tab 右端（版本A獨有） */}
+        <div
+          className="ms-d2-circle-ripple-accent pointer-events-none select-none"
+          style={{
+            position: 'absolute',
+            right: '-8px',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            width: '110px',
+            height: '110px',
+            opacity: 0.22,
+            zIndex: 0,
+          }}
+        />
       </div>
 
       {/* 🚀 子廣場元件常駐 DOM 控制，消除 unmount 詭異 Loading 動畫 */}
