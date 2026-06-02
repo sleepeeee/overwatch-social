@@ -2,6 +2,7 @@
 
 - [x] 1.1 修改 `src/app/developer/adjuster/page.tsx`：加入本地開發 `isDev` 權限豁免條件，防止開發環境下被重定向回首頁。
 - [x] 1.2 修改 `src/components/DevModeBanner.tsx`：將 `fixed` 樣式替換為 `relative z-[100] w-full`，使其正常佔用高度而不遮擋首頁及後台的 Header。
+- [x] 1.3 修復全域 Banner 的置頂滾動重疊問題：在 Header 中套用 `top-[var(--dev-banner-height,0px)]` 進行自適應偏移，並在 `layout.tsx` 中套用 padding-top 佔位。
 
 ## 2. 後台左鍵選取鎖定解鎖
 
@@ -25,5 +26,5 @@
 ## 5. 整合與驗證
 
 - [x] 5.1 驗證立繪對準工具：確認在開發環境訪問 `/developer/adjuster` 不會被 redirect 到首頁。
-- [x] 5.2 驗證選取與 Banner 佈局：確認後台文字皆可左鍵選取與複製，且全站 Header 均不再被 Dev Mode Banner 覆蓋。
+- [x] 5.2 驗證選取與 Banner 佈局：確認後台文字皆可左鍵選取與複製，且全站 Header 均不再被 Dev Mode Banner 覆蓋，且向下滑動時 Banner 維位置頂，Header 貼在其下方。
 - [x] 5.3 驗證標籤獨立工具頁面：確認可於工具箱正常點擊開啟新分頁，且新增與物理刪除功能運作正常。

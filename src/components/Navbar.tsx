@@ -50,7 +50,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-[#8c7c6c]/15 bg-white/75 backdrop-blur-md shadow-[0_4px_30px_rgba(140,124,108,0.06)]">
+    <nav className="sticky top-[var(--dev-banner-height,0px)] z-50 w-full border-b border-[#8c7c6c]/15 bg-white/75 backdrop-blur-md shadow-[0_4px_30px_rgba(140,124,108,0.06)]">
       <div className="absolute bottom-0 left-0 h-[2px] w-full bg-gradient-to-r from-transparent via-[#82b7cc]/40 to-transparent animate-pulse" />
 
       <div className="max-w-6xl mx-auto px-4 py-3.5 flex items-center justify-between">
