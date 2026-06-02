@@ -1,21 +1,23 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Lock, 
-  Unlock, 
-  RotateCcw, 
-  Copy, 
-  Check, 
-  Grid, 
-  Sliders, 
-  Search, 
-  Flame, 
-  Cpu, 
+import {
+  Lock,
+  Unlock,
+  RotateCcw,
+  Copy,
+  Check,
+  Grid,
+  Sliders,
+  Search,
+  Flame,
+  Cpu,
   ChevronDown,
-  Save
+  Save,
+  ArrowLeft
 } from "lucide-react";
 import OWCard from "@/components/OWCard";
 import { HEROES_CONFIG } from "@/data/mockPlayers";
@@ -283,6 +285,15 @@ export default function AdjusterPage() {
           </p>
         </div>
         <div className="flex flex-wrap gap-2 shrink-0 self-end md:self-center">
+          <Link href="/developer">
+            <Button
+              variant="outline"
+              className="border-[#8c7c6c]/20 text-[#8c7c6c] hover:bg-[#8c7c6c]/8 font-bold text-xs gap-1.5 rounded-xl h-10"
+            >
+              <ArrowLeft size={15} />
+              返回工具箱
+            </Button>
+          </Link>
           <Button
             variant="outline"
             onClick={() => setShowGrid(!showGrid)}

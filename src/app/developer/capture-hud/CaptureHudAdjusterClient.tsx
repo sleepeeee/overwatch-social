@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { saveCaptureDisplayNames } from "@/app/actions/developerCapture";
-import type { CaptureState } from "@/lib/developer-capture/types";
+import Link from "next/link";
+import { saveCaptureHudSettings } from "@/app/actions/developerCapture";
+import type { CaptureHudLayout, CaptureHudTheme, CaptureState } from "@/lib/developer-capture/types";
 
 // ── Constants ──────────────────────────────────────────────────────────────
 
@@ -112,6 +113,7 @@ type DisplayStatus = "ready" | "no_author" | "error";
 interface PlayerData {
   side: "left" | "right";
   label: string;
+  githubUrl?: string;
   score: number;
   percent: number;
   commits: number;
@@ -189,11 +191,13 @@ export default function CaptureHudAdjusterClient({ initialState }: Props) {
   const [leftPercent, setLeftPercent] = useState(68);
   const [leftName, setLeftName]     = useState("你方");
   const [rightName, setRightName]   = useState("朋友");
-  const [repoOwner, setRepoOwner]   = useState<"left" | "right">("left");
+  const [repoOwner, setRepoOwner]   = useState<"left" | "right">(initialState.targetRepositoryOwnerSide);
   const [activeTab, setActiveTab]   = useState<TabKey>("manual");
   const [toast, setToast]           = useState<string | null>(null);
   const [saving, setSaving]         = useState(false);
   const [displayState, setDisplayState] = useState<DisplayState | null>(null);
+  const [hudTheme, setHudTheme]     = useState<CaptureHudTheme>(initialState.hudTheme);
+  const [hudLayout, setHudLayout]   = useState<CaptureHudLayout>(initialState.hudLayout);
 
   // 讀 localStorage (client-only, mount 後)
   useEffect(() => {
@@ -206,6 +210,15 @@ export default function CaptureHudAdjusterClient({ initialState }: Props) {
     if (ro) setRepoOwner(ro);
     if (pct !== null) setLeftPercent(parseInt(pct, 10));
     if (ln || pct) setPreset("custom");
+
+    const storedTheme = localStorage.getItem("outpost_hudTheme");
+    const storedLayout = localStorage.getItem("outpost_hudLayout");
+    if (storedTheme) {
+      try { setHudTheme(JSON.parse(storedTheme) as CaptureHudTheme); } catch { /* keep default */ }
+    }
+    if (storedLayout) {
+      try { setHudLayout(JSON.parse(storedLayout) as CaptureHudLayout); } catch { /* keep default */ }
+    }
   }, []);
 
   // dark mode class
@@ -226,6 +239,10 @@ export default function CaptureHudAdjusterClient({ initialState }: Props) {
         message: initialState.message,
         players: [{ ...initialState.players[0] }, { ...initialState.players[1] }],
       });
+      setLeftName(initialState.players[0].label);
+      setRightName(initialState.players[1].label);
+      setRepoOwner(initialState.targetRepositoryOwnerSide);
+      setLeftPercent(initialState.players[0].percent);
       return;
     }
     if (preset === "custom") {
@@ -262,15 +279,36 @@ export default function CaptureHudAdjusterClient({ initialState }: Props) {
     setTimeout(() => setToast(null), 3000);
   };
 
+  const broadcastLayoutPreview = (layout: CaptureHudLayout) => {
+    if (typeof BroadcastChannel !== "undefined") {
+      const ch = new BroadcastChannel("capture-hud-sync");
+      ch.postMessage({ type: "capture-hud-preview", layout });
+      ch.close();
+    }
+  };
+
   const handleSave = async () => {
     setSaving(true);
     localStorage.setItem("outpost_leftName",   leftName);
     localStorage.setItem("outpost_rightName",  rightName);
     localStorage.setItem("outpost_repoOwner",  repoOwner);
     localStorage.setItem("outpost_percent",    String(leftPercent));
+    localStorage.setItem("outpost_hudTheme",   JSON.stringify(hudTheme));
+    localStorage.setItem("outpost_hudLayout",  JSON.stringify(hudLayout));
     try {
-      await saveCaptureDisplayNames({ leftLabel: leftName, rightLabel: rightName });
-      showToast("💾 配置已成功儲存！");
+      await saveCaptureHudSettings({
+        leftLabel: leftName,
+        rightLabel: rightName,
+        targetRepositoryOwnerSide: repoOwner,
+        hudTheme,
+        hudLayout,
+      });
+      if (typeof BroadcastChannel !== "undefined") {
+        const ch = new BroadcastChannel("capture-hud-sync");
+        ch.postMessage({ type: "capture-hud-updated" });
+        ch.close();
+      }
+      showToast("💾 配置已成功儲存並同步至首頁！");
     } catch {
       showToast("💾 本地配置已儲存（伺服器同步失敗）");
     } finally {
@@ -279,10 +317,14 @@ export default function CaptureHudAdjusterClient({ initialState }: Props) {
   };
 
   const handleReset = () => {
-    ["outpost_leftName","outpost_rightName","outpost_repoOwner","outpost_percent"].forEach(k => localStorage.removeItem(k));
-    setLeftName("你方"); setRightName("朋友"); setRepoOwner("left");
+    ["outpost_leftName","outpost_rightName","outpost_repoOwner","outpost_percent","outpost_hudTheme","outpost_hudLayout"].forEach(k => localStorage.removeItem(k));
+    setLeftName(initialState.players[0].label);
+    setRightName(initialState.players[1].label);
+    setRepoOwner(initialState.targetRepositoryOwnerSide);
+    setHudTheme(initialState.hudTheme);
+    setHudLayout(initialState.hudLayout);
     setLeftPercent(68); setPreset("winning");
-    showToast("🔄 配置已恢復預設值。");
+    showToast("🔄 配置已恢復系統預設值。");
   };
 
   const copyToClipboard = (text: string) => {
@@ -390,6 +432,15 @@ export default function CaptureHudAdjusterClient({ initialState }: Props) {
           {/* ── Top Control Panel ── */}
           <div className="mb-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg shadow-sm">
             <div>
+              <div className="flex items-center gap-3 mb-2">
+                <Link
+                  href="/developer"
+                  className="flex items-center gap-1.5 text-[10px] font-mono font-bold text-slate-400 hover:text-cyan-400 transition-colors border border-slate-700/50 hover:border-cyan-500/40 rounded px-2 py-1 bg-slate-800/30 hover:bg-cyan-500/5"
+                >
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7" /></svg>
+                  返回工具箱
+                </Link>
+              </div>
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse" />
                 <h1 className="text-xl font-bold tracking-wider uppercase text-slate-900 dark:text-white">Git Outpost Console</h1>
@@ -472,14 +523,75 @@ export default function CaptureHudAdjusterClient({ initialState }: Props) {
                 </div>
               </div>
             </div>
+            {/* ── HUD 外觀與版面調整 ── */}
+            <div className="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800/80">
+              <div className="text-[10px] font-mono font-bold uppercase text-slate-400 dark:text-slate-500 mb-3 flex items-center gap-2">
+                <span className="w-1.5 h-3 bg-purple-500 inline-block rounded-sm" />
+                HUD 外觀與版面微調 (Theme &amp; Layout)
+              </div>
+
+              {/* Accent Colors */}
+              <div className="grid grid-cols-2 gap-3 mb-4">
+                {([
+                  { key: "leftAccent" as keyof CaptureHudTheme, label: "左方強調色 (Left Accent)" },
+                  { key: "rightAccent" as keyof CaptureHudTheme, label: "右方強調色 (Right Accent)" },
+                ] as const).map(({ key, label }) => (
+                  <div key={key}>
+                    <label className="block text-[9px] font-bold font-mono text-slate-400 dark:text-slate-500 mb-1.5 uppercase">{label}</label>
+                    <div className="flex gap-2 items-center">
+                      <input
+                        type="color"
+                        value={hudTheme[key]}
+                        onChange={e => setHudTheme(prev => ({ ...prev, [key]: e.target.value }))}
+                        className="w-9 h-8 rounded border border-slate-200 dark:border-slate-700 cursor-pointer bg-transparent p-0.5"
+                      />
+                      <span className="font-mono text-[10px] text-slate-500 dark:text-slate-400">{hudTheme[key]}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Layout Sliders */}
+              <div className="space-y-2.5">
+                {([
+                  { label: "縮放比例 Scale", key: "scale" as keyof CaptureHudLayout, min: 0.6, max: 1.1, step: 0.01, fmt: (v: number) => `${Math.round(v * 100)}%` },
+                  { label: "水平偏移 Offset X", key: "offsetX" as keyof CaptureHudLayout, min: -160, max: 160, step: 1, fmt: (v: number) => `${v}px` },
+                  { label: "垂直偏移 Offset Y", key: "offsetY" as keyof CaptureHudLayout, min: -120, max: 120, step: 1, fmt: (v: number) => `${v}px` },
+                ] as const).map(({ label, key, min, max, step, fmt }) => (
+                  <div key={key}>
+                    <div className="flex justify-between items-center mb-1">
+                      <span className="text-[9px] font-mono font-bold text-slate-400 uppercase">{label}</span>
+                      <span className="font-mono text-[9px] text-purple-400">{fmt(hudLayout[key])}</span>
+                    </div>
+                    <input
+                      type="range"
+                      min={min}
+                      max={max}
+                      step={step}
+                      value={hudLayout[key]}
+                      onChange={e => {
+                        const next: CaptureHudLayout = {
+                          ...hudLayout,
+                          [key]: key === "scale" ? parseFloat(e.target.value) : parseInt(e.target.value, 10),
+                        };
+                        setHudLayout(next);
+                        broadcastLayoutPreview(next);
+                      }}
+                      className="w-full h-1.5 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-purple-500"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+
             <div className="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800/80 flex flex-wrap items-center justify-between gap-3">
-              <span className="text-[10px] font-mono text-slate-400 dark:text-slate-500">* 儲存後設定將持久化至瀏覽器快取及伺服器顯示名稱。</span>
+              <span className="text-[10px] font-mono text-slate-400 dark:text-slate-500">* 儲存後設定將持久化至瀏覽器快取及伺服器，首頁 HUD 即時同步。</span>
               <div className="flex items-center gap-2">
                 <button onClick={handleReset} className="px-3.5 py-2 text-xs font-mono font-medium text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 border border-slate-200 dark:border-slate-800 rounded bg-transparent hover:bg-slate-100 dark:hover:bg-slate-950 transition-all">重設預設</button>
                 <button onClick={handleSave} disabled={saving}
                   className="px-5 py-2 text-xs font-mono font-bold text-white rounded bg-gradient-to-r from-blue-600 to-cyan-400 hover:from-blue-700 hover:to-cyan-400 shadow-lg active:scale-[0.98] transition-all flex items-center gap-1.5 disabled:opacity-60">
                   <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" /></svg>
-                  {saving ? "儲存中..." : "儲存配置 (SAVE)"}
+                  {saving ? "儲存中..." : "儲存全部配置 (SAVE ALL)"}
                 </button>
               </div>
             </div>
@@ -524,10 +636,10 @@ export default function CaptureHudAdjusterClient({ initialState }: Props) {
                       <div className="grid grid-cols-2 gap-4 items-center">
                         <div className="text-left space-y-1">
                           <div className="flex flex-wrap items-center gap-1.5 min-h-[22px]">
-                            <span className="w-2 h-2 rounded-full bg-cyan-400" />
+                            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: hudTheme.leftAccent }} />
                             <span className="text-[10px] font-mono font-semibold tracking-wider text-slate-400 dark:text-slate-500">LEFT CAMP</span>
                             {repoOwner === "left" && (
-                              <span className="text-[9px] px-1.5 py-0.5 bg-blue-500/15 text-cyan-400 border border-cyan-500/30 rounded-sm font-bold animate-hud-pulse flex items-center gap-1">
+                              <span className="text-[9px] px-1.5 py-0.5 rounded-sm font-bold animate-hud-pulse flex items-center gap-1" style={{ color: hudTheme.leftAccent, borderColor: `${hudTheme.leftAccent}50`, backgroundColor: `${hudTheme.leftAccent}15`, border: "1px solid" }}>
                                 <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
                                 倉庫所有者
                               </span>
@@ -535,44 +647,54 @@ export default function CaptureHudAdjusterClient({ initialState }: Props) {
                           </div>
                           <div className="flex items-baseline gap-2 flex-wrap">
                             <span className="text-xl sm:text-2xl font-black font-mono tracking-tight text-slate-900 dark:text-white truncate max-w-[150px]">{leftP.label}</span>
-                            <span className="text-xs font-mono font-bold text-cyan-500 whitespace-nowrap">{leftP.score} PTS</span>
+                            <span className="text-xs font-mono font-bold whitespace-nowrap" style={{ color: hudTheme.leftAccent }}>{leftP.score} PTS</span>
                           </div>
+                          {leftP.githubUrl && (
+                            <a href={leftP.githubUrl} target="_blank" rel="noopener noreferrer" className="text-[9px] font-mono truncate block hover:underline transition-colors" style={{ color: `${hudTheme.leftAccent}99` }}>
+                              {leftP.githubUrl.replace("https://github.com/", "@")}
+                            </a>
+                          )}
                         </div>
                         <div className="text-right space-y-1">
                           <div className="flex flex-wrap items-center justify-end gap-1.5 min-h-[22px]">
                             {repoOwner === "right" && (
-                              <span className="text-[9px] px-1.5 py-0.5 bg-orange-500/15 text-orange-400 border border-orange-500/30 rounded-sm font-bold animate-hud-pulse flex items-center gap-1">
+                              <span className="text-[9px] px-1.5 py-0.5 rounded-sm font-bold animate-hud-pulse flex items-center gap-1" style={{ color: hudTheme.rightAccent, borderColor: `${hudTheme.rightAccent}50`, backgroundColor: `${hudTheme.rightAccent}15`, border: "1px solid" }}>
                                 <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
                                 倉庫所有者
                               </span>
                             )}
                             <span className="text-[10px] font-mono font-semibold tracking-wider text-slate-400 dark:text-slate-500">RIGHT CAMP</span>
-                            <span className="w-2 h-2 rounded-full bg-orange-400" />
+                            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: hudTheme.rightAccent }} />
                           </div>
                           <div className="flex items-baseline justify-end gap-2 flex-wrap">
-                            <span className="text-xs font-mono font-bold text-orange-500 whitespace-nowrap">{rightP.score} PTS</span>
+                            <span className="text-xs font-mono font-bold whitespace-nowrap" style={{ color: hudTheme.rightAccent }}>{rightP.score} PTS</span>
                             <span className="text-xl sm:text-2xl font-black font-mono tracking-tight text-slate-900 dark:text-white truncate max-w-[150px]">{rightP.label}</span>
                           </div>
+                          {rightP.githubUrl && (
+                            <a href={rightP.githubUrl} target="_blank" rel="noopener noreferrer" className="text-[9px] font-mono truncate block hover:underline transition-colors text-right" style={{ color: `${hudTheme.rightAccent}99` }}>
+                              {rightP.githubUrl.replace("https://github.com/", "@")}
+                            </a>
+                          )}
                         </div>
                       </div>
 
                       {/* Occupation bar */}
                       <div className="relative pt-6 pb-2">
                         <div className="absolute top-0 inset-x-0 flex justify-between text-xs font-mono font-black">
-                          <span className={`${leftP.percent >= 50 ? "text-cyan-400 text-sm scale-110" : "text-slate-400"} transition-all duration-300`}>{leftP.percent}%</span>
+                          <span className={`${leftP.percent >= 50 ? "text-sm scale-110" : "text-slate-400"} transition-all duration-300`} style={leftP.percent >= 50 ? { color: hudTheme.leftAccent } : {}}>{leftP.percent}%</span>
                           <span className="text-[10px] text-slate-400 dark:text-slate-500 font-normal">SEC_01 // TRACKING</span>
-                          <span className={`${rightP.percent >= 50 ? "text-orange-400 text-sm scale-110" : "text-slate-400"} transition-all duration-300`}>{rightP.percent}%</span>
+                          <span className={`${rightP.percent >= 50 ? "text-sm scale-110" : "text-slate-400"} transition-all duration-300`} style={rightP.percent >= 50 ? { color: hudTheme.rightAccent } : {}}>{rightP.percent}%</span>
                         </div>
                         <div className="h-2.5 w-full bg-slate-200 dark:bg-slate-800 rounded-full relative flex overflow-hidden">
-                          <div style={{ width: `${leftP.percent}%` }} className="h-full bg-gradient-to-r from-blue-600 to-cyan-400 rounded-l-full transition-all duration-500 ease-out" />
-                          <div style={{ width: `${rightP.percent}%` }} className="h-full bg-gradient-to-l from-rose-600 to-orange-400 rounded-r-full transition-all duration-500 ease-out ml-auto" />
+                          <div style={{ width: `${leftP.percent}%`, backgroundColor: hudTheme.leftAccent }} className="h-full rounded-l-full transition-all duration-500 ease-out" />
+                          <div style={{ width: `${rightP.percent}%`, backgroundColor: hudTheme.rightAccent }} className="h-full rounded-r-full transition-all duration-500 ease-out ml-auto" />
                         </div>
                         {/* Radar knob */}
                         <div style={{ left: `calc(${leftP.percent}% - 14px)` }} className="absolute top-[23px] w-7 h-7 flex items-center justify-center transition-all duration-500 ease-out z-20">
                           <svg width="28" height="28" viewBox="0 0 28 28" fill="none" className="drop-shadow-md">
-                            <circle cx="14" cy="14" r="11" stroke={leftP.percent > 50 ? "#00f0ff" : leftP.percent < 50 ? "#f97316" : "#94a3b8"} strokeWidth="1.5" strokeDasharray="3 2" className="animate-[spin_10s_linear_infinite]" />
-                            <circle cx="14" cy="14" r="6" fill={leftP.percent > 50 ? "#00f0ff" : leftP.percent < 50 ? "#f97316" : "#94a3b8"} className="animate-hud-pulse" />
-                            <path d="M14 2V5M14 23V26" stroke={leftP.percent > 50 ? "#00f0ff" : "#f97316"} strokeWidth="1" />
+                            <circle cx="14" cy="14" r="11" stroke={leftP.percent > 50 ? hudTheme.leftAccent : leftP.percent < 50 ? hudTheme.rightAccent : "#94a3b8"} strokeWidth="1.5" strokeDasharray="3 2" className="animate-[spin_10s_linear_infinite]" />
+                            <circle cx="14" cy="14" r="6" fill={leftP.percent > 50 ? hudTheme.leftAccent : leftP.percent < 50 ? hudTheme.rightAccent : "#94a3b8"} className="animate-hud-pulse" />
+                            <path d="M14 2V5M14 23V26" stroke={leftP.percent > 50 ? hudTheme.leftAccent : hudTheme.rightAccent} strokeWidth="1" />
                           </svg>
                         </div>
                         <div className="absolute top-[31px] left-1/2 -translate-x-1/2 w-0.5 h-3 bg-slate-300 dark:bg-slate-700 z-0">
