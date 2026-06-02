@@ -47,48 +47,50 @@ export default function BrowsePage() {
       {/* 💗 Premium 水彩裝飾發光球 */}
       <div className="absolute top-[5%] -right-16 w-80 h-80 rounded-full bg-gradient-to-tr from-[#82b7cc]/4 to-[#f5d46b]/6 blur-3xl pointer-events-none z-0 animate-[fadeIn_1.2s_ease-out]" />
 
-      <div className="ow-glass-panel p-4 md:px-5 md:py-4 space-y-4 relative z-10">
-        <div className="text-left space-y-3">
-          <span className="soft-home-badge uppercase flex items-center gap-1.5 w-fit">
-            <Moon size={11} className="shrink-0 text-[#82b7cc] fill-[#82b7cc]/10" />
-            名片廣場
-          </span>
+      {/* 🌸 標題與引言直接漂浮在底層紙面上 */}
+      <div className="text-left space-y-3 relative z-10 animate-[fadeIn_0.5s_ease-out]">
+        <span className="soft-home-badge uppercase flex items-center gap-1.5 w-fit">
+          <Moon size={11} className="shrink-0 text-[#82b7cc] fill-[#82b7cc]/10" />
+          名片廣場
+        </span>
 
-          <div className="flex flex-col gap-2 md:grid md:grid-cols-[auto,1fr] md:items-start md:gap-x-4">
-            <div className="min-w-0">
-              <h1 className="text-[1.7rem] md:text-[1.95rem] font-extrabold tracking-tight text-[#3e2723] flex items-center gap-2 leading-none">
-                <Gamepad2 className="text-[#82b7cc]" size={24} />
-                多遊戲玩家招募大廳
-              </h1>
-            </div>
-
-            <p className="text-[#8c7c6c] font-semibold text-[13px] md:text-[14px] leading-relaxed md:pt-1 md:max-w-none">
-              保留你熟悉的廣場節奏，換上和首頁同一個晨霧紙感宇宙。搜尋今天想一起開局的人，或先逛逛不同遊戲分區。
-            </p>
+        <div className="flex flex-col gap-2 md:grid md:grid-cols-[auto,1fr] md:items-start md:gap-x-4">
+          <div className="min-w-0">
+            <h1 className="text-[1.7rem] md:text-[1.95rem] font-extrabold tracking-tight text-[#3e2723] flex items-center gap-2 leading-none">
+              <Gamepad2 className="text-[#82b7cc]" size={24} />
+              多遊戲玩家招募大廳
+            </h1>
           </div>
-        </div>
 
-        <div className="relative w-full max-w-2xl group/search">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#8c7c6c]/70 transition-colors group-focus-within/search:text-[#82b7cc]" size={18} />
-          <Input
-            type="text"
-            placeholder="搜尋玩家 BattleTag、常用英雄、留言關鍵字或 MBTI..."
-            className="pl-10 pr-10 bg-white/60 border-[#8c7c6c]/18 focus:border-[#82b7cc] focus:ring-1 focus:ring-[#82b7cc]/30 text-[#5d4037] text-sm rounded-2xl py-5 shadow-[0_10px_30px_-22px_rgba(140,124,108,0.22)] transition-all duration-300"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          {searchQuery && (
-            <button
-              onClick={handleResetSearch}
-              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-[#8c7c6c] hover:text-red-500 transition-colors cursor-pointer border-none bg-transparent"
-              title="清空搜尋"
-            >
-              <RotateCcw size={14} />
-            </button>
-          )}
+          <p className="text-[#8c7c6c] font-semibold text-[13px] md:text-[14px] leading-relaxed md:pt-1 md:max-w-none">
+            保留你熟悉的廣場節奏，換上和首頁同一個晨霧紙感宇宙。搜尋今天想一起開局的人，或先逛逛不同遊戲分區。
+          </p>
         </div>
+      </div>
 
-        <div className="flex flex-wrap gap-2.5 justify-center md:justify-start">
+      {/* 🔍 獨立太空艙搜尋層 (Capsule Search Box) */}
+      <div className="relative w-full max-w-2xl mx-auto bg-white/45 backdrop-blur-2xl border-2 border-white/70 rounded-[24px] p-1.5 shadow-[0_15px_35px_-20px_rgba(140,124,108,0.15),inset_0_1.5px_2.5px_rgba(255,255,255,0.9)] focus-within:border-[#82b7cc]/60 transition-all duration-300 relative z-10 flex items-center group/search">
+        <Search className="ml-3.5 text-[#8c7c6c]/70 transition-colors shrink-0 group-focus-within/search:text-[#82b7cc]" size={18} />
+        <Input
+          type="text"
+          placeholder="搜尋玩家 BattleTag、常用英雄、留言關鍵字或 MBTI..."
+          className="w-full bg-transparent border-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus:border-none focus-visible:border-none shadow-none text-[#5d4037] text-sm py-4 pl-3 pr-10"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+        {searchQuery && (
+          <button
+            onClick={handleResetSearch}
+            className="absolute right-4 top-1/2 -translate-y-1/2 p-1 text-[#8c7c6c] hover:text-red-500 transition-colors cursor-pointer border-none bg-transparent"
+            title="清空搜尋"
+          >
+            <RotateCcw size={14} />
+          </button>
+        )}
+      </div>
+
+      {/* 🥞 獨立分區 Tab Pills 軌道 */}
+      <div className="flex flex-wrap gap-2.5 justify-center md:justify-start relative z-10 w-full animate-[fadeIn_0.5s_ease-out]">
         {gameTabs.map((game) => {
           const isSelected = activeGame === game.id;
           return (
@@ -108,7 +110,6 @@ export default function BrowsePage() {
             </button>
           );
         })}
-        </div>
       </div>
 
       {/* 🚀 子廣場元件常駐 DOM 控制，消除 unmount 詭異 Loading 動畫 */}
