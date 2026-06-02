@@ -21,6 +21,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (process.env.NODE_ENV === "development") {
       setUser({
         id: "mock-user-id",
+        app_metadata: {},
+        aud: "authenticated",
+        created_at: new Date().toISOString(),
         email: "agent@overwatch.dev",
         user_metadata: {
           full_name: "測試特工",

@@ -21,6 +21,7 @@ test.describe("開發者據點佔領插件", () => {
     await expect(page.getByText("控制雷達指針.svg")).toBeVisible();
     await expect(page.getByText("// 深色模式色相")).toBeVisible();
     await expect(page.getByText("// 淺色模式色相")).toBeVisible();
+    await expect(page.getByLabel("背景 色彩").first()).toBeVisible();
     await expect(page.getByRole("button", { name: "儲存顯示名稱" })).toBeVisible();
   });
 });

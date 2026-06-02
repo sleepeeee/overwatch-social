@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AlertTriangle, ArrowLeft, Copy, Download, Moon, Package, Save, Sun } from "lucide-react";
-import { saveCaptureDisplayNames } from "@/app/actions/developerCapture";
-import type { CapturePlayerStats, CaptureSide, CaptureState } from "@/lib/developer-capture/types";
+import { saveCaptureHudSettings } from "@/app/actions/developerCapture";
+import type { CaptureHudTheme, CapturePlayerStats, CaptureSide, CaptureState } from "@/lib/developer-capture/types";
 
 type PresetId = "live" | "winning" | "neutral" | "losing" | "missing" | "error" | "custom";
 type TabId = "exporter" | "spec" | "code";
@@ -59,7 +59,7 @@ function clampPercent(value: number): number {
   return Math.max(0, Math.min(100, Math.round(value)));
 }
 
-function formatUpdatedAt(value: string): string {
+function formatDateTime(value: string | Date): string {
   try {
     return new Intl.DateTimeFormat("zh-TW", {
       timeZone: "Asia/Taipei",
@@ -68,7 +68,7 @@ function formatUpdatedAt(value: string): string {
       hour: "2-digit",
       minute: "2-digit",
       hourCycle: "h23",
-    }).format(new Date(value));
+    }).format(value instanceof Date ? value : new Date(value));
   } catch {
     return "尚未同步";
   }
@@ -160,25 +160,41 @@ function statusText(state: CaptureState): string {
   return "CONTESTED";
 }
 
-function StatCard({ title, leftValue, rightValue, mode }: { title: string; leftValue: string; rightValue: string; mode: "commits" | "additions" | "deletions" }) {
+function StatCard({
+  title,
+  leftLabel,
+  rightLabel,
+  leftValue,
+  rightValue,
+  leftAccent,
+  mode,
+}: {
+  title: string;
+  leftLabel: string;
+  rightLabel: string;
+  leftValue: string;
+  rightValue: string;
+  leftAccent: string;
+  mode: "commits" | "additions" | "deletions";
+}) {
   const tone = mode === "additions" ? "text-emerald-500" : mode === "deletions" ? "text-rose-500" : "text-blue-500";
 
   return (
-    <div className="rounded-md border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-950/30">
+    <div className="rounded-md border border-slate-200 bg-white p-3 shadow-sm dark:border-slate-700 dark:bg-slate-950/70">
       <div className="mb-3 flex items-center justify-between text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
         <span>{title}</span>
         <span className={tone}>{mode === "commits" ? "↔" : mode === "additions" ? "+" : "-"}</span>
       </div>
       <div className="grid grid-cols-[1fr_auto_1fr] items-end gap-2">
         <div className="min-w-0 text-left">
-          <p className="truncate text-[10px] font-bold text-slate-400">你方</p>
+          <p className="truncate text-[10px] font-bold text-slate-500 dark:text-slate-300">{leftLabel}</p>
           <p className={`text-sm font-black tabular-nums ${tone}`}>{leftValue}</p>
         </div>
         <div className="h-5 w-14 overflow-hidden rounded-sm bg-slate-200 dark:bg-slate-800">
-          <div className="h-full w-1/2 bg-blue-500" />
+          <div className="h-full w-1/2" style={{ backgroundColor: leftAccent }} />
         </div>
         <div className="min-w-0 text-right">
-          <p className="truncate text-[10px] font-bold text-slate-400">朋友</p>
+          <p className="truncate text-[10px] font-bold text-slate-500 dark:text-slate-300">{rightLabel}</p>
           <p className={`text-sm font-black tabular-nums ${tone}`}>{rightValue}</p>
         </div>
       </div>
@@ -186,11 +202,35 @@ function StatCard({ title, leftValue, rightValue, mode }: { title: string; leftV
   );
 }
 
-function ColorSwatch({ label, value, color, dark = false }: { label: string; value: string; color: string; dark?: boolean }) {
+function ColorSwatch({
+  label,
+  value,
+  onChange,
+  dark = false,
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  dark?: boolean;
+}) {
   return (
     <div className={`rounded-md border p-3 ${dark ? "border-slate-700 bg-slate-900" : "border-slate-200 bg-slate-50"}`}>
-      <div className="h-4 rounded" style={{ backgroundColor: color }} />
-      <p className={`mt-3 text-center font-mono text-[11px] font-bold ${dark ? "text-cyan-100" : "text-slate-600"}`}>{value}</p>
+      <label className="block">
+        <input
+          type="color"
+          value={value}
+          onChange={event => onChange(event.target.value)}
+          className="h-8 w-full cursor-pointer rounded border-0 bg-transparent p-0"
+          aria-label={`${label} 色彩`}
+        />
+      </label>
+      <input
+        value={value}
+        onChange={event => onChange(event.target.value)}
+        className={`mt-3 w-full rounded border px-2 py-1 text-center font-mono text-[11px] font-bold outline-none ${
+          dark ? "border-slate-700 bg-slate-950 text-cyan-100" : "border-slate-200 bg-white text-slate-700"
+        }`}
+      />
       <p className={`text-center text-[10px] font-black ${dark ? "text-slate-400" : "text-slate-500"}`}>({label})</p>
     </div>
   );
@@ -266,14 +306,21 @@ function buildProductionHtmlSnippet(): string {
 export default function CaptureHudAdjusterClient({ initialState }: CaptureHudAdjusterClientProps) {
   const [preset, setPreset] = useState<PresetId>("live");
   const [isDarkPreview, setIsDarkPreview] = useState(true);
+  const [liveNow, setLiveNow] = useState(() => new Date());
   const [leftPercent, setLeftPercent] = useState(initialState.players[0].percent || 68);
   const [leftName, setLeftName] = useState(initialState.players[0].label);
   const [rightName, setRightName] = useState(initialState.players[1].label);
   const [ownerSide, setOwnerSide] = useState<CaptureSide>(initialState.targetRepositoryOwnerSide);
+  const [hudTheme, setHudTheme] = useState<CaptureHudTheme>(initialState.hudTheme);
   const [activeTab, setActiveTab] = useState<TabId>("exporter");
   const [isSaving, setIsSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState("本頁先預覽，按下保存後前台 HUD 才會更新。");
   const [assetMessage, setAssetMessage] = useState("SVG 素材只在本機下載或複製，不會寫入後端。");
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setLiveNow(new Date()), 1000);
+    return () => window.clearInterval(timer);
+  }, []);
 
   const displayState = useMemo(
     () => buildDisplayState(initialState, preset, leftPercent, leftName, rightName, ownerSide),
@@ -283,7 +330,12 @@ export default function CaptureHudAdjusterClient({ initialState }: CaptureHudAdj
   const [left, right] = displayState.players;
   const markerLeft = clampPercent(left.percent);
   const isWarning = displayState.status === "missing-config" || displayState.status === "git-error";
-  const knobColor = left.percent > right.percent ? "#00f0ff" : right.percent > left.percent ? "#f97316" : "#94a3b8";
+  const knobColor = left.percent > right.percent ? hudTheme.leftAccent : right.percent > left.percent ? hudTheme.rightAccent : "#94a3b8";
+  const previewBackground = isDarkPreview ? hudTheme.darkBackground : hudTheme.lightBackground;
+  const previewCard = isDarkPreview ? hudTheme.darkCard : hudTheme.lightCard;
+  const updateHudTheme = (key: keyof CaptureHudTheme, value: string) => {
+    setHudTheme(current => ({ ...current, [key]: value }));
+  };
 
   const handleSave = async () => {
     if (isSaving) {
@@ -294,8 +346,13 @@ export default function CaptureHudAdjusterClient({ initialState }: CaptureHudAdj
     setSaveMessage("儲存中...");
 
     try {
-      const result = await saveCaptureDisplayNames({ leftLabel: leftName, rightLabel: rightName });
-      setSaveMessage(result.success ? "已儲存插件顯示名稱，重新整理後仍會保留。" : result.error || "儲存失敗");
+      const result = await saveCaptureHudSettings({
+        leftLabel: leftName,
+        rightLabel: rightName,
+        targetRepositoryOwnerSide: ownerSide,
+        hudTheme,
+      });
+      setSaveMessage(result.success ? "已儲存 HUD 顯示設定，重新整理後仍會保留。" : result.error || "儲存失敗");
     } catch {
       setSaveMessage("Server Action 發生未知錯誤。");
     } finally {
@@ -330,8 +387,8 @@ export default function CaptureHudAdjusterClient({ initialState }: CaptureHudAdj
   };
 
   return (
-    <div className={`min-h-screen bg-[#f8fafc] text-slate-800 transition-colors duration-300 dark:bg-[#0b0f19] dark:text-slate-100 ${isDarkPreview ? "dark" : ""}`}>
-      <div className="min-h-screen bg-[linear-gradient(to_right,rgba(148,163,184,0.06)_1px,transparent_1px),linear-gradient(to_bottom,rgba(148,163,184,0.06)_1px,transparent_1px)] bg-[size:24px_24px] pb-10 dark:bg-[linear-gradient(to_right,rgba(31,41,55,0.22)_1px,transparent_1px),linear-gradient(to_bottom,rgba(31,41,55,0.22)_1px,transparent_1px)]">
+    <div className={`min-h-screen text-slate-800 transition-colors duration-300 dark:text-slate-100 ${isDarkPreview ? "dark" : ""}`} style={{ backgroundColor: previewBackground }}>
+      <div className="min-h-screen bg-[linear-gradient(to_right,rgba(148,163,184,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(148,163,184,0.05)_1px,transparent_1px)] bg-[size:28px_28px] pb-10 dark:bg-[linear-gradient(to_right,rgba(148,163,184,0.12)_1px,transparent_1px),linear-gradient(to_bottom,rgba(148,163,184,0.12)_1px,transparent_1px)]">
         <header className="border-b border-slate-200 bg-white/85 px-5 py-3 shadow-sm backdrop-blur dark:border-slate-800 dark:bg-[#111827]/85">
           <div className="mx-auto flex max-w-7xl flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
             <div className="min-w-0">
@@ -397,8 +454,8 @@ export default function CaptureHudAdjusterClient({ initialState }: CaptureHudAdj
                 }}
                 className="h-2 w-full cursor-pointer accent-blue-500"
               />
-              <span className="rounded-md bg-blue-50 px-3 py-1 text-xs font-black text-blue-600 dark:bg-blue-500/10 dark:text-cyan-300">你方：{left.percent}%</span>
-              <span className="rounded-md bg-orange-50 px-3 py-1 text-xs font-black text-orange-500 dark:bg-orange-500/10">朋友：{right.percent}%</span>
+              <span className="rounded-md bg-blue-50 px-3 py-1 text-xs font-black dark:bg-blue-500/10" style={{ color: hudTheme.leftAccent }}>{left.label}：{left.percent}%</span>
+              <span className="rounded-md bg-orange-50 px-3 py-1 text-xs font-black dark:bg-orange-500/10" style={{ color: hudTheme.rightAccent }}>{right.label}：{right.percent}%</span>
               <button
                 type="button"
                 onClick={() => {
@@ -412,7 +469,7 @@ export default function CaptureHudAdjusterClient({ initialState }: CaptureHudAdj
             </div>
           </section>
 
-          <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-[#111827]">
+          <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-[#0f172a]">
             <div className="mb-4 flex items-center gap-2 text-xs font-black text-slate-500 dark:text-slate-300">
               <span className="h-3 w-1.5 rounded-sm bg-indigo-500" />
               主控台設定：變更名稱
@@ -423,7 +480,7 @@ export default function CaptureHudAdjusterClient({ initialState }: CaptureHudAdj
                 <input
                   value={leftName}
                   onChange={event => setLeftName(event.target.value)}
-                  className="w-full rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-bold outline-none transition focus:border-cyan-400 dark:border-slate-700 dark:bg-slate-950"
+                  className="w-full rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-bold text-slate-900 outline-none transition focus:border-cyan-400 dark:border-slate-600 dark:bg-slate-950 dark:text-white"
                 />
               </label>
               <label className="space-y-2">
@@ -431,7 +488,7 @@ export default function CaptureHudAdjusterClient({ initialState }: CaptureHudAdj
                 <input
                   value={rightName}
                   onChange={event => setRightName(event.target.value)}
-                  className="w-full rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-bold outline-none transition focus:border-orange-400 dark:border-slate-700 dark:bg-slate-950"
+                  className="w-full rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-bold text-slate-900 outline-none transition focus:border-orange-400 dark:border-slate-600 dark:bg-slate-950 dark:text-white"
                 />
               </label>
               <div className="space-y-2">
@@ -474,15 +531,15 @@ export default function CaptureHudAdjusterClient({ initialState }: CaptureHudAdj
                 <span>[ HUD 戰場即時渲染 ]</span>
                 <span>STATE: {isWarning ? "ALERT" : "READY"}</span>
               </div>
-              <div className="relative overflow-hidden rounded-lg border border-cyan-300 bg-[#f7fafc] p-6 shadow-[0_0_0_1px_rgba(0,240,255,0.08)] dark:border-cyan-400 dark:bg-[#0d1220]">
-                <div aria-hidden className="pointer-events-none absolute inset-0 opacity-10 [background-image:linear-gradient(rgba(18,24,38,0)_50%,rgba(0,0,0,0.10)_50%)] [background-size:100%_5px] dark:opacity-12 dark:[background-image:linear-gradient(rgba(18,24,38,0)_50%,rgba(0,0,0,0.16)_50%)]" />
+              <div className="relative overflow-hidden rounded-lg border p-6 shadow-[0_0_0_1px_rgba(0,240,255,0.08)] dark:border-slate-700" style={{ backgroundColor: previewCard, borderColor: isDarkPreview ? "#334155" : "#bae6fd" }}>
+                <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.055] [background-image:linear-gradient(rgba(18,24,38,0)_50%,rgba(0,0,0,0.08)_50%)] [background-size:100%_7px] dark:opacity-[0.08] dark:[background-image:linear-gradient(rgba(18,24,38,0)_50%,rgba(0,0,0,0.16)_50%)]" />
                 <div className="relative z-10">
                   <div className="mb-8 flex items-center justify-between">
                     <p className="flex items-center gap-2 font-mono text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">
                       <span className="h-4 w-1.5 bg-blue-500" />
-                        GIT OUTPOST LIVE HUD v1.0
+                      GIT OUTPOST LIVE HUD v1.0
                     </p>
-                    <div className="rounded border border-cyan-400/40 bg-cyan-400/10 px-3 py-1 text-[11px] font-black text-cyan-500">
+                    <div className="rounded border bg-cyan-400/10 px-3 py-1 text-[11px] font-black" style={{ borderColor: `${knobColor}66`, color: knobColor }}>
                       ● {statusText(displayState)}
                     </div>
                   </div>
@@ -498,7 +555,7 @@ export default function CaptureHudAdjusterClient({ initialState }: CaptureHudAdj
                             倉庫所有者
                           </span>
                         )}
-                        <span className="font-mono text-xs font-black text-blue-600">{left.score} PTS</span>
+                        <span className="font-mono text-xs font-black" style={{ color: hudTheme.leftAccent }}>{left.score} PTS</span>
                       </div>
                     </div>
                     <div className="text-center font-mono text-[10px] font-black uppercase tracking-widest text-slate-400">
@@ -507,7 +564,7 @@ export default function CaptureHudAdjusterClient({ initialState }: CaptureHudAdj
                     <div className="min-w-0 text-right">
                       <p className="font-mono text-xs font-black uppercase text-slate-400">RIGHT CAMP ●</p>
                       <div className="mt-1 flex flex-wrap items-baseline justify-end gap-2">
-                        <span className="font-mono text-xs font-black text-orange-500">{right.score} PTS</span>
+                        <span className="font-mono text-xs font-black" style={{ color: hudTheme.rightAccent }}>{right.score} PTS</span>
                         {ownerSide === "right" && (
                           <span className="inline-flex items-center gap-1 rounded-sm border border-orange-400/30 bg-orange-400/10 px-1.5 py-0.5 text-[9px] font-black text-orange-500">
                             <RepoOwnerIcon />
@@ -521,13 +578,13 @@ export default function CaptureHudAdjusterClient({ initialState }: CaptureHudAdj
 
                   <div className="mt-6">
                     <div className="mb-2 flex items-center justify-between font-mono text-sm font-black">
-                      <span className="text-cyan-500">{left.percent}%</span>
-                      <span className="text-slate-400">{right.percent}%</span>
+                      <span style={{ color: hudTheme.leftAccent }}>{left.percent}%</span>
+                      <span style={{ color: hudTheme.rightAccent }}>{right.percent}%</span>
                     </div>
                     <div className="relative h-8">
                       <div className="absolute inset-x-0 top-1/2 flex h-3 -translate-y-1/2 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-950">
-                        <div className="h-full bg-gradient-to-r from-blue-600 to-cyan-300 transition-[width] duration-500" style={{ width: `${left.percent}%` }} />
-                        <div className="h-full bg-gradient-to-l from-rose-600 to-orange-400 transition-[width] duration-500" style={{ width: `${right.percent}%` }} />
+                        <div className="h-full transition-[width] duration-500" style={{ width: `${left.percent}%`, backgroundColor: hudTheme.leftAccent }} />
+                        <div className="h-full transition-[width] duration-500" style={{ width: `${right.percent}%`, backgroundColor: hudTheme.rightAccent }} />
                       </div>
                       <div
                         className="absolute top-1/2 grid h-8 w-8 -translate-x-1/2 -translate-y-1/2 place-items-center transition-[left] duration-500"
@@ -545,15 +602,15 @@ export default function CaptureHudAdjusterClient({ initialState }: CaptureHudAdj
                     </div>
                   ) : (
                     <div className="mt-7 grid gap-3 md:grid-cols-3">
-                      <StatCard title="Commits" mode="commits" leftValue={String(left.commits)} rightValue={String(right.commits)} />
-                      <StatCard title="Additions（新增行數）" mode="additions" leftValue={`+${left.additions}`} rightValue={`+${right.additions}`} />
-                      <StatCard title="Deletions（刪除行數）" mode="deletions" leftValue={`-${left.deletions}`} rightValue={`-${right.deletions}`} />
+                      <StatCard title="Commits" mode="commits" leftLabel={left.label} rightLabel={right.label} leftAccent={hudTheme.leftAccent} leftValue={String(left.commits)} rightValue={String(right.commits)} />
+                      <StatCard title="Additions（新增行數）" mode="additions" leftLabel={left.label} rightLabel={right.label} leftAccent={hudTheme.leftAccent} leftValue={`+${left.additions}`} rightValue={`+${right.additions}`} />
+                      <StatCard title="Deletions（刪除行數）" mode="deletions" leftLabel={left.label} rightLabel={right.label} leftAccent={hudTheme.leftAccent} leftValue={`-${left.deletions}`} rightValue={`-${right.deletions}`} />
                     </div>
                   )}
 
                   <div className="mt-8 flex flex-col gap-2 border-t border-slate-200 pt-3 font-mono text-[10px] font-black text-slate-400 dark:border-slate-800 sm:flex-row sm:items-center sm:justify-between">
                     <span>TIMEZONE: {displayState.timezone}</span>
-                    <span>UPDATED: {formatUpdatedAt(displayState.updatedAt)}</span>
+                    <span>UPDATED: {formatDateTime(liveNow)}</span>
                     <span className="text-emerald-500">HOMEPAGE_SAFE</span>
                   </div>
                 </div>
@@ -669,9 +726,9 @@ export default function CaptureHudAdjusterClient({ initialState }: CaptureHudAdj
                 <span className="rounded bg-slate-800 px-3 py-1 text-[10px]">DEFAULT</span>
               </div>
               <div className="grid gap-3 sm:grid-cols-3">
-                <ColorSwatch label="背景" value="#0b0f19" color="#0b0f19" dark />
-                <ColorSwatch label="卡片" value="#111827" color="#111827" dark />
-                <ColorSwatch label="藍營" value="#00f0ff" color="#00f0ff" dark />
+                <ColorSwatch label="背景" value={hudTheme.darkBackground} onChange={value => updateHudTheme("darkBackground", value)} dark />
+                <ColorSwatch label="卡片" value={hudTheme.darkCard} onChange={value => updateHudTheme("darkCard", value)} dark />
+                <ColorSwatch label="藍營" value={hudTheme.leftAccent} onChange={value => updateHudTheme("leftAccent", value)} dark />
               </div>
             </div>
             <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
@@ -680,9 +737,9 @@ export default function CaptureHudAdjusterClient({ initialState }: CaptureHudAdj
                 <span className="rounded bg-slate-100 px-3 py-1 text-[10px] text-blue-700">COMPATIBLE</span>
               </div>
               <div className="grid gap-3 sm:grid-cols-3">
-                <ColorSwatch label="背景" value="#f8fafc" color="#f8fafc" />
-                <ColorSwatch label="卡片" value="#ffffff" color="#ffffff" />
-                <ColorSwatch label="橙營" value="#f97316" color="#f97316" />
+                <ColorSwatch label="背景" value={hudTheme.lightBackground} onChange={value => updateHudTheme("lightBackground", value)} />
+                <ColorSwatch label="卡片" value={hudTheme.lightCard} onChange={value => updateHudTheme("lightCard", value)} />
+                <ColorSwatch label="橙營" value={hudTheme.rightAccent} onChange={value => updateHudTheme("rightAccent", value)} />
               </div>
             </div>
           </section>

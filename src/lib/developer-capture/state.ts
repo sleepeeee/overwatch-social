@@ -19,6 +19,7 @@ function createNeutralState(
     repositoryPath: config.repositoryPath,
     targetRepositoryUrl: config.targetRepositoryUrl,
     targetRepositoryOwnerSide: config.targetRepositoryOwnerSide,
+    hudTheme: config.hudTheme,
     status,
     message,
     players: [
@@ -61,6 +62,7 @@ export async function readCaptureState(): Promise<CaptureState> {
       ...state,
       targetRepositoryUrl: state.targetRepositoryUrl || config.targetRepositoryUrl,
       targetRepositoryOwnerSide: displaySettings.targetRepositoryOwnerSide || state.targetRepositoryOwnerSide || config.targetRepositoryOwnerSide,
+      hudTheme: displaySettings.hudTheme,
       players: [
         {
           ...state.players[0],
@@ -79,6 +81,7 @@ export async function readCaptureState(): Promise<CaptureState> {
     return {
       ...fallbackState,
       targetRepositoryOwnerSide: displaySettings.targetRepositoryOwnerSide,
+      hudTheme: displaySettings.hudTheme,
       players: [
         {
           ...fallbackState.players[0],
@@ -118,6 +121,7 @@ export async function recalculateCaptureState(now = new Date()): Promise<Capture
       repositoryPath: config.repositoryPath,
       targetRepositoryUrl: config.targetRepositoryUrl,
       targetRepositoryOwnerSide: config.targetRepositoryOwnerSide,
+      hudTheme: config.hudTheme,
       players,
       status: totalScore > 0 ? "ready" : "neutral",
       message: totalScore > 0 ? "據點戰報已更新。" : "今日尚無可計分提交，據點維持中立。",

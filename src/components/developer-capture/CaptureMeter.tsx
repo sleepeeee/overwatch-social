@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import { Activity, AlertTriangle, Crown, Crosshair, GitBranch, GitCommitHorizontal, RadioTower } from "lucide-react";
 import { saveCaptureDisplayNames } from "@/app/actions/developerCapture";
 import type { CapturePlayerStats, CaptureState } from "@/lib/developer-capture/types";
@@ -10,7 +10,7 @@ interface CaptureMeterProps {
   showEditor?: boolean;
 }
 
-function formatDateTime(value: string): string {
+function formatDateTime(value: string | Date): string {
   try {
     const parts = new Intl.DateTimeFormat("en-CA", {
       timeZone: "Asia/Taipei",
@@ -19,7 +19,7 @@ function formatDateTime(value: string): string {
       hour: "2-digit",
       minute: "2-digit",
       hourCycle: "h23",
-    }).formatToParts(new Date(value));
+    }).formatToParts(value instanceof Date ? value : new Date(value));
 
     const month = parts.find(part => part.type === "month")?.value ?? "--";
     const day = parts.find(part => part.type === "day")?.value ?? "--";
@@ -104,7 +104,7 @@ function HudCorner({ position, className }: { position: "tl" | "tr" | "bl" | "br
   return <span aria-hidden="true" className={`absolute h-3 w-3 ${positionClass} ${className}`} />;
 }
 
-function CaptureMarker({ percent, colorClass }: { percent: number; colorClass: string }) {
+function CaptureMarker({ percent, colorClass, color }: { percent: number; colorClass?: string; color?: string }) {
   const markerPosition = Math.min(96, Math.max(4, percent));
 
   return (
@@ -113,7 +113,7 @@ function CaptureMarker({ percent, colorClass }: { percent: number; colorClass: s
       style={{ left: `${markerPosition}%` }}
       aria-hidden="true"
     >
-      <svg viewBox="0 0 28 28" className={`h-8 w-8 drop-shadow-[0_0_14px_rgba(34,211,238,0.3)] ${colorClass}`}>
+      <svg viewBox="0 0 28 28" className={`h-8 w-8 drop-shadow-[0_0_14px_rgba(34,211,238,0.3)] ${colorClass ?? ""}`} style={{ color }}>
         <circle
           cx="14"
           cy="14"
@@ -173,6 +173,7 @@ function StatPanel({ player, tone, isOwner }: { player: CapturePlayerStats; tone
 }
 
 export default function CaptureMeter({ state, showEditor = false }: CaptureMeterProps) {
+  const [liveNow, setLiveNow] = useState(() => new Date());
   const [leftName, setLeftName] = useState(state.players[0].label);
   const [rightName, setRightName] = useState(state.players[1].label);
   const [ownerSide, setOwnerSide] = useState<"left" | "right">(state.targetRepositoryOwnerSide);
@@ -184,10 +185,24 @@ export default function CaptureMeter({ state, showEditor = false }: CaptureMeter
   const displayState: CaptureState = { ...state, targetRepositoryOwnerSide: ownerSide, players: [left, right] };
   const meta = getStatusMeta(displayState);
   const markerColor = left.percent > right.percent
-    ? "text-cyan-400"
+    ? ""
     : right.percent > left.percent
-      ? "text-orange-400"
+      ? ""
       : "text-slate-400";
+  const markerColorValue = left.percent > right.percent
+    ? state.hudTheme.leftAccent
+    : right.percent > left.percent
+      ? state.hudTheme.rightAccent
+      : "#94a3b8";
+  const hudStyle = {
+    "--hud-light-card": state.hudTheme.lightCard,
+    "--hud-dark-card": state.hudTheme.darkCard,
+  } as CSSProperties;
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setLiveNow(new Date()), 1000);
+    return () => window.clearInterval(timer);
+  }, []);
 
   const handleSaveDisplayNames = async () => {
     if (isSaving) {
@@ -220,7 +235,8 @@ export default function CaptureMeter({ state, showEditor = false }: CaptureMeter
   return (
     <section
       aria-label="GIT OUTPOST LIVE HUD"
-      className={`relative overflow-hidden rounded-lg border bg-[#f8fafc] text-slate-900 transition-all duration-500 dark:bg-[#111827] dark:text-slate-100 ${meta.glowClass}`}
+      className={`relative overflow-hidden rounded-lg border bg-[var(--hud-light-card)] text-slate-900 transition-all duration-500 dark:bg-[var(--hud-dark-card)] dark:text-slate-100 ${meta.glowClass}`}
+      style={hudStyle}
     >
       <div
         aria-hidden="true"
@@ -342,10 +358,10 @@ export default function CaptureMeter({ state, showEditor = false }: CaptureMeter
               </div>
               <div className="relative h-8">
                 <div className="absolute left-0 right-0 top-1/2 h-2 -translate-y-1/2 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-900">
-                  <div className="h-full rounded-l-full bg-cyan-400/70" style={{ width: `${left.percent}%` }} />
-                  <div className="ml-auto h-full rounded-r-full bg-orange-400/70" style={{ width: `${right.percent}%` }} />
+                  <div className="h-full rounded-l-full" style={{ width: `${left.percent}%`, backgroundColor: state.hudTheme.leftAccent }} />
+                  <div className="ml-auto h-full rounded-r-full" style={{ width: `${right.percent}%`, backgroundColor: state.hudTheme.rightAccent }} />
                 </div>
-                <CaptureMarker percent={left.percent} colorClass={markerColor} />
+                <CaptureMarker percent={left.percent} colorClass={markerColor} color={markerColorValue} />
               </div>
               <div className="min-w-0 text-right">
                 <a
@@ -414,17 +430,11 @@ export default function CaptureMeter({ state, showEditor = false }: CaptureMeter
 
               <div className="relative h-12">
                 <div className="absolute left-0 right-0 top-1/2 flex h-3 -translate-y-1/2 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-900">
-                  <div
-                    className="h-full rounded-l-full bg-gradient-to-r from-blue-600 via-sky-500 to-cyan-300 transition-[width] duration-500"
-                    style={{ width: `${left.percent}%` }}
-                  />
-                  <div
-                    className="ml-auto h-full rounded-r-full bg-gradient-to-l from-rose-600 via-orange-500 to-amber-300 transition-[width] duration-500"
-                    style={{ width: `${right.percent}%` }}
-                  />
+                  <div className="h-full rounded-l-full transition-[width] duration-500" style={{ width: `${left.percent}%`, backgroundColor: state.hudTheme.leftAccent }} />
+                  <div className="ml-auto h-full rounded-r-full transition-[width] duration-500" style={{ width: `${right.percent}%`, backgroundColor: state.hudTheme.rightAccent }} />
                 </div>
                 <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 border-t border-dashed border-white/70 dark:border-slate-600/70" />
-                <CaptureMarker percent={left.percent} colorClass={markerColor} />
+                <CaptureMarker percent={left.percent} colorClass={markerColor} color={markerColorValue} />
               </div>
             </div>
 
@@ -446,7 +456,7 @@ export default function CaptureMeter({ state, showEditor = false }: CaptureMeter
           <span>TIMEZONE: {state.timezone}</span>
           <span className="flex items-center gap-1.5">
             <Activity size={11} />
-            UPDATED: {formatDateTime(state.updatedAt)}
+            UPDATED: {formatDateTime(liveNow)}
           </span>
           <span className="flex items-center gap-1.5 text-emerald-500">
             <span className="h-1.5 w-1.5 rounded-full bg-current" />

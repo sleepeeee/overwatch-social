@@ -2,7 +2,8 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
-import { saveCaptureDisplayLabels } from "@/lib/developer-capture/settings";
+import { saveCaptureDisplayLabels, saveCaptureDisplaySettings } from "@/lib/developer-capture/settings";
+import type { CaptureHudTheme, CaptureSide } from "@/lib/developer-capture/types";
 
 async function ensureDeveloper() {
   if (process.env.CAPTURE_REQUIRE_AUTH !== "true") {
@@ -47,6 +48,40 @@ export async function saveCaptureDisplayNames(input: {
     return {
       success: false,
       error: error instanceof Error ? error.message : "儲存據點名稱時發生未知錯誤",
+    };
+  }
+}
+
+export async function saveCaptureHudSettings(input: {
+  leftLabel: string;
+  rightLabel: string;
+  targetRepositoryOwnerSide: CaptureSide;
+  hudTheme: CaptureHudTheme;
+}): Promise<{ success: boolean; error?: string }> {
+  try {
+    await ensureDeveloper();
+
+    const leftLabel = normalizeLabel(input.leftLabel);
+    const rightLabel = normalizeLabel(input.rightLabel);
+
+    if (!leftLabel || !rightLabel) {
+      return { success: false, error: "左右顯示名稱都要填" };
+    }
+
+    await saveCaptureDisplaySettings({
+      leftLabel,
+      rightLabel,
+      targetRepositoryOwnerSide: input.targetRepositoryOwnerSide,
+      hudTheme: input.hudTheme,
+    });
+    revalidatePath("/developer");
+    revalidatePath("/developer/capture-hud");
+
+    return { success: true };
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "儲存 HUD 設定時發生未知錯誤",
     };
   }
 }

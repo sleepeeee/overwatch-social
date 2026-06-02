@@ -53,6 +53,7 @@ export function getCaptureConfig(): CaptureConfig {
     statePath: path.resolve(process.env.CAPTURE_STATE_PATH || DEFAULT_STATE_PATH),
     targetRepositoryUrl: process.env.CAPTURE_TARGET_REPOSITORY_URL?.trim() || DEFAULT_TARGET_REPOSITORY_URL,
     targetRepositoryOwnerSide: displaySettings.targetRepositoryOwnerSide,
+    hudTheme: displaySettings.hudTheme,
     players: [createPlayerConfig("left", displaySettings), createPlayerConfig("right", displaySettings)],
   };
 
