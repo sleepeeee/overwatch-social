@@ -17,6 +17,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [authLoading, setAuthLoading] = useState(true);
 
   useEffect(() => {
+    // 💡 在開發環境下自動模擬登入，防止在本地測試時卡在 Google 登入限制中
+    if (process.env.NODE_ENV === "development") {
+      setUser({
+        id: "mock-user-id",
+        email: "agent@overwatch.dev",
+        user_metadata: {
+          full_name: "測試特工",
+          avatar_url: "/images/avatars/avatar_male_calm_square.png"
+        }
+      } as any);
+      setAuthLoading(false);
+      return;
+    }
+
     const supabase = createClient();
     let cancelled = false;
 

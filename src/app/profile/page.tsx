@@ -88,6 +88,72 @@ export default function ProfilePage() {
   const [heroAlignments, setHeroAlignments] = useState<Record<string, AlignmentConfig>>(HERO_ALIGNMENTS);
   const [dbTags, setDbTags] = useState<SpecialTag[]>([]);
 
+  // 🌟 匯出圖片與分享相關狀態與 ref
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [exportingImage, setExportingImage] = useState(false);
+  const [sharing, setSharing] = useState(false);
+  const [shareSuccess, setShareSuccess] = useState(false);
+  const [showShareModal, setShowShareModal] = useState(false);
+
+  const handleExportImage = async () => {
+    if (!cardRef.current) return;
+    setExportingImage(true);
+    setErrorMsg(null);
+    try {
+      // 確保導出時的磨砂玻璃效果與解析度
+      const dataUrl = await toPng(cardRef.current, {
+        cacheBust: true,
+        backgroundColor: "transparent",
+        style: {
+          transform: "scale(1)",
+          transformOrigin: "top left"
+        }
+      });
+      const link = document.createElement("a");
+      const name = cardData.battle_tag ? cardData.battle_tag.split("#")[0] : "player";
+      link.download = `ow-card-${name}.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch (err) {
+      console.error("導出圖片失敗:", err);
+      setErrorMsg("導出圖片失敗，請重試！");
+    } finally {
+      setExportingImage(false);
+    }
+  };
+
+  const handleShareLink = async () => {
+    setErrorMsg(null);
+    setSharing(true);
+    try {
+      const payload: ProfileUpdatePayload = {
+        user_id: user?.id || "mock-user-id",
+        server: cardData.server,
+        battle_tag: cardData.battle_tag,
+        is_tag_visible: cardData.is_tag_visible,
+        selected_heroes: cardData.selected_heroes,
+        tags: cardData.tags,
+        message: cardData.message,
+        mic_status: cardData.mic_status,
+        mbti: cardData.mbti || null
+      };
+
+      // 觸發對接用的 Mock 函數
+      await saveCardToDatabase(payload);
+
+      const shareUrl = `${window.location.origin}/share/${user?.id || "mock-user-id"}`;
+      await navigator.clipboard.writeText(shareUrl);
+      setShareSuccess(true);
+      setTimeout(() => setShareSuccess(false), 2500);
+    } catch (err) {
+      console.error("產生分享連結失敗:", err);
+      setErrorMsg("產生分享連結失敗，請重試！");
+    } finally {
+      setSharing(false);
+    }
+  };
+
+
   // 初始化：從 localStorage 恢復 profile 頭像設定 + 英雄對準參數 + 載入特色標籤
   useEffect(() => {
     getGameSpecialTags("overwatch").then(res => {
@@ -306,6 +372,8 @@ export default function ProfilePage() {
       return;
     }
     setSaved(true);
+    // 🌟 儲存成功時，自動彈出分享對話框 Modal
+    setShowShareModal(true);
     setTimeout(() => setSaved(false), 2000);
   };
 
@@ -322,15 +390,6 @@ export default function ProfilePage() {
           <div className="text-center sm:text-left">
             <h1 className="text-3xl font-extrabold tracking-tight text-[#3e2723] flex items-center justify-center sm:justify-start gap-2 flex-wrap">
               <Gamepad2 className="text-[#82b7cc] animate-pulse" /> 特工帳戶主控台
-              {isDeveloper && (
-                <Link
-                  href="/developer"
-                  className="inline-flex items-center gap-1.5 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-[#82b7cc] hover:text-white px-3 py-1 rounded-xl text-[10px] font-black tracking-widest uppercase transition-all shadow-md active:scale-95 cursor-pointer ml-1 sm:ml-2"
-                >
-                  <Cpu size={11} className="text-[#82b7cc]" />
-                  <span>開發者後台</span>
-                </Link>
-              )}
             </h1>
             <p className="text-[#8c7c6c] mt-1 font-semibold text-sm">
               管理您的通用帳戶，並在「遊戲檔案庫」中整理歸檔多款遊戲的名片。
@@ -858,6 +917,80 @@ export default function ProfilePage() {
           </Button>
         </div>
       </div>
+
+      {/* 🌟 儲存成功自動彈出的分享對話框 (Modal) */}
+      {showShareModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/30 backdrop-blur-sm transition-all duration-300">
+          <div className="glass-panel max-w-sm w-full p-6 text-center space-y-4 border border-white/60 relative shadow-2xl animate-[fadeInUp_0.3s_ease-out] rounded-[28px] bg-white/45">
+            
+            {/* 關閉按鈕 */}
+            <button
+              onClick={() => setShowShareModal(false)}
+              className="absolute top-4 right-4 text-[#8c7c6c]/70 hover:text-[#3e2723] font-bold text-sm transition-colors cursor-pointer w-6 h-6 rounded-full bg-white/50 hover:bg-white flex items-center justify-center shadow-sm"
+            >
+              ✕
+            </button>
+
+            <div className="w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 flex items-center justify-center mx-auto text-xl animate-bounce">
+              🎉
+            </div>
+
+            <div className="space-y-1">
+              <h3 className="text-base font-extrabold text-[#3e2723]">特工名片發布成功！</h3>
+              <p className="text-[11px] text-[#8c7c6c] leading-relaxed">
+                您的最新遊戲名片已成功儲存並同步至廣場。快複製您的專屬連結分享，或將精美名片保存為圖片吧！
+              </p>
+            </div>
+
+            {/* 分享連結複製區 */}
+            <div className="bg-white/50 p-2.5 rounded-2xl border border-[#8c7c6c]/15 flex items-center justify-between gap-2 shadow-[inset_0_1px_2px_rgba(0,0,0,0.02)]">
+              <input
+                type="text"
+                readOnly
+                value={typeof window !== "undefined" ? `${window.location.origin}/share/${user?.id || "mock-user-id"}` : ""}
+                className="bg-transparent text-xs text-[#5d4037] font-mono outline-none flex-1 truncate select-all px-1.5"
+                onClick={(e) => (e.target as HTMLInputElement).select()}
+              />
+              <Button
+                type="button"
+                onClick={handleShareLink}
+                disabled={sharing}
+                className="bg-[#82b7cc] hover:bg-[#82b7cc]/90 text-white rounded-lg py-1 px-2.5 text-[10px] font-black h-7 tracking-wider transition-all active:scale-95 cursor-pointer shrink-0"
+              >
+                {shareSuccess ? "已複製" : "複製"}
+              </Button>
+            </div>
+
+            {/* 動作按鈕 */}
+            <div className="grid grid-cols-2 gap-3 pt-1">
+              <Button
+                type="button"
+                onClick={handleExportImage}
+                disabled={exportingImage}
+                className="bg-white/60 hover:bg-white border border-[#8c7c6c]/20 hover:border-[#82b7cc]/50 text-[#5d4037] hover:text-[#82b7cc] rounded-xl py-2 px-3 text-xs font-black transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-sm"
+              >
+                <span>💾</span>
+                <span>{exportingImage ? "導出中..." : "保存圖片"}</span>
+              </Button>
+              
+              <Link
+                href={`/share/${user?.id || "mock-user-id"}`}
+                target="_blank"
+                className="w-full"
+              >
+                <Button
+                  type="button"
+                  className="w-full border-none bg-[#82b7cc]/15 text-[#82b7cc] hover:bg-[#82b7cc] hover:text-white rounded-xl py-2 px-3 text-xs font-black transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-sm"
+                >
+                  <span>🌐</span>
+                  <span>前往分享頁</span>
+                </Button>
+              </Link>
+            </div>
+
+          </div>
+        </div>
+      )}
 
       {/* 未登入限制 */}
       <LoginModal
