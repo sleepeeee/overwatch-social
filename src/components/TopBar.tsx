@@ -6,10 +6,12 @@ import { useRouter } from "next/navigation";
 import { Moon, LogOut } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/context/AuthContext";
+import { useDevMode } from "@/hooks/useDevMode";
 
 export default function TopBar() {
   const router = useRouter();
   const { user } = useAuth();
+  const { isDeveloper } = useDevMode();
   const [loginPending, setLoginPending] = useState(false);
 
   const handleLogout = async () => {
@@ -48,13 +50,15 @@ export default function TopBar() {
 
       {user ? (
         <div className="flex items-center gap-2 shrink-0">
-          <Link
-            href="/profile"
-            className="flex items-center gap-2 px-4 py-2 rounded-2xl border border-[#82b7cc]/30 bg-white/40 text-[9px] font-bold tracking-widest uppercase text-[#5d4037] hover:bg-white transition-all duration-300"
-          >
-            <span className="w-1.5 h-1.5 rounded-full bg-[#82b7cc]" />
-            我的名片
-          </Link>
+          {isDeveloper && (
+            <Link
+              href="/developer"
+              className="flex items-center gap-2 px-4 py-2 rounded-2xl border border-amber-500/30 bg-amber-500/10 text-[9px] font-bold tracking-widest uppercase text-amber-800 hover:bg-amber-500/20 transition-all duration-300"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+              開發者後台
+            </Link>
+          )}
           <button
             onClick={handleLogout}
             className="flex items-center gap-1.5 px-3 py-2 rounded-2xl border border-[#8c7c6c]/20 bg-white/20 text-[9px] font-bold tracking-widest uppercase text-[#8c7c6c]/70 hover:bg-[#8c7c6c]/8 hover:text-[#5d4037] transition-all duration-300"
