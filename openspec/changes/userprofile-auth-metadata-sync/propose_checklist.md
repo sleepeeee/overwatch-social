@@ -32,6 +32,14 @@ type: propose_checklist
 | impact_scope.md | change 不修改 SOP/schema/_STANDARDS.md/共享 scripts（§0.6 CONDITIONAL 未觸發）| Low | 不適用 |
 | affects_consumers: [] | 修改 AuthContextType（加 userProfile）但 consumers 只是解構，不需更新 | Low | 現有 useAuth() 解構安全（新增欄位不是 breaking change）|
 
+## §6.7 APPLY 完成審查
+
+| 審查 | 結果 | 備註 |
+|---|---|---|
+| Codex §6.7 | 6/10 FAIL | Critical：tasks.md 未勾（已修正）；Major：實作對齊；Minor：profileKey wording |
+| Gemini §6.7 | **9/10 PASS** | import type 建議（已採納）；race condition Minor（可接受）|
+| §6.7 分類 | (c) 程序性 | tasks.md 未勾是程序問題，實作完整；lean archiving rule 適用 |
+
 ## §6.3 Option C 決策理由
 
 Codex §6.5 連續 3 輪 FAIL（5/10→6/10→5/10），Gemini §6.5 第 2 輪 9/10 PASS。依全域規則套用 Option C：

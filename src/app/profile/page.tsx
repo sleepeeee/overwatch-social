@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { OWPlayerCard, UserProfile, type HeroConfig } from "@/types/card";
+import { OWPlayerCard, type UserProfile, type HeroConfig } from "@/types/card";
 import {
   HEROES_CONFIG,
   PRESET_TAGS,
