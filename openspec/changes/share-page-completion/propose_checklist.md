@@ -24,6 +24,14 @@ type: propose_checklist
 | Codex §6.5 | 第 3 輪 | 6/10 CONDITIONAL | 持續同樣問題：production og 驗收無法本地完成 |
 | §6.3 Option C | 套用 | 接受並記錄 | Codex 3 輪均 6/10（Gemini 7/10 PASS）；production og 驗收是部署後任務，非 propose 阻斷 |
 
+## §6.7 APPLY 完成審查
+
+| 審查 | 結果 | 備註 |
+|---|---|---|
+| Codex §6.7 | **8/10 PROCEED** | 無 Critical；Minor：404 文案（已修正）、proposal status |
+| Gemini §6.7 | **7/10 PASS** | Major：social_channels = {} → 誤判（public_profiles view 不含此欄，ADR-08 確立）；Minor：siteUrl 抽常數 |
+| §6.8 合成 | **PASS** | 兩方均 PASS，可進 ARCHIVE |
+
 ## §6.3 Option C 決策理由
 
 | 理由 | 說明 |
