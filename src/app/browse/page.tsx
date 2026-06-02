@@ -64,7 +64,14 @@ export default function BrowsePage() {
     setSearchQuery("");
   };
 
-  // 移除 authLoading spinner：browse 頁框架不依賴 auth，立即渲染
+  if (authLoading) {
+    return (
+      <div className="max-w-6xl mx-auto px-4 py-8 flex flex-col items-center justify-center min-h-[600px] gap-4">
+        <div className="w-12 h-12 border-4 border-[#82b7cc] border-t-transparent rounded-full animate-spin"></div>
+        <p className="text-gray-400 text-sm font-bold animate-pulse">正在與名片大廳大門連接中...</p>
+      </div>
+    );
+  }
 
   return (
     <div 
