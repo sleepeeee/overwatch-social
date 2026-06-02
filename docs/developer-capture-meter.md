@@ -26,6 +26,10 @@ $env:CAPTURE_RIGHT_AUTHORS="sleepeeee"
 
 在 `/developer` 的據點 HUD 內輸入左、右顯示名稱後，按下「儲存顯示名稱」即可寫入保存檔。重新整理頁面後，顯示名稱與倉庫所有者設定會保留。
 
+## 工具頁
+
+HUD 編輯介面已搬到 `/developer/capture-hud`，並在開發者後台的工具箱中提供入口。主控台首頁只保留只讀 HUD 預覽。
+
 ## 手動重算
 
 ```powershell

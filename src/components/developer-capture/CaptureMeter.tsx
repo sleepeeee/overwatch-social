@@ -7,6 +7,7 @@ import type { CapturePlayerStats, CaptureState } from "@/lib/developer-capture/t
 
 interface CaptureMeterProps {
   state: CaptureState;
+  showEditor?: boolean;
 }
 
 function formatDateTime(value: string): string {
@@ -180,7 +181,7 @@ function StatPanel({ player, tone, isOwner }: { player: CapturePlayerStats; tone
   );
 }
 
-export default function CaptureMeter({ state }: CaptureMeterProps) {
+export default function CaptureMeter({ state, showEditor = false }: CaptureMeterProps) {
   const [leftName, setLeftName] = useState(state.players[0].label);
   const [rightName, setRightName] = useState(state.players[1].label);
   const [ownerSide, setOwnerSide] = useState<"left" | "right">(state.targetRepositoryOwnerSide);
@@ -264,72 +265,74 @@ export default function CaptureMeter({ state }: CaptureMeterProps) {
           </div>
         </div>
 
-        <div className="mt-4 rounded-lg border border-dashed border-slate-200 bg-slate-50/70 p-3 dark:border-slate-800 dark:bg-slate-950/30">
-          <div className="mb-3 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400">
-            <span className="h-3 w-1.5 rounded-sm bg-indigo-500" />
-            <span>Outpost Name Link</span>
-          </div>
-          <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
-            <label className="min-w-0 space-y-1.5">
-              <span className="block text-[10px] font-black uppercase tracking-wider text-slate-400">左方營地名稱</span>
-              <input
-                suppressHydrationWarning
-                value={leftName}
-                onChange={event => setLeftName(event.target.value)}
-                className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-800 outline-none transition focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100"
-              />
-            </label>
-            <label className="min-w-0 space-y-1.5">
-              <span className="block text-[10px] font-black uppercase tracking-wider text-slate-400">右方營地名稱</span>
-              <input
-                suppressHydrationWarning
-                value={rightName}
-                onChange={event => setRightName(event.target.value)}
-                className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-800 outline-none transition focus:border-orange-400 focus:ring-1 focus:ring-orange-400 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100"
-              />
-            </label>
-            <div className="min-w-0 space-y-1.5">
-              <span className="block text-[10px] font-black uppercase tracking-wider text-slate-400">倉庫所有者</span>
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  type="button"
-                  onClick={() => setOwnerSide("left")}
-                  className={`rounded-md border px-3 py-2 text-xs font-black transition ${
-                    ownerSide === "left"
-                      ? "border-cyan-400/50 bg-cyan-400/10 text-cyan-500"
-                      : "border-slate-200 bg-white text-slate-500 hover:text-slate-800 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-400"
-                  }`}
-                >
-                  {left.label}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setOwnerSide("right")}
-                  className={`rounded-md border px-3 py-2 text-xs font-black transition ${
-                    ownerSide === "right"
-                      ? "border-orange-400/50 bg-orange-400/10 text-orange-500"
-                      : "border-slate-200 bg-white text-slate-500 hover:text-slate-800 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-400"
-                  }`}
+        {showEditor && (
+          <div className="mt-4 rounded-lg border border-dashed border-slate-200 bg-slate-50/70 p-3 dark:border-slate-800 dark:bg-slate-950/30">
+            <div className="mb-3 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400">
+              <span className="h-3 w-1.5 rounded-sm bg-indigo-500" />
+              <span>Outpost Name Link</span>
+            </div>
+            <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
+              <label className="min-w-0 space-y-1.5">
+                <span className="block text-[10px] font-black uppercase tracking-wider text-slate-400">左方營地名稱</span>
+                <input
+                  suppressHydrationWarning
+                  value={leftName}
+                  onChange={event => setLeftName(event.target.value)}
+                  className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-800 outline-none transition focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100"
+                />
+              </label>
+              <label className="min-w-0 space-y-1.5">
+                <span className="block text-[10px] font-black uppercase tracking-wider text-slate-400">右方營地名稱</span>
+                <input
+                  suppressHydrationWarning
+                  value={rightName}
+                  onChange={event => setRightName(event.target.value)}
+                  className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-800 outline-none transition focus:border-orange-400 focus:ring-1 focus:ring-orange-400 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100"
+                />
+              </label>
+              <div className="min-w-0 space-y-1.5">
+                <span className="block text-[10px] font-black uppercase tracking-wider text-slate-400">倉庫所有者</span>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setOwnerSide("left")}
+                    className={`rounded-md border px-3 py-2 text-xs font-black transition ${
+                      ownerSide === "left"
+                        ? "border-cyan-400/50 bg-cyan-400/10 text-cyan-500"
+                        : "border-slate-200 bg-white text-slate-500 hover:text-slate-800 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-400"
+                    }`}
                   >
-                  {right.label}
-                </button>
-              </div>
-              <div className="space-y-1.5 pt-1">
-                <button
-                  type="button"
-                  onClick={handleSaveDisplayNames}
-                  disabled={isSaving}
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-cyan-400/30 bg-cyan-400/10 px-3 py-2 text-xs font-black text-cyan-500 transition hover:bg-cyan-400/15 disabled:cursor-not-allowed disabled:opacity-60 dark:text-cyan-300"
-                >
-                  {isSaving ? "儲存中..." : "儲存顯示名稱"}
-                </button>
-                <p className="min-h-4 text-[10px] font-semibold leading-relaxed text-slate-400">
-                  {saveError || saveMessage || "這只會保存插件畫面名稱，不會改 GitHub 帳號。"}
-                </p>
+                    {left.label}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setOwnerSide("right")}
+                    className={`rounded-md border px-3 py-2 text-xs font-black transition ${
+                      ownerSide === "right"
+                        ? "border-orange-400/50 bg-orange-400/10 text-orange-500"
+                        : "border-slate-200 bg-white text-slate-500 hover:text-slate-800 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-400"
+                    }`}
+                  >
+                    {right.label}
+                  </button>
+                </div>
+                <div className="space-y-1.5 pt-1">
+                  <button
+                    type="button"
+                    onClick={handleSaveDisplayNames}
+                    disabled={isSaving}
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-cyan-400/30 bg-cyan-400/10 px-3 py-2 text-xs font-black text-cyan-500 transition hover:bg-cyan-400/15 disabled:cursor-not-allowed disabled:opacity-60 dark:text-cyan-300"
+                  >
+                    {isSaving ? "儲存中..." : "儲存顯示名稱"}
+                  </button>
+                  <p className="min-h-4 text-[10px] font-semibold leading-relaxed text-slate-400">
+                    {saveError || saveMessage || "這只會保存插件畫面名稱，不會改 GitHub 帳號。"}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
 
         {state.status === "missing-config" || state.status === "git-error" ? (
           <div className="flex flex-col items-center justify-center gap-4 py-7 text-center">
