@@ -272,9 +272,9 @@ style={{ borderRadius: roleRadii[role] }}
    * **來源**：使用 `SVG Doodles` 庫中的輕量手繪箭頭、強調波浪線、手撕紙張邊緣與圓圈符號。
    * **應用**：點綴於搜尋太空艙的輸入提示語兩側，或作為常用定位按鈕上方的「手繪標註圈線」。
    
-2. **日系溫潤花草插圖 (Botanical Sketches)**：
-   * **來源**：參考 `Girly Sozai` 與 `Vector Shelf` 的手稿風格，複製或引入手寫質感的「蓮花 (Lotus)」與「葉脈」細線 SVG。
-   * **應用**：置於大廳左側與背景波浪交界處，與底紋融為一體，強化 Morning Sketch 主題。
+2. **晶圓干涉與光學同心圓線條 (Concentric Diffraction Rings)**：
+   * **來源**：參考曝光光罩、衍射光柵與 Airy Disk 的圓弧紋理。
+   * **應用**：利用細微 SVG 弧線，繪製同心圓衍射環與晶圓對準十字線，作為背景水印，增加視覺精度。
    
 3. **無損向量優勢 (Web Optimization)**：
    * 所有素材一律只使用純 SVG (代碼內嵌 `path` 或本地 SVG 靜態資源)，避免加載重型 PNG/JPG 導致的頁面跳動（Layout Shift）與效能降低。
@@ -319,45 +319,80 @@ style={{ borderRadius: roleRadii[role] }}
   />
   ```
 
-### 3. 左右側大面積手繪荷花插畫
-* **設計意象**：在招募大廳兩側嵌入寬達 320px~350px 的極細線條手稿荷花，以 `fixed` 定位固定在視窗兩側，超低不透明度使其像紙張水印，使大廳兩側有如展開的手稿繪本。
-* **左側 SVG (花苞莖桿 - `page.tsx`)**：
+### 3. 左右側大面積幾何流體塊
+* **設計意象**：在招募大廳左右兩側嵌入寬達 420px~450px 的有機幾何流體塊（Fluid Blobs），利用圓潤不規則的數學 Bezier 曲線模擬液態材料旋塗的重疊美感，超低不透明度（5%~8%）使其僅作為大面積底色暈染的幾何輪廓。
+* **左側 SVG (暖沙流體塊 - `page.tsx`)**：
   ```tsx
   <svg 
-    className="fixed left-[-80px] top-[15%] w-[320px] h-[650px] text-[#8c7c6c]/15 pointer-events-none z-0 select-none animate-[fadeIn_2s_ease-out]" 
-    fill="none" 
-    stroke="currentColor" 
-    strokeWidth="0.8" 
-    viewBox="0 0 100 200"
+    className="fixed left-[-120px] top-[15%] w-[420px] h-[420px] text-[#8c7c6c]/6 pointer-events-none z-0 fill-current animate-mist-a"
+    viewBox="0 0 200 200"
   >
-    <path d="M 50 200 C 45 150, 55 100, 48 50" strokeDasharray="1.5 1.5" />
-    <path d="M 48 50 C 32 40, 28 20, 48 10 C 68 20, 64 40, 48 50 Z" />
-    <path d="M 48 50 C 38 45, 40 30, 48 22 C 56 30, 58 45, 48 50 Z" />
-    <path d="M 48 52 C 44 48, 45 38, 48 30 C 51 38, 52 48, 48 52 Z" />
-    <path d="M 50 120 C 15 110, 5 140, 28 160 C 45 171, 50 150, 50 120 Z" />
-    <path d="M 28 160 C 23 150, 32 130, 50 120" />
-    <path d="M 15 190 Q 25 185, 35 190" />
-    <path d="M 65 195 Q 75 190, 85 195" />
+    <path d="M45,-60C58,-54,67,-40,73,-25C79,-9,82,7,78,22C74,38,62,53,48,63C33,73,17,77,0,77C-16,77,-33,72,-47,62C-61,52,-72,37,-76,21C-81,5,-79,-13,-72,-28C-65,-43,-53,-55,-40,-61C-26,-67,-13,-68,1,-69C15,-70,29,-71,45,-60Z" transform="translate(100 100)" />
   </svg>
   ```
-* **右側 SVG (盛開蓮花 - `page.tsx`)**：
+* **右側 SVG (晴藍流體塊 - `page.tsx`)**：
   ```tsx
   <svg 
-    className="fixed right-[-90px] bottom-[5%] w-[350px] h-[650px] text-[#82b7cc]/12 pointer-events-none z-0 select-none animate-[fadeIn_2.2s_ease-out]" 
+    className="fixed right-[-140px] bottom-[10%] w-[450px] h-[450px] text-[#82b7cc]/6 pointer-events-none z-0 fill-current animate-mist-b"
+    viewBox="0 0 200 200"
+  >
+    <path d="M52,-73C65,-64,72,-47,75,-30C78,-13,77,4,72,19C67,34,58,47,45,56C32,65,16,70,-1,71C-18,72,-36,69,-50,60C-64,51,-74,36,-78,19C-82,2,-80,-17,-72,-32C-64,-47,-50,-58,-35,-66C-20,-74,-10,-79,5,-83C20,-87,39,-82,52,-73Z" transform="translate(100 100)" />
+  </svg>
+  ```
+
+### 4. 晶圓光學干涉同心圓與對準線 (Airy Disk & Alignment Marks - `page.tsx`)
+* **設計意象**：模擬雙折射偏光顯微鏡下薄膜產生的 Airy Disk 干涉條紋與曝光機對準標記，增強理工理學儀器的幾何精度美感。
+* **SVG 水印程式碼**：
+  ```tsx
+  <svg 
+    className="fixed right-[-60px] top-[8%] w-[420px] h-[420px] text-[#8c7c6c]/12 pointer-events-none z-0 select-none" 
     fill="none" 
     stroke="currentColor" 
-    strokeWidth="0.8" 
-    viewBox="0 0 100 200"
+    strokeWidth="0.5" 
+    viewBox="0 0 400 400"
   >
-    <path d="M 50 200 C 55 140, 45 90, 52 40" strokeDasharray="1.5 1.5" />
-    <path d="M 52 40 C 15 30, 25 5, 52 25 C 79 5, 89 30, 52 40 Z" />
-    <path d="M 52 40 C 32 35, 38 18, 52 28 C 66 18, 72 35, 52 40 Z" />
-    <path d="M 52 40 C 8 50, 22 70, 52 40 C 82 70, 96 50, 52 40 Z" />
-    <path d="M 48 100 C 10 90, 5 130, 48 142 C 91 130, 86 90, 48 100 Z" />
-    <path d="M 48 100 L 48 142" />
-    <path d="M 48 120 C 28 115, 18 125, 12 110" />
-    <path d="M 48 120 C 68 115, 78 125, 84 110" />
+    <circle cx="200" cy="200" r="50" strokeDasharray="2 3" />
+    <circle cx="200" cy="200" r="90" />
+    <circle cx="200" cy="200" r="130" strokeDasharray="4 4" />
+    <circle cx="200" cy="200" r="170" />
+    <circle cx="200" cy="200" r="215" strokeDasharray="1 5" />
+    <circle cx="200" cy="200" r="260" />
+    <line x1="200" y1="0" x2="200" y2="400" strokeDasharray="2 4" />
+    <line x1="0" y1="200" x2="400" y2="200" strokeDasharray="2 4" />
+    <path d="M 200 20 L 205 20 M 200 40 L 205 40 M 200 60 L 205 60 M 200 80 L 205 80" />
+    <path d="M 200 320 L 205 320 M 200 340 L 205 340 M 200 360 L 205 360 M 200 380 L 205 380" />
   </svg>
+  ```
+
+### 5. 大型三維微光幾何玻璃球 (`globals.css` & `page.tsx`)
+* **設計意象**：在視窗邊緣放置一至兩個直徑 100px~160px 的立體微光玻璃球。當背景的圓弧與格線穿過球體時，會產生折射偏折效果，立體感躍然紙上。
+* **CSS 實作 (`globals.css`)**：
+  ```css
+  .macro-glass-sphere {
+    border-radius: 50%;
+    position: fixed;
+    background: radial-gradient(circle at 30% 30%, 
+      rgba(255, 255, 255, 0.92) 0%, 
+      rgba(255, 255, 255, 0.15) 45%, 
+      rgba(130, 183, 204, 0.05) 75%, 
+      rgba(130, 183, 204, 0.18) 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.7) !important;
+    box-shadow: 
+      inset -6px -6px 14px rgba(130, 183, 204, 0.18),
+      inset 6px 6px 10px rgba(255, 255, 255, 0.95),
+      0 25px 55px -15px rgba(140, 124, 108, 0.16) !important;
+    backdrop-filter: blur(14px) saturate(110%);
+    -webkit-backdrop-filter: blur(14px) saturate(110%);
+    pointer-events: none;
+    z-index: 5;
+    transition: transform 0.8s ease-out;
+  }
+  ```
+* **React 元件應用 (`page.tsx`)**：
+  ```tsx
+  <div className="macro-glass-sphere w-[160px] h-[160px] left-[-40px] bottom-[20%] opacity-90 animate-[float-mist-c_22s_infinite_ease-in-out]" />
+  <div className="macro-glass-sphere w-[100px] h-[100px] right-[5%] top-[25%] opacity-85 animate-[float-mist-a_18s_infinite_ease-in-out]" />
   ```
 
 
