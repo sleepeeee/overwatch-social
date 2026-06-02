@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { OWPlayerCard, UserProfile, type HeroConfig } from "@/types/card";
+import { toPng } from "html-to-image";
 import {
   HEROES_CONFIG,
   PRESET_TAGS,
@@ -63,6 +64,50 @@ interface SpecialTag {
   created_at: string;
 }
 
+// 📝 後端對接規格：玩家名片上傳的 JSON 資料結構
+export interface ProfileUpdatePayload {
+  user_id: string;          // 使用者的 UUID (Supabase Auth)
+  server: string;           // 伺服器名稱，例如: 'Asia Server'
+  battle_tag: string;       // 玩家名稱#Tag，例如: '特工#1234'
+  is_tag_visible: boolean;  // 是否在公開廣場展示 BattleTag
+  selected_heroes: string[];// 選擇的角色清單，例如: ['安娜', '慈悲']
+  tags: string[];           // 貼紙標籤，例如: ['語音交流', '拒絕暴躁']
+  message: string;          // 玩家個人留言/徵友訊息
+  mic_status: string;       // 麥克風狀態: 'mic-on' | 'mic-off' | 'listen-only'
+  mbti: string | null;      // MBTI 性格標籤，例如: 'INFJ'
+}
+
+// 📝 後端朋友對接專用函數：
+// 當要處理資料庫儲存時，可以直接在此填入 Supabase / API 寫入邏輯
+export const saveCardToDatabase = async (payload: ProfileUpdatePayload) => {
+  console.log("Saving card to database with payload:", payload);
+  
+  // ----------------------------------------------------
+  // 💡 後端朋友對接指示：
+  // 請取消以下註解，並用您的 Supabase 客戶端替換儲存邏輯：
+  // 
+  // const { data, error } = await supabase
+  //   .from('profiles')
+  //   .upsert({
+  //     user_id: payload.user_id,
+  //     server: payload.server,
+  //     battle_tag: payload.battle_tag,
+  //     is_tag_visible: payload.is_tag_visible,
+  //     selected_heroes: payload.selected_heroes,
+  //     tags: payload.tags,
+  //     message: payload.message,
+  //     mic_status: payload.mic_status,
+  //     mbti: payload.mbti,
+  //     updated_at: new Date().toISOString()
+  //   });
+  // if (error) throw error;
+  // ----------------------------------------------------
+  
+  // 模擬延遲儲存
+  await new Promise((resolve) => setTimeout(resolve, 800));
+  return { success: true };
+};
+
 export default function ProfilePage() {
   const { isDeveloper } = useDevMode();
   const [activeSection, setActiveSection] = useState<"hub" | "ow-edit">("hub");
@@ -87,6 +132,70 @@ export default function ProfilePage() {
   const { user, authLoading } = useAuth();
   const [heroAlignments, setHeroAlignments] = useState<Record<string, AlignmentConfig>>(HERO_ALIGNMENTS);
   const [dbTags, setDbTags] = useState<SpecialTag[]>([]);
+
+  // 🌟 匯出圖片與分享相關狀態與 ref
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [exportingImage, setExportingImage] = useState(false);
+  const [sharing, setSharing] = useState(false);
+  const [shareSuccess, setShareSuccess] = useState(false);
+
+  const handleExportImage = async () => {
+    if (!cardRef.current) return;
+    setExportingImage(true);
+    setErrorMsg(null);
+    try {
+      // 確保導出時的磨砂玻璃效果與解析度
+      const dataUrl = await toPng(cardRef.current, {
+        cacheBust: true,
+        backgroundColor: "transparent",
+        style: {
+          transform: "scale(1)",
+          transformOrigin: "top left"
+        }
+      });
+      const link = document.createElement("a");
+      const name = cardData.battle_tag ? cardData.battle_tag.split("#")[0] : "player";
+      link.download = `ow-card-${name}.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch (err) {
+      console.error("導出圖片失敗:", err);
+      setErrorMsg("導出圖片失敗，請重試！");
+    } finally {
+      setExportingImage(false);
+    }
+  };
+
+  const handleShareLink = async () => {
+    setErrorMsg(null);
+    setSharing(true);
+    try {
+      const payload: ProfileUpdatePayload = {
+        user_id: user?.id || "mock-user-id",
+        server: cardData.server,
+        battle_tag: cardData.battle_tag,
+        is_tag_visible: cardData.is_tag_visible,
+        selected_heroes: cardData.selected_heroes,
+        tags: cardData.tags,
+        message: cardData.message,
+        mic_status: cardData.mic_status,
+        mbti: cardData.mbti || null
+      };
+
+      // 觸發對接用的 Mock 函數
+      await saveCardToDatabase(payload);
+
+      const shareUrl = `${window.location.origin}/share/${user?.id || "mock-user-id"}`;
+      await navigator.clipboard.writeText(shareUrl);
+      setShareSuccess(true);
+      setTimeout(() => setShareSuccess(false), 2500);
+    } catch (err) {
+      console.error("產生分享連結失敗:", err);
+      setErrorMsg("產生分享連結失敗，請重試！");
+    } finally {
+      setSharing(false);
+    }
+  };
 
   // 初始化：從 localStorage 恢復 profile 頭像設定 + 英雄對準參數 + 載入特色標籤
   useEffect(() => {
@@ -559,10 +668,35 @@ export default function ProfilePage() {
       {/* 左右分割版面 */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* 左側：名片即時預覽 */}
-        <div className="lg:col-span-5 flex flex-col items-center gap-4 lg:sticky lg:top-24">
+        <div className="lg:col-span-5 flex flex-col items-center gap-4 lg:sticky lg:top-24 w-full">
           <h2 className="text-sm font-bold tracking-widest text-[#8c7c6c] uppercase">即時名片預覽</h2>
-          <OWCard cardData={cardData} isLoggedIn={true} isEditable={true} customAlignments={heroAlignments} />
-          <p className="text-xs text-[#8c7c6c]/80 italic text-center max-w-[320px] font-semibold">
+          <div ref={cardRef} className="rounded-[28px] overflow-hidden bg-transparent w-full flex justify-center">
+            <OWCard cardData={cardData} isLoggedIn={true} isEditable={true} customAlignments={heroAlignments} />
+          </div>
+          
+          {/* 🌟 匯出圖片與複製連結按鈕區 */}
+          <div className="w-full max-w-[320px] grid grid-cols-2 gap-3 mt-2">
+            <Button
+              type="button"
+              onClick={handleExportImage}
+              disabled={exportingImage}
+              className="bg-white/60 hover:bg-white border border-[#8c7c6c]/20 hover:border-[#82b7cc]/50 text-[#5d4037] hover:text-[#82b7cc] rounded-xl py-2.5 px-3 text-xs font-black tracking-wider transition-all shadow-sm active:scale-95 cursor-pointer flex items-center justify-center gap-1.5"
+            >
+              <span>💾</span>
+              <span>{exportingImage ? "導出中..." : "保存圖片"}</span>
+            </Button>
+            <Button
+              type="button"
+              onClick={handleShareLink}
+              disabled={sharing}
+              className="bg-white/60 hover:bg-white border border-[#8c7c6c]/20 hover:border-[#82b7cc]/50 text-[#5d4037] hover:text-[#82b7cc] rounded-xl py-2.5 px-3 text-xs font-black tracking-wider transition-all shadow-sm active:scale-95 cursor-pointer flex items-center justify-center gap-1.5"
+            >
+              <span>🔗</span>
+              <span>{shareSuccess ? "已複製！" : "複製連結"}</span>
+            </Button>
+          </div>
+
+          <p className="text-xs text-[#8c7c6c]/80 italic text-center max-w-[320px] font-semibold mt-1">
             ✨ 卡片效果將會同步更新，這也是其他玩家在廣場上看到的最終樣貌。
           </p>
         </div>
