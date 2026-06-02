@@ -5,6 +5,12 @@ const { promisify } = require("node:util");
 
 const execFileAsync = promisify(execFile);
 const COMMIT_MARKER = "--CAPTURE-COMMIT--";
+const DEFAULT_LEFT_LABEL = "Shadowmaster6g";
+const DEFAULT_RIGHT_LABEL = "sleepeeee";
+const DEFAULT_LEFT_GITHUB_URL = "https://github.com/Shadowmaster6g";
+const DEFAULT_RIGHT_GITHUB_URL = "https://github.com/sleepeeee";
+const DEFAULT_TARGET_REPOSITORY_URL = "https://github.com/sleepeeee/overwatch-social";
+const DEFAULT_SETTINGS_PATH = path.join(process.cwd(), "data", "developer-capture-settings.json");
 
 function splitAuthors(value) {
   return (value || "")
@@ -17,7 +23,28 @@ function getRepositoryOwnerSide() {
   return process.env.CAPTURE_TARGET_REPOSITORY_OWNER === "left" ? "left" : "right";
 }
 
-function getConfig() {
+async function readCaptureDisplaySettings() {
+  const fallback = {
+    leftLabel: process.env.CAPTURE_LEFT_NAME || DEFAULT_LEFT_LABEL,
+    rightLabel: process.env.CAPTURE_RIGHT_NAME || DEFAULT_RIGHT_LABEL,
+    targetRepositoryOwnerSide: getRepositoryOwnerSide(),
+  };
+
+  try {
+    const content = await fs.readFile(path.resolve(process.env.CAPTURE_SETTINGS_PATH || DEFAULT_SETTINGS_PATH), "utf8");
+    const parsed = JSON.parse(content);
+    return {
+      leftLabel: typeof parsed.leftLabel === "string" && parsed.leftLabel.trim() ? parsed.leftLabel.trim() : fallback.leftLabel,
+      rightLabel: typeof parsed.rightLabel === "string" && parsed.rightLabel.trim() ? parsed.rightLabel.trim() : fallback.rightLabel,
+      targetRepositoryOwnerSide: parsed.targetRepositoryOwnerSide === "left" ? "left" : parsed.targetRepositoryOwnerSide === "right" ? "right" : fallback.targetRepositoryOwnerSide,
+    };
+  } catch {
+    return fallback;
+  }
+}
+
+async function getConfig() {
+  const displaySettings = await readCaptureDisplaySettings();
   const repositoryPath = path.resolve(process.env.CAPTURE_REPO_PATH || process.cwd());
   const statePath = path.resolve(
     process.env.CAPTURE_STATE_PATH || path.join(process.cwd(), "data", "developer-capture-state.json")
@@ -29,19 +56,19 @@ function getConfig() {
     players: [
       {
         side: "left",
-        label: process.env.CAPTURE_LEFT_NAME || "Shadowmaster6g",
-        githubUrl: process.env.CAPTURE_LEFT_GITHUB_URL || "https://github.com/Shadowmaster6g",
+        label: displaySettings.leftLabel,
+        githubUrl: process.env.CAPTURE_LEFT_GITHUB_URL || DEFAULT_LEFT_GITHUB_URL,
         authors: splitAuthors(process.env.CAPTURE_LEFT_AUTHORS || "Shadowmaster6g"),
       },
       {
         side: "right",
-        label: process.env.CAPTURE_RIGHT_NAME || "sleepeeee",
-        githubUrl: process.env.CAPTURE_RIGHT_GITHUB_URL || "https://github.com/sleepeeee",
+        label: displaySettings.rightLabel,
+        githubUrl: process.env.CAPTURE_RIGHT_GITHUB_URL || DEFAULT_RIGHT_GITHUB_URL,
         authors: splitAuthors(process.env.CAPTURE_RIGHT_AUTHORS || "sleepeeee"),
       },
     ],
-    targetRepositoryUrl: process.env.CAPTURE_TARGET_REPOSITORY_URL || "https://github.com/sleepeeee/overwatch-social",
-    targetRepositoryOwnerSide: getRepositoryOwnerSide(),
+    targetRepositoryUrl: process.env.CAPTURE_TARGET_REPOSITORY_URL || DEFAULT_TARGET_REPOSITORY_URL,
+    targetRepositoryOwnerSide: displaySettings.targetRepositoryOwnerSide,
   };
 }
 
@@ -199,7 +226,7 @@ async function writeState(config, state) {
 }
 
 async function main() {
-  const config = getConfig();
+  const config = await getConfig();
   if (config.players.some(player => player.authors.length === 0)) {
     const state = createNeutralState(config, "missing-config", "尚未設定 CAPTURE_LEFT_AUTHORS 與 CAPTURE_RIGHT_AUTHORS。");
     await writeState(config, state);

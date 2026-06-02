@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Activity, AlertTriangle, Crown, Crosshair, ExternalLink, GitBranch, GitCommitHorizontal, RadioTower } from "lucide-react";
+import { saveCaptureDisplayNames } from "@/app/actions/developerCapture";
 import type { CapturePlayerStats, CaptureState } from "@/lib/developer-capture/types";
 
 interface CaptureMeterProps {
@@ -183,6 +184,9 @@ export default function CaptureMeter({ state }: CaptureMeterProps) {
   const [leftName, setLeftName] = useState(state.players[0].label);
   const [rightName, setRightName] = useState(state.players[1].label);
   const [ownerSide, setOwnerSide] = useState<"left" | "right">(state.targetRepositoryOwnerSide);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveMessage, setSaveMessage] = useState("");
+  const [saveError, setSaveError] = useState("");
   const left = { ...state.players[0], label: leftName || state.players[0].label };
   const right = { ...state.players[1], label: rightName || state.players[1].label };
   const displayState: CaptureState = { ...state, targetRepositoryOwnerSide: ownerSide, players: [left, right] };
@@ -193,6 +197,35 @@ export default function CaptureMeter({ state }: CaptureMeterProps) {
     : right.percent > left.percent
       ? "text-orange-400"
       : "text-slate-400";
+
+  const handleSaveDisplayNames = async () => {
+    if (isSaving) {
+      return;
+    }
+
+    setIsSaving(true);
+    setSaveMessage("");
+    setSaveError("");
+
+    try {
+      const result = await saveCaptureDisplayNames({
+        leftLabel: leftName,
+        rightLabel: rightName,
+        targetRepositoryOwnerSide: ownerSide,
+      });
+
+      if (!result.success) {
+        setSaveError(result.error || "儲存失敗");
+        return;
+      }
+
+      setSaveMessage("已儲存插件顯示名稱，重新整理後仍會保留。");
+    } catch {
+      setSaveError("執行 Server Action 發生未知錯誤");
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   return (
     <section
@@ -278,9 +311,22 @@ export default function CaptureMeter({ state }: CaptureMeterProps) {
                       ? "border-orange-400/50 bg-orange-400/10 text-orange-500"
                       : "border-slate-200 bg-white text-slate-500 hover:text-slate-800 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-400"
                   }`}
-                >
+                  >
                   {right.label}
                 </button>
+              </div>
+              <div className="space-y-1.5 pt-1">
+                <button
+                  type="button"
+                  onClick={handleSaveDisplayNames}
+                  disabled={isSaving}
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-cyan-400/30 bg-cyan-400/10 px-3 py-2 text-xs font-black text-cyan-500 transition hover:bg-cyan-400/15 disabled:cursor-not-allowed disabled:opacity-60 dark:text-cyan-300"
+                >
+                  {isSaving ? "儲存中..." : "儲存顯示名稱"}
+                </button>
+                <p className="min-h-4 text-[10px] font-semibold leading-relaxed text-slate-400">
+                  {saveError || saveMessage || "這只會保存插件畫面名稱，不會改 GitHub 帳號。"}
+                </p>
               </div>
             </div>
           </div>

@@ -3,6 +3,7 @@
 # 推送完成後會重新結算據點，不需要 GitHub API，也不需要 GitHub token。
 
 export CAPTURE_REPO_PATH="/absolute/path/to/worktree-or-bare-repo"
+export CAPTURE_SETTINGS_PATH="/absolute/path/to/overwatch-social/data/developer-capture-settings.json"
 export CAPTURE_STATE_PATH="/absolute/path/to/overwatch-social/data/developer-capture-state.json"
 export CAPTURE_TARGET_REPOSITORY_URL="https://github.com/sleepeeee/overwatch-social"
 export CAPTURE_TARGET_REPOSITORY_OWNER="right"
