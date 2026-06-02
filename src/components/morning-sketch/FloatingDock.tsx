@@ -9,6 +9,11 @@ export default function FloatingDock() {
   const pathname = usePathname();
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
 
+  // 在所有以 /developer 開頭的路徑下全域隱藏全站懸浮導航列，避免阻擋底部視線
+  if (pathname && pathname.startsWith("/developer")) {
+    return null;
+  }
+
   const navItems = [
     { id: "home", path: "/", label: "首頁", icon: Home },
     { id: "browse", path: "/browse", label: "名片廣場", icon: Compass },
