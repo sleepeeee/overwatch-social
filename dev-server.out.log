@@ -1,0 +1,52 @@
+
+> overwatch-social@0.1.0 dev
+> next dev -H 127.0.0.1
+
+▲ Next.js 16.2.6 (Turbopack)
+- Local:         http://127.0.0.1:3000
+- Network:       http://127.0.0.1:3000
+- Environments: .env.local
+✓ Ready in 509ms
+Creating turbopack project { dir: 'D:\\AI\\overwatch\\overwatch-social', testMode: true }
+
+ GET / 200 in 661ms (next.js: 255ms, proxy.ts: 89ms, application-code: 318ms)
+ GET /developer/capture-hud 200 in 146ms (next.js: 41ms, proxy.ts: 6ms, application-code: 98ms)
+ GET / 200 in 101ms (next.js: 7ms, proxy.ts: 9ms, application-code: 86ms)
+ GET /developer/capture-hud 200 in 89ms (next.js: 4ms, proxy.ts: 5ms, application-code: 80ms)
+ GET / 200 in 165ms (next.js: 8ms, proxy.ts: 12ms, application-code: 145ms)
+ GET /developer/capture-hud 200 in 101ms (next.js: 6ms, proxy.ts: 8ms, application-code: 87ms)
+ POST / 200 in 7.2s (next.js: 6ms, proxy.ts: 6ms, application-code: 7.2s)
+  └─ ƒ getAnnouncements() in 7170ms src/app/actions/homepage.ts
+ POST / 200 in 21ms (next.js: 5ms, proxy.ts: 5ms, application-code: 11ms)
+  └─ ƒ getCaptureStateSnapshot() in 2ms src/app/actions/developerCapture.ts
+ POST / 200 in 29ms (next.js: 7ms, proxy.ts: 8ms, application-code: 14ms)
+  └─ ƒ getCaptureStateSnapshot() in 2ms src/app/actions/developerCapture.ts
+ POST / 200 in 25ms (next.js: 6ms, proxy.ts: 7ms, application-code: 12ms)
+  └─ ƒ getCaptureStateSnapshot() in 2ms src/app/actions/developerCapture.ts
+ POST / 200 in 25ms (next.js: 5ms, proxy.ts: 5ms, application-code: 15ms)
+  └─ ƒ getCaptureStateSnapshot() in 3ms src/app/actions/developerCapture.ts
+ POST / 200 in 20ms (next.js: 4ms, proxy.ts: 5ms, application-code: 11ms)
+  └─ ƒ getCaptureStateSnapshot() in 2ms src/app/actions/developerCapture.ts
+ POST / 200 in 21ms (next.js: 5ms, proxy.ts: 5ms, application-code: 12ms)
+  └─ ƒ getCaptureStateSnapshot() in 2ms src/app/actions/developerCapture.ts
+ POST / 200 in 23ms (next.js: 5ms, proxy.ts: 6ms, application-code: 12ms)
+  └─ ƒ getCaptureStateSnapshot() in 2ms src/app/actions/developerCapture.ts
+ POST / 200 in 21ms (next.js: 5ms, proxy.ts: 7ms, application-code: 9ms)
+  └─ ƒ getCaptureStateSnapshot() in 1ms src/app/actions/developerCapture.ts
+ POST / 200 in 28ms (next.js: 5ms, proxy.ts: 6ms, application-code: 17ms)
+  └─ ƒ getCaptureStateSnapshot() in 2ms src/app/actions/developerCapture.ts
+ POST / 200 in 16ms (next.js: 4ms, proxy.ts: 3ms, application-code: 9ms)
+  └─ ƒ getCaptureStateSnapshot() in 2ms src/app/actions/developerCapture.ts
+ POST / 200 in 17ms (next.js: 4ms, proxy.ts: 4ms, application-code: 9ms)
+  └─ ƒ getCaptureStateSnapshot() in 1ms src/app/actions/developerCapture.ts
+ POST / 200 in 17ms (next.js: 5ms, proxy.ts: 4ms, application-code: 9ms)
+  └─ ƒ getCaptureStateSnapshot() in 1ms src/app/actions/developerCapture.ts
+ POST / 200 in 16ms (next.js: 4ms, proxy.ts: 3ms, application-code: 9ms)
+  └─ ƒ getCaptureStateSnapshot() in 1ms src/app/actions/developerCapture.ts
+ POST / 200 in 17ms (next.js: 4ms, proxy.ts: 3ms, application-code: 10ms)
+  └─ ƒ getCaptureStateSnapshot() in 2ms src/app/actions/developerCapture.ts
+✓ Compiled in 699ms
+ POST / 200 in 293ms (next.js: 255ms, proxy.ts: 11ms, application-code: 28ms)
+  └─ ƒ getCaptureStateSnapshot() in 13ms src/app/actions/developerCapture.ts
+ GET / 200 in 365ms (next.js: 170ms, proxy.ts: 64ms, application-code: 131ms)
+ GET /developer/capture-hud 200 in 300ms (next.js: 225ms, proxy.ts: 10ms, application-code: 65ms)

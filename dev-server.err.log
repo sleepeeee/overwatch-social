@@ -1,0 +1,60 @@
+⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+[browser] Uncaught Error: Hydration failed because the server rendered text didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <RedirectErrorBoundary router={{...}}>
+      <InnerLayoutRouter url="/developer..." tree={[...]} params={{}} cacheNode={{rsc:{...}, ...}} segmentPath={[...]} ...>
+        <SegmentViewNode type="page" pagePath="developer/...">
+          <SegmentTrieNode>
+          <Page>
+            <CaptureHudAdjusterClient initialState={{date:"2026...", ...}}>
+              <div className="min-h-scre..." style={{...}}>
+                <div className="min-h-scre...">
+                  <header>
+                  <main className="mx-auto gr...">
+                    <section>
+                    <section>
+                    <section className="grid gap-5...">
+                      <div>
+                        <div>
+                        <div className="home-hud-l..." style={{...}}>
+                          <div>
+                          <div className="relative z-10">
+                            <div>
+                            <div>
+                            <div>
+                            <div>
+                            <div className="mt-8 flex ...">
+                              <span>
+                              <span>
++                               06/03 03:56
+-                               06/03 03:56
+                              ...
+                      ...
+                    ...
+        ...
+      ...
+
+    at <unknown> (https://react.dev/link/hydration-mismatch)
+    at <unknown> (+                               06/03 03:56)
+    at <unknown> (-                               06/03 03:56)
+    at span (<anonymous>)
+    at CaptureHudAdjusterClient (src/app/developer/capture-hud/CaptureHudAdjusterClient.tsx:690:21)
+    at Page (src\app\developer\capture-hud\page.tsx:22:10)
+  688 |                   <div className="mt-8 flex flex-col gap-2 border-t border-slate-200 pt-3...
+  689 |                     <span>TIMEZONE: {displayState.timezone}</span>
+> 690 |                     <span>UPDATED: {formatDateTime(liveNow)}</span>
+      |                     ^
+  691 |                     <span className="text-emerald-500">HOMEPAGE_SAFE</span>
+  692 |                   </div>
+  693 |                 </div>

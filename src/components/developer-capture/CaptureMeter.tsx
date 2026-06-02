@@ -8,6 +8,7 @@ import type { CapturePlayerStats, CaptureState } from "@/lib/developer-capture/t
 interface CaptureMeterProps {
   state: CaptureState;
   showEditor?: boolean;
+  showLinks?: boolean;
 }
 
 function formatDateTime(value: string | Date): string {
@@ -131,23 +132,41 @@ function CaptureMarker({ percent, colorClass, color }: { percent: number; colorC
   );
 }
 
-function StatPanel({ player, tone, isOwner }: { player: CapturePlayerStats; tone: "left" | "right"; isOwner: boolean }) {
+function StatPanel({
+  player,
+  tone,
+  isOwner,
+  showLinks = true,
+}: {
+  player: CapturePlayerStats;
+  tone: "left" | "right";
+  isOwner: boolean;
+  showLinks?: boolean;
+}) {
   const toneClass = tone === "left" ? "text-cyan-500 dark:text-cyan-300" : "text-orange-500 dark:text-orange-300";
+  const nameNode = showLinks ? (
+    <a
+      href={player.githubUrl}
+      target="_blank"
+      rel="noreferrer"
+      className={`inline-flex max-w-full items-center gap-1 truncate text-xs font-black hover:underline ${toneClass}`}
+      title={player.githubUrl}
+    >
+      <GitBranch size={11} className="shrink-0" />
+      <span className="truncate">{player.label}</span>
+    </a>
+  ) : (
+    <span className={`inline-flex max-w-full items-center gap-1 truncate text-xs font-black ${toneClass}`}>
+      <GitBranch size={11} className="shrink-0" />
+      <span className="truncate">{player.label}</span>
+    </span>
+  );
 
   return (
     <div className="min-w-0 rounded-lg border border-slate-200/80 bg-slate-50 p-3 dark:border-slate-800/70 dark:bg-slate-950/35">
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
-          <a
-            href={player.githubUrl}
-            target="_blank"
-            rel="noreferrer"
-            className={`inline-flex max-w-full items-center gap-1 truncate text-xs font-black hover:underline ${toneClass}`}
-            title={player.githubUrl}
-          >
-            <GitBranch size={11} className="shrink-0" />
-            <span className="truncate">{player.label}</span>
-          </a>
+          {nameNode}
           {isOwner && (
             <span className="mt-1 inline-flex items-center gap-1 rounded border border-amber-400/30 bg-amber-400/10 px-1.5 py-0.5 text-[9px] font-black text-amber-500">
               <Crown size={10} />
@@ -173,6 +192,7 @@ function StatPanel({ player, tone, isOwner }: { player: CapturePlayerStats; tone
 }
 
 export default function CaptureMeter({ state, showEditor = false }: CaptureMeterProps) {
+export default function CaptureMeter({ state, showEditor = false, showLinks = true }: CaptureMeterProps) {
   const [liveNow, setLiveNow] = useState(() => new Date());
   const [leftName, setLeftName] = useState(state.players[0].label);
   const [rightName, setRightName] = useState(state.players[1].label);
@@ -344,16 +364,23 @@ export default function CaptureMeter({ state, showEditor = false }: CaptureMeter
           <div className="flex flex-col items-center justify-center gap-4 py-7 text-center">
             <div className="grid w-full max-w-md grid-cols-[minmax(58px,86px)_1fr_minmax(58px,86px)] items-center gap-3">
               <div className="min-w-0 text-left">
-                <a
-                  href={left.githubUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex max-w-full items-center gap-1 truncate text-xs font-black text-cyan-500 hover:underline dark:text-cyan-300"
-                  title={left.githubUrl}
-                >
-                  <GitBranch size={11} className="shrink-0" />
-                  <span className="truncate">{left.label}</span>
-                </a>
+                {showLinks ? (
+                  <a
+                    href={left.githubUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex max-w-full items-center gap-1 truncate text-xs font-black text-cyan-500 hover:underline dark:text-cyan-300"
+                    title={left.githubUrl}
+                  >
+                    <GitBranch size={11} className="shrink-0" />
+                    <span className="truncate">{left.label}</span>
+                  </a>
+                ) : (
+                  <span className="inline-flex max-w-full items-center gap-1 truncate text-xs font-black text-cyan-500 dark:text-cyan-300">
+                    <GitBranch size={11} className="shrink-0" />
+                    <span className="truncate">{left.label}</span>
+                  </span>
+                )}
                 <p className="text-xl font-black tabular-nums text-slate-900 dark:text-white">{left.percent}%</p>
               </div>
               <div className="relative h-8">
@@ -364,16 +391,23 @@ export default function CaptureMeter({ state, showEditor = false }: CaptureMeter
                 <CaptureMarker percent={left.percent} colorClass={markerColor} color={markerColorValue} />
               </div>
               <div className="min-w-0 text-right">
-                <a
-                  href={right.githubUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="ml-auto inline-flex max-w-full items-center gap-1 truncate text-xs font-black text-orange-500 hover:underline dark:text-orange-300"
-                  title={right.githubUrl}
-                >
-                  <GitBranch size={11} className="shrink-0" />
-                  <span className="truncate">{right.label}</span>
-                </a>
+                {showLinks ? (
+                  <a
+                    href={right.githubUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="ml-auto inline-flex max-w-full items-center gap-1 truncate text-xs font-black text-orange-500 hover:underline dark:text-orange-300"
+                    title={right.githubUrl}
+                  >
+                    <GitBranch size={11} className="shrink-0" />
+                    <span className="truncate">{right.label}</span>
+                  </a>
+                ) : (
+                  <span className="ml-auto inline-flex max-w-full items-center gap-1 truncate text-xs font-black text-orange-500 dark:text-orange-300">
+                    <GitBranch size={11} className="shrink-0" />
+                    <span className="truncate">{right.label}</span>
+                  </span>
+                )}
                 <p className="text-xl font-black tabular-nums text-slate-900 dark:text-white">{right.percent}%</p>
               </div>
             </div>
@@ -439,7 +473,7 @@ export default function CaptureMeter({ state, showEditor = false }: CaptureMeter
             </div>
 
             <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
-              <StatPanel player={left} tone="left" isOwner={ownerSide === "left"} />
+              <StatPanel player={left} tone="left" isOwner={ownerSide === "left"} showLinks={showLinks} />
               <div className="rounded-lg border border-slate-200/80 bg-slate-50 p-3 dark:border-slate-800/70 dark:bg-slate-950/35">
                 <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">據點狀態</p>
                 <p className="mt-1 text-sm font-black text-slate-900 dark:text-white">{meta.leader}</p>
@@ -447,7 +481,7 @@ export default function CaptureMeter({ state, showEditor = false }: CaptureMeter
                   {meta.message}
                 </p>
               </div>
-              <StatPanel player={right} tone="right" isOwner={ownerSide === "right"} />
+              <StatPanel player={right} tone="right" isOwner={ownerSide === "right"} showLinks={showLinks} />
             </div>
           </>
         )}

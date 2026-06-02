@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { AlertTriangle, ArrowLeft, Copy, Download, Moon, Package, Save, Sun } from "lucide-react";
 import { saveCaptureHudSettings } from "@/app/actions/developerCapture";
-import type { CaptureHudTheme, CapturePlayerStats, CaptureSide, CaptureState } from "@/lib/developer-capture/types";
+import HomeCaptureHud from "@/components/morning-sketch/HomeCaptureHud";
+import type { CaptureHudLayout, CaptureHudTheme, CapturePlayerStats, CaptureSide, CaptureState } from "@/lib/developer-capture/types";
 
 type PresetId = "live" | "winning" | "neutral" | "losing" | "missing" | "error" | "custom";
 type TabId = "exporter" | "spec" | "code";
@@ -57,21 +58,6 @@ const svgAssetList: Array<{ key: keyof typeof svgSources; name: string; tone: st
 
 function clampPercent(value: number): number {
   return Math.max(0, Math.min(100, Math.round(value)));
-}
-
-function formatDateTime(value: string | Date): string {
-  try {
-    return new Intl.DateTimeFormat("zh-TW", {
-      timeZone: "Asia/Taipei",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-      hourCycle: "h23",
-    }).format(value instanceof Date ? value : new Date(value));
-  } catch {
-    return "尚未同步";
-  }
 }
 
 function buildPlayer(base: CapturePlayerStats, percent: number, label: string): CapturePlayerStats {
@@ -137,69 +123,6 @@ function buildDisplayState(base: CaptureState, preset: PresetId, leftPercent: nu
     targetRepositoryOwnerSide: ownerSide,
     players: [buildPlayer(leftBase, safeLeft, leftName), buildPlayer(rightBase, safeRight, rightName)],
   };
-}
-
-function statusText(state: CaptureState): string {
-  if (state.status === "missing-config") {
-    return "AUTHOR_LINK_REQUIRED";
-  }
-
-  if (state.status === "git-error") {
-    return "DAEMON_READ_FAIL";
-  }
-
-  const [left, right] = state.players;
-  if (left.percent > right.percent) {
-    return "LEFT_ADVANTAGE";
-  }
-
-  if (right.percent > left.percent) {
-    return "RIGHT_ADVANTAGE";
-  }
-
-  return "CONTESTED";
-}
-
-function StatCard({
-  title,
-  leftLabel,
-  rightLabel,
-  leftValue,
-  rightValue,
-  leftAccent,
-  mode,
-}: {
-  title: string;
-  leftLabel: string;
-  rightLabel: string;
-  leftValue: string;
-  rightValue: string;
-  leftAccent: string;
-  mode: "commits" | "additions" | "deletions";
-}) {
-  const tone = mode === "additions" ? "text-emerald-500" : mode === "deletions" ? "text-rose-500" : "text-blue-500";
-
-  return (
-    <div className="rounded-md border border-slate-200 bg-white p-3 shadow-sm dark:border-slate-700 dark:bg-slate-950/70">
-      <div className="mb-3 flex items-center justify-between text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
-        <span>{title}</span>
-        <span className={tone}>{mode === "commits" ? "↔" : mode === "additions" ? "+" : "-"}</span>
-      </div>
-      <div className="grid grid-cols-[1fr_auto_1fr] items-end gap-2">
-        <div className="min-w-0 text-left">
-          <p className="truncate text-[10px] font-bold text-slate-500 dark:text-slate-300">{leftLabel}</p>
-          <p className={`text-sm font-black tabular-nums ${tone}`}>{leftValue}</p>
-        </div>
-        <div className="h-5 w-14 overflow-hidden rounded-sm bg-slate-200 dark:bg-slate-800">
-          <div className="h-full w-1/2" style={{ backgroundColor: leftAccent }} />
-        </div>
-        <div className="min-w-0 text-right">
-          <p className="truncate text-[10px] font-bold text-slate-500 dark:text-slate-300">{rightLabel}</p>
-          <p className={`text-sm font-black tabular-nums ${tone}`}>{rightValue}</p>
-        </div>
-      </div>
-    </div>
-  );
 }
 
 function ColorSwatch({
@@ -306,21 +229,16 @@ function buildProductionHtmlSnippet(): string {
 export default function CaptureHudAdjusterClient({ initialState }: CaptureHudAdjusterClientProps) {
   const [preset, setPreset] = useState<PresetId>("live");
   const [isDarkPreview, setIsDarkPreview] = useState(true);
-  const [liveNow, setLiveNow] = useState(() => new Date());
   const [leftPercent, setLeftPercent] = useState(initialState.players[0].percent || 68);
   const [leftName, setLeftName] = useState(initialState.players[0].label);
   const [rightName, setRightName] = useState(initialState.players[1].label);
   const [ownerSide, setOwnerSide] = useState<CaptureSide>(initialState.targetRepositoryOwnerSide);
   const [hudTheme, setHudTheme] = useState<CaptureHudTheme>(initialState.hudTheme);
+  const [hudLayout, setHudLayout] = useState<CaptureHudLayout>(initialState.hudLayout);
   const [activeTab, setActiveTab] = useState<TabId>("exporter");
   const [isSaving, setIsSaving] = useState(false);
-  const [saveMessage, setSaveMessage] = useState("本頁先預覽，按下保存後前台 HUD 才會更新。");
+  const [saveMessage, setSaveMessage] = useState("調整會即時顯示在首頁，按下保存才會永久保留。");
   const [assetMessage, setAssetMessage] = useState("SVG 素材只在本機下載或複製，不會寫入後端。");
-
-  useEffect(() => {
-    const timer = window.setInterval(() => setLiveNow(new Date()), 1000);
-    return () => window.clearInterval(timer);
-  }, []);
 
   const displayState = useMemo(
     () => buildDisplayState(initialState, preset, leftPercent, leftName, rightName, ownerSide),
@@ -330,14 +248,36 @@ export default function CaptureHudAdjusterClient({ initialState }: CaptureHudAdj
   const [left, right] = displayState.players;
   const markerLeft = clampPercent(left.percent);
   const isWarning = displayState.status === "missing-config" || displayState.status === "git-error";
-  const knobColor = left.percent > right.percent ? hudTheme.leftAccent : right.percent > left.percent ? hudTheme.rightAccent : "#94a3b8";
   const previewBackground = isDarkPreview ? hudTheme.darkBackground : hudTheme.lightBackground;
   const previewCard = isDarkPreview ? hudTheme.darkCard : hudTheme.lightCard;
   const updateHudTheme = (key: keyof CaptureHudTheme, value: string) => {
     setHudTheme(current => ({ ...current, [key]: value }));
   };
+  const updateHudLayout = (key: keyof CaptureHudLayout, value: number) => {
+    setHudLayout(current => ({ ...current, [key]: value }));
+  };
 
-  const handleSave = async () => {
+  const broadcastHudSync = useCallback(() => {
+    if (typeof BroadcastChannel === "undefined") {
+      return;
+    }
+
+    const channel = new BroadcastChannel("capture-hud-sync");
+    channel.postMessage({ type: "capture-hud-updated" });
+    channel.close();
+  }, []);
+
+  const broadcastHudPreview = useCallback((layout: CaptureHudLayout) => {
+    if (typeof BroadcastChannel === "undefined") {
+      return;
+    }
+
+    const channel = new BroadcastChannel("capture-hud-sync");
+    channel.postMessage({ type: "capture-hud-preview", layout });
+    channel.close();
+  }, []);
+
+  const persistHudSettings = useCallback(async () => {
     if (isSaving) {
       return;
     }
@@ -351,14 +291,26 @@ export default function CaptureHudAdjusterClient({ initialState }: CaptureHudAdj
         rightLabel: rightName,
         targetRepositoryOwnerSide: ownerSide,
         hudTheme,
+        hudLayout,
       });
       setSaveMessage(result.success ? "已儲存 HUD 顯示設定，重新整理後仍會保留。" : result.error || "儲存失敗");
+      if (result.success) {
+        broadcastHudSync();
+      }
     } catch {
       setSaveMessage("Server Action 發生未知錯誤。");
     } finally {
       setIsSaving(false);
     }
+  }, [broadcastHudSync, hudLayout, hudTheme, isSaving, leftName, ownerSide, rightName]);
+
+  const handleSave = async () => {
+    await persistHudSettings();
   };
+
+  useEffect(() => {
+    broadcastHudPreview(hudLayout);
+  }, [broadcastHudPreview, hudLayout]);
 
   const downloadFile = (content: string, filename: string, contentType: string) => {
     const blob = new Blob([content], { type: contentType });
@@ -474,7 +426,7 @@ export default function CaptureHudAdjusterClient({ initialState }: CaptureHudAdj
               <span className="h-3 w-1.5 rounded-sm bg-indigo-500" />
               主控台設定：變更名稱
             </div>
-            <div className="grid gap-4 lg:grid-cols-[1fr_1fr_1.15fr]">
+              <div className="grid gap-4 lg:grid-cols-[1fr_1fr_1.15fr]">
               <label className="space-y-2">
                 <span className="text-[11px] font-black text-slate-400">左方營地名稱（只同步本頁預覽）</span>
                 <input
@@ -523,6 +475,69 @@ export default function CaptureHudAdjusterClient({ initialState }: CaptureHudAdj
                 </div>
               </div>
             </div>
+
+            <div className="mt-5 rounded-md border border-dashed border-slate-300 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-950/40">
+              <div className="mb-3 flex items-center justify-between gap-2 text-xs font-black text-slate-500 dark:text-slate-300">
+                <div className="flex items-center gap-2">
+                  <span className="h-3 w-1.5 rounded-sm bg-violet-500" />
+                  HUD 位置與縮放
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setHudLayout(current => ({ ...current, offsetX: 0, offsetY: 0 }))}
+                  className="rounded-md border border-violet-400/30 bg-violet-400/10 px-2.5 py-1 text-[10px] font-black text-violet-600 transition hover:bg-violet-400/15 dark:text-violet-300"
+                >
+                  返回預設位置
+                </button>
+              </div>
+              <div className="grid gap-4 lg:grid-cols-3">
+                <label className="space-y-2">
+                  <div className="flex items-center justify-between text-[11px] font-black text-slate-400">
+                    <span>X 軸位移</span>
+                    <span className="font-mono text-slate-500">{hudLayout.offsetX}px</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="-160"
+                    max="160"
+                    step="1"
+                    value={hudLayout.offsetX}
+                    onChange={event => updateHudLayout("offsetX", Number(event.target.value))}
+                    className="h-2 w-full cursor-pointer accent-violet-500"
+                  />
+                </label>
+                <label className="space-y-2">
+                  <div className="flex items-center justify-between text-[11px] font-black text-slate-400">
+                    <span>Y 軸位移</span>
+                    <span className="font-mono text-slate-500">{hudLayout.offsetY}px</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="-120"
+                    max="120"
+                    step="1"
+                    value={hudLayout.offsetY}
+                    onChange={event => updateHudLayout("offsetY", Number(event.target.value))}
+                    className="h-2 w-full cursor-pointer accent-violet-500"
+                  />
+                </label>
+                <label className="space-y-2">
+                  <div className="flex items-center justify-between text-[11px] font-black text-slate-400">
+                    <span>縮放度</span>
+                    <span className="font-mono text-slate-500">{Math.round(hudLayout.scale * 100)}%</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="0.6"
+                    max="1.1"
+                    step="0.01"
+                    value={hudLayout.scale}
+                    onChange={event => updateHudLayout("scale", Number(event.target.value))}
+                    className="h-2 w-full cursor-pointer accent-violet-500"
+                  />
+                </label>
+              </div>
+            </div>
           </section>
 
           <section className="grid gap-5 xl:grid-cols-[minmax(0,1.25fr)_minmax(360px,0.75fr)]">
@@ -531,89 +546,8 @@ export default function CaptureHudAdjusterClient({ initialState }: CaptureHudAdj
                 <span>[ HUD 戰場即時渲染 ]</span>
                 <span>STATE: {isWarning ? "ALERT" : "READY"}</span>
               </div>
-              <div className="relative overflow-hidden rounded-lg border p-6 shadow-[0_0_0_1px_rgba(0,240,255,0.08)] dark:border-slate-700" style={{ backgroundColor: previewCard, borderColor: isDarkPreview ? "#334155" : "#bae6fd" }}>
-                <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.055] [background-image:linear-gradient(rgba(18,24,38,0)_50%,rgba(0,0,0,0.08)_50%)] [background-size:100%_7px] dark:opacity-[0.08] dark:[background-image:linear-gradient(rgba(18,24,38,0)_50%,rgba(0,0,0,0.16)_50%)]" />
-                <div className="relative z-10">
-                  <div className="mb-8 flex items-center justify-between">
-                    <p className="flex items-center gap-2 font-mono text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">
-                      <span className="h-4 w-1.5 bg-blue-500" />
-                      GIT OUTPOST LIVE HUD v1.0
-                    </p>
-                    <div className="rounded border bg-cyan-400/10 px-3 py-1 text-[11px] font-black" style={{ borderColor: `${knobColor}66`, color: knobColor }}>
-                      ● {statusText(displayState)}
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-[minmax(90px,1fr)_minmax(160px,2fr)_minmax(90px,1fr)] items-end gap-3">
-                    <div className="min-w-0">
-                      <p className="font-mono text-xs font-black uppercase text-slate-400">● LEFT CAMP</p>
-                      <div className="mt-1 flex flex-wrap items-baseline gap-2">
-                        <h2 className="truncate text-2xl font-black text-slate-950 dark:text-white">{left.label}</h2>
-                        {ownerSide === "left" && (
-                          <span className="inline-flex items-center gap-1 rounded-sm border border-cyan-400/30 bg-cyan-400/10 px-1.5 py-0.5 text-[9px] font-black text-cyan-500">
-                            <RepoOwnerIcon />
-                            倉庫所有者
-                          </span>
-                        )}
-                        <span className="font-mono text-xs font-black" style={{ color: hudTheme.leftAccent }}>{left.score} PTS</span>
-                      </div>
-                    </div>
-                    <div className="text-center font-mono text-[10px] font-black uppercase tracking-widest text-slate-400">
-                      SEC_01 // TRACKING
-                    </div>
-                    <div className="min-w-0 text-right">
-                      <p className="font-mono text-xs font-black uppercase text-slate-400">RIGHT CAMP ●</p>
-                      <div className="mt-1 flex flex-wrap items-baseline justify-end gap-2">
-                        <span className="font-mono text-xs font-black" style={{ color: hudTheme.rightAccent }}>{right.score} PTS</span>
-                        {ownerSide === "right" && (
-                          <span className="inline-flex items-center gap-1 rounded-sm border border-orange-400/30 bg-orange-400/10 px-1.5 py-0.5 text-[9px] font-black text-orange-500">
-                            <RepoOwnerIcon />
-                            倉庫所有者
-                          </span>
-                        )}
-                        <h2 className="truncate text-2xl font-black text-slate-950 dark:text-white">{right.label}</h2>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="mt-6">
-                    <div className="mb-2 flex items-center justify-between font-mono text-sm font-black">
-                      <span style={{ color: hudTheme.leftAccent }}>{left.percent}%</span>
-                      <span style={{ color: hudTheme.rightAccent }}>{right.percent}%</span>
-                    </div>
-                    <div className="relative h-8">
-                      <div className="absolute inset-x-0 top-1/2 flex h-3 -translate-y-1/2 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-950">
-                        <div className="h-full transition-[width] duration-500" style={{ width: `${left.percent}%`, backgroundColor: hudTheme.leftAccent }} />
-                        <div className="h-full transition-[width] duration-500" style={{ width: `${right.percent}%`, backgroundColor: hudTheme.rightAccent }} />
-                      </div>
-                      <div
-                        className="absolute top-1/2 grid h-8 w-8 -translate-x-1/2 -translate-y-1/2 place-items-center transition-[left] duration-500"
-                        style={{ left: `${Math.min(98, Math.max(2, markerLeft))}%` }}
-                      >
-                        <RadarKnobSvg color={knobColor} />
-                      </div>
-                    </div>
-                  </div>
-
-                  {isWarning ? (
-                    <div className="mt-7 rounded-md border border-amber-400/40 bg-amber-400/10 p-4 text-center">
-                      <AlertTriangle className="mx-auto text-amber-500" size={28} />
-                      <p className="mt-2 text-sm font-black text-amber-500">{displayState.message}</p>
-                    </div>
-                  ) : (
-                    <div className="mt-7 grid gap-3 md:grid-cols-3">
-                      <StatCard title="Commits" mode="commits" leftLabel={left.label} rightLabel={right.label} leftAccent={hudTheme.leftAccent} leftValue={String(left.commits)} rightValue={String(right.commits)} />
-                      <StatCard title="Additions（新增行數）" mode="additions" leftLabel={left.label} rightLabel={right.label} leftAccent={hudTheme.leftAccent} leftValue={`+${left.additions}`} rightValue={`+${right.additions}`} />
-                      <StatCard title="Deletions（刪除行數）" mode="deletions" leftLabel={left.label} rightLabel={right.label} leftAccent={hudTheme.leftAccent} leftValue={`-${left.deletions}`} rightValue={`-${right.deletions}`} />
-                    </div>
-                  )}
-
-                  <div className="mt-8 flex flex-col gap-2 border-t border-slate-200 pt-3 font-mono text-[10px] font-black text-slate-400 dark:border-slate-800 sm:flex-row sm:items-center sm:justify-between">
-                    <span>TIMEZONE: {displayState.timezone}</span>
-                    <span>UPDATED: {formatDateTime(liveNow)}</span>
-                    <span className="text-emerald-500">HOMEPAGE_SAFE</span>
-                  </div>
-                </div>
+              <div className="rounded-lg border p-6 shadow-[0_0_0_1px_rgba(0,240,255,0.08)] dark:border-slate-700" style={{ backgroundColor: previewCard, borderColor: isDarkPreview ? "#334155" : "#bae6fd" }}>
+                <HomeCaptureHud applyLayout={false} />
               </div>
             </div>
 

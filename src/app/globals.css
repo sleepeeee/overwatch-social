@@ -609,6 +609,13 @@ html, body {
     inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
 }
 
+/* 首頁 HUD 位置與縮放控制 */
+.home-hud-layout {
+  transform: translate3d(var(--hud-home-x, 0px), var(--hud-home-y, 0px), 0) scale(var(--hud-home-scale, 1));
+  transform-origin: top left;
+  will-change: transform;
+}
+
 .watercolor-avatar-bg {
   background: radial-gradient(circle at 65% 35%, rgba(130, 183, 204, 0.18) 0%, rgba(245, 212, 107, 0.12) 40%, transparent 80%) !important;
 }

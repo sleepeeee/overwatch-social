@@ -9,6 +9,12 @@ export interface CaptureHudTheme {
   rightAccent: string;
 }
 
+export interface CaptureHudLayout {
+  offsetX: number;
+  offsetY: number;
+  scale: number;
+}
+
 export interface CapturePlayerConfig {
   side: CaptureSide;
   label: string;
@@ -22,6 +28,7 @@ export interface CaptureConfig {
   targetRepositoryUrl: string;
   targetRepositoryOwnerSide: CaptureSide;
   hudTheme: CaptureHudTheme;
+  hudLayout: CaptureHudLayout;
   players: [CapturePlayerConfig, CapturePlayerConfig];
 }
 
@@ -44,6 +51,7 @@ export interface CaptureState {
   targetRepositoryUrl: string;
   targetRepositoryOwnerSide: CaptureSide;
   hudTheme: CaptureHudTheme;
+  hudLayout: CaptureHudLayout;
   players: [CapturePlayerStats, CapturePlayerStats];
   status: "ready" | "neutral" | "missing-config" | "git-error";
   message: string;

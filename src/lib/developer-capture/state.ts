@@ -20,6 +20,7 @@ function createNeutralState(
     targetRepositoryUrl: config.targetRepositoryUrl,
     targetRepositoryOwnerSide: config.targetRepositoryOwnerSide,
     hudTheme: config.hudTheme,
+    hudLayout: config.hudLayout,
     status,
     message,
     players: [
@@ -61,9 +62,10 @@ export async function readCaptureState(): Promise<CaptureState> {
     return {
       ...state,
       targetRepositoryUrl: state.targetRepositoryUrl || config.targetRepositoryUrl,
-      targetRepositoryOwnerSide: displaySettings.targetRepositoryOwnerSide || state.targetRepositoryOwnerSide || config.targetRepositoryOwnerSide,
-      hudTheme: displaySettings.hudTheme,
-      players: [
+    targetRepositoryOwnerSide: displaySettings.targetRepositoryOwnerSide || state.targetRepositoryOwnerSide || config.targetRepositoryOwnerSide,
+    hudTheme: displaySettings.hudTheme,
+    hudLayout: displaySettings.hudLayout,
+    players: [
         {
           ...state.players[0],
           label: displaySettings.leftLabel || state.players[0].label || config.players[0].label,
@@ -82,6 +84,7 @@ export async function readCaptureState(): Promise<CaptureState> {
       ...fallbackState,
       targetRepositoryOwnerSide: displaySettings.targetRepositoryOwnerSide,
       hudTheme: displaySettings.hudTheme,
+      hudLayout: displaySettings.hudLayout,
       players: [
         {
           ...fallbackState.players[0],
@@ -122,6 +125,7 @@ export async function recalculateCaptureState(now = new Date()): Promise<Capture
       targetRepositoryUrl: config.targetRepositoryUrl,
       targetRepositoryOwnerSide: config.targetRepositoryOwnerSide,
       hudTheme: config.hudTheme,
+      hudLayout: config.hudLayout,
       players,
       status: totalScore > 0 ? "ready" : "neutral",
       message: totalScore > 0 ? "據點戰報已更新。" : "今日尚無可計分提交，據點維持中立。",

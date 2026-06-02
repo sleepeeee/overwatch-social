@@ -3,7 +3,7 @@
 import { useEffect, useState, type CSSProperties } from "react";
 import { Activity, Crosshair, Crown, GitCommitHorizontal, Loader2, RadioTower } from "lucide-react";
 import { getCaptureStateSnapshot } from "@/app/actions/developerCapture";
-import type { CaptureState } from "@/lib/developer-capture/types";
+import type { CaptureHudLayout, CaptureState } from "@/lib/developer-capture/types";
 
 function formatDateTime(value: string | Date): string {
   try {
@@ -119,10 +119,19 @@ function StatChip({
   );
 }
 
-export default function HomeCaptureHud() {
+export default function HomeCaptureHud({ applyLayout = true }: { applyLayout?: boolean }) {
+  return <HomeCaptureHudContent applyLayout={applyLayout} />;
+}
+
+interface HomeCaptureHudContentProps {
+  applyLayout: boolean;
+}
+
+function HomeCaptureHudContent({ applyLayout }: HomeCaptureHudContentProps) {
   const [captureState, setCaptureState] = useState<CaptureState | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [liveNow, setLiveNow] = useState(() => new Date());
+  const [previewHudLayout, setPreviewHudLayout] = useState<CaptureHudLayout | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -159,6 +168,27 @@ export default function HomeCaptureHud() {
 
     window.addEventListener("focus", refreshOnFocus);
     document.addEventListener("visibilitychange", refreshOnVisible);
+    let channel: BroadcastChannel | null = null;
+
+    if (typeof BroadcastChannel !== "undefined") {
+      channel = new BroadcastChannel("capture-hud-sync");
+      channel.onmessage = event => {
+        const message = event.data as
+          | { type?: string; layout?: CaptureHudLayout }
+          | null
+          | undefined;
+
+        if (message?.type === "capture-hud-preview" && message.layout) {
+          setPreviewHudLayout(message.layout);
+          return;
+        }
+
+        if (message?.type === "capture-hud-updated") {
+          setPreviewHudLayout(null);
+          void syncCaptureState();
+        }
+      };
+    }
 
     return () => {
       active = false;
@@ -166,6 +196,7 @@ export default function HomeCaptureHud() {
       window.clearInterval(clockTimer);
       window.removeEventListener("focus", refreshOnFocus);
       document.removeEventListener("visibilitychange", refreshOnVisible);
+      channel?.close();
     };
   }, []);
 
@@ -198,6 +229,12 @@ export default function HomeCaptureHud() {
   const ownerSide = captureState.targetRepositoryOwnerSide;
   const isLeftOwner = ownerSide === "left";
   const isRightOwner = ownerSide === "right";
+  const effectiveHudLayout = previewHudLayout ?? captureState.hudLayout;
+  const hudLayoutStyle = {
+    "--hud-home-x": `${effectiveHudLayout.offsetX}px`,
+    "--hud-home-y": `${effectiveHudLayout.offsetY}px`,
+    "--hud-home-scale": String(effectiveHudLayout.scale),
+  } as CSSProperties;
   const hudStyle = {
     "--hud-mini-bg": captureState.hudTheme.lightBackground,
     "--hud-mini-card": captureState.hudTheme.lightCard,
@@ -206,8 +243,8 @@ export default function HomeCaptureHud() {
   return (
     <section
       aria-label="首頁戰報 HUD"
-      className="glass-panel relative w-full overflow-hidden border border-white/60 bg-[var(--hud-mini-bg)] p-4 text-[#3e2723] shadow-[0_14px_40px_rgba(140,124,108,0.08)] backdrop-blur-xl"
-      style={hudStyle}
+      className={`glass-panel relative w-full overflow-hidden border border-white/60 bg-[var(--hud-mini-bg)] p-4 text-[#3e2723] shadow-[0_14px_40px_rgba(140,124,108,0.08)] backdrop-blur-xl ${applyLayout ? "home-hud-layout" : ""}`}
+      style={applyLayout ? { ...hudStyle, ...hudLayoutStyle } : hudStyle}
     >
       <div
         aria-hidden="true"

@@ -54,6 +54,7 @@ export function getCaptureConfig(): CaptureConfig {
     targetRepositoryUrl: process.env.CAPTURE_TARGET_REPOSITORY_URL?.trim() || DEFAULT_TARGET_REPOSITORY_URL,
     targetRepositoryOwnerSide: displaySettings.targetRepositoryOwnerSide,
     hudTheme: displaySettings.hudTheme,
+    hudLayout: displaySettings.hudLayout,
     players: [createPlayerConfig("left", displaySettings), createPlayerConfig("right", displaySettings)],
   };
 

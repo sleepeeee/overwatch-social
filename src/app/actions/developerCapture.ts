@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { revalidatePath, unstable_noStore as noStore } from "next/cache";
 import { saveCaptureDisplayLabels, saveCaptureDisplaySettings } from "@/lib/developer-capture/settings";
 import { readCaptureState } from "@/lib/developer-capture/state";
-import type { CaptureHudTheme, CaptureSide } from "@/lib/developer-capture/types";
+import type { CaptureHudLayout, CaptureHudTheme, CaptureSide } from "@/lib/developer-capture/types";
 
 async function ensureDeveloper() {
   if (process.env.CAPTURE_REQUIRE_AUTH !== "true") {
@@ -58,6 +58,7 @@ export async function saveCaptureHudSettings(input: {
   rightLabel: string;
   targetRepositoryOwnerSide: CaptureSide;
   hudTheme: CaptureHudTheme;
+  hudLayout: CaptureHudLayout;
 }): Promise<{ success: boolean; error?: string }> {
   try {
     await ensureDeveloper();
@@ -74,6 +75,7 @@ export async function saveCaptureHudSettings(input: {
       rightLabel,
       targetRepositoryOwnerSide: input.targetRepositoryOwnerSide,
       hudTheme: input.hudTheme,
+      hudLayout: input.hudLayout,
     });
     revalidatePath("/developer");
     revalidatePath("/developer/capture-hud");
