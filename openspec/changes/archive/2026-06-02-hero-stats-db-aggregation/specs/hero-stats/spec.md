@@ -43,7 +43,7 @@ Function SHALL 包含 `SET search_path = public` 防止 schema 注入攻擊。
 - THEN `pg_proc.prosettings` 包含 `search_path=public` 設定
 - AND Function 以 `SECURITY DEFINER` 定義
 
-## MODIFIED Requirements
+## ADDED Requirements
 
 ### Requirement: getHeroStats Server Action 改用 RPC
 `developer.ts:getHeroStats()` SHALL 改用 `supabase.rpc('get_hero_stats')` 替代原有的 LIMIT 500 + JS 聚合邏輯。

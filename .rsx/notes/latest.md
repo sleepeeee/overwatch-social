@@ -7,15 +7,17 @@
 ---
 
 <!-- ZONE_A_START -->
-> **Zone A 最後更新：2026-06-02**
+> **Zone A 最後更新：2026-06-03**
 
 ## 現在在做什麼
 
-空閒。三個 change 全部歸檔完成（auth-fix、auth-ux、developer-console）。
+`hero-stats-db-aggregation` ARCHIVE 前置完成（Pre-archive Gate PASS、F-005/ADR-05 已建）。等待主代理執行 `openspec archive hero-stats-db-aggregation`。
 
 ## 進行中的 Changes（未 archive）
 
-（無）
+| Change | 狀態 | 備註 |
+|---|---|---|
+| hero-stats-db-aggregation | Gate PASS，等待 archive | F-005/ADR-05 已建；雙向 crossref 回填完成 |
 
 ## 待 Propose Changes
 
@@ -34,6 +36,12 @@
 ---
 
 ## Zone B — 工作日誌（追加，由新到舊）
+
+### 2026-06-03 hero-stats-db-aggregation — ARCHIVE 前置（Gate + Finding/ADR）
+
+- **已完成**：§Z Gate 最終 PASS（修復 crossref 對稱 FAIL + 狀態檔同步 FAIL）；建 F-005（LIMIT 500 + JS 端聚合缺陷確認，修復後全量統計驗收 commit a7c8573）；建 ADR-05（SQL function SECURITY DEFINER + LATERAL unnest vs Server Action 端聚合決策）；雙向 crossref 回填（REF-004 referenced_by 加 REF-010/REF-011；REF-005 referenced_by 加 REF-011；REF-010 referenced_by 加 REF-012/F-005/ADR-05；REF-011 referenced_by 加 REF-012/F-005/ADR-05；REF-012 referenced_by 加 F-005）；latest.md Zone A 更新
+- **卡關**：無
+- **下次優先**：主代理執行 `openspec archive hero-stats-db-aggregation`
 
 ### 2026-06-02 developer-console-backend — ARCHIVE 前置（Gate + Finding/ADR）
 

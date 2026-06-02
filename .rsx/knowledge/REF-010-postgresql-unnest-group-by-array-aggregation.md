@@ -8,7 +8,7 @@ version: "PostgreSQL 15+"
 last_updated: 2026-06-03
 official: true
 references_to: [REF-004]
-referenced_by: []
+referenced_by: [REF-012, F-005, ADR-05]
 ---
 
 ## 摘要

@@ -122,7 +122,8 @@ supabase/migrations/
 ├── 005_game_tags.sql              # game_tags 表（特色標籤系統）
 ├── 006_profiles_grant.sql         # GRANT SELECT/INSERT/UPDATE/DELETE → authenticated
 ├── 007_public_profiles_social.sql # public_profiles view 更新
-└── 008_fix_social_channels_privacy.sql # RLS policy（authenticated 可讀 visible profiles）
+├── 008_fix_social_channels_privacy.sql # RLS policy（authenticated 可讀 visible profiles）
+└── 009_hero_stats_function.sql        # get_hero_stats() RPC（unnest + COUNT DISTINCT + SECURITY DEFINER）
 ```
 
 ## 認證與權限系統
@@ -183,6 +184,7 @@ social_channels 讀取：需登入，透過 authenticated RLS policy 直接查 p
 - ADR-07：開發者用戶管理使用 on-demand Server Action（developer-console-enhancements）→ .rsx/decisions/ADR-04-developer-user-management-on-demand-server-action
 - ADR-08：玩家詳細頁 social_channels 透過 authenticated 直接查 profiles 表（不放入 public view）→ .rsx/decisions/ADR-06-player-detail-social-channels-via-authenticated-direct-query
 - ADR-09：AuthContext 同時使用 getUser() + onAuthStateChange（React 19 Strict Mode 修正）→ .rsx/decisions/ADR-07-authcontext-getuser-plus-onauthstatechange-dual-init
+- ADR-10：英雄統計採 SQL function SECURITY DEFINER + LATERAL unnest（vs Server Action 端聚合）→ .rsx/decisions/ADR-05-hero-stats-sql-rpc-security-definer
 
 ## 下一步開發計畫
 1. 完成 串接 Supabase
