@@ -17,7 +17,10 @@
 | **首頁頁面** | `home` | `src/app/page.tsx` | `/` | 登入前的Landing Page、朝陽全息視覺主頁 |
 | **鬥陣特攻廣場** | `ow lobby` | `src/app/browse/page.tsx` | `/browse` | 玩家名片交友廣場，讀取公用檔案清單 |
 | **個人檔案頁面** | `profile` | `src/app/profile/page.tsx` | `/profile` | 玩家個人名片編輯與特工檔案設定 |
+| **玩家詳細頁** | `player detail` | `src/app/player/[id]/page.tsx` | `/player/[id]` | 單一玩家的公開名片詳細頁（未登入可看基本資料） |
 | **開發者後台** | `dev console` | `src/app/developer/page.tsx` | `/developer` | 提供給 Admin/開發者的參數管理後台 |
+| **標籤管理器** | `tags manager` | `src/app/developer/tags-manager/` | `/developer/tags-manager` | 特色標籤系統管理（developer-only）|
+| **首頁調校儀** | `homepage aligner` | `src/app/developer/homepage-aligner/` | `/developer/homepage-aligner` | 首頁公告內容精密調校（developer-only）|
 | **認證跳轉頁** | `auth` | `src/app/auth/` | `/auth/*` | Google OAuth 的 Callback 與錯誤處理頁面 |
 
 ### 🧩 核心 UI 元件 (Key Components)
@@ -27,8 +30,8 @@
 | **鬥陣特攻卡片** | `ow card` | `src/components/OWCard.tsx` | 手帳風格的玩家名片主元件（含隱私遮蔽） |
 | **鬥陣特攻大廳區塊**| `ow square` | `src/components/square/OverwatchSquare.tsx` | 包裹於大廳內、鬥陣特攻專用的名片渲染器 |
 | **特工名片背景** | `card bg` | `src/components/HeroCardBackground.tsx` | 用於名片元件內，渲染特定英雄特色背景 |
+| **頂部導覽列** | `top bar` | `src/components/TopBar.tsx` | 三頁統一的登入/登出 TopBar（使用 useAuth()）|
 | **懸浮導覽列** | `floating dock` | `src/components/morning-sketch/FloatingDock.tsx` | 底部圓潤磨砂玻璃懸浮導覽列（首頁/廣場/個人） |
-| **側邊欄** | `sidebar` | `src/components/morning-sketch/AppSidebar.tsx` | 右側或左側的全局側邊欄 |
 | **精選特工展示區** | `featured artists` | `src/components/morning-sketch/FeaturedArtists.tsx`| 大廳下方的精選藝術家/特工展示區塊 |
 | **互動式頭像** | `interactive avatar` | `src/components/InteractiveAvatar.tsx` | 懸停時會顯示動態效果或狀態的玩家頭像 |
 | **風雅樣式選擇器** | `style picker` | `src/components/morning-sketch/StylePicker.tsx` | 調整整體視覺風格、色彩補償的樣式面板 |
@@ -51,38 +54,47 @@ npm run build    # 正式打包
 
 ```
 src/app/
-├── page.tsx                      # 首頁（含登入/登出按鈕、user state）
-├── layout.tsx                    # 全域 Layout（FloatingDock + DevModeBanner）
-├── browse/page.tsx               # 名片交友廣場（呼叫各 Square 子元件）
+├── page.tsx                      # 首頁（TopBar + 玩家卡輪播）
+├── layout.tsx                    # 全域 Layout（AuthProvider + FloatingDock）
+├── browse/page.tsx               # 名片交友廣場（authLoading spinner + Square 子元件）
 ├── profile/page.tsx              # 個人名片設定（LoginModal overlay 守門）
+├── player/[id]/page.tsx          # 玩家詳細頁（Server Component，含 generateMetadata）
 ├── developer/
 │   ├── page.tsx                  # 開發者後台（server-side developer role 守門）
-│   ├── DeveloperConsoleClient.tsx # 後台 UI（白名單管理、系統統計）
-│   └── adjuster/                 # 英雄立繪對準儀（developer-only）
-│       ├── page.tsx
-│       └── AdjusterClientPage.tsx
+│   ├── DeveloperConsoleClient.tsx # 後台 UI（白名單/統計/用戶管理/英雄流行度）
+│   ├── adjuster/                 # 英雄立繪對準儀（developer-only）
+│   ├── tags-manager/             # 特色標籤管理（developer-only）
+│   └── homepage-aligner/         # 首頁公告調校儀（developer-only）
 ├── auth/
 │   ├── callback/route.ts         # Google OAuth callback（PKCE code exchange）
 │   └── error/page.tsx            # OAuth 失敗錯誤頁
 └── actions/
-    ├── profile.ts                # getMyProfile / saveProfile（含伺服器端輸入驗證）
-    ├── developer.ts              # 開發者 actions（白名單管理、系統統計）
+    ├── profile.ts                # getMyProfile / saveProfile（getUser() 驗證）
+    ├── developer.ts              # 開發者 actions（白名單管理、統計、用戶查詢）
+    ├── homepage.ts               # 首頁公告 CRUD（Supabase announcements 表）
+    ├── tags.ts                   # 特色標籤管理 actions
     ├── alignment.ts              # getHeroAlignments（DB 讀 + 靜態 fallback）
     └── saveAlignment.ts          # saveHeroAlignments（Supabase upsert）
 
+src/context/
+└── AuthContext.tsx                # 全域 AuthContext（getUser + onAuthStateChange 雙軌）
+
 src/components/
+├── TopBar.tsx                    # 統一頂部導覽（Google 登入/登出，三頁共用）
 ├── LoginModal.tsx                # 通用登入彈窗（closable/title/description props）
-├── DevModeBanner.tsx             # 開發者模式橫幅（app_metadata.role=developer）
+├── DevModeBanner.tsx             # 開發者模式橫幅（useAuth()，需在 AuthProvider 內）
 ├── OWCard.tsx                    # 名片元件（隱私遮蔽、onLoginRequired callback）
 ├── HeroCardBackground.tsx        # 英雄卡背景主題
 ├── InteractiveAvatar.tsx         # 互動頭像元件
-├── square/                       # 遊戲廣場子元件（Shadowmaster6g 開發）
-│   ├── OverwatchSquare.tsx       # 鬥陣特工廣場（含 is_tag_visible DB 過濾）
-│   ├── LoLSquare.tsx             # 英雄聯盟廣場
-│   └── ValorantSquare.tsx        # 特戰英豪廣場
-├── morning-sketch/               # 朝陽全息視覺元件群（Shadowmaster6g 開發）
+├── square/                       # 遊戲廣場子元件
+│   ├── OverwatchSquare.tsx       # 鬥陣特工廣場（server-side ilike 搜尋 + Load More）
+│   ├── LoLSquare.tsx             # 英雄聯盟廣場（coming-soon 佔位）
+│   └── ValorantSquare.tsx        # 特戰英豪廣場（coming-soon 佔位）
+├── morning-sketch/               # 朝陽全息視覺元件群
 │   ├── FloatingDock.tsx          # 全局懸浮導覽
-│   ├── AppSidebar.tsx            # 側邊欄（含 signOut，未掛載）
+│   ├── LotusWelcomeWidget.tsx    # 首頁公告展示元件（從 announcements 表讀取）
+│   ├── LuckyAlly.tsx             # 每日幸友翻牌元件
+│   ├── FeaturedArtists.tsx       # 精選特工 + 揪團活動展示
 │   └── ...其他視覺元件
 └── ui/                           # shadcn/ui 元件
 
@@ -100,10 +112,17 @@ src/lib/supabase/
 
 src/middleware.ts                  # Session token 刷新（不做 route protection）
 src/types/card.ts                  # OWPlayerCard TypeScript 型別
+src/types/homepage.ts              # AnnouncementItem / AlignmentConfig 型別
 supabase/migrations/
 ├── 001_profiles.sql               # profiles 表 + RLS + public_profiles view
 ├── 002_developer_whitelist.sql    # developer_whitelist 表 + 自動角色 Trigger
-└── 003_hero_alignments.sql        # hero_alignments 表 + RLS + 51 筆 seed
+├── 003_hero_alignments.sql        # hero_alignments 表 + RLS + 51 筆 seed
+├── 004_developer_profiles_policy.sql # developer SELECT policy（跨用戶讀 profiles）
+├── 005_announcements.sql          # announcements 表 + RLS + 4 筆 seed
+├── 005_game_tags.sql              # game_tags 表（特色標籤系統）
+├── 006_profiles_grant.sql         # GRANT SELECT/INSERT/UPDATE/DELETE → authenticated
+├── 007_public_profiles_social.sql # public_profiles view 更新
+└── 008_fix_social_channels_privacy.sql # RLS policy（authenticated 可讀 visible profiles）
 ```
 
 ## 認證與權限系統
@@ -129,16 +148,17 @@ WHERE email = 'email@example.com';
 ```
 
 ### 守門架構
-- /developer、/developer/adjuster：Server Component redirect("/")
-- /profile：Client Component LoginModal overlay（authLoading guard）
+- /developer、/developer/adjuster、/developer/tags-manager、/developer/homepage-aligner：Server Component redirect("/")
+- /profile：Client Component LoginModal overlay（show={!authLoading && !user}）
 - OWCard 互動：onLoginRequired callback → 父層開啟 LoginModal
-- Server Actions：各自含 auth check（ensureDeveloper() / getClaims()）
+- Server Actions：各自含 auth check（ensureDeveloper() / getUser()）
 
 ## 資料庫結構
 
 ### profiles 表
-用戶名片（battle_tag、英雄、標籤等）。RLS：本人讀寫。
-public_profiles view：公開可查，DB 層已過濾 is_tag_visible=false 的資料。
+用戶名片（battle_tag、英雄、標籤等）。RLS：本人讀寫；developer 可讀全部。
+public_profiles view：公開可查（anon/authenticated），不含 social_channels。
+social_channels 讀取：需登入，透過 authenticated RLS policy 直接查 profiles 表。
 
 ### developer_whitelist 表
 開發者 email 白名單。Trigger on_auth_user_role_sync：登入時自動同步 app_metadata.role=developer。
@@ -146,30 +166,33 @@ public_profiles view：公開可查，DB 層已過濾 is_tag_visible=false 的�
 ### hero_alignments 表
 英雄立繪對準參數（scale/translate_x/translate_y）。公開讀；developer 可寫。
 
+### announcements 表
+首頁公告（num、tag、title、color、message、custom_icon_url、alignments）。
+公開讀；developer 可寫。LotusWelcomeWidget 讀取，developer/homepage-aligner 管理。
+
+### game_tags 表
+特色標籤系統（由 /developer/tags-manager 管理）。
+
 ## 重要設計決策（ADR）
 - ADR-01：DB view 隱私遮蔽（vs 前端）
 - ADR-02：app_metadata developer 角色（vs env 白名單）
 - ADR-03：LoginModal 共用元件
 - ADR-04：hero_alignments DB read + static fallback
-- ADR-05：TopBar 統一 Client Component（auth-topbar-unification）→ .rsx/decisions/ADR-02
-- ADR-06：AuthContext at layout + useAuth hook（auth-context-refactor）→ .rsx/decisions/ADR-03
-- ADR-07：開發者用戶管理使用 on-demand Server Action（developer-console-enhancements）→ .rsx/decisions/ADR-04
-- ADR-08：玩家詳細頁 social_channels 透過 authenticated 直接查 profiles 表（不放入 public view）→ .rsx/decisions/ADR-06
-- ADR-09：AuthContext 同時使用 getUser() + onAuthStateChange（React 19 Strict Mode 修正）→ .rsx/decisions/ADR-07
-
-## 已知 Dead Code（程式碼正確但未掛載）
-- src/components/Navbar.tsx：有完整登入/登出，未掛載
-- src/components/morning-sketch/AppSidebar.tsx：有 signOut，未掛載
+- ADR-05：TopBar 統一 Client Component（auth-topbar-unification）→ .rsx/decisions/ADR-02-topbar-as-shared-client-component
+- ADR-06：AuthContext at layout + useAuth hook（auth-context-refactor）→ .rsx/decisions/ADR-03-authcontext-at-layout-with-useauth-hook
+- ADR-07：開發者用戶管理使用 on-demand Server Action（developer-console-enhancements）→ .rsx/decisions/ADR-04-developer-user-management-on-demand-server-action
+- ADR-08：玩家詳細頁 social_channels 透過 authenticated 直接查 profiles 表（不放入 public view）→ .rsx/decisions/ADR-06-player-detail-social-channels-via-authenticated-direct-query
+- ADR-09：AuthContext 同時使用 getUser() + onAuthStateChange（React 19 Strict Mode 修正）→ .rsx/decisions/ADR-07-authcontext-getuser-plus-onauthstatechange-dual-init
 
 ## 下一步開發計畫
 1. 完成 串接 Supabase
 2. 完成 Google OAuth 登入
 3. 完成 登入/登出 UX（LoginModal、profile overlay）
-4. 完成 開發者身分組 + 後台
+4. 完成 開發者身分組 + 後台（含英雄流行度、用戶管理）
 5. 完成 英雄對準儀改存 Supabase DB
 6. 完成 多遊戲廣場架構（OverwatchSquare / LoLSquare / ValorantSquare）
-7. 待做 玩家詳細頁面：/player/[id] 查看完整資料
-8. 待做 搜尋後端化：搜尋邏輯移至 Supabase query
+7. 完成 玩家詳細頁面：/player/[id]（server-side ilike 搜尋 + 詳細頁）
+8. 完成 搜尋後端化：OverwatchSquare 改用 Supabase ilike + Load More
 9. 待做 名片收藏 / Favorites
 10. 待做 多遊戲廣場資料接入：LoL / Valorant 接真實後端
 
