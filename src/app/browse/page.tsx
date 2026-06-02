@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Search, RotateCcw, Gamepad2, Moon, Sparkles, Sliders } from "lucide-react";
+import { Search, RotateCcw } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import TopBar from "@/components/TopBar";
 import { useAuth } from "@/context/AuthContext";
@@ -44,28 +44,32 @@ export default function BrowsePage() {
     >
       <TopBar />
 
-      {/* 💗 Premium 水彩裝飾發光球 */}
-      <div className="absolute top-[5%] -right-16 w-80 h-80 rounded-full bg-gradient-to-tr from-[#82b7cc]/4 to-[#f5d46b]/6 blur-3xl pointer-events-none z-0 animate-[fadeIn_1.2s_ease-out]" />
+      {/* 💗 Premium 水彩裝飾流體背景 (右上與左下雙層暈染) */}
+      <div className="watercolor-mist-bg top-[-10%] right-[-10%] animate-[mistFloatA_20s_infinite_alternate]" />
+      <div className="watercolor-mist-bg bottom-[5%] left-[-15%] scale-125 animate-[mistFloatB_25s_infinite_alternate]" />
 
-      {/* 🌸 標題與引言直接漂浮在底層紙面上 */}
-      <div className="text-left space-y-3 relative z-10 animate-[fadeIn_0.5s_ease-out]">
-        <span className="soft-home-badge uppercase flex items-center gap-1.5 w-fit">
-          <Moon size={11} className="shrink-0 text-[#82b7cc] fill-[#82b7cc]/10" />
-          名片廣場
-        </span>
-
-        <div className="flex flex-col gap-2 md:grid md:grid-cols-[auto,1fr] md:items-start md:gap-x-4">
-          <div className="min-w-0">
-            <h1 className="text-[1.7rem] md:text-[1.95rem] font-extrabold tracking-tight text-[#3e2723] flex items-center gap-2 leading-none">
-              <Gamepad2 className="text-[#82b7cc]" size={24} />
-              多遊戲玩家招募大廳
-            </h1>
-          </div>
-
-          <p className="text-[#8c7c6c] font-semibold text-[13px] md:text-[14px] leading-relaxed md:pt-1 md:max-w-none">
-            保留你熟悉的廣場節奏，換上和首頁同一個晨霧紙感宇宙。搜尋今天想一起開局的人，或先逛逛不同遊戲分區。
-          </p>
+      {/* 🌸 莫蘭迪紙感手稿標頭 - 垂直層級重構 */}
+      <div className="text-left space-y-2 relative z-10 animate-[fadeIn_0.5s_ease-out] pb-1 select-none">
+        
+        {/* 1. 極簡小副標 (Low-profile Subtitle) */}
+        <div className="text-[10px] md:text-[11px] font-black uppercase tracking-[0.2em] text-[#8c7c6c]/60 flex items-center gap-1.5">
+          <span>Lobby Directory</span>
+          <span className="w-1.5 h-1.5 rounded-full bg-[#82b7cc]/40" />
+          <span>名片廣場</span>
         </div>
+
+        {/* 2. 精緻標題 (Elegant Typography without digital icons) */}
+        <h1 className="text-xl md:text-2xl font-black tracking-tight text-[#3e2723] leading-none pt-0.5">
+          多遊戲玩家招募大廳
+        </h1>
+
+        {/* 3. 手稿感細線 (Fine-line Divider) */}
+        <div className="w-12 h-[1px] bg-gradient-to-r from-[#8c7c6c]/25 to-transparent my-2" />
+
+        {/* 4. 溫潤引言 (Warm Description) */}
+        <p className="text-[#8c7c6c]/90 font-medium text-[12px] md:text-[13px] leading-relaxed max-w-xl">
+          保留你熟悉的廣場節奏，換上晨霧紙感宇宙。搜尋今天想一起開局的夥伴，或自由瀏覽不同的遊戲分區。
+        </p>
       </div>
 
       {/* 🔍 獨立太空艙搜尋層 (Capsule Search Box) */}

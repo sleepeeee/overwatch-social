@@ -17,6 +17,37 @@ interface OverwatchSquareProps {
   isPremiumStyle?: boolean;
 }
 
+// 🌸 [Aesthetics] 手寫四角星芒裝飾 SVG 組件
+function PencilStar({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg 
+      viewBox="0 0 24 24" 
+      className={`${className} text-[#8c7c6c]/45 animate-pulse`} 
+      fill="none" 
+      stroke="currentColor" 
+      strokeWidth="1.2"
+      style={{ animationDuration: "3.5s" }}
+    >
+      <path d="M12 2 C12 10 14 12 22 12 C14 12 12 14 12 22 C12 14 10 12 2 12 C10 12 12 10 12 2 Z" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+// 🌸 [Aesthetics] SVG Doodles 手繪裝飾線
+function DoodleLine({ className = "w-10 h-1.5" }: { className?: string }) {
+  return (
+    <svg 
+      viewBox="0 0 80 8" 
+      className={`${className} text-[#f5d46b]/80 fill-none stroke-current`} 
+      strokeWidth="1.6" 
+      strokeLinecap="round" 
+      pointerEvents="none"
+    >
+      <path d="M 2,4 C 25,1 55,7 78,3" />
+    </svg>
+  );
+}
+
 export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: OverwatchSquareProps) {
   const [players, setPlayers] = useState<OWPlayerCard[]>([]);
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -142,6 +173,18 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
       {/* 🚀 獨立懸浮篩選絲帶 (Floating Filter Ribbon) */}
       <div className="w-full bg-white/40 backdrop-blur-3xl border-2 border-white/60 rounded-[28px] p-5 md:py-4 md:px-6 shadow-[0_18px_45px_-18px_rgba(140,124,108,0.12),inset_0_1.5px_2px_rgba(255,255,255,0.85)] flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
         
+        {/* 🌸 [Aesthetics] 手稿星芒與偏光微光氣泡點綴 */}
+        <div className="absolute -top-3 -left-3 pointer-events-none z-20">
+          <PencilStar className="w-6 h-6 text-[#82b7cc]/60" />
+        </div>
+        <div className="absolute -bottom-2.5 -right-2.5 pointer-events-none z-20">
+          <PencilStar className="w-5 h-5 text-[#f5d46b]/60 rotate-[15deg]" />
+        </div>
+        
+        {/* 偏光氣泡 (右側邊角) */}
+        <div className="glass-bubble-dot w-3 h-3 -top-1.5 right-12 opacity-60" />
+        <div className="glass-bubble-dot w-2 h-2 top-8 -right-1 opacity-45" />
+
         {/* 左翼：遊玩伺服器 */}
         <div className="space-y-1.5 w-full md:w-[22%]">
           <label className="text-[10px] font-black uppercase tracking-widest text-[#8c7c6c]/80 flex justify-between">
@@ -164,7 +207,10 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
 
         {/* 中腹：常用定位黏土按鈕 */}
         <div className="space-y-1.5 w-full md:w-[48%] flex flex-col items-center">
-          <label className="text-[10px] font-black uppercase tracking-widest text-[#8c7c6c]/80 w-full text-center md:text-left md:pl-2">常用定位</label>
+          <label className="text-[10px] font-black uppercase tracking-widest text-[#8c7c6c]/80 w-full text-center md:text-left md:pl-2 relative flex items-center justify-center md:justify-start gap-1">
+            <span>常用定位</span>
+            <DoodleLine className="w-10 h-1.5 opacity-60 inline-block align-middle ml-1" />
+          </label>
           <div className="flex gap-2 w-full justify-center">
             {["全部", "坦克", "輸出", "支援"].map((role) => (
               <button
