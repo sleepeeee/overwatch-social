@@ -153,32 +153,25 @@ export async function getAllProfilesForDeveloper(search?: string): Promise<{
 }
 
 /**
- * 讀取英雄流行度統計 Top 5（developer-only）
- * 從所有 profiles.selected_heroes 聚合
+ * 讀取英雄流行度統計 Top 20（developer-only，從 DB 聚合）
  */
 export async function getHeroStats(): Promise<Array<{ heroId: string; count: number }>> {
   try {
     const { supabase } = await ensureDeveloper();
 
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("selected_heroes")
-      .limit(500);
+    const { data, error } = await supabase.rpc("get_hero_stats");
 
-    if (error || !data) return [];
+    if (error || !data) {
+      console.error("Failed to fetch hero stats via RPC:", error?.message);
+      return [];
+    }
 
-    const heroCount = new Map<string, number>();
-    data.forEach(row => {
-      ((row.selected_heroes as string[]) ?? []).forEach(heroId => {
-        heroCount.set(heroId, (heroCount.get(heroId) || 0) + 1);
-      });
-    });
-
-    return [...heroCount.entries()]
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 5)
-      .map(([heroId, count]) => ({ heroId, count }));
-  } catch {
+    return (data as Array<{ hero_id: string; hero_count: number | string }>).map(row => ({
+      heroId: row.hero_id,
+      count: Number(row.hero_count),
+    }));
+  } catch (err) {
+    console.error("getHeroStats error:", err);
     return [];
   }
 }

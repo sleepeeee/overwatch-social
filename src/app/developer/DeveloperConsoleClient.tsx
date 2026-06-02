@@ -12,7 +12,6 @@ import {
   Cpu,
   AlertCircle,
   ArrowRight,
-  Crosshair,
   LogOut,
   Lock,
   Unlock,
@@ -609,17 +608,17 @@ export default function DeveloperConsoleClient({
 
                 </div>
 
-                <CaptureMeter state={captureState} showEditor={false} />
+                <CaptureMeter state={captureState} />
 
-                {/* Hero Top 5 */}
+                {/* Hero Top 10 */}
                 {heroStats.length > 0 && (
                   <div className="space-y-3">
                     <div className="flex items-center gap-2">
                       <TrendingUp size={14} className="text-[var(--theme-primary-text)]" />
-                      <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest">英雄流行度 Top 5</h3>
+                      <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest">英雄流行度 Top 10</h3>
                     </div>
                     <div className="space-y-2">
-                      {heroStats.map((stat, idx) => {
+                      {heroStats.slice(0, 10).map((stat, idx) => {
                         const heroName = heroNameMap.get(stat.heroId) || stat.heroId;
                         const maxCount = heroStats[0]?.count || 1;
                         const barWidth = Math.round((stat.count / maxCount) * 100);
@@ -847,34 +846,6 @@ export default function DeveloperConsoleClient({
                         className="px-4 py-2 rounded-lg text-xs font-semibold text-white shadow-md hover:shadow-lg flex items-center gap-1.5 transition-all bg-gradient-to-r from-[var(--theme-primary)] to-[var(--theme-primary-dark)] hover:opacity-90"
                       >
                         <span>啟動標籤管理</span>
-                        <ArrowRight size={12} />
-                      </Link>
-                    </div>
-                  </div>
-
-                  {/* Tool 4 */}
-                  <div className="bg-white dark:bg-[#202428] rounded-xl p-5 border border-slate-200 dark:border-slate-800/80 shadow-sm flex flex-col justify-between gap-4">
-                    <div className="flex items-start gap-4">
-                      <div className="p-3 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl shrink-0">
-                        <Crosshair size={20} />
-                      </div>
-                      <div className="space-y-1">
-                        <h3 className="text-sm font-bold text-slate-800 dark:text-slate-100">
-                          開發者據點 HUD 調整器 <span className="font-mono text-[11px] text-slate-400">(Outpost HUD Tool)</span>
-                        </h3>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                          用於調整並保存據點 HUD 的左右顯示名稱。這只會改插件畫面，GitHub 連結、作者映射與倉庫資料都不會被動到。
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-end border-t border-slate-100 dark:border-slate-800/50 pt-3">
-                      <Link 
-                        href="/developer/capture-hud" 
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="px-4 py-2 rounded-lg text-xs font-semibold text-white shadow-md hover:shadow-lg flex items-center gap-1.5 transition-all bg-gradient-to-r from-[var(--theme-primary)] to-[var(--theme-primary-dark)] hover:opacity-90"
-                      >
-                        <span>啟動 HUD 調整器</span>
                         <ArrowRight size={12} />
                       </Link>
                     </div>

@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { OWPlayerCard } from "@/types/card";
 import { MOCK_PLAYERS, HEROES_CONFIG, SERVER_OPTIONS, MIC_OPTIONS } from "@/data/mockPlayers";
 import OWCard from "@/components/OWCard";
@@ -49,7 +50,10 @@ function DoodleLine({ className = "w-10 h-1.5" }: { className?: string }) {
   );
 }
 
+const PAGE_SIZE = 20;
+
 export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: OverwatchSquareProps) {
+  const router = useRouter();
   const { user, authLoading } = useAuth();
   const isLoggedIn = !!user;
 
@@ -61,50 +65,87 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
   const [isMounted, setIsMounted] = useState(false);
   const [heroAlignments, setHeroAlignments] = useState<Record<string, AlignmentConfig>>(HERO_ALIGNMENTS);
   const [isShowingMockData, setIsShowingMockData] = useState(false);
+  const [hasMore, setHasMore] = useState(false);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const requestCounterRef = useRef<number>(0);  // 遞增計數器，比 Date.now() 更可靠
+  const searchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const toPlayerCard = (row: Record<string, unknown>): OWPlayerCard => ({
+    card_id: (row.card_id as string) ?? (row.user_id as string),
+    user_id: row.user_id as string,
+    server: row.server as string,
+    battle_tag: row.battle_tag as string,
+    is_tag_visible: row.is_tag_visible as boolean,
+    selected_heroes: (row.selected_heroes as string[]) ?? [],
+    tags: (row.tags as string[]) ?? [],
+    message: (row.message as string) ?? "",
+    languages: (row.languages as string[]) ?? [],
+    mic_status: row.mic_status as OWPlayerCard["mic_status"],
+    social_channels: (row.social_channels as Record<string, string>) ?? {},
+    mbti: (row.mbti as string) ?? undefined,
+  });
+
+  const loadPlayers = async (searchQ: string, offset: number, append = false) => {
+    const requestId = ++requestCounterRef.current;
+
+    if (append) setIsLoadingMore(true);
+
+    const supabase = createClient();
+    let query = supabase
+      .from("public_profiles")
+      .select("*")
+      .order("updated_at", { ascending: false })
+      .range(offset, offset + PAGE_SIZE - 1);
+
+    if (searchQ.trim()) {
+      query = query.or(
+        `battle_tag.ilike.%${searchQ}%,message.ilike.%${searchQ}%,mbti.ilike.%${searchQ}%`
+      );
+    }
+
+    const { data, error } = await query;
+
+    if (requestCounterRef.current !== requestId) return; // 丟棄過期請求結果
+
+    if (append) setIsLoadingMore(false);
+
+    if (!error && data && data.length > 0) {
+      setIsShowingMockData(false);
+      const mapped = data.map(toPlayerCard);
+      setPlayers(prev => append ? [...prev, ...mapped] : mapped);
+      setHasMore(data.length === PAGE_SIZE);
+    } else if (!append) {
+      setIsShowingMockData(true);
+      setPlayers(MOCK_PLAYERS);
+      setHasMore(false);
+    } else {
+      setHasMore(false);
+    }
+  };
 
   useEffect(() => {
     setIsMounted(true);
-    const supabase = createClient();
-
-    // 載入英雄對齊微調補償配置
     getHeroAlignments().then((aligns) => {
-      if (aligns) {
-        setHeroAlignments(aligns);
-      }
+      if (aligns) setHeroAlignments(aligns);
     });
-
-    // 查詢真實廣場資料
-    const loadPlayers = async () => {
-      const { data, error } = await supabase
-        .from("public_profiles")
-        .select("*")
-        .eq("is_tag_visible", true)
-        .order("updated_at", { ascending: false });
-
-      if (!error && data && data.length > 0) {
-        setIsShowingMockData(false);
-        setPlayers(data.map(row => ({
-          card_id: row.card_id ?? row.user_id,
-          user_id: row.user_id,
-          server: row.server,
-          battle_tag: row.battle_tag,
-          is_tag_visible: row.is_tag_visible,
-          selected_heroes: row.selected_heroes ?? [],
-          tags: row.tags ?? [],
-          message: row.message ?? "",
-          languages: row.languages ?? [],
-          mic_status: row.mic_status as OWPlayerCard["mic_status"],
-          social_channels: {},
-          mbti: row.mbti ?? undefined,
-        })));
-      } else {
-        setIsShowingMockData(true);
-        setPlayers(MOCK_PLAYERS);
-      }
-    };
-
-    loadPlayers();
+    loadPlayers("", 0);
   }, []);
+
+  // searchQuery 變化時 debounce 觸發 server-side 搜尋
+  useEffect(() => {
+    if (!isMounted) return;
+    if (searchDebounceRef.current) clearTimeout(searchDebounceRef.current);
+    searchDebounceRef.current = setTimeout(() => {
+      loadPlayers(searchQuery, 0, false);
+    }, 300);
+    return () => {
+      if (searchDebounceRef.current) clearTimeout(searchDebounceRef.current);
+    };
+  }, [searchQuery, isMounted]);
+
+  const handleLoadMore = () => {
+    loadPlayers(searchQuery, players.length, true);
+  };
 
   const getHeroRole = (heroId: string) => {
     const hero = HEROES_CONFIG.find(h => h.id === heroId);
@@ -117,24 +158,27 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
     setSelectedMic("全部");
   };
 
+  // client-side 過濾（role/server/mic + 英雄名稱搜尋，對已載入的資料）
   const filteredPlayers = players.filter((player) => {
-    // 🛡️ [Privacy Protection] 如果玩家設定對外隱藏，則直接從廣場消失！
-    if (!player.is_tag_visible) {
-      return false;
+    if (!player.is_tag_visible) return false;
+
+    // 英雄名稱搜尋（client-side，需 HEROES_CONFIG lookup）
+    if (searchQuery.trim()) {
+      const matchesHeroQuery = (player.selected_heroes || []).some((heroId) => {
+        const hero = HEROES_CONFIG.find(h => h.id === heroId);
+        return hero && hero.name.toLowerCase().includes(searchQuery.toLowerCase());
+      });
+      // DB 已做 battle_tag/message/mbti 過濾，這裡只補英雄名稱
+      // 不重複過濾 text fields（由 DB 決定）
+      if (isShowingMockData && !matchesHeroQuery) {
+        // Mock 模式下做完整 client-side 過濾
+        const matchesText =
+          player.battle_tag.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (player.message || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+          (player.mbti || "").toLowerCase().includes(searchQuery.toLowerCase());
+        if (!matchesText && !matchesHeroQuery) return false;
+      }
     }
-
-    // 關鍵字搜尋安全容錯
-    const matchesQuery = 
-      player.battle_tag.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (player.message || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (player.mbti && player.mbti.toLowerCase().includes(searchQuery.toLowerCase()));
-
-    const matchesHeroQuery = (player.selected_heroes || []).some((heroId) => {
-      const hero = HEROES_CONFIG.find(h => h.id === heroId);
-      return hero && hero.name.toLowerCase().includes(searchQuery.toLowerCase());
-    });
-
-    const isSearchMatched = matchesQuery || matchesHeroQuery;
 
     let isRoleMatched = true;
     if (selectedRole !== "全部") {
@@ -145,7 +189,7 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
     const isServerMatched = selectedServer === "全部" || player.server === selectedServer;
     const isMicMatched = selectedMic === "全部" || player.mic_status === selectedMic;
 
-    return isSearchMatched && isRoleMatched && isServerMatched && isMicMatched;
+    return isRoleMatched && isServerMatched && isMicMatched;
   });
 
 
@@ -251,22 +295,40 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
       </div>
 
       {filteredPlayers.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
-          {filteredPlayers.map((player) => (
-            <div 
-              key={player.card_id} 
-              className="w-full flex justify-center hover:-translate-y-1 transition-transform duration-300 relative"
-            >
-              <OWCard
-                cardData={player}
-                isLoggedIn={isLoggedIn}
-                isEditable={false}
-                customAlignments={heroAlignments}
-                onLoginRequired={(!authLoading && !isLoggedIn) ? () => setShowLoginModal(true) : undefined}
-              />
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
+            {filteredPlayers.map((player) => (
+              <div
+                key={player.card_id}
+                className="w-full flex justify-center hover:-translate-y-1 transition-transform duration-300 relative cursor-pointer"
+                onClick={(e) => {
+                  if ((e.target as HTMLElement).closest('[data-no-navigate]')) return;
+                  router.push(`/player/${player.user_id}`);
+                }}
+              >
+                <OWCard
+                  cardData={player}
+                  isLoggedIn={isLoggedIn}
+                  isEditable={false}
+                  customAlignments={heroAlignments}
+                  onLoginRequired={(!authLoading && !isLoggedIn) ? () => setShowLoginModal(true) : undefined}
+                />
+              </div>
+            ))}
+          </div>
+          {/* Load More 按鈕 */}
+          {hasMore && !isShowingMockData && (
+            <div className="flex justify-center pt-4">
+              <Button
+                onClick={handleLoadMore}
+                disabled={isLoadingMore}
+                className="bg-white/60 hover:bg-white border border-[#8c7c6c]/20 text-[#5d4037] font-extrabold text-xs px-8 py-4 rounded-2xl shadow-sm transition-all active:scale-95 disabled:opacity-50"
+              >
+                {isLoadingMore ? "載入中..." : "載入更多特工"}
+              </Button>
             </div>
-          ))}
-        </div>
+          )}
+        </>
       ) : (
         <div className="bg-[#fefcf8] border border-[#8c7c6c]/15 rounded-[28px] py-16 px-4 text-center max-w-xl mx-auto flex flex-col items-center justify-center gap-4 shadow-[0_20px_50px_rgba(140,124,108,0.04)]">
           <div className="w-16 h-16 rounded-full bg-white/60 flex items-center justify-center text-[#82b7cc] border border-[#8c7c6c]/15 shadow-sm">

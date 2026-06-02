@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 test.describe("開發者據點佔領插件", () => {
-  test("在開發者主控台顯示只讀據點 HUD", async ({ page }) => {
+  test("在開發者主控台顯示據點 HUD", async ({ page }) => {
     await page.goto("/developer");
 
     await expect(page.getByRole("heading", { name: "GIT OUTPOST LIVE HUD" })).toBeVisible();

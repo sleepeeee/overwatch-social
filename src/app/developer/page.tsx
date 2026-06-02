@@ -35,30 +35,26 @@ export default async function Page() {
   }));
 
   // 讀取統計 + 英雄流行度（共享 supabase client，消除重複 getUser() auth round-trip）
-  const [totalResult, completedResult, heroRaw, captureState] = await Promise.all([
+  const [totalResult, completedResult, heroStatsResult, captureState] = await Promise.all([
     supabase.from("profiles").select("user_id", { count: "exact", head: true }),
     supabase.from("profiles").select("user_id", { count: "exact", head: true })
       .not("battle_tag", "is", null)
       .neq("battle_tag", "愛喝奶茶#3342"),
-    supabase.from("profiles").select("selected_heroes").limit(500),
+    supabase.rpc("get_hero_stats"),
     readCaptureState(),
   ]);
 
   const totalProfiles = totalResult.count ?? 0;
   const completedProfiles = completedResult.count ?? 0;
-  const statsError = totalResult.error?.message || completedResult.error?.message;
+  const statsError = totalResult.error?.message || completedResult.error?.message || heroStatsResult.error?.message;
 
-  // Hero stats JS 聚合（共用已拉取的 heroRaw）
-  const heroCount = new Map<string, number>();
-  (heroRaw.data || []).forEach(row => {
-    ((row.selected_heroes as string[]) ?? []).forEach(h => {
-      heroCount.set(h, (heroCount.get(h) || 0) + 1);
-    });
-  });
-  const heroStats = [...heroCount.entries()]
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 5)
-    .map(([heroId, count]) => ({ heroId, count }));
+  // 🛡️ 容錯與型別安全轉換，若 RPC 失敗（如開發環境下未登入）降級為空陣列，防止頁面崩潰
+  const heroStats = heroStatsResult.error 
+    ? [] 
+    : (heroStatsResult.data as Array<{ hero_id: string; hero_count: number | string }> ?? []).map(row => ({
+        heroId: row.hero_id,
+        count: Number(row.hero_count),
+      }));
 
   return (
     <DeveloperConsoleClient

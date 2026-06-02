@@ -30,9 +30,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="zh-TW" data-style="A" className={`${geistSans.variable} ${notoSansTC.variable} h-full antialiased`}>
-      <body 
-        className="min-h-full flex flex-col text-[#5d4037] relative pt-[var(--dev-banner-height,0px)]"
+    <html lang="zh-TW" data-style="A" className={`${geistSans.variable} ${notoSansTC.variable} antialiased`}>
+      <body
+        className="min-h-screen flex flex-col text-[#5d4037] relative pt-[var(--dev-banner-height,0px)]"
         style={{
           background: "var(--theme-bg-gradient)",
           fontFamily: "var(--font-noto-sans-tc), var(--font-geist-sans), sans-serif"

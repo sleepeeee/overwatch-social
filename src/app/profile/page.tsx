@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from "react";
 import { OWPlayerCard, UserProfile, type HeroConfig } from "@/types/card";
-import { toPng } from "html-to-image";
 import {
   HEROES_CONFIG,
   PRESET_TAGS,
@@ -63,50 +62,6 @@ interface SpecialTag {
   style_class: string;
   created_at: string;
 }
-
-// 📝 後端對接規格：玩家名片上傳的 JSON 資料結構
-export interface ProfileUpdatePayload {
-  user_id: string;          // 使用者的 UUID (Supabase Auth)
-  server: string;           // 伺服器名稱，例如: 'Asia Server'
-  battle_tag: string;       // 玩家名稱#Tag，例如: '特工#1234'
-  is_tag_visible: boolean;  // 是否在公開廣場展示 BattleTag
-  selected_heroes: string[];// 選擇的角色清單，例如: ['安娜', '慈悲']
-  tags: string[];           // 貼紙標籤，例如: ['語音交流', '拒絕暴躁']
-  message: string;          // 玩家個人留言/徵友訊息
-  mic_status: string;       // 麥克風狀態: 'mic-on' | 'mic-off' | 'listen-only'
-  mbti: string | null;      // MBTI 性格標籤，例如: 'INFJ'
-}
-
-// 📝 後端朋友對接專用函數：
-// 當要處理資料庫儲存時，可以直接在此填入 Supabase / API 寫入邏輯
-export const saveCardToDatabase = async (payload: ProfileUpdatePayload) => {
-  console.log("Saving card to database with payload:", payload);
-  
-  // ----------------------------------------------------
-  // 💡 後端朋友對接指示：
-  // 請取消以下註解，並用您的 Supabase 客戶端替換儲存邏輯：
-  // 
-  // const { data, error } = await supabase
-  //   .from('profiles')
-  //   .upsert({
-  //     user_id: payload.user_id,
-  //     server: payload.server,
-  //     battle_tag: payload.battle_tag,
-  //     is_tag_visible: payload.is_tag_visible,
-  //     selected_heroes: payload.selected_heroes,
-  //     tags: payload.tags,
-  //     message: payload.message,
-  //     mic_status: payload.mic_status,
-  //     mbti: payload.mbti,
-  //     updated_at: new Date().toISOString()
-  //   });
-  // if (error) throw error;
-  // ----------------------------------------------------
-  
-  // 模擬延遲儲存
-  await new Promise((resolve) => setTimeout(resolve, 800));
-  return { success: true };
-};
 
 export default function ProfilePage() {
   const { isDeveloper } = useDevMode();
@@ -197,6 +152,7 @@ export default function ProfilePage() {
       setSharing(false);
     }
   };
+
 
   // 初始化：從 localStorage 恢復 profile 頭像設定 + 英雄對準參數 + 載入特色標籤
   useEffect(() => {
@@ -421,15 +377,8 @@ export default function ProfilePage() {
     setTimeout(() => setSaved(false), 2000);
   };
 
-  // auth 解析中（由 AuthContext 管理）
-  if (authLoading) {
-    return (
-      <div className="max-w-6xl mx-auto px-4 py-8 flex flex-col items-center justify-center min-h-[500px] gap-4">
-        <div className="w-12 h-12 border-4 border-[#82b7cc] border-t-transparent rounded-full animate-spin"></div>
-        <p className="text-[#8c7c6c] text-sm font-bold animate-pulse">正在開啟特工主控台...</p>
-      </div>
-    );
-  }
+  // 移除 authLoading spinner：LoginModal show={!authLoading && !user} 已足夠守門
+  // 不再阻擋整個頁面渲染，避免 Supabase 連線慢時卡在 spinner
 
   // 1. 渲染：主入口 UserProfile Hub
   if (activeSection === "hub") {
@@ -662,35 +611,10 @@ export default function ProfilePage() {
       {/* 左右分割版面 */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* 左側：名片即時預覽 */}
-        <div className="lg:col-span-5 flex flex-col items-center gap-4 lg:sticky lg:top-24 w-full">
+        <div className="lg:col-span-5 flex flex-col items-center gap-4 lg:sticky lg:top-24">
           <h2 className="text-sm font-bold tracking-widest text-[#8c7c6c] uppercase">即時名片預覽</h2>
-          <div ref={cardRef} className="rounded-[28px] overflow-hidden bg-transparent w-full flex justify-center">
-            <OWCard cardData={cardData} isLoggedIn={true} isEditable={true} customAlignments={heroAlignments} />
-          </div>
-          
-          {/* 🌟 匯出圖片與複製連結按鈕區 */}
-          <div className="w-full max-w-[320px] grid grid-cols-2 gap-3 mt-2">
-            <Button
-              type="button"
-              onClick={handleExportImage}
-              disabled={exportingImage}
-              className="bg-white/60 hover:bg-white border border-[#8c7c6c]/20 hover:border-[#82b7cc]/50 text-[#5d4037] hover:text-[#82b7cc] rounded-xl py-2.5 px-3 text-xs font-black tracking-wider transition-all shadow-sm active:scale-95 cursor-pointer flex items-center justify-center gap-1.5"
-            >
-              <span>💾</span>
-              <span>{exportingImage ? "導出中..." : "保存圖片"}</span>
-            </Button>
-            <Button
-              type="button"
-              onClick={handleShareLink}
-              disabled={sharing}
-              className="bg-white/60 hover:bg-white border border-[#8c7c6c]/20 hover:border-[#82b7cc]/50 text-[#5d4037] hover:text-[#82b7cc] rounded-xl py-2.5 px-3 text-xs font-black tracking-wider transition-all shadow-sm active:scale-95 cursor-pointer flex items-center justify-center gap-1.5"
-            >
-              <span>🔗</span>
-              <span>{shareSuccess ? "已複製！" : "複製連結"}</span>
-            </Button>
-          </div>
-
-          <p className="text-xs text-[#8c7c6c]/80 italic text-center max-w-[320px] font-semibold mt-1">
+          <OWCard cardData={cardData} isLoggedIn={true} isEditable={true} customAlignments={heroAlignments} />
+          <p className="text-xs text-[#8c7c6c]/80 italic text-center max-w-[320px] font-semibold">
             ✨ 卡片效果將會同步更新，這也是其他玩家在廣場上看到的最終樣貌。
           </p>
         </div>
