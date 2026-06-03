@@ -5,7 +5,7 @@ status: confirmed
 change: developer-console-backend
 date: 2026-06-02
 references_to: [REF-004, ADR-04]
-referenced_by: [ADR-04]
+referenced_by: [ADR-04, F-019]
 supporting_refs: [REF-004]
 ---
 

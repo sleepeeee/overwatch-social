@@ -15,9 +15,7 @@
 
 ## 進行中的 Changes（未 archive）
 
-| Change | 狀態 | 備註 |
-|---|---|---|
-| homepage-hud-removal-3col-layout | 剛落地，未歸檔 | d5cb76e：移除 HUD + 三欄等高；無 Pre-archive Gate 紀錄 |
+（無）
 
 ## 待 Propose Changes（依優先度）
 
@@ -33,6 +31,7 @@
 
 | Change | 時間 | 備註 |
 |---|---|---|
+| homepage-hud-removal-3col-layout | 2026-06-03 | 移除 HUD + 三欄等高；F-019/ADR-17；WARN=1（Zone B 補寫） |
 | display-name-persistent-sync | 2026-06-03 | display_name DB 持久化；F-016/ADR-16；WARN=1（Task 4.3 skip，理由文件化）|
 | mock-data-disclosure | 2026-06-03 | VAL/LoL 假卡片 banner；F-017；WARN=0 |
 | og-image-env-guard | 2026-06-03 | og:image fallback 修補；F-018；WARN=0 |
@@ -50,6 +49,12 @@
 ---
 
 ## Zone B — 工作日誌（追加，由新到舊）
+
+### 2026-06-03 homepage-hud-removal-3col-layout — ARCHIVE
+
+- **已完成**：F-019（HomeCaptureHud Vercel 假資料根因）、ADR-17（三欄等高 + 暫時移除 HUD 決策）；crossref 回填（F-004 referenced_by 補 F-019）；Pre-archive Gate FAIL=0 WARN=1（Zone B 補寫，非 blocking）；openspec archive 完成
+- **卡關**：無
+- **下次優先**：Change #5 `vercel-github-webhook-hud`（接通 Supabase 資料源後重新掛載 HUD）
 
 ### 2026-06-03 三個 S-change 補建文件（Finding / ADR / crossref）
 
