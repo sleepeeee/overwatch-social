@@ -43,6 +43,10 @@ dev-server.*.log
 /cache/
 /scratch/
 
+# ai toolchain session data
+.playwright-mcp/
+.antigravitycli/
+
 # env files (can opt-in for committing if needed)
 .env*
 
