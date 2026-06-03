@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { OWPlayerCard } from "@/types/card";
+import { revalidateTag } from "next/cache";
 
 export async function getMyProfile(): Promise<OWPlayerCard | null> {
   const supabase = await createClient();
@@ -29,6 +30,8 @@ export async function getMyProfile(): Promise<OWPlayerCard | null> {
     mic_status: data.mic_status as OWPlayerCard["mic_status"],
     social_channels: data.social_channels ?? {},
     mbti: data.mbti ?? undefined,
+    display_name: (data.display_name as string) ?? undefined,
+    game: (data.game as string) ?? undefined,
   };
 }
 
@@ -53,6 +56,8 @@ export async function getPublicProfile(userId: string): Promise<OWPlayerCard | n
     mic_status: data.mic_status as OWPlayerCard["mic_status"],
     social_channels: {},
     mbti: (data.mbti as string) ?? undefined,
+    display_name: (data.display_name as string) ?? undefined,
+    game: (data.game as string) ?? undefined,
   };
 }
 
@@ -69,6 +74,7 @@ export async function saveDisplayName(displayName: string): Promise<{ error?: st
     .upsert({ user_id: user.id, display_name: displayName.trim() });
 
   if (error) return { error: error.message };
+  revalidateTag("public-profiles", "max");  // 顯示名稱進 public view 後需要使廣場快取失效
   return {};
 }
 
@@ -121,5 +127,6 @@ export async function saveProfile(card: OWPlayerCard): Promise<{ error?: string 
     });
 
   if (error) return { error: error.message };
+  revalidateTag("public-profiles", "max");  // 名片儲存後使廣場快取失效
   return {};
 }

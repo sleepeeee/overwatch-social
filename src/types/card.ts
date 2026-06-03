@@ -27,6 +27,8 @@ export interface OWPlayerCard {
   };
   
   mbti?: string;             // MBTI 人格特質 (可選)
+  display_name?: string;     // 廣場顯示名稱（可選，未設定時前端 fallback 到 battle_tag）
+  game?: string;             // 遊戲分區（'overwatch' | 'lol' | 'valorant'）
 }
 
 export interface PresetTag {

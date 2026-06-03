@@ -84,6 +84,8 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
     mic_status: row.mic_status as OWPlayerCard["mic_status"],
     social_channels: (row.social_channels as Record<string, string>) ?? {},
     mbti: (row.mbti as string) ?? undefined,
+    display_name: (row.display_name as string) ?? undefined,
+    game: (row.game as string) ?? undefined,
   });
 
   const loadPlayers = async (
@@ -105,7 +107,8 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
       const cached = await getPublicProfiles(
         offset,
         serverFilter !== "全部" ? serverFilter : undefined,
-        micFilter !== "全部" ? micFilter : undefined
+        micFilter !== "全部" ? micFilter : undefined,
+        "overwatch"
       );
       data = cached;
     } else {

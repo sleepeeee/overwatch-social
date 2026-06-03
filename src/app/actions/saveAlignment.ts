@@ -3,6 +3,7 @@
 import { AlignmentConfig } from "@/data/heroAlignments";
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
+import { clearAlignmentCache } from "./alignmentCache";
 
 /**
  * 🛡️ [APC - Advanced Process Control]
@@ -39,7 +40,8 @@ export async function saveHeroAlignments(alignments: Record<string, AlignmentCon
     // NOTE: revalidatePath 對 Client Component 無效（browse/profile 均為 "use client"）。
     // 真正的更新機制：用戶重整頁面時 useEffect 重新呼叫 getHeroAlignments() 取最新值。
     // 若需即時更新，應在 AdjusterClientPage 成功後呼叫 router.refresh()（開發者工具可接受刷頁）。
-    revalidatePath("/browse");   // 對未來可能的 Server Component 子元件保留
+    clearAlignmentCache();  // 清除 module-level cache，下次請求重新打 DB
+    revalidatePath("/browse");
     revalidatePath("/profile");
     return { success: true };
   } catch (err) {

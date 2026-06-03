@@ -2,13 +2,12 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { HERO_ALIGNMENTS, AlignmentConfig } from "@/data/heroAlignments";
+import { getCachedAlignments, setCachedAlignments } from "./alignmentCache";
 
-/**
- * 從 Supabase hero_alignments 表讀取英雄對準參數。
- * 任何失敗均 fallback 到靜態 HERO_ALIGNMENTS（intentional fallback，不破壞頁面渲染）。
- * 不需要 ensureDeveloper()——公開讀（RLS: FOR SELECT USING (true)）。
- */
 export async function getHeroAlignments(): Promise<Record<string, AlignmentConfig>> {
+  const cached = getCachedAlignments();
+  if (cached) return cached;
+
   try {
     const supabase = await createClient();
     const { data, error } = await supabase
@@ -21,7 +20,7 @@ export async function getHeroAlignments(): Promise<Record<string, AlignmentConfi
     }
 
     if (!data || data.length === 0) {
-      return { ...HERO_ALIGNMENTS }; // DB 未 seed 或空表，fallback 靜態
+      return { ...HERO_ALIGNMENTS };
     }
 
     const result: Record<string, AlignmentConfig> = { ...HERO_ALIGNMENTS };
@@ -32,6 +31,9 @@ export async function getHeroAlignments(): Promise<Record<string, AlignmentConfi
         translateY: row.translate_y as number,
       };
     });
+
+    // 只在成功取得資料時寫入 cache；fallback 路徑不寫，確保 DB 恢復後能重新讀取
+    setCachedAlignments(result);
     return result;
   } catch (err) {
     console.error("[getHeroAlignments] unexpected error, using static fallback:", err);
