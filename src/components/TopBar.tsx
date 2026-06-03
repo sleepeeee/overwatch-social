@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Moon, LogOut } from "lucide-react";
@@ -13,6 +13,22 @@ export default function TopBar() {
   const { user } = useAuth();
   const { isDeveloper } = useDevMode();
   const [loginPending, setLoginPending] = useState(false);
+  const [isDark, setIsDark] = useState(false);
+
+  // 初始化時同步明暗狀態
+  useEffect(() => {
+    const isDarkTheme = document.documentElement.classList.contains("dark");
+    setIsDark(isDarkTheme);
+  }, []);
+
+  // 切換明暗模式並儲存於 localStorage
+  const toggleTheme = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const html = document.documentElement;
+    const willBeDark = html.classList.toggle("dark");
+    setIsDark(willBeDark);
+    localStorage.setItem("theme", willBeDark ? "dark" : "light");
+  };
 
   const handleLogout = async () => {
     const supabase = createClient();
@@ -39,13 +55,33 @@ export default function TopBar() {
 
   return (
     <div className="w-full min-w-0 flex items-center justify-between gap-3 mb-10 z-30 relative animate-[fadeIn_0.6s_ease-out]">
-      <div className="flex items-center gap-2.5 min-w-0 shrink">
-        <div className="w-9 h-9 rounded-full bg-white/30 flex items-center justify-center border border-white/40 shadow-sm hover:rotate-12 hover:scale-105 transition-all duration-500 shrink-0">
-          <Moon className="w-4 h-4 text-[#3e2723] fill-[#3e2723]/10" />
+      <div className="flex items-center gap-3 select-none shrink min-w-0">
+        {/* Left: Interactive Theme Switcher Button */}
+        <button
+          type="button"
+          onClick={toggleTheme}
+          title={isDark ? "切換為明亮版" : "切換為夜間版"}
+          className="relative w-9 h-9 flex items-center justify-center rounded-full bg-white/30 dark:bg-stone-900/60 border border-white/40 dark:border-stone-800 shadow-sm hover:shadow-[0_4px_15px_rgba(212,197,169,0.3)] dark:hover:shadow-[0_4px_20px_rgba(0,0,0,0.5)] hover:border-morandi-sand/50 transition-all duration-300 hover:-translate-y-0.5 cursor-pointer shrink-0"
+        >
+          {/* Thin Line-art Moon SVG */}
+          <svg className="w-4 h-4 text-stone-700 dark:text-stone-300 hover:text-morandi-blue transition-colors duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.8">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+          </svg>
+          
+          {/* Amber Beacon Star / Ping Glow Indicator */}
+          <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-amber-400 rounded-full animate-ping opacity-75"></span>
+          <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-amber-400 rounded-full"></span>
+        </button>
+        
+        {/* Right: Brand Text (Static display per user request) */}
+        <div className="flex flex-col text-left min-w-0">
+          <span className="text-xs font-light tracking-[0.25em] text-[#5d4037] dark:text-stone-300 transition-colors duration-300 truncate">
+            AFTER MIDNIGHT
+          </span>
+          <span className="text-[9px] text-[#8c7c6c] tracking-wider font-semibold transition-colors duration-300 truncate">
+            GAME ALLY HUB
+          </span>
         </div>
-        <span className="text-[10px] font-bold tracking-widest text-[#3e2723] uppercase whitespace-nowrap truncate">
-          After Midnight
-        </span>
       </div>
 
       {user ? (
