@@ -613,7 +613,9 @@ export default function ProfilePage() {
         {/* 左側：名片即時預覽 */}
         <div className="lg:col-span-5 flex flex-col items-center gap-4 lg:sticky lg:top-24">
           <h2 className="text-sm font-bold tracking-widest text-[#8c7c6c] uppercase">即時名片預覽</h2>
-          <OWCard cardData={cardData} isLoggedIn={true} isEditable={true} customAlignments={heroAlignments} />
+          <div ref={cardRef} className="rounded-[28px] overflow-hidden">
+            <OWCard cardData={cardData} isLoggedIn={true} isEditable={true} customAlignments={heroAlignments} />
+          </div>
           <p className="text-xs text-[#8c7c6c]/80 italic text-center max-w-[320px] font-semibold">
             ✨ 卡片效果將會同步更新，這也是其他玩家在廣場上看到的最終樣貌。
           </p>
