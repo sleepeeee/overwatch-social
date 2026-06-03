@@ -14,10 +14,7 @@ function deriveUserProfile(user: User | null): UserProfile | null {
       user.user_metadata?.name ??
       user.email?.split("@")[0] ??
       "特工",
-    avatar_url:
-      user.user_metadata?.avatar_url ??
-      user.user_metadata?.picture ??
-      "/images/avatars/avatar_female_elegant_square.png",
+    avatar_url: "/images/avatars/avatar_female_elegant_square.png",
   };
 }
 
