@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import { Users, Calendar } from "lucide-react";
-import HomeCaptureHud from "@/components/morning-sketch/HomeCaptureHud";
 
 interface LobbyEvent {
   id: string;
@@ -76,10 +75,10 @@ export default function FeaturedArtists({ styleMode }: FeaturedArtistsProps) {
   const isStyleA = styleMode === "A";
 
   return (
-    <div className="space-y-5 w-full">
+    <div className="flex flex-col h-full w-full">
       {/* 📅 [Lobby Events] 玩家揪團行事曆面板 */}
-      <div 
-        className="glass-panel p-5 w-full"
+      <div
+        className="glass-panel p-5 w-full flex-1"
         style={{
           boxShadow: "0 10px 40px -10px rgba(var(--theme-accent-rgb), 0.08)"
         }}
@@ -158,10 +157,6 @@ export default function FeaturedArtists({ styleMode }: FeaturedArtistsProps) {
         </div>
       </div>
 
-      {/* 🎨 [風格 B/AB 專用] 首頁版縮尺 HUD */}
-      {!isStyleA && (
-        <HomeCaptureHud />
-      )}
     </div>
   );
 }

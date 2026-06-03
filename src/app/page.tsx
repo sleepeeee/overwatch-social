@@ -172,28 +172,31 @@ export default function Home() {
             </div>
           </div>
 
-          {/* 兩欄元件展示區 */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            
-            {/* 左側欄 (8格) */}
-            <div className="lg:col-span-8 space-y-8 flex flex-col animate-[fadeInUp_0.9s_ease-out]">
-              
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
-                
-                {/* 🔵 藍色區塊 (左) */}
-                <div className="md:col-span-6 flex">
-                  <LuckyAlly />
-                </div>
+          {/* Widget 展示區 */}
+          <div className="space-y-8">
 
-                {/* 🟣 紫色區塊 (中) - 已優化垂直重心居中 */}
-                <div className="md:col-span-6 flex">
-                  <LotusWelcomeWidget />
-                </div>
+            {/* 三欄等高 Widget Row */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 animate-[fadeInUp_0.9s_ease-out]">
 
+              {/* 🔵 LUCKY ALLY */}
+              <div className="flex">
+                <LuckyAlly />
               </div>
 
-              {/* 💗 粉色區塊：最新在大廳啟航的玩家 (已實作滑動動畫與真實大頭貼) */}
-              <section className="space-y-4.5 w-full">
+              {/* 🟣 站長隨筆手札 */}
+              <div className="flex">
+                <LotusWelcomeWidget />
+              </div>
+
+              {/* 🟢 LOBBY EVENTS */}
+              <div className="flex animate-[fadeInUp_1s_ease-out]">
+                <FeaturedArtists styleMode="B" />
+              </div>
+
+            </div>
+
+            {/* 💗 粉色區塊：最新在大廳啟航的玩家 (已實作滑動動畫與真實大頭貼) */}
+            <section className="space-y-4.5 w-full">
                 <div className="flex justify-between items-center px-1">
                   <h3 className="text-sm font-bold text-[#3e2723] tracking-widest uppercase flex items-center gap-1.5">
                     <Users size={16} className="text-[#82b7cc]" style={{ color: "rgba(var(--theme-accent-rgb), 0.85)" }} />
@@ -276,14 +279,7 @@ export default function Home() {
                     );
                   })}
                 </div>
-              </section>
-
-            </div>
-
-            {/* 🟢 綠色區塊 (新右) - 揪團行事曆與色譜 */}
-            <div className="lg:col-span-4 w-full animate-[fadeInUp_1s_ease-out]">
-              <FeaturedArtists styleMode="B" />
-            </div>
+            </section>
 
           </div>
 
