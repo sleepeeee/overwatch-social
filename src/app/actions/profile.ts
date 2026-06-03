@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidateTag } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { OWPlayerCard } from "@/types/card";
 
@@ -121,5 +122,6 @@ export async function saveProfile(card: OWPlayerCard): Promise<{ error?: string 
     });
 
   if (error) return { error: error.message };
+  revalidateTag("public-profiles");
   return {};
 }
