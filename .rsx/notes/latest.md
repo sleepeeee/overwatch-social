@@ -18,9 +18,6 @@
 | Change | 狀態 | 備註 |
 |---|---|---|
 | homepage-hud-removal-3col-layout | 剛落地，未歸檔 | d5cb76e：移除 HUD + 三欄等高；無 Pre-archive Gate 紀錄 |
-| display-name-persistent-sync | 實作完成，未走 rsx 正式流程 | 19ddd60 / d92b443；F-016 / ADR-16 已補建；Migration 已在 Supabase 執行 |
-| mock-data-disclosure | 實作完成，未走 rsx 正式流程 | 19ddd60；F-017 已補建 |
-| og-image-env-guard | 實作完成，未走 rsx 正式流程 | 19ddd60；F-018 已補建 |
 
 ## 待 Propose Changes（依優先度）
 
@@ -36,6 +33,9 @@
 
 | Change | 時間 | 備註 |
 |---|---|---|
+| display-name-persistent-sync | 2026-06-03 | display_name DB 持久化；F-016/ADR-16；WARN=1（Task 4.3 skip，理由文件化）|
+| mock-data-disclosure | 2026-06-03 | VAL/LoL 假卡片 banner；F-017；WARN=0 |
+| og-image-env-guard | 2026-06-03 | og:image fallback 修補；F-018；WARN=0 |
 | 後台效能三連 | 2026-06-03 | DB 索引 + 伺服器過濾下推 + 廣場快取 |
 | capture-hud-full-reimplementation | 2026-06-03 | Git Outpost HUD 完整移植；F-008/F-009/ADR-08/ADR-09 |
 | share-page-completion | 2026-06-03 | 名片分享頁 OG meta；F-007/ADR-07 |
