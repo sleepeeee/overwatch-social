@@ -4,8 +4,6 @@ import { useState } from "react";
 import { Search, RotateCcw, Compass } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import TopBar from "@/components/TopBar";
-import { useAuth } from "@/context/AuthContext";
-
 // 導入三個獨立子分頁廣場
 import OverwatchSquare from "@/components/square/OverwatchSquare";
 import ValorantSquare from "@/components/square/ValorantSquare";
@@ -56,22 +54,12 @@ const CelestialAstrolabe = () => (
 );
 
 export default function BrowsePage() {
-  const { authLoading } = useAuth();
   const [activeGame, setActiveGame] = useState<GameId>("ow");
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleResetSearch = () => {
     setSearchQuery("");
   };
-
-  if (authLoading) {
-    return (
-      <div className="max-w-6xl mx-auto px-4 py-8 flex flex-col items-center justify-center min-h-[600px] gap-4">
-        <div className="w-12 h-12 border-4 border-[#82b7cc] border-t-transparent rounded-full animate-spin"></div>
-        <p className="text-gray-400 text-sm font-bold animate-pulse">正在與名片大廳大門連接中...</p>
-      </div>
-    );
-  }
 
   return (
     <div 
