@@ -18,6 +18,9 @@
 | Change | 狀態 | 備註 |
 |---|---|---|
 | homepage-hud-removal-3col-layout | 剛落地，未歸檔 | d5cb76e：移除 HUD + 三欄等高；無 Pre-archive Gate 紀錄 |
+| display-name-persistent-sync | 實作完成，未走 rsx 正式流程 | 19ddd60 / d92b443；F-016 / ADR-16 已補建；Migration 已在 Supabase 執行 |
+| mock-data-disclosure | 實作完成，未走 rsx 正式流程 | 19ddd60；F-017 已補建 |
+| og-image-env-guard | 實作完成，未走 rsx 正式流程 | 19ddd60；F-018 已補建 |
 
 ## 待 Propose Changes（依優先度）
 
@@ -47,6 +50,19 @@
 ---
 
 ## Zone B — 工作日誌（追加，由新到舊）
+
+### 2026-06-03 三個 S-change 補建文件（Finding / ADR / crossref）
+
+- **已完成**：
+  - F-016（display_name localStorage-only 缺陷根因 + 雙寫修復確認）
+  - F-017（VAL/LoL 假卡片外觀信任度風險 + banner 修復）
+  - F-018（og:image NEXT_PUBLIC_SITE_URL 靜默失效 + fallback 修復）
+  - ADR-16（display_name 雙寫策略決策）
+  - crossref 回填：REF-013 / REF-014 / REF-016 / F-007 的 referenced_by 補上新 F/ADR
+  - Supabase migration 012 在 Dashboard SQL Editor 手動執行（Success）
+  - handleSaveHub async error handling 修補（d92b443）
+- **卡關**：三個 change 未走 rsx:propose → rsx:apply → rsx:archive 正式流程（直接實作）；文件為事後補建
+- **下次優先**：若需歸檔，補跑 Pre-archive Gate 並建立 openspec change record
 
 ### 2026-06-03 capture-hud-full-reimplementation — ARCHIVE 前置（Gate + Finding/ADR）
 

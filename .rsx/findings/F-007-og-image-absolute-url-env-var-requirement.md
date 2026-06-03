@@ -5,7 +5,7 @@ status: confirmed
 change: share-page-completion
 date: 2026-06-03
 references_to: [REF-014, ADR-07]
-referenced_by: [ADR-07]
+referenced_by: [ADR-07, F-018]
 supporting_refs: [REF-014]
 ---
 

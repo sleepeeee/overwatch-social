@@ -5,7 +5,7 @@ title: Browse 廣場 7 大品質問題完整審計（2026-06-02）
 url: n/a
 status: active
 references_to: [REF-001, REF-003, F-012]
-referenced_by: [F-013, ADR-13, F-014, ADR-14]
+referenced_by: [F-013, ADR-13, F-014, ADR-14, F-017]
 ---
 
 ## 問題清單
