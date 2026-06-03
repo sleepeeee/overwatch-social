@@ -1,6 +1,5 @@
 "use server";
 
-import { unstable_cache } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import type { OWPlayerCard } from "@/types/card";
 
@@ -23,36 +22,25 @@ function rowToCard(row: Record<string, unknown>): OWPlayerCard {
   };
 }
 
-/**
- * 廣場預設瀏覽（無搜尋字串）的快取查詢。
- * 使用 Next.js unstable_cache，60 秒 TTL。
- * cache key = ["public-profiles", offset, server, mic]，每個 filter 組合獨立 entry。
- *
- * 只供「無搜尋」路徑使用；有搜尋字串時繞過此函式直接查 Supabase。
- */
-export const getPublicProfiles = unstable_cache(
-  async (
-    offset: number,
-    server?: string,
-    mic?: string
-  ): Promise<OWPlayerCard[]> => {
-    const supabase = await createClient();
+export async function getPublicProfiles(
+  offset: number,
+  server?: string,
+  mic?: string
+): Promise<OWPlayerCard[]> {
+  const supabase = await createClient();
 
-    let query = supabase
-      .from("public_profiles")
-      .select("*")
-      .order("updated_at", { ascending: false })
-      .range(offset, offset + PAGE_SIZE - 1);
+  let query = supabase
+    .from("public_profiles")
+    .select("*")
+    .order("updated_at", { ascending: false })
+    .range(offset, offset + PAGE_SIZE - 1);
 
-    if (server) query = query.eq("server", server);
-    if (mic)    query = query.eq("mic_status", mic);
+  if (server) query = query.eq("server", server);
+  if (mic)    query = query.eq("mic_status", mic);
 
-    const { data, error } = await query;
+  const { data, error } = await query;
 
-    if (error || !data) return [];
+  if (error || !data) return [];
 
-    return data.map((row) => rowToCard(row as Record<string, unknown>));
-  },
-  ["public-profiles"],
-  { revalidate: 60, tags: ["public-profiles"] }
-);
+  return data.map((row) => rowToCard(row as Record<string, unknown>));
+}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { OWPlayerCard, type UserProfile, type HeroConfig } from "@/types/card";
 import {
   HEROES_CONFIG,
@@ -65,6 +66,7 @@ interface SpecialTag {
 }
 
 export default function ProfilePage() {
+  const router = useRouter();
   const { isDeveloper } = useDevMode();
   const [activeSection, setActiveSection] = useState<"hub" | "ow-edit">("hub");
   
@@ -375,6 +377,7 @@ export default function ProfilePage() {
     // 🌟 儲存成功時，自動彈出分享對話框 Modal
     setShowShareModal(true);
     setTimeout(() => setSaved(false), 2000);
+    router.refresh();
   };
 
   // 移除 authLoading spinner：LoginModal show={!authLoading && !user} 已足夠守門
