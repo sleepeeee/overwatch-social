@@ -14,9 +14,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return { title: "找不到名片 | OW Social" };
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://overwatch-social.vercel.app";
   const firstHero = player.selected_heroes?.[0] ?? "ana";
-  const ogImage = siteUrl ? `${siteUrl}/images/heroes/avatars/${firstHero}.png` : undefined;
+  const ogImage = `${siteUrl}/images/heroes/avatars/${firstHero}.png`;
 
   const description = player.message
     || (player.tags?.length ? player.tags.join("、") : "查看這位特工的遊戲名片");
@@ -27,14 +27,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title: `${player.battle_tag} 的 OW 名片`,
       description,
-      ...(ogImage ? { images: [{ url: ogImage }] } : {}),
+      images: [{ url: ogImage }],
       type: "profile",
     },
     twitter: {
       card: "summary",
       title: `${player.battle_tag} 的 OW 名片`,
       description,
-      ...(ogImage ? { images: [ogImage] } : {}),
+      images: [ogImage],
     },
   };
 }

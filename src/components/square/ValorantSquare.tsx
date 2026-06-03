@@ -29,8 +29,11 @@ export default function ValorantSquare({ isPremiumStyle = true }: { isPremiumSty
         {MOCK_VAL_PLAYERS.map((player) => (
           <div
             key={player.id}
-            className="browse-preview-card w-full max-w-[360px] p-5 flex flex-col justify-between h-[320px] transition-transform duration-300 hover:-translate-y-1"
+            className="browse-preview-card relative w-full max-w-[360px] p-5 flex flex-col justify-between h-[320px] opacity-70 pointer-events-none select-none"
           >
+            <div className="absolute top-0 inset-x-0 z-20 flex items-center justify-center gap-1 bg-amber-400/90 text-amber-900 text-[9px] font-black py-0.5 tracking-widest rounded-t-2xl">
+              ⚠ 示範資料 — 非真實玩家
+            </div>
             <div>
               <div className="flex justify-between items-center border-b border-dashed border-[#8c7c6c]/15 pb-2.5 mb-3">
                 <span className="text-[10px] font-black text-[#8c7c6c]/80 tracking-widest uppercase">VALORANT</span>

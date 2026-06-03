@@ -56,6 +56,36 @@ export async function getPublicProfile(userId: string): Promise<OWPlayerCard | n
   };
 }
 
+export async function saveDisplayName(displayName: string): Promise<{ error?: string }> {
+  if (!displayName?.trim()) return { error: "名稱不可為空" };
+  if (displayName.length > 30) return { error: "名稱長度超出限制（最多 30 字）" };
+
+  const supabase = await createClient();
+  const { data: { user }, error: userError } = await supabase.auth.getUser();
+  if (userError || !user?.id) return { error: "未登入，無法儲存" };
+
+  const { error } = await supabase
+    .from("profiles")
+    .upsert({ user_id: user.id, display_name: displayName.trim() });
+
+  if (error) return { error: error.message };
+  return {};
+}
+
+export async function getMyDisplayName(): Promise<string | null> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user?.id) return null;
+
+  const { data } = await supabase
+    .from("profiles")
+    .select("display_name")
+    .eq("user_id", user.id)
+    .single();
+
+  return (data?.display_name as string | null) ?? null;
+}
+
 export async function saveProfile(card: OWPlayerCard): Promise<{ error?: string }> {
   // 伺服器端輸入驗證（防止繞過前端直接呼叫 Server Action）
   if (!card.battle_tag?.trim()) return { error: "BattleTag 不可為空" };

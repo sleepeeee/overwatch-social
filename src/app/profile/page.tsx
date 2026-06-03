@@ -24,7 +24,7 @@ import { Badge } from "@/components/ui/badge";
 import { SocialIcon } from "@/components/ui/SocialIcons";
 import { Sparkles, Save, Info, AlertTriangle, ArrowLeft, Gamepad2, ShieldAlert, Cpu } from "lucide-react";
 import { toPng } from "html-to-image";
-import { getMyProfile, saveProfile } from "@/app/actions/profile";
+import { getMyProfile, saveProfile, saveDisplayName, getMyDisplayName } from "@/app/actions/profile";
 import { getGameSpecialTags } from "@/app/actions/tags";
 import Link from "next/link";
 import { useDevMode } from "@/hooks/useDevMode";
@@ -170,7 +170,7 @@ export default function ProfilePage() {
     setUserProfile(authUserProfile);
   }, [authUserProfile]);
 
-  // user 變化時載入名片資料（auth state 由 AuthContext 統一管理）
+  // user 變化時載入名片資料 + display_name（auth state 由 AuthContext 統一管理）
   useEffect(() => {
     if (!user) return;
     getMyProfile().then(profile => {
@@ -179,6 +179,17 @@ export default function ProfilePage() {
         setCardData(loadedCard);
       } else {
         setCardData(DEFAULT_CARD);
+      }
+    });
+    // 從 DB 取得已儲存的 display_name，覆蓋 localStorage/auth 衍生值
+    getMyDisplayName().then(dbName => {
+      if (dbName) {
+        setUserProfile(prev => {
+          const updated = { ...prev, display_name: dbName };
+          const key = `user_profile_hub_${prev.id}`;
+          localStorage.setItem(key, JSON.stringify(updated));
+          return updated;
+        });
       }
     });
   }, [user?.id]);
@@ -193,11 +204,12 @@ export default function ProfilePage() {
     });
   };
 
-  // 儲存通用帳戶檔案 handler
-  const handleSaveHub = () => {
-    setHubSaved(true);
+  // 儲存通用帳戶檔案 handler（localStorage + Supabase 雙寫）
+  const handleSaveHub = async () => {
     const key = `user_profile_hub_${userProfile.id}`;
     localStorage.setItem(key, JSON.stringify(userProfile));
+    await saveDisplayName(userProfile.display_name);
+    setHubSaved(true);
     setTimeout(() => setHubSaved(false), 2000);
   };
 
