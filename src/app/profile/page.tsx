@@ -208,7 +208,11 @@ export default function ProfilePage() {
   const handleSaveHub = async () => {
     const key = `user_profile_hub_${userProfile.id}`;
     localStorage.setItem(key, JSON.stringify(userProfile));
-    await saveDisplayName(userProfile.display_name);
+    const result = await saveDisplayName(userProfile.display_name);
+    if (result.error) {
+      setErrorMsg(`暱稱儲存失敗：${result.error}`);
+      return;
+    }
     setHubSaved(true);
     setTimeout(() => setHubSaved(false), 2000);
   };
