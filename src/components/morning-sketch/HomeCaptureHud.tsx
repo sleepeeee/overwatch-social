@@ -1,136 +1,22 @@
 "use client";
 
 import { useEffect, useState, type CSSProperties } from "react";
-import { Activity, Crosshair, Crown, GitCommitHorizontal, Loader2, RadioTower } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { getCaptureStateSnapshot } from "@/app/actions/developerCapture";
 import type { CaptureHudLayout, CaptureState } from "@/lib/developer-capture/types";
 
-function formatDateTime(value: string | Date): string {
-  try {
-    const parts = new Intl.DateTimeFormat("en-CA", {
-      timeZone: "Asia/Taipei",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-      hourCycle: "h23",
-    }).formatToParts(value instanceof Date ? value : new Date(value));
-
-    const month = parts.find(part => part.type === "month")?.value ?? "--";
-    const day = parts.find(part => part.type === "day")?.value ?? "--";
-    const hour = parts.find(part => part.type === "hour")?.value ?? "--";
-    const minute = parts.find(part => part.type === "minute")?.value ?? "--";
-    return `${month}/${day} ${hour}:${minute}`;
-  } catch {
-    return "尚未同步";
-  }
-}
-
-function getStatusLabel(state: CaptureState): string {
-  const [left, right] = state.players;
-
-  if (state.status === "missing-config") {
-    return "WAITING_SETUP";
-  }
-
-  if (state.status === "git-error") {
-    return "SYNC_ERROR";
-  }
-
-  if (left.percent > right.percent) {
-    return "LEFT_ADVANTAGE";
-  }
-
-  if (right.percent > left.percent) {
-    return "RIGHT_ADVANTAGE";
-  }
-
-  return "CONTESTED";
-}
-
-function getStatusTitle(state: CaptureState): string {
-  const [left, right] = state.players;
-
-  if (state.status === "missing-config") {
-    return "尚未設定 Git 作者";
-  }
-
-  if (state.status === "git-error") {
-    return "Git 戰報讀取異常";
-  }
-
-  if (left.percent > right.percent) {
-    return `${left.label} 領先`;
-  }
-
-  if (right.percent > left.percent) {
-    return `${right.label} 領先`;
-  }
-
-  return "據點爭奪中";
-}
-
-function getStatusAccent(state: CaptureState): string {
-  const [left, right] = state.players;
-
-  if (state.status === "missing-config") {
-    return "#f59e0b";
-  }
-
-  if (state.status === "git-error") {
-    return "#f43f5e";
-  }
-
-  if (left.percent > right.percent) {
-    return state.hudTheme.leftAccent;
-  }
-
-  if (right.percent > left.percent) {
-    return state.hudTheme.rightAccent;
-  }
-
-  return "#94a3b8";
-}
-
-function StatChip({
-  title,
-  leftValue,
-  rightValue,
-  leftColor,
-  rightColor,
-}: {
-  title: string;
-  leftValue: string;
-  rightValue: string;
-  leftColor: string;
-  rightColor: string;
-}) {
-  return (
-    <div className="rounded-xl border border-white/60 bg-white/45 px-3 py-2 shadow-[0_6px_18px_rgba(140,124,108,0.04)] backdrop-blur-sm">
-      <div className="flex items-center justify-between gap-2">
-        <p className="text-[9px] font-black uppercase tracking-[0.22em] text-[#8c7c6c]/75">{title}</p>
-        <GitCommitHorizontal size={10} className="text-[#8c7c6c]/35" />
-      </div>
-      <div className="mt-1.5 grid grid-cols-2 gap-2 text-xs font-black tabular-nums">
-        <span className="truncate" style={{ color: leftColor }}>{leftValue}</span>
-        <span className="truncate text-right" style={{ color: rightColor }}>{rightValue}</span>
-      </div>
-    </div>
-  );
+function statBar(lv: number, rv: number) {
+  const total = Math.max(lv + rv, 1);
+  return { lw: (lv / total) * 100, rw: (rv / total) * 100 };
 }
 
 export default function HomeCaptureHud({ applyLayout = true }: { applyLayout?: boolean }) {
   return <HomeCaptureHudContent applyLayout={applyLayout} />;
 }
 
-interface HomeCaptureHudContentProps {
-  applyLayout: boolean;
-}
-
-function HomeCaptureHudContent({ applyLayout }: HomeCaptureHudContentProps) {
+function HomeCaptureHudContent({ applyLayout }: { applyLayout: boolean }) {
   const [captureState, setCaptureState] = useState<CaptureState | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [liveNow, setLiveNow] = useState(() => new Date());
   const [previewHudLayout, setPreviewHudLayout] = useState<CaptureHudLayout | null>(null);
 
   useEffect(() => {
@@ -139,37 +25,25 @@ function HomeCaptureHudContent({ applyLayout }: HomeCaptureHudContentProps) {
     const syncCaptureState = async () => {
       try {
         const snapshot = await getCaptureStateSnapshot();
-        if (active) {
-          setCaptureState(snapshot);
-        }
+        if (active) setCaptureState(snapshot);
       } finally {
-        if (active) {
-          setIsLoading(false);
-        }
+        if (active) setIsLoading(false);
       }
     };
 
-    syncCaptureState();
+    void syncCaptureState();
 
-    const refreshOnFocus = () => {
-      void syncCaptureState();
-    };
-
+    const refreshOnFocus = () => { void syncCaptureState(); };
     const refreshOnVisible = () => {
-      if (document.visibilityState === "visible") {
-        void syncCaptureState();
-      }
+      if (document.visibilityState === "visible") void syncCaptureState();
     };
 
-    const stateTimer = window.setInterval(() => {
-      void syncCaptureState();
-    }, 30_000);
-    const clockTimer = window.setInterval(() => setLiveNow(new Date()), 1000);
+    const stateTimer = window.setInterval(() => { void syncCaptureState(); }, 30_000);
 
     window.addEventListener("focus", refreshOnFocus);
     document.addEventListener("visibilitychange", refreshOnVisible);
-    let channel: BroadcastChannel | null = null;
 
+    let channel: BroadcastChannel | null = null;
     if (typeof BroadcastChannel !== "undefined") {
       channel = new BroadcastChannel("capture-hud-sync");
       channel.onmessage = event => {
@@ -177,12 +51,10 @@ function HomeCaptureHudContent({ applyLayout }: HomeCaptureHudContentProps) {
           | { type?: string; layout?: CaptureHudLayout }
           | null
           | undefined;
-
         if (message?.type === "capture-hud-preview" && message.layout) {
           setPreviewHudLayout(message.layout);
           return;
         }
-
         if (message?.type === "capture-hud-updated") {
           setPreviewHudLayout(null);
           void syncCaptureState();
@@ -193,19 +65,36 @@ function HomeCaptureHudContent({ applyLayout }: HomeCaptureHudContentProps) {
     return () => {
       active = false;
       window.clearInterval(stateTimer);
-      window.clearInterval(clockTimer);
       window.removeEventListener("focus", refreshOnFocus);
       document.removeEventListener("visibilitychange", refreshOnVisible);
       channel?.close();
     };
   }, []);
 
+  const effectiveHudLayout = previewHudLayout ?? captureState?.hudLayout;
+  const hudLayoutStyle = effectiveHudLayout
+    ? ({
+        "--hud-home-x": `${effectiveHudLayout.offsetX}px`,
+        "--hud-home-y": `${effectiveHudLayout.offsetY}px`,
+        "--hud-home-scale": String(effectiveHudLayout.scale),
+      } as CSSProperties)
+    : undefined;
+
+  const layoutClass = applyLayout ? "home-hud-layout" : "";
+
   if (isLoading) {
     return (
-      <section className="glass-panel relative min-h-[250px] w-full overflow-hidden border border-white/60 bg-white/50 p-4 shadow-[0_10px_40px_rgba(140,124,108,0.08)] backdrop-blur-xl">
-        <div className="flex h-full items-center justify-center gap-2 text-xs font-black tracking-[0.18em] text-[#8c7c6c]/70">
-          <Loader2 size={14} className="animate-spin text-[#82b7cc]" />
-          HUD 載入中
+      <section
+        aria-label="首頁戰報 HUD"
+        className={`relative overflow-hidden rounded-lg border border-slate-200 bg-white text-slate-800 ${layoutClass}`}
+        style={applyLayout ? hudLayoutStyle : undefined}
+      >
+        <div className="absolute inset-0 hud-scanlines opacity-25 z-10 pointer-events-none" />
+        <div className="relative z-10 p-5 sm:p-6 min-h-[200px] flex items-center justify-center">
+          <div className="flex items-center gap-2 text-xs font-mono font-bold tracking-[0.18em] text-slate-400">
+            <Loader2 size={14} className="animate-spin text-cyan-400" />
+            SYNCING BATTLE_FEED...
+          </div>
         </div>
       </section>
     );
@@ -213,144 +102,293 @@ function HomeCaptureHudContent({ applyLayout }: HomeCaptureHudContentProps) {
 
   if (!captureState) {
     return (
-      <section className="glass-panel relative min-h-[250px] w-full overflow-hidden border border-white/60 bg-white/50 p-4 shadow-[0_10px_40px_rgba(140,124,108,0.08)] backdrop-blur-xl">
-        <div className="flex h-full flex-col items-center justify-center gap-2 text-center">
-          <p className="text-xs font-black tracking-[0.18em] text-[#3e2723]">HUD 暫時無法同步</p>
-          <p className="max-w-[220px] text-[10px] leading-relaxed text-[#8c7c6c]">後端資料讀取失敗，首頁先顯示靜態占位卡。</p>
+      <section
+        aria-label="首頁戰報 HUD"
+        className={`relative overflow-hidden rounded-lg border border-rose-500/30 bg-white text-slate-800 ${layoutClass}`}
+        style={applyLayout ? hudLayoutStyle : undefined}
+      >
+        <div className="absolute inset-0 hud-scanlines opacity-25 z-10 pointer-events-none" />
+        <div className="cyber-corner-tl text-rose-500" />
+        <div className="cyber-corner-tr text-rose-500" />
+        <div className="cyber-corner-bl text-rose-500" />
+        <div className="cyber-corner-br text-rose-500" />
+        <div className="relative z-10 p-5 sm:p-6">
+          <div className="py-8 flex flex-col items-center justify-center text-center space-y-4">
+            <div className="w-12 h-12 bg-rose-500/10 border border-rose-500/30 rounded flex items-center justify-center text-rose-500">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
+            <h3 className="text-xs font-bold tracking-wider text-rose-500 font-mono uppercase">SYS_DAEMON_READ_FAIL</h3>
+            <p className="text-[11px] text-slate-400 font-mono">後端連線受阻，HUD 無法同步。</p>
+          </div>
         </div>
       </section>
     );
   }
 
   const [left, right] = captureState.players;
-  const statusLabel = getStatusLabel(captureState);
-  const statusTitle = getStatusTitle(captureState);
-  const accent = getStatusAccent(captureState);
   const ownerSide = captureState.targetRepositoryOwnerSide;
-  const isLeftOwner = ownerSide === "left";
-  const isRightOwner = ownerSide === "right";
-  const effectiveHudLayout = previewHudLayout ?? captureState.hudLayout;
-  const hudLayoutStyle = {
-    "--hud-home-x": `${effectiveHudLayout.offsetX}px`,
-    "--hud-home-y": `${effectiveHudLayout.offsetY}px`,
-    "--hud-home-scale": String(effectiveHudLayout.scale),
-  } as CSSProperties;
-  const hudStyle = {
-    "--hud-mini-bg": captureState.hudTheme.lightBackground,
-    "--hud-mini-card": captureState.hudTheme.lightCard,
-  } as CSSProperties;
+
+  const getTheme = () => {
+    if (captureState.status === "missing-config")
+      return { statusText: "配對中止", statusColor: "text-amber-400 border-amber-500/30 bg-amber-500/10", glow: "" };
+    if (captureState.status === "git-error")
+      return { statusText: "異常警報", statusColor: "text-rose-400 border-rose-500/30 bg-rose-500/10", glow: "" };
+    if (left.percent > 50)
+      return { statusText: `${left.label} 正在壓制據點`, statusColor: "text-cyan-400 border-cyan-500/30 bg-cyan-500/10", glow: "shadow-[0_0_15px_rgba(0,240,255,0.15)] border-cyan-500/30" };
+    if (right.percent > 50)
+      return { statusText: `${right.label} 正在壓制據點`, statusColor: "text-orange-400 border-orange-500/30 bg-orange-500/10", glow: "shadow-[0_0_15px_rgba(249,115,22,0.15)] border-orange-500/30" };
+    return { statusText: "據點爭奪中", statusColor: "text-slate-300 border-slate-700 bg-slate-800/50", glow: "border-slate-300" };
+  };
+
+  const cornerColor = (side: "left" | "right") => {
+    if (captureState.status === "git-error") return "text-rose-500";
+    if (captureState.status === "missing-config") return "text-amber-500";
+    const pct = side === "left" ? left.percent : right.percent;
+    if (side === "left") return pct >= 50 ? "text-cyan-400" : "text-orange-400";
+    return pct > 50 ? "text-orange-400" : "text-cyan-400";
+  };
+
+  const theme = getTheme();
 
   return (
     <section
       aria-label="首頁戰報 HUD"
-      className={`glass-panel relative w-full overflow-hidden border border-white/60 bg-[var(--hud-mini-bg)] p-4 text-[#3e2723] shadow-[0_14px_40px_rgba(140,124,108,0.08)] backdrop-blur-xl ${applyLayout ? "home-hud-layout" : ""}`}
-      style={applyLayout ? { ...hudStyle, ...hudLayoutStyle } : hudStyle}
+      className={`relative overflow-hidden rounded-lg border transition-all duration-500 bg-white text-slate-800 ${theme.glow} ${layoutClass}`}
+      style={applyLayout ? hudLayoutStyle : undefined}
     >
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 opacity-[0.22] [background-image:radial-gradient(circle_at_top,rgba(255,255,255,0.72),rgba(255,255,255,0.08)_58%,transparent_76%)]"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 opacity-[0.10] [background-image:linear-gradient(to_right,rgba(140,124,108,0.08)_1px,transparent_1px),linear-gradient(to_bottom,rgba(140,124,108,0.08)_1px,transparent_1px)] [background-size:20px_20px]"
-      />
+      {/* Scanlines */}
+      <div className="absolute inset-0 hud-scanlines opacity-25 z-10 pointer-events-none" />
+      {/* Cyber Corners */}
+      <div className={`cyber-corner-tl ${cornerColor("left")}`} />
+      <div className={`cyber-corner-tr ${cornerColor("right")}`} />
+      <div className={`cyber-corner-bl ${cornerColor("left")}`} />
+      <div className={`cyber-corner-br ${cornerColor("right")}`} />
 
-      <div className="relative z-10 flex flex-col gap-3">
-        <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0">
-            <p className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-[0.24em] text-[#82b7cc]">
-              <span className="h-3 w-1.5 bg-[#82b7cc]" />
-              GIT OUTPOST LIVE HUD
-            </p>
-            <h3 className="mt-1 flex items-center gap-2 text-[15px] font-black tracking-tight text-[#3e2723]">
-              <Crosshair size={16} style={{ color: accent }} />
-              {statusTitle}
-            </h3>
+      <div className="relative z-10 p-5 sm:p-6">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-4 border-b pb-3 border-slate-100">
+          <div className="flex items-center gap-1.5">
+            <span className="inline-block w-1.5 h-3 bg-blue-500" />
+            <span className="text-[10px] font-mono tracking-widest uppercase font-bold text-slate-400">GIT OUTPOST CONSOLE V1.0</span>
           </div>
-
-          <div className="flex shrink-0 items-center gap-2 rounded-full border border-white/70 bg-white/55 px-2.5 py-1 text-[10px] font-black tracking-wider text-[#8c7c6c] shadow-sm">
-            <span className="h-1.5 w-1.5 rounded-full bg-current animate-pulse" />
-            {statusLabel}
+          <div className={`text-[10px] px-2.5 py-0.5 border font-semibold rounded-sm font-mono tracking-wide flex items-center gap-1.5 transition-all duration-300 ${theme.statusColor}`}>
+            <span className="w-1.5 h-1.5 rounded-full bg-current animate-hud-pulse" />
+            {theme.statusText}
           </div>
         </div>
 
-        <div className="grid grid-cols-[minmax(0,1.35fr)_minmax(0,0.95fr)_minmax(0,1.35fr)] items-end gap-2">
-          <div className="min-w-0">
-            <p className="text-[9px] font-black uppercase tracking-[0.22em] text-[#82b7cc]">左側</p>
-            <p className="truncate text-[11px] font-black text-[#3e2723] sm:text-[13px]">{left.label}</p>
-            <p className="text-base font-black tabular-nums sm:text-lg" style={{ color: captureState.hudTheme.leftAccent }}>
-              {left.percent}%
-            </p>
-            {isLeftOwner && (
-              <span className="mt-1 inline-flex items-center gap-1 rounded-full border border-amber-400/25 bg-amber-400/10 px-2 py-0.5 text-[9px] font-black text-amber-600">
-                <Crown size={10} />
-                倉庫所有者
-              </span>
-            )}
-          </div>
+        {/* READY */}
+        {(captureState.status === "ready" || captureState.status === "neutral") && (
+          <div className="space-y-6">
+            {/* Player Names */}
+            <div className="grid grid-cols-2 gap-4 items-center">
+              {/* LEFT CAMP */}
+              <div className="text-left space-y-1">
+                <div className="flex flex-wrap items-center gap-1.5 min-h-[22px]">
+                  <span className="w-2 h-2 rounded-full" style={{ backgroundColor: captureState.hudTheme.leftAccent }} />
+                  <span className="text-[10px] font-mono font-semibold tracking-wider text-slate-400">LEFT CAMP</span>
+                  {ownerSide === "left" && (
+                    <span
+                      className="text-[9px] px-1.5 py-0.5 rounded-sm font-bold animate-hud-pulse flex items-center gap-1"
+                      style={{ color: captureState.hudTheme.leftAccent, borderColor: `${captureState.hudTheme.leftAccent}50`, backgroundColor: `${captureState.hudTheme.leftAccent}15`, border: "1px solid" }}
+                    >
+                      <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                      </svg>
+                      倉庫所有者
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-baseline gap-2 flex-wrap">
+                  <span className="text-xl sm:text-2xl font-black font-mono tracking-tight text-slate-900 truncate max-w-[150px]">{left.label}</span>
+                  <span className="text-xs font-mono font-bold whitespace-nowrap" style={{ color: captureState.hudTheme.leftAccent }}>{left.score} PTS</span>
+                </div>
+                {left.githubUrl && (
+                  <a
+                    href={left.githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[9px] font-mono truncate block hover:underline transition-colors"
+                    style={{ color: `${captureState.hudTheme.leftAccent}99` }}
+                  >
+                    {left.githubUrl.replace("https://github.com/", "@")}
+                  </a>
+                )}
+              </div>
 
-          <div className="relative h-10">
-            <div className="absolute left-0 right-0 top-1/2 h-2 -translate-y-1/2 overflow-hidden rounded-full bg-white/70 shadow-inner">
-              <div className="h-full rounded-l-full transition-[width] duration-500" style={{ width: `${left.percent}%`, backgroundColor: captureState.hudTheme.leftAccent }} />
-              <div className="ml-auto h-full rounded-r-full transition-[width] duration-500" style={{ width: `${right.percent}%`, backgroundColor: captureState.hudTheme.rightAccent }} />
+              {/* RIGHT CAMP */}
+              <div className="text-right space-y-1">
+                <div className="flex flex-wrap items-center justify-end gap-1.5 min-h-[22px]">
+                  {ownerSide === "right" && (
+                    <span
+                      className="text-[9px] px-1.5 py-0.5 rounded-sm font-bold animate-hud-pulse flex items-center gap-1"
+                      style={{ color: captureState.hudTheme.rightAccent, borderColor: `${captureState.hudTheme.rightAccent}50`, backgroundColor: `${captureState.hudTheme.rightAccent}15`, border: "1px solid" }}
+                    >
+                      <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                      </svg>
+                      倉庫所有者
+                    </span>
+                  )}
+                  <span className="text-[10px] font-mono font-semibold tracking-wider text-slate-400">RIGHT CAMP</span>
+                  <span className="w-2 h-2 rounded-full" style={{ backgroundColor: captureState.hudTheme.rightAccent }} />
+                </div>
+                <div className="flex items-baseline justify-end gap-2 flex-wrap">
+                  <span className="text-xs font-mono font-bold whitespace-nowrap" style={{ color: captureState.hudTheme.rightAccent }}>{right.score} PTS</span>
+                  <span className="text-xl sm:text-2xl font-black font-mono tracking-tight text-slate-900 truncate max-w-[150px]">{right.label}</span>
+                </div>
+                {right.githubUrl && (
+                  <a
+                    href={right.githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[9px] font-mono truncate block hover:underline transition-colors text-right"
+                    style={{ color: `${captureState.hudTheme.rightAccent}99` }}
+                  >
+                    {right.githubUrl.replace("https://github.com/", "@")}
+                  </a>
+                )}
+              </div>
             </div>
-            <div
-              className="absolute left-1/2 top-1/2 flex h-8 w-8 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/75 bg-white/85 text-[10px] font-black shadow-[0_8px_18px_rgba(130,183,204,0.18)]"
-              style={{ color: accent }}
-            >
-              <RadioTower size={11} />
+
+            {/* Occupation Bar */}
+            <div className="relative pt-6 pb-2">
+              <div className="absolute top-0 inset-x-0 flex justify-between text-xs font-mono font-black">
+                <span
+                  className={`${left.percent >= 50 ? "text-sm scale-110" : "text-slate-400"} transition-all duration-300`}
+                  style={left.percent >= 50 ? { color: captureState.hudTheme.leftAccent } : {}}
+                >
+                  {left.percent}%
+                </span>
+                <span className="text-[10px] text-slate-400 font-normal">SEC_01 // TRACKING</span>
+                <span
+                  className={`${right.percent >= 50 ? "text-sm scale-110" : "text-slate-400"} transition-all duration-300`}
+                  style={right.percent >= 50 ? { color: captureState.hudTheme.rightAccent } : {}}
+                >
+                  {right.percent}%
+                </span>
+              </div>
+              <div className="h-2.5 w-full bg-slate-200 rounded-full relative flex overflow-hidden">
+                <div
+                  style={{ width: `${left.percent}%`, backgroundColor: captureState.hudTheme.leftAccent }}
+                  className="h-full rounded-l-full transition-all duration-500 ease-out"
+                />
+                <div
+                  style={{ width: `${right.percent}%`, backgroundColor: captureState.hudTheme.rightAccent }}
+                  className="h-full rounded-r-full transition-all duration-500 ease-out ml-auto"
+                />
+              </div>
+              {/* Radar Knob */}
+              <div
+                style={{ left: `calc(${left.percent}% - 14px)` }}
+                className="absolute top-[23px] w-7 h-7 flex items-center justify-center transition-all duration-500 ease-out z-20"
+              >
+                <svg width="28" height="28" viewBox="0 0 28 28" fill="none" className="drop-shadow-md">
+                  <circle
+                    cx="14" cy="14" r="11"
+                    stroke={left.percent > 50 ? captureState.hudTheme.leftAccent : left.percent < 50 ? captureState.hudTheme.rightAccent : "#94a3b8"}
+                    strokeWidth="1.5"
+                    strokeDasharray="3 2"
+                    className="animate-[spin_10s_linear_infinite]"
+                  />
+                  <circle
+                    cx="14" cy="14" r="6"
+                    fill={left.percent > 50 ? captureState.hudTheme.leftAccent : left.percent < 50 ? captureState.hudTheme.rightAccent : "#94a3b8"}
+                    className="animate-hud-pulse"
+                  />
+                  <path
+                    d="M14 2V5M14 23V26"
+                    stroke={left.percent > 50 ? captureState.hudTheme.leftAccent : captureState.hudTheme.rightAccent}
+                    strokeWidth="1"
+                  />
+                </svg>
+              </div>
+              <div className="absolute top-[31px] left-1/2 -translate-x-1/2 w-0.5 h-3 bg-slate-300 z-0">
+                <span className="absolute -bottom-4 left-1/2 -translate-x-1/2 text-[8px] font-mono text-slate-400">MID</span>
+              </div>
+            </div>
+
+            {/* Telemetry Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-6 mt-4 border-t border-slate-100">
+              {(
+                [
+                  { title: "COMMITS",         lv: left.commits,   rv: right.commits,   fmt: (v: number) => String(v),  lc: "bg-blue-500",    rc: "bg-orange-500",             icon: "↔" },
+                  { title: "ADDITIONS (新增)", lv: left.additions, rv: right.additions, fmt: (v: number) => `+${v}`,    lc: "bg-emerald-500", rc: "bg-emerald-400 opacity-40", icon: "+" },
+                  { title: "DELETIONS (刪除)", lv: left.deletions, rv: right.deletions, fmt: (v: number) => `-${v}`,    lc: "bg-rose-500",    rc: "bg-rose-400 opacity-40",    icon: "-" },
+                ] as const
+              ).map(({ title, lv, rv, fmt, lc, rc, icon }) => {
+                const { lw, rw } = statBar(lv, rv);
+                const tc = icon === "+" ? "text-emerald-500" : icon === "-" ? "text-rose-500" : "text-blue-500";
+                return (
+                  <div key={title} className="p-3 bg-slate-50 rounded border border-slate-100">
+                    <div className="text-[10px] font-mono text-slate-400 tracking-wider mb-2.5 uppercase flex items-center justify-between">
+                      <span>{title}</span>
+                      <span className={tc}>{icon}</span>
+                    </div>
+                    <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
+                      <div className="space-y-0.5 text-left min-w-0">
+                        <span className="text-[10px] text-slate-400 block truncate">{left.label}</span>
+                        <p className="text-lg font-black font-mono text-slate-900 leading-none">{fmt(lv)}</p>
+                      </div>
+                      <div className="h-6 w-12 bg-slate-200 rounded flex overflow-hidden p-0.5 self-center">
+                        <div style={{ width: `${lw}%` }} className={`h-full rounded-sm ${lc}`} />
+                        <div style={{ width: `${rw}%` }} className={`h-full rounded-sm ${rc} ml-auto`} />
+                      </div>
+                      <div className="space-y-0.5 text-right min-w-0">
+                        <span className="text-[10px] text-slate-400 block truncate">{right.label}</span>
+                        <p className="text-lg font-black font-mono text-slate-900 leading-none">{fmt(rv)}</p>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
+        )}
 
-          <div className="min-w-0 text-right">
-            <p className="text-[9px] font-black uppercase tracking-[0.22em] text-[#f97316]">右側</p>
-            <p className="truncate text-[11px] font-black text-[#3e2723] sm:text-[13px]">{right.label}</p>
-            <p className="text-base font-black tabular-nums sm:text-lg" style={{ color: captureState.hudTheme.rightAccent }}>
-              {right.percent}%
-            </p>
-            {isRightOwner && (
-              <span className="mt-1 inline-flex items-center gap-1 rounded-full border border-amber-400/25 bg-amber-400/10 px-2 py-0.5 text-[9px] font-black text-amber-600">
-                <Crown size={10} />
-                倉庫所有者
-              </span>
-            )}
+        {/* MISSING CONFIG */}
+        {captureState.status === "missing-config" && (
+          <div className="py-8 flex flex-col items-center justify-center text-center space-y-4">
+            <div className="w-16 h-16 bg-amber-500/10 border border-amber-500/30 rounded flex items-center justify-center text-amber-500 animate-hud-pulse">
+              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
+            <div className="space-y-2 max-w-sm">
+              <h3 className="text-sm font-bold tracking-wider text-amber-500 font-mono">WARN_NO_GIT_AUTHOR_DETECTED</h3>
+              <p className="text-xs text-slate-400 font-mono">尚未設定 Git 作者，HUD 無法識別陣營歸屬。</p>
+            </div>
           </div>
-        </div>
+        )}
 
-        <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
-          <StatChip
-            title="COMMITS"
-            leftValue={`${left.commits}`}
-            rightValue={`${right.commits}`}
-            leftColor={captureState.hudTheme.leftAccent}
-            rightColor={captureState.hudTheme.rightAccent}
-          />
-          <StatChip
-            title="ADDITIONS"
-            leftValue={`+${left.additions}`}
-            rightValue={`+${right.additions}`}
-            leftColor={captureState.hudTheme.leftAccent}
-            rightColor={captureState.hudTheme.rightAccent}
-          />
-          <StatChip
-            title="DELETIONS"
-            leftValue={`-${left.deletions}`}
-            rightValue={`-${right.deletions}`}
-            leftColor={captureState.hudTheme.leftAccent}
-            rightColor={captureState.hudTheme.rightAccent}
-          />
-        </div>
+        {/* GIT ERROR */}
+        {captureState.status === "git-error" && (
+          <div className="py-8 flex flex-col items-center justify-center text-center space-y-4">
+            <div className="w-16 h-16 bg-rose-500/10 border border-rose-500/30 rounded flex items-center justify-center text-rose-500 animate-[pulse_1s_infinite]">
+              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
+            <div className="space-y-2 max-w-sm">
+              <h3 className="text-sm font-bold tracking-wider text-rose-500 uppercase font-mono">SYS_DAEMON_READ_FAIL</h3>
+              <p className="text-xs text-slate-400 font-mono">後端服務連線受阻，或數據緩存溢出。無法取得本周期的 Git 提交分析檔案。</p>
+            </div>
+          </div>
+        )}
 
-        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-white/50 pt-2 font-mono text-[10px] font-bold text-[#8c7c6c]/75">
-          <span>TIMEZONE: {captureState.timezone}</span>
-          <span className="flex items-center gap-1.5">
-            <Activity size={11} />
-            UPDATED: {formatDateTime(liveNow)}
-          </span>
-          <span className="flex items-center gap-1.5 text-emerald-600">
-            <span className="h-1.5 w-1.5 rounded-full bg-current" />
-            BATTLEFEED_OK
-          </span>
+        {/* Footer */}
+        <div className="mt-5 pt-3 border-t border-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-[10px] font-mono text-slate-400">
+          <div className="flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 bg-slate-400 rounded-full" />
+            <span>TIMEZONE: {captureState.timezone}</span>
+          </div>
+          <span>UPDATED: {new Date(captureState.updatedAt).toLocaleTimeString("zh-TW", { hour12: false })}</span>
+          <div className="flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+            <span className="text-emerald-500">BATTLEFEED_OK</span>
+          </div>
         </div>
       </div>
     </section>

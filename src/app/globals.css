@@ -615,6 +615,10 @@ html, body {
   transform-origin: top left;
   will-change: transform;
 }
+/* 防止 .glass-panel:hover 的 translateY 覆蓋 scale */
+.home-hud-layout:hover {
+  transform: translate3d(var(--hud-home-x, 0px), calc(var(--hud-home-y, 0px) - 2px), 0) scale(var(--hud-home-scale, 1));
+}
 
 .watercolor-avatar-bg {
   background: radial-gradient(circle at 65% 35%, rgba(130, 183, 204, 0.18) 0%, rgba(245, 212, 107, 0.12) 40%, transparent 80%) !important;
