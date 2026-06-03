@@ -7,31 +7,41 @@
 ---
 
 <!-- ZONE_A_START -->
-> **Zone A 最後更新：2026-06-03**
+> **Zone A 最後更新：2026-06-03（Retrospective + Roadmap）**
 
 ## 現在在做什麼
 
-`capture-hud-full-reimplementation` ARCHIVE 前置完成（Pre-archive Gate PASS、F-008/F-009/ADR-08/ADR-09 已建）。等待主代理執行 `openspec archive capture-hud-full-reimplementation`。
+完成 `/rsx:explore 近期 change 分析 + 未來方向規劃`。下一步：依優先清單開 propose。
 
 ## 進行中的 Changes（未 archive）
 
 | Change | 狀態 | 備註 |
 |---|---|---|
-| share-page-completion | Gate PASS，等待 archive | F-007/ADR-07 已建；雙向 crossref 回填完成 |
-| capture-hud-full-reimplementation | Gate PASS，等待 archive | F-008/F-009/ADR-08/ADR-09 已建；雙向 crossref 回填完成 |
+| homepage-hud-removal-3col-layout | 剛落地，未歸檔 | d5cb76e：移除 HUD + 三欄等高；無 Pre-archive Gate 紀錄 |
 
-## 待 Propose Changes
+## 待 Propose Changes（依優先度）
 
-（無）
+| 優先 | Change | 複雜度 | 核心問題 |
+|---|---|---|---|
+| #1 P0 | `display-name-persistent-sync` | S | display_name localStorage-only，跨裝置消失 |
+| #2 P0 | `mock-data-disclosure` | S | VAL/LoL 假卡片外觀與真實玩家相同，用戶誤判 |
+| #3 P1 | `og-image-env-guard` | S | NEXT_PUBLIC_SITE_URL 漏設時 OG 靜默失效 |
+| #4 P1 | `favorites-collections` | M | 廣場無收藏功能，留存路徑斷裂 |
+| #5 P1 | `vercel-github-webhook-hud` | M | 生產環境 HUD 顯示假 commit stats |
 
 ## 近期歸檔紀錄
 
 | Change | 時間 | 備註 |
 |---|---|---|
-| developer-console-backend | 2026-06-02 | 對準儀改存 Supabase DB + 後台真實統計；F-004、ADR-04 已建 |
-| auth-ux-login-gate | 2026-06-01 | 登出按鈕+LoginModal+Profile overlay；F-003、ADR-03 已建 |
-| auth-fix-and-developer-role | 2026-06-01 | 登入修復+developer mode；F-002、ADR-02 已建 |
-| google-oauth-supabase-auth | 2026-06-01 | OAuth 基礎建設；ADR-01、F-001 已建 |
+| 後台效能三連 | 2026-06-03 | DB 索引 + 伺服器過濾下推 + 廣場快取 |
+| capture-hud-full-reimplementation | 2026-06-03 | Git Outpost HUD 完整移植；F-008/F-009/ADR-08/ADR-09 |
+| share-page-completion | 2026-06-03 | 名片分享頁 OG meta；F-007/ADR-07 |
+| userprofile-auth-metadata-sync | 2026-06-03 | AuthContext.userProfile；F-006/ADR-06 |
+| hero-stats-db-aggregation | 2026-06-03 | LIMIT 500 缺陷修復；F-005/ADR-05 |
+| developer-console-backend | 2026-06-02 | 對準儀改存 Supabase DB；F-004/ADR-04 |
+| auth-ux-login-gate | 2026-06-01 | 登出按鈕+LoginModal+Profile overlay；F-003/ADR-03 |
+| auth-fix-and-developer-role | 2026-06-01 | 登入修復+developer mode；F-002/ADR-02 |
+| google-oauth-supabase-auth | 2026-06-01 | OAuth 基礎建設；ADR-01/F-001 |
 <!-- ZONE_A_END -->
 
 ---
@@ -136,4 +146,11 @@ Tier: grep
 - 根目錄（D:\Overwatch專案\）有 Claude工作區/ + 雜散 html/md
 - overwatch-social/ 內有 src_backup_default(440KB)、196KB log、28個 openspec archive、13份報告、_drafts 草稿、rsx-bak 備份
 - .gitignore 未涵蓋 log/cache/test-results/playwright-report
+<!-- pre-check-log-end -->
+
+<!-- pre-check-log-start -->
+### [Step 0 pre-check] 近期 change 分析 + 未來方向規劃 (2026-06-03)
+Tier: grep
+命中：3 筆（REF-013 display_name 跨裝置、REF-014 Vercel env、REF-016 browse 品質/假卡）
+使用者選擇：(c) 兩者都做（本地材料 + 外部搜尋）
 <!-- pre-check-log-end -->
