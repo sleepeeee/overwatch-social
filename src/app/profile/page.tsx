@@ -616,7 +616,30 @@ export default function ProfilePage() {
           <div ref={cardRef} className="rounded-[28px] overflow-hidden">
             <OWCard cardData={cardData} isLoggedIn={true} isEditable={true} customAlignments={heroAlignments} />
           </div>
-          <p className="text-xs text-[#8c7c6c]/80 italic text-center max-w-[320px] font-semibold">
+
+          {/* 🌟 匯出圖片與複製連結按鈕區 */}
+          <div className="w-full max-w-[320px] grid grid-cols-2 gap-3 mt-2">
+            <Button
+              type="button"
+              onClick={handleExportImage}
+              disabled={exportingImage}
+              className="bg-white/60 hover:bg-white border border-[#8c7c6c]/20 hover:border-[#82b7cc]/50 text-[#5d4037] hover:text-[#82b7cc] rounded-xl py-2.5 px-3 text-xs font-black tracking-wider transition-all shadow-sm active:scale-95 cursor-pointer flex items-center justify-center gap-1.5"
+            >
+              <span>💾</span>
+              <span>{exportingImage ? "導出中..." : "保存圖片"}</span>
+            </Button>
+            <Button
+              type="button"
+              onClick={handleShareLink}
+              disabled={sharing}
+              className="bg-white/60 hover:bg-white border border-[#8c7c6c]/20 hover:border-[#82b7cc]/50 text-[#5d4037] hover:text-[#82b7cc] rounded-xl py-2.5 px-3 text-xs font-black tracking-wider transition-all shadow-sm active:scale-95 cursor-pointer flex items-center justify-center gap-1.5"
+            >
+              <span>🔗</span>
+              <span>{shareSuccess ? "已複製！" : "複製連結"}</span>
+            </Button>
+          </div>
+
+          <p className="text-xs text-[#8c7c6c]/80 italic text-center max-w-[320px] font-semibold mt-1">
             ✨ 卡片效果將會同步更新，這也是其他玩家在廣場上看到的最終樣貌。
           </p>
         </div>
