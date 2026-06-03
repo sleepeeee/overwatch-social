@@ -3,7 +3,7 @@
 ## 專案總覽
 鬥陣特工（Overwatch 2）主題的玩家個人名片 / 交友平台，未來擴展為多遊戲社群大廳。
 玩家可建立含英雄、段位、角色偏好的個人名片，並在廣場上瀏覽、認識其他玩家。
-- 生產網址：https://overwatch-social.vercel.app
+- 生產網址：https://aftermidnight.vercel.app
 - Supabase Project ID：`cxoncanfveqtfofcqyqe`
 
 ## 統一溝通詞彙表 (Project Glossary)

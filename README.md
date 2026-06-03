@@ -1,6 +1,6 @@
 # OW Social — 鬥陣特工交友平台
 
-> **正式版** → https://overwatch-social.vercel.app
+> **正式版** → https://aftermidnight.vercel.app
 
 鬥陣特工（Overwatch 2）主題的玩家個人名片與交友平台。建立你的特工名片，展示本命英雄、段位與聯絡方式，在廣場上找到心態成熟的靈魂拍檔。
 
