@@ -22,7 +22,7 @@ const notoSansTC = Noto_Sans_TC({
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "";
 
 export const metadata: Metadata = {
-  title: "OW Social - 鬥陣特工交友平台",
+  title: "aftermidnight-gg",
   description: "找到你的最佳隊友！鬥陣特工主題交友社群",
   openGraph: {
     siteName: "OW Social",
