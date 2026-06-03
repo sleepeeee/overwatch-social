@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return { title: "找不到名片 | OW Social" };
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://aftermidnight.vercel.app";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://aftermidnight-gg.vercel.app";
   const firstHero = player.selected_heroes?.[0] ?? "ana";
   const ogImage = `${siteUrl}/images/heroes/avatars/${firstHero}.png`;
 
