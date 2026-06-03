@@ -186,9 +186,13 @@ interface Props { initialState: CaptureState; }
 
 export default function CaptureHudAdjusterClient({ initialState }: Props) {
   // ── SSR 安全：所有 state 用 deterministic default，mount 後 useEffect 讀 localStorage ──
-  const [preset, setPreset]         = useState<PresetKey>("winning");
+  const [preset, setPreset]         = useState<PresetKey>(
+    initialState.status === "ready" ? "live" : "winning"
+  );
   const [darkMode, setDarkMode]     = useState(true);
-  const [leftPercent, setLeftPercent] = useState(68);
+  const [leftPercent, setLeftPercent] = useState(
+    initialState.status === "ready" ? initialState.players[0].percent : 68
+  );
   const [leftName, setLeftName]     = useState("你方");
   const [rightName, setRightName]   = useState("朋友");
   const [repoOwner, setRepoOwner]   = useState<"left" | "right">(initialState.targetRepositoryOwnerSide);
@@ -474,8 +478,8 @@ export default function CaptureHudAdjusterClient({ initialState }: Props) {
             </div>
           </div>
 
-          {/* ── Dynamic Slider ── */}
-          {status !== "no_author" && status !== "error" && (
+          {/* ── Dynamic Slider（live preset 時隱藏：真實資料不需手動調整）── */}
+          {status !== "no_author" && status !== "error" && preset !== "live" && (
             <div className="mb-6 p-4 bg-slate-50 dark:bg-slate-900/40 border border-dashed border-slate-300 dark:border-slate-800 rounded-lg flex flex-col sm:flex-row items-center gap-4">
               <span className="text-xs font-mono font-bold uppercase text-slate-500 dark:text-slate-400 shrink-0">動態模擬佔領比率:</span>
               <input type="range" min="0" max="100" value={leftPercent}
