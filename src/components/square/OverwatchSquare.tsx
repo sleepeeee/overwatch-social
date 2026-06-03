@@ -161,13 +161,13 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
     return () => {
       if (searchDebounceRef.current) clearTimeout(searchDebounceRef.current);
     };
-  }, [searchQuery, isMounted]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [searchQuery]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // server / mic 篩選變化時重新從 DB 拉取（offset 重設為 0）
   useEffect(() => {
     if (!isMounted) return;
     loadPlayers(searchQuery, 0, false, selectedServer, selectedMic);
-  }, [selectedServer, selectedMic, isMounted]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [selectedServer, selectedMic]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleLoadMore = () => {
     loadPlayers(searchQuery, players.length, true, selectedServer, selectedMic);
