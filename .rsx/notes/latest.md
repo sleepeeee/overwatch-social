@@ -7,11 +7,11 @@
 ---
 
 <!-- ZONE_A_START -->
-> **Zone A 最後更新：2026-06-03（Retrospective + Roadmap）**
+> **Zone A 最後更新：2026-06-04（backend-infra-improvements archive）**
 
 ## 現在在做什麼
 
-完成 `/rsx:explore 近期 change 分析 + 未來方向規劃`。下一步：依優先清單開 propose。
+完成 `backend-infra-improvements` archive。下一步：在 Supabase Dashboard 執行 migration 013；繼續待 propose 清單。
 
 ## 進行中的 Changes（未 archive）
 
@@ -21,16 +21,14 @@
 
 | 優先 | Change | 複雜度 | 核心問題 |
 |---|---|---|---|
-| #1 P0 | `display-name-persistent-sync` | S | display_name localStorage-only，跨裝置消失 |
-| #2 P0 | `mock-data-disclosure` | S | VAL/LoL 假卡片外觀與真實玩家相同，用戶誤判 |
-| #3 P1 | `og-image-env-guard` | S | NEXT_PUBLIC_SITE_URL 漏設時 OG 靜默失效 |
-| #4 P1 | `favorites-collections` | M | 廣場無收藏功能，留存路徑斷裂 |
-| #5 P1 | `vercel-github-webhook-hud` | M | 生產環境 HUD 顯示假 commit stats |
+| #1 P1 | `favorites-collections` | M | 廣場無收藏功能，留存路徑斷裂 |
+| #2 P1 | `vercel-github-webhook-hud` | M | 生產環境 HUD 顯示假 commit stats |
 
 ## 近期歸檔紀錄
 
 | Change | 時間 | 備註 |
 |---|---|---|
+| backend-infra-improvements | 2026-06-04 | display_name/game 進 view + browse cache + alignment cache；F-020/F-021/ADR-18/ADR-19/ADR-20；WARN=2（skip 記錄）|
 | homepage-hud-removal-3col-layout | 2026-06-03 | 移除 HUD + 三欄等高；F-019/ADR-17；WARN=1（Zone B 補寫） |
 | display-name-persistent-sync | 2026-06-03 | display_name DB 持久化；F-016/ADR-16；WARN=1（Task 4.3 skip，理由文件化）|
 | mock-data-disclosure | 2026-06-03 | VAL/LoL 假卡片 banner；F-017；WARN=0 |
@@ -49,6 +47,12 @@
 ---
 
 ## Zone B — 工作日誌（追加，由新到舊）
+
+### 2026-06-04 backend-infra-improvements — ARCHIVE
+
+- **已完成**：4 項後端改進（display_name 進 view + browse 60s cache + alignment 5min module cache + profiles.game 欄位）；新建 F-020（browse authLoading guard 5s 延遲根因）/F-021（Next.js 16.2.6 revalidateTag 需第二參數 "max"）/ADR-18（browse cache 策略）/ADR-19（alignment module-level cache）/ADR-20（profiles.game early schema preparation）；雙向 crossref 回填（F-003 referenced_by 補 F-020；F-021 referenced_by 補 ADR-18）；Pre-archive Gate FAIL=0 WARN=2（skip 記錄）；openspec archive 完成
+- **卡關**：Supabase migration 013 需用戶手動執行（無自動化途徑）
+- **下次優先**：在 Supabase Dashboard SQL Editor 執行 migration 013（`supabase/migrations/013_display_name_game_public.sql`）
 
 ### 2026-06-03 homepage-hud-removal-3col-layout — ARCHIVE
 

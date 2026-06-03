@@ -5,7 +5,7 @@ status: confirmed
 change: auth-ux-login-gate
 date: 2026-06-01
 references_to: [REF-002, REF-006, ADR-03]
-referenced_by: [ADR-03]
+referenced_by: [ADR-03, F-020]
 supporting_refs: [REF-002, REF-006]
 ---
 
