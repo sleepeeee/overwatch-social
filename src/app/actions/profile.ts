@@ -122,6 +122,6 @@ export async function saveProfile(card: OWPlayerCard): Promise<{ error?: string 
     });
 
   if (error) return { error: error.message };
-  revalidateTag("public-profiles");
+  revalidateTag("public-profiles", { expire: 0 });
   return {};
 }
