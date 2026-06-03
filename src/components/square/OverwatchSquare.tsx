@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { RotateCcw, AlertCircle } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { getHeroAlignments } from "@/app/actions/alignment";
+import { getPublicProfiles } from "@/app/actions/browse";
 import type { AlignmentConfig } from "@/data/heroAlignments";
 import { HERO_ALIGNMENTS } from "@/data/heroAlignments";
 import { useAuth } from "@/context/AuthContext";
@@ -85,34 +86,53 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
     mbti: (row.mbti as string) ?? undefined,
   });
 
-  const loadPlayers = async (searchQ: string, offset: number, append = false) => {
+  const loadPlayers = async (
+    searchQ: string,
+    offset: number,
+    append = false,
+    serverFilter = selectedServer,
+    micFilter = selectedMic
+  ) => {
     const requestId = ++requestCounterRef.current;
 
     if (append) setIsLoadingMore(true);
 
-    const supabase = createClient();
-    let query = supabase
-      .from("public_profiles")
-      .select("*")
-      .order("updated_at", { ascending: false })
-      .range(offset, offset + PAGE_SIZE - 1);
+    let data: OWPlayerCard[] | null = null;
+    let fetchError = false;
 
-    if (searchQ.trim()) {
-      query = query.or(
-        `battle_tag.ilike.%${searchQ}%,message.ilike.%${searchQ}%,mbti.ilike.%${searchQ}%`
+    if (!searchQ.trim()) {
+      // 無搜尋：走 Server Action 快取路徑（60s TTL，減少 browser→DB 直連）
+      const cached = await getPublicProfiles(
+        offset,
+        serverFilter !== "全部" ? serverFilter : undefined,
+        micFilter !== "全部" ? micFilter : undefined
       );
-    }
+      data = cached;
+    } else {
+      // 有搜尋：直接打 Supabase（動態查詢，不適合快取）
+      const supabase = createClient();
+      let query = supabase
+        .from("public_profiles")
+        .select("*")
+        .order("updated_at", { ascending: false })
+        .range(offset, offset + PAGE_SIZE - 1)
+        .or(`battle_tag.ilike.%${searchQ}%,message.ilike.%${searchQ}%,mbti.ilike.%${searchQ}%`);
 
-    const { data, error } = await query;
+      if (serverFilter !== "全部") query = query.eq("server", serverFilter);
+      if (micFilter !== "全部")   query = query.eq("mic_status", micFilter);
+
+      const { data: rawData, error } = await query;
+      fetchError = !!error;
+      data = rawData ? rawData.map(toPlayerCard) : null;
+    }
 
     if (requestCounterRef.current !== requestId) return; // 丟棄過期請求結果
 
     if (append) setIsLoadingMore(false);
 
-    if (!error && data && data.length > 0) {
+    if (!fetchError && data && data.length > 0) {
       setIsShowingMockData(false);
-      const mapped = data.map(toPlayerCard);
-      setPlayers(prev => append ? [...prev, ...mapped] : mapped);
+      setPlayers(prev => append ? [...prev, ...data!] : data!);
       setHasMore(data.length === PAGE_SIZE);
     } else if (!append) {
       setIsShowingMockData(true);
@@ -136,15 +156,21 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
     if (!isMounted) return;
     if (searchDebounceRef.current) clearTimeout(searchDebounceRef.current);
     searchDebounceRef.current = setTimeout(() => {
-      loadPlayers(searchQuery, 0, false);
+      loadPlayers(searchQuery, 0, false, selectedServer, selectedMic);
     }, 300);
     return () => {
       if (searchDebounceRef.current) clearTimeout(searchDebounceRef.current);
     };
-  }, [searchQuery, isMounted]);
+  }, [searchQuery, isMounted]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // server / mic 篩選變化時重新從 DB 拉取（offset 重設為 0）
+  useEffect(() => {
+    if (!isMounted) return;
+    loadPlayers(searchQuery, 0, false, selectedServer, selectedMic);
+  }, [selectedServer, selectedMic, isMounted]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleLoadMore = () => {
-    loadPlayers(searchQuery, players.length, true);
+    loadPlayers(searchQuery, players.length, true, selectedServer, selectedMic);
   };
 
   const getHeroRole = (heroId: string) => {
@@ -186,10 +212,8 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
       isRoleMatched = (player.selected_heroes || []).some(heroId => getHeroRole(heroId) === mappedRole);
     }
 
-    const isServerMatched = selectedServer === "全部" || player.server === selectedServer;
-    const isMicMatched = selectedMic === "全部" || player.mic_status === selectedMic;
-
-    return isRoleMatched && isServerMatched && isMicMatched;
+    // server / mic_status 已由 DB WHERE clause 過濾（browse-db-filter change）
+    return isRoleMatched;
   });
 
 
