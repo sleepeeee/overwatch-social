@@ -1,33 +1,82 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Moon, LogOut } from "lucide-react";
+import { Moon, Sun, Palette, Check, LogOut } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 import { useDevMode } from "@/hooks/useDevMode";
+
+const THEMES = [
+  { id: "theme-blueberry", name: "藍莓優格", bg: "#F5F6F3", text: "#2F3A55" },
+  { id: "theme-botanics", name: "森系香草", bg: "#FAF6EF", text: "#4A5A3A" },
+  { id: "theme-nordic", name: "極簡畫廊", bg: "#F3F4F6", text: "#1F2937" },
+  { id: "theme-holographic", name: "全息極光", bg: "#F5F3FF", text: "#8b5cf6" },
+];
 
 export default function TopBar() {
   const router = useRouter();
   const { user } = useAuth();
   const { isDeveloper } = useDevMode();
   const [loginPending, setLoginPending] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const [activeTheme, setActiveTheme] = useState("theme-blueberry");
   const [isDark, setIsDark] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const panelRef = useRef<HTMLDivElement>(null);
 
-  // 初始化時同步明暗狀態
+  // 初始化時同步明暗與主題狀態
   useEffect(() => {
-    const isDarkTheme = document.documentElement.classList.contains("dark");
-    setIsDark(isDarkTheme);
+    setMounted(true);
+    const savedTheme = localStorage.getItem("theme-style") || "theme-blueberry";
+    const savedDark = localStorage.getItem("theme-dark") === "true";
+    
+    setActiveTheme(savedTheme);
+    setIsDark(savedDark);
+
+    const html = document.documentElement;
+    html.classList.remove("theme-blueberry", "theme-botanics", "theme-nordic", "theme-swiss", "theme-holographic");
+    html.classList.add(savedTheme);
+    
+    if (savedDark) {
+      html.classList.add("dark");
+    } else {
+      html.classList.remove("dark");
+    }
   }, []);
 
-  // 切換明暗模式並儲存於 localStorage
-  const toggleTheme = (e: React.MouseEvent) => {
-    e.stopPropagation();
+  // 監聽點擊外部關閉選單
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (panelRef.current && !panelRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const handleThemeChange = (themeId: string) => {
+    setActiveTheme(themeId);
     const html = document.documentElement;
-    const willBeDark = html.classList.toggle("dark");
-    setIsDark(willBeDark);
-    localStorage.setItem("theme", willBeDark ? "dark" : "light");
+    html.classList.remove("theme-blueberry", "theme-botanics", "theme-nordic", "theme-swiss", "theme-holographic");
+    html.classList.add(themeId);
+    localStorage.setItem("theme-style", themeId);
+  };
+
+  const toggleDarkMode = () => {
+    const nextDark = !isDark;
+    setIsDark(nextDark);
+    const html = document.documentElement;
+    if (nextDark) {
+      html.classList.add("dark");
+    } else {
+      html.classList.remove("dark");
+    }
+    localStorage.setItem("theme-dark", nextDark ? "true" : "false");
   };
 
   const handleLogout = async () => {
@@ -57,21 +106,85 @@ export default function TopBar() {
     <div className="w-full min-w-0 flex items-center justify-between gap-3 mb-10 z-30 relative animate-[fadeIn_0.6s_ease-out]">
       <div className="flex items-center gap-3 select-none shrink min-w-0">
         {/* Left: Interactive Theme Switcher Button */}
-        <button
-          type="button"
-          onClick={toggleTheme}
-          title={isDark ? "切換為明亮版" : "切換為夜間版"}
-          className="relative w-9 h-9 flex items-center justify-center rounded-full bg-white/30 dark:bg-stone-900/60 border border-white/40 dark:border-stone-800 shadow-sm hover:shadow-[0_4px_15px_rgba(212,197,169,0.3)] dark:hover:shadow-[0_4px_20px_rgba(0,0,0,0.5)] hover:border-morandi-sand/50 transition-all duration-300 hover:-translate-y-0.5 cursor-pointer shrink-0"
-        >
-          {/* Thin Line-art Moon SVG */}
-          <svg className="w-4 h-4 text-stone-700 dark:text-stone-300 hover:text-morandi-blue transition-colors duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.8">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-          </svg>
-          
-          {/* Amber Beacon Star / Ping Glow Indicator */}
-          <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-amber-400 rounded-full animate-ping opacity-75"></span>
-          <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-amber-400 rounded-full"></span>
-        </button>
+        <div className="relative shrink-0" ref={panelRef}>
+          <button
+            type="button"
+            onClick={() => setIsOpen(!isOpen)}
+            title="更換配色與主題"
+            className="relative w-9 h-9 flex items-center justify-center rounded-full bg-white/30 dark:bg-stone-900/60 border border-white/40 dark:border-stone-800 shadow-sm hover:shadow-[0_4px_15px_rgba(212,197,169,0.3)] dark:hover:shadow-[0_4px_20px_rgba(0,0,0,0.5)] hover:border-morandi-sand/50 transition-all duration-300 hover:-translate-y-0.5 cursor-pointer shrink-0"
+          >
+            {isDark ? (
+              <Moon className="w-4 h-4 text-stone-700 dark:text-stone-300 hover:text-[#82b7cc] transition-colors duration-300" strokeWidth={1.8} />
+            ) : (
+              <Palette className="w-4 h-4 text-stone-700 dark:text-stone-300 hover:text-[#82b7cc] transition-colors duration-300" strokeWidth={1.8} />
+            )}
+            
+            {/* Amber Beacon Star / Ping Glow Indicator */}
+            <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-amber-400 rounded-full animate-ping opacity-75"></span>
+            <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-amber-400 rounded-full"></span>
+          </button>
+
+          {/* Theme Dropdown Panel */}
+          {isOpen && mounted && (
+            <div className="absolute left-0 mt-2 w-52 rounded-2xl border border-stone-200/60 dark:border-stone-800/80 bg-white/95 dark:bg-stone-900/95 backdrop-blur-xl shadow-lg p-2.5 z-50 animate-[fadeIn_0.2s_ease-out]">
+              <div className="text-[9px] font-bold tracking-wider text-stone-400 dark:text-stone-500 mb-2 px-1 uppercase">
+                配色風格 (明亮版)
+              </div>
+              <div className="flex flex-col gap-0.5 mb-2">
+                {THEMES.map((t) => (
+                  <button
+                    key={t.id}
+                    type="button"
+                    onClick={() => {
+                      handleThemeChange(t.id);
+                      setIsOpen(false);
+                    }}
+                    className={`flex items-center justify-between w-full text-left px-2 py-1.5 rounded-xl transition-all duration-200 text-xs ${
+                      activeTheme === t.id && !isDark
+                        ? "bg-[#5c6b8d]/10 dark:bg-stone-800 text-[#2f3a55] dark:text-white font-semibold"
+                        : "hover:bg-stone-100 dark:hover:bg-stone-800/50 text-stone-700 dark:text-stone-300"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      {/* Color dots preview */}
+                      <span className="flex w-3.5 h-3.5 rounded-full overflow-hidden border border-stone-200 dark:border-stone-700 shrink-0">
+                        <span className="w-1/2 h-full" style={{ backgroundColor: t.bg }} />
+                        <span className="w-1/2 h-full" style={{ backgroundColor: t.text }} />
+                      </span>
+                      <span className="truncate">{t.name}</span>
+                    </div>
+                    {activeTheme === t.id && !isDark && <Check className="w-3.5 h-3.5" />}
+                  </button>
+                ))}
+              </div>
+
+              <div className="border-t border-stone-100 dark:border-stone-800/80 my-1.5" />
+
+              <button
+                type="button"
+                onClick={() => {
+                  toggleDarkMode();
+                  setIsOpen(false);
+                }}
+                className={`flex items-center justify-between w-full text-left px-2 py-1.5 rounded-xl transition-all duration-200 text-xs ${
+                  isDark
+                    ? "bg-[#5c6b8d]/10 dark:bg-stone-800 text-[#2f3a55] dark:text-white font-semibold"
+                    : "hover:bg-stone-100 dark:hover:bg-stone-800/50 text-stone-700 dark:text-stone-300"
+                }`}
+              >
+                <div className="flex items-center gap-2">
+                  {isDark ? (
+                    <Sun className="w-3.5 h-3.5 text-amber-500" strokeWidth={1.8} />
+                  ) : (
+                    <Moon className="w-3.5 h-3.5 text-stone-700 dark:text-stone-300" strokeWidth={1.8} />
+                  )}
+                  <span>{isDark ? "切換為明亮版" : "切換為夜間版"}</span>
+                </div>
+                {isDark && <Check className="w-3.5 h-3.5" />}
+              </button>
+            </div>
+          )}
+        </div>
         
         {/* Right: Brand Text (Static display per user request) */}
         <div className="flex flex-col text-left min-w-0">

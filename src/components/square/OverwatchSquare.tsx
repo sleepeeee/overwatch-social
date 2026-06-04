@@ -271,20 +271,35 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
             <DoodleLine className="w-10 h-1.5 opacity-60 inline-block align-middle ml-1" />
           </label>
           <div className="flex gap-2 w-full justify-center">
-            {["全部", "坦克", "輸出", "支援"].map((role) => (
-              <button
-                key={role}
-                onClick={() => setSelectedRole(role)}
-                className={`px-4 py-2.5 text-[10px] font-extrabold transition-all duration-500 hover:scale-[1.03] active:scale-[0.98] outline-1 outline-offset-[-3.5px] cursor-pointer flex-1 text-center flex items-center justify-center gap-1 rounded-xl ${
-                  selectedRole === role
-                    ? "bg-[#82b7cc]/15 text-[#384d54] border border-[#82b7cc]/40 shadow-[inset_0_1px_2.5px_rgba(130,183,204,0.1),0_4px_12px_rgba(130,183,204,0.04)]"
-                    : "bg-white/50 text-[#8c7c6c] border border-[#8c7c6c]/18 hover:bg-white/80"
-                }`}
-              >
-                <span>{role === "坦克" ? "🛡️" : role === "輸出" ? "⚔️" : role === "支援" ? "➕" : ""}</span>
-                <span>{role}</span>
-              </button>
-            ))}
+            {["全部", "坦克", "輸出", "支援"].map((role) => {
+              const roleRadii: Record<string, string> = {
+                "全部": "16px 12px 14px 18px",
+                "坦克": "12px 16px 15px 13px",
+                "輸出": "15px 13px 16px 12px",
+                "支援": "13px 15px 12px 16px"
+              };
+              const isSelected = selectedRole === role;
+              return (
+                <button
+                  key={role}
+                  onClick={() => setSelectedRole(role)}
+                  className={`px-4 py-2.5 text-[10px] font-extrabold transition-all duration-500 active:scale-[0.95] outline-none cursor-pointer flex-1 text-center flex items-center justify-center gap-1 ${
+                    isSelected
+                      ? "bg-[var(--ring)]/15 text-[var(--foreground)] border border-[var(--ring)]/40 scale-[1.04]"
+                      : "bg-white/50 text-[#8c7c6c] border border-[#8c7c6c]/18 hover:bg-white/80 hover:scale-[1.02]"
+                  }`}
+                  style={{
+                    borderRadius: isSelected ? roleRadii[role] : "12px",
+                    boxShadow: isSelected
+                      ? "0 0 0 2px #ffffff, 0 0 0 3.5px var(--ring), 0 8px 20px -6px var(--ring)"
+                      : undefined
+                  }}
+                >
+                  <span>{role === "坦克" ? "🛡️" : role === "輸出" ? "⚔️" : role === "支援" ? "➕" : ""}</span>
+                  <span>{role}</span>
+                </button>
+              );
+            })}
           </div>
         </div>
 
