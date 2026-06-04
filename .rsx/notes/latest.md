@@ -7,11 +7,24 @@
 ---
 
 <!-- ZONE_A_START -->
-> **Zone A 最後更新：2026-06-04（backend-infra-improvements archive）**
+> **Zone A 最後更新：2026-06-04（user-identity EXPLORE 完成，設計決策確認）**
 
 ## 現在在做什麼
 
-完成 `backend-infra-improvements` archive。下一步：在 Supabase Dashboard 執行 migration 013；繼續待 propose 清單。
+EXPLORE 完成：全域暱稱 + Dev Console 重設計。設計決策已確認，準備進入 `/rsx:propose user-identity-global-nickname`。
+
+## 設計決策快照（2026-06-04 clarification）
+
+| 決策點 | 結論 |
+|---|---|
+| ID | Supabase `user_id` UUID = 永久唯一識別碼（辦帳號時給的那串） |
+| 暱稱（nickname） | 選填、可隨時改、不強制唯一 |
+| 暱稱何時設 | 不強制登入立即設；ID 先存在，暱稱之後再補 |
+| 未設暱稱 | 顯示 ID（UUID） |
+| Dev console 顯示 | 第一層：暱稱 + ID ＋ 擁有的遊戲卡清單 |
+| Dev console 詳情 | 第二層：點按鈕展開各遊戲角色卡詳細資訊 |
+| 現有用戶遷移 | 以最後更新的角色卡 `display_name` 作為初始 nickname |
+| 搜尋 | 可用 nickname ilike 搜尋 |
 
 ## 進行中的 Changes（未 archive）
 
@@ -21,8 +34,9 @@
 
 | 優先 | Change | 複雜度 | 核心問題 |
 |---|---|---|---|
-| #1 P1 | `favorites-collections` | M | 廣場無收藏功能，留存路徑斷裂 |
-| #2 P1 | `vercel-github-webhook-hud` | M | 生產環境 HUD 顯示假 commit stats |
+| #1 P1 | `user-identity-global-nickname` | L | 新建 user_profiles 表 + nickname UI + dev console 重設計 |
+| #2 P1 | `favorites-collections` | M | 廣場無收藏功能，留存路徑斷裂 |
+| #3 P1 | `vercel-github-webhook-hud` | M | 生產環境 HUD 顯示假 commit stats |
 
 ## 近期歸檔紀錄
 
@@ -47,6 +61,13 @@
 ---
 
 ## Zone B — 工作日誌（追加，由新到舊）
+
+### 2026-06-04 user-identity-global-nickname — EXPLORE 完成
+
+- **已完成**：Step 0 pre-check（命中 2 筆部分相關：ADR-16/F-016，無直接命中）；inline 探索分析現有架構 vs 需求 gap；整理 9 個設計盲點清單；設計決策與使用者確認完畢（ID=user_id UUID、nickname 可選可改、未設顯示 ID、dev console 二層 UI）；Zone A 更新
+- **確認的設計**：user_id UUID = 永久 ID；nickname = 選填 display name（不唯一）；現有用戶遷移以最後更新角色卡 display_name 為基準；Dev console 第一層 nickname+ID+遊戲清單 → 第二層各卡詳情
+- **卡關**：無
+- **下次優先**：執行 `/rsx:propose user-identity-global-nickname`
 
 ### 2026-06-04 backend-infra-improvements — ARCHIVE
 
