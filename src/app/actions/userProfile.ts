@@ -87,43 +87,44 @@ export async function getAdminUserList(options: {
     const { supabase } = await ensureDeveloper();
     const { query = "", offset = 0 } = options;
 
-    let dbQuery = supabase
+    // user_profiles 和 profiles 沒有直接 FK，改用兩次查詢再合併
+    let upQuery = supabase
       .from("user_profiles")
-      .select(`
-        user_id,
-        nickname,
-        profiles (
-          game,
-          updated_at
-        )
-      `)
-      .order("updated_at", { ascending: false, referencedTable: "profiles" })
+      .select("user_id, nickname")
       .range(offset, offset + 49);
 
     if (query.trim()) {
-      dbQuery = dbQuery.ilike("nickname", `%${query.trim()}%`);
+      upQuery = upQuery.ilike("nickname", `%${query.trim()}%`);
     }
 
-    const { data, error } = await dbQuery;
-    if (error) return { success: false, error: error.message };
+    const { data: upData, error: upError } = await upQuery;
+    if (upError) return { success: false, error: upError.message };
+    if (!upData || upData.length === 0) return { success: true, data: [] };
 
-    const items: AdminUserListItem[] = (data ?? []).map((row: {
-      user_id: string;
-      nickname: string | null;
-      profiles: Array<{ game: string; updated_at: string }> | null;
-    }) => {
-      const profiles = row.profiles ?? [];
-      const games = [...new Set(profiles.map(p => p.game))];
-      const lastActive = profiles.length > 0
-        ? profiles.sort((a, b) => b.updated_at.localeCompare(a.updated_at))[0].updated_at
+    const userIds = upData.map((r: { user_id: string }) => r.user_id);
+
+    const { data: profData, error: profError } = await supabase
+      .from("profiles")
+      .select("user_id, game, updated_at")
+      .in("user_id", userIds);
+
+    if (profError) return { success: false, error: profError.message };
+
+    const profilesByUser = new Map<string, Array<{ game: string; updated_at: string }>>();
+    for (const p of profData ?? []) {
+      const uid = p.user_id as string;
+      if (!profilesByUser.has(uid)) profilesByUser.set(uid, []);
+      profilesByUser.get(uid)!.push({ game: p.game as string, updated_at: p.updated_at as string });
+    }
+
+    const items: AdminUserListItem[] = upData.map((row: { user_id: string; nickname: string | null }) => {
+      const userProfs = profilesByUser.get(row.user_id) ?? [];
+      const games = [...new Set(userProfs.map(p => p.game))];
+      const lastActive = userProfs.length > 0
+        ? userProfs.sort((a, b) => b.updated_at.localeCompare(a.updated_at))[0].updated_at
         : null;
 
-      return {
-        user_id: row.user_id,
-        nickname: row.nickname,
-        games,
-        last_active: lastActive,
-      };
+      return { user_id: row.user_id, nickname: row.nickname, games, last_active: lastActive };
     });
 
     return { success: true, data: items };
