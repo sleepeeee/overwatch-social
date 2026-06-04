@@ -186,3 +186,12 @@ Tier: grep
 命中：0 筆
 使用者選擇：(a) 繼續外部搜尋（直接跳到 codebase 探索）
 <!-- pre-check-log-end -->
+
+<!-- archive-log-start -->
+### [ARCHIVE] one-card-per-game-constraint (2026-06-04)
+- Migration 014: profiles id UUID PK + UNIQUE(user_id,game)
+- Finding: F-022（PK 換代理鍵零中斷）
+- ADR: ADR-21（代理鍵 + 複合 unique 設計決策）
+- Pre-archive Gate: PASS（FAIL=0, WARN=0）
+- 歸檔路徑: openspec/changes/archive/2026-06-04-one-card-per-game-constraint/
+<!-- archive-log-end -->
