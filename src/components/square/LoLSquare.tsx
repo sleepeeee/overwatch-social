@@ -2,12 +2,13 @@
 
 import React from "react";
 import { Shield, Sparkles } from "lucide-react";
+import { SocialIcon } from "@/components/ui/SocialIcons";
 
 export default function LoLSquare({ isPremiumStyle = true }: { isPremiumStyle?: boolean }) {
   const MOCK_LOL_PLAYERS = [
-    { id: "lol-1", tag: "FakerFan#LOL", msg: "中路專精，喜歡雷茲/阿祈爾，操作拉滿！尋找打野雙排衝大師 🌸", mbti: "INTJ", role: "Mid / carry" },
-    { id: "lol-2", tag: "T1Fighting#LOL", msg: "下路 ADC 專精，輔助求保，輸出保證不暴斃 ⚔️", mbti: "ESTJ", role: "ADC / active" },
-    { id: "lol-3", tag: "HappySupport#LOL", msg: "主玩貓咪/露璐，插眼勤快，心態無比開朗歡樂 🐈", mbti: "ENFP", role: "Support / chill" },
+    { id: "lol-1", tag: "FakerFan#LOL", msg: "中路專精，喜歡雷茲/阿祈爾，操作拉滿！尋找打野雙排衝大師 🌸", mbti: "INTJ", role: "Mid / carry", social_channels: { discord: "faker_fan#9999" } },
+    { id: "lol-2", tag: "T1Fighting#LOL", msg: "下路 ADC 專精，輔助求保，輸出保證不暴斃 ⚔️", mbti: "ESTJ", role: "ADC / active", social_channels: { discord: "t1_adc#0001", steam: "12345678" } },
+    { id: "lol-3", tag: "HappySupport#LOL", msg: "主玩貓咪/露璐，插眼勤快，心態無比開朗歡樂 🐈", mbti: "ENFP", role: "Support / chill", social_channels: { discord: "happy_sup#3333", line: "happycat" } },
   ];
 
   return (
@@ -64,6 +65,18 @@ export default function LoLSquare({ isPremiumStyle = true }: { isPremiumStyle?: 
                 {player.mbti}
               </span>
             </div>
+            {Object.keys(player.social_channels || {}).length > 0 && (
+              <div className="flex items-center gap-1.5 mt-2">
+                {Object.entries(player.social_channels).map(([platform, val]) => {
+                  if (!val) return null;
+                  return (
+                    <div key={platform} className="w-6 h-6 rounded-full flex items-center justify-center bg-[#8c7c6c]/12 border border-[#8c7c6c]/20 text-[#8c7c6c]">
+                      <SocialIcon platform={platform} className="w-3 h-3" />
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         ))}
       </div>

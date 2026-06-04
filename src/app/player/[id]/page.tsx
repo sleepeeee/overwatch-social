@@ -64,7 +64,7 @@ export default async function PlayerDetailPage({ params }: Props) {
       .single();
     socialChannels = (profileData?.social_channels as Record<string, string>) ?? {};
   }
-  const hasSocial = Object.values(socialChannels).some(v => v && v !== "true");
+  const hasSocial = Object.keys(socialChannels).length > 0;
 
   const heroConfigs = (player.selected_heroes as string[] ?? [])
     .map((id: string) => HEROES_CONFIG.find(h => h.id === id))
@@ -193,14 +193,14 @@ export default async function PlayerDetailPage({ params }: Props) {
           ) : hasSocial ? (
             <div className="flex flex-wrap gap-3">
               {Object.entries(socialChannels).map(([platform, value]) => {
-                if (!value || value === "true") return null;
+                if (!value) return null;
                 return (
                   <div
                     key={platform}
                     className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/50 border border-[#8c7c6c]/15 text-xs font-bold text-[#5d4037]"
                   >
                     <span className="capitalize text-[#8c7c6c]">{platform}</span>
-                    <span className="font-mono">{value}</span>
+                    {value !== "true" && <span className="font-mono">{value}</span>}
                   </div>
                 );
               })}

@@ -2,12 +2,13 @@
 
 import React from "react";
 import { Target, Sparkles } from "lucide-react";
+import { SocialIcon } from "@/components/ui/SocialIcons";
 
 export default function ValorantSquare({ isPremiumStyle = true }: { isPremiumStyle?: boolean }) {
   const MOCK_VAL_PLAYERS = [
-    { id: "val-1", tag: "JettGod#VAL", msg: "專精決鬥者捷特，專門繞後，心態穩定！求先鋒保我 🎯", mbti: "ESTP", weapon: "Vandal / Jett" },
-    { id: "val-2", tag: "SageHealMe#VAL", msg: "主玩聖祈/賢者，溫柔且有麥克風，快樂排位不氣餒 🌸", mbti: "ISFJ", weapon: "Phantom / Sage" },
-    { id: "val-3", tag: "FadeOut#VAL", msg: "專職控場 Fade / Omen，喜歡打戰術配合，歡迎組隊！", mbti: "INTJ", weapon: "Sheriff / Omen" },
+    { id: "val-1", tag: "JettGod#VAL", msg: "專精決鬥者捷特，專門繞後，心態穩定！求先鋒保我 🎯", mbti: "ESTP", weapon: "Vandal / Jett", social_channels: { discord: "jett_god#0001" } },
+    { id: "val-2", tag: "SageHealMe#VAL", msg: "主玩聖祈/賢者，溫柔且有麥克風，快樂排位不氣餒 🌸", mbti: "ISFJ", weapon: "Phantom / Sage", social_channels: { discord: "sage_heal#0002", line: "sagehealer" } },
+    { id: "val-3", tag: "FadeOut#VAL", msg: "專職控場 Fade / Omen，喜歡打戰術配合，歡迎組隊！", mbti: "INTJ", weapon: "Sheriff / Omen", social_channels: { discord: "fade_out#0003" } },
   ];
 
   return (
@@ -64,6 +65,18 @@ export default function ValorantSquare({ isPremiumStyle = true }: { isPremiumSty
                 {player.mbti}
               </span>
             </div>
+            {Object.keys(player.social_channels || {}).length > 0 && (
+              <div className="flex items-center gap-1.5 mt-2">
+                {Object.entries(player.social_channels).map(([platform, val]) => {
+                  if (!val) return null;
+                  return (
+                    <div key={platform} className="w-6 h-6 rounded-full flex items-center justify-center bg-[#8c7c6c]/12 border border-[#8c7c6c]/20 text-[#8c7c6c]">
+                      <SocialIcon platform={platform} className="w-3 h-3" />
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         ))}
       </div>
