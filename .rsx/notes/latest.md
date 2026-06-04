@@ -7,38 +7,23 @@
 ---
 
 <!-- ZONE_A_START -->
-> **Zone A 最後更新：2026-06-04（user-identity EXPLORE 完成，設計決策確認）**
+> **Zone A 最後更新：2026-06-04（user-identity-global-nickname APPLY + ARCHIVE 完成）**
 
 ## 現在在做什麼
 
-PROPOSE 完成（2026-06-04）。進入 APPLY 階段，Task 1 開始實作。
-
-## 設計決策快照（2026-06-04 clarification）
-
-| 決策點 | 結論 |
-|---|---|
-| ID | Supabase `user_id` UUID = 永久唯一識別碼（辦帳號時給的那串） |
-| 暱稱（nickname） | 選填、可隨時改、不強制唯一 |
-| 暱稱何時設 | 不強制登入立即設；ID 先存在，暱稱之後再補 |
-| 未設暱稱 | 顯示 ID（UUID） |
-| Dev console 顯示 | 第一層：暱稱 + ID ＋ 擁有的遊戲卡清單 |
-| Dev console 詳情 | 第二層：點按鈕展開各遊戲角色卡詳細資訊 |
-| 現有用戶遷移 | 以最後更新的角色卡 `display_name` 作為初始 nickname |
-| 搜尋 | 可用 nickname ilike 搜尋 |
+`user-identity-global-nickname` 全部完成（PROPOSE → APPLY → ARCHIVE）。
+**待辦：在 Supabase Dashboard 手動執行 migration 016 + 017**（SQL 已建立）。
 
 ## 進行中的 Changes（未 archive）
 
-| Change | 階段 | 目前 Task |
-|---|---|---|
-| `user-identity-global-nickname` | APPLY | Task 1 — 環境確認中 |
+（無）
 
 ## 待 Propose Changes（依優先度）
 
 | 優先 | Change | 複雜度 | 核心問題 |
 |---|---|---|---|
-| #1 P1 | `user-identity-global-nickname` | L | 新建 user_profiles 表 + nickname UI + dev console 重設計 |
-| #2 P1 | `favorites-collections` | M | 廣場無收藏功能，留存路徑斷裂 |
-| #3 P1 | `vercel-github-webhook-hud` | M | 生產環境 HUD 顯示假 commit stats |
+| #1 P1 | `favorites-collections` | M | 廣場無收藏功能，留存路徑斷裂 |
+| #2 P1 | `vercel-github-webhook-hud` | M | 生產環境 HUD 顯示假 commit stats |
 
 ## 近期歸檔紀錄
 
@@ -63,6 +48,12 @@ PROPOSE 完成（2026-06-04）。進入 APPLY 階段，Task 1 開始實作。
 ---
 
 ## Zone B — 工作日誌（追加，由新到舊）
+
+### 2026-06-04 user-identity-global-nickname — APPLY + ARCHIVE
+
+- **已完成**：Migration 016（user_profiles 表 + RLS + 遷移 INSERT）+ Migration 017（public_profiles view + nickname）；Server Actions（userProfile.ts）；Profile Hub nickname input 改讀寫 user_profiles；Dev Console users tab 兩層視圖（UserListSection + UserCardDetail）；TypeScript 0 errors；build 13/13 PASS；F-023 / ADR-22 / REF-022 / REF-023 建立；crossref 回填；git commit 66cfbf3；push 完成（Vercel 自動部署）
+- **卡關**：Supabase migration 016/017 需手動執行（Supabase MCP 已斷線）
+- **下次優先**：在 Supabase Dashboard SQL Editor 依序執行 migration 016 → 017；驗收整合測試（Profile Hub + Dev Console users tab）
 
 ### 2026-06-04 user-identity-global-nickname — PROPOSE 完成
 
