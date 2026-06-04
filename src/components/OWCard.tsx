@@ -225,6 +225,7 @@ export default function OWCard({
                     <img
                       src={`/images/heroes/full/${heroInfo.id}.png`}
                       alt={heroInfo.name}
+                      loading="lazy"
                       referrerPolicy="no-referrer"
                       style={imgStyle}
                       className="max-w-[185%] max-h-[135%] object-contain transition-all duration-500 filter drop-shadow-[0_6px_12px_rgba(0,0,0,0.18)] group-hover/hero:drop-shadow-[0_12px_24px_rgba(0,0,0,0.32)] select-none"

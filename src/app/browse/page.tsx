@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, startTransition } from "react";
 import { Search, RotateCcw, Compass } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import TopBar from "@/components/TopBar";
@@ -148,7 +148,7 @@ export default function BrowsePage() {
               return (
                 <button
                   key={game.id}
-                  onClick={() => setActiveGame(game.id)}
+                  onClick={() => startTransition(() => setActiveGame(game.id))}
                   className={`browse-tab active:scale-95 cursor-pointer min-w-[130px] sm:min-w-[156px] ${isSelected ? "browse-tab-active" : ""}`}
                 >
                   <div className="flex items-center gap-2">
