@@ -179,3 +179,10 @@ Tier: grep
 命中：3 筆（REF-013 display_name 跨裝置、REF-014 Vercel env、REF-016 browse 品質/假卡）
 使用者選擇：(c) 兩者都做（本地材料 + 外部搜尋）
 <!-- pre-check-log-end -->
+
+<!-- pre-check-log-start -->
+### [Step 0 pre-check] unique constraint user_id game one card per user (2026-06-04)
+Tier: grep
+命中：0 筆
+使用者選擇：(a) 繼續外部搜尋（直接跳到 codebase 探索）
+<!-- pre-check-log-end -->
