@@ -175,7 +175,7 @@ export default function ProfilePage() {
   // user 變化時載入名片資料 + display_name（auth state 由 AuthContext 統一管理）
   useEffect(() => {
     if (!user) return;
-    getMyProfile().then(profile => {
+    getMyProfile("overwatch").then(profile => {
       if (profile) {
         const loadedCard = { ...DEFAULT_CARD, ...profile, social_channels: profile.social_channels || {} };
         setCardData(loadedCard);

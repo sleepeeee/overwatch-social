@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { OWPlayerCard } from "@/types/card";
 import { revalidateTag } from "next/cache";
 
-export async function getMyProfile(): Promise<OWPlayerCard | null> {
+export async function getMyProfile(game = 'overwatch'): Promise<OWPlayerCard | null> {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return null;
@@ -13,6 +13,7 @@ export async function getMyProfile(): Promise<OWPlayerCard | null> {
     .from("profiles")
     .select("*")
     .eq("user_id", user.id)
+    .eq("game", game)
     .single();
 
   if (!data) return null;
@@ -71,7 +72,10 @@ export async function saveDisplayName(displayName: string): Promise<{ error?: st
 
   const { error } = await supabase
     .from("profiles")
-    .upsert({ user_id: user.id, display_name: displayName.trim() });
+    .upsert(
+      { user_id: user.id, game: 'overwatch', display_name: displayName.trim() },
+      { onConflict: "user_id,game" }
+    );
 
   if (error) return { error: error.message };
   revalidateTag("public-profiles", "max");  // 顯示名稱進 public view 後需要使廣場快取失效
@@ -112,19 +116,23 @@ export async function saveProfile(card: OWPlayerCard): Promise<{ error?: string 
 
   const { error } = await supabase
     .from("profiles")
-    .upsert({
-      user_id: userId,
-      server: card.server,
-      battle_tag: card.battle_tag,
-      is_tag_visible: card.is_tag_visible,
-      selected_heroes: card.selected_heroes,
-      tags: card.tags,
-      message: card.message,
-      languages: card.languages,
-      mic_status: card.mic_status,
-      social_channels: card.social_channels,
-      mbti: card.mbti ?? null,
-    });
+    .upsert(
+      {
+        user_id: userId,
+        game: card.game ?? 'overwatch',
+        server: card.server,
+        battle_tag: card.battle_tag,
+        is_tag_visible: card.is_tag_visible,
+        selected_heroes: card.selected_heroes,
+        tags: card.tags,
+        message: card.message,
+        languages: card.languages,
+        mic_status: card.mic_status,
+        social_channels: card.social_channels,
+        mbti: card.mbti ?? null,
+      },
+      { onConflict: "user_id,game" }
+    );
 
   if (error) return { error: error.message };
   revalidateTag("public-profiles", "max");  // 名片儲存後使廣場快取失效
