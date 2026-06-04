@@ -11,7 +11,7 @@
 
 ## 現在在做什麼
 
-EXPLORE 完成：全域暱稱 + Dev Console 重設計。設計決策已確認，準備進入 `/rsx:propose user-identity-global-nickname`。
+PROPOSE 完成（2026-06-04）。進入 APPLY 階段，Task 1 開始實作。
 
 ## 設計決策快照（2026-06-04 clarification）
 
@@ -28,7 +28,9 @@ EXPLORE 完成：全域暱稱 + Dev Console 重設計。設計決策已確認，
 
 ## 進行中的 Changes（未 archive）
 
-（無）
+| Change | 階段 | 目前 Task |
+|---|---|---|
+| `user-identity-global-nickname` | APPLY | Task 1 — 環境確認中 |
 
 ## 待 Propose Changes（依優先度）
 
@@ -61,6 +63,13 @@ EXPLORE 完成：全域暱稱 + Dev Console 重設計。設計決策已確認，
 ---
 
 ## Zone B — 工作日誌（追加，由新到舊）
+
+### 2026-06-04 user-identity-global-nickname — PROPOSE 完成
+
+- **已完成**：4 artifacts（proposal/design/spec/tasks）+ REF-022/023 建立 + propose_checklist.md（FAIL=0 WARN=0，3 個 Codex dispatch 跳過記錄）；Stage 0-7 全部執行；Zone A 更新
+- **跳過項目**：Codex §6.1/§6.5 + openspec validate CLI（環境不可用，主代理自審替代，評分 7.5/10）
+- **卡關**：無
+- **下次優先**：進入 APPLY，執行 Task 1-8（Task 2/3 需 Supabase Dashboard 手動執行 SQL）
 
 ### 2026-06-04 user-identity-global-nickname — EXPLORE 完成
 

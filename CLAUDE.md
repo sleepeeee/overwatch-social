@@ -123,7 +123,9 @@ supabase/migrations/
 ├── 006_profiles_grant.sql         # GRANT SELECT/INSERT/UPDATE/DELETE → authenticated
 ├── 007_public_profiles_social.sql # public_profiles view 更新
 ├── 008_fix_social_channels_privacy.sql # RLS policy（authenticated 可讀 visible profiles）
-└── 009_hero_stats_function.sql        # get_hero_stats() RPC（unnest + COUNT DISTINCT + SECURITY DEFINER）
+├── 009_hero_stats_function.sql        # get_hero_stats() RPC（unnest + COUNT DISTINCT + SECURITY DEFINER）
+├── 016_user_profiles.sql          # user_profiles 表 + RLS + 遷移 INSERT（全域暱稱）
+└── 017_public_profiles_with_nickname.sql # public_profiles view 加 nickname（LEFT JOIN user_profiles）
 ```
 
 ## 認證與權限系統
@@ -156,9 +158,15 @@ WHERE email = 'email@example.com';
 
 ## 資料庫結構
 
+### user_profiles 表（全域用戶身份層）
+每個 auth.users 一行（user_id PK）。持有 `nickname`（選填、可改、非唯一）。
+user_id UUID = 永久平台 ID；nickname = 選填顯示名稱（未設定時顯示 user_id）。
+RLS：所有人可讀；本人可 INSERT/UPDATE；developer 可讀全部。
+Migration 016 含遷移 INSERT（從 profiles 取最後更新的 display_name 為初始 nickname）。
+
 ### profiles 表
 用戶名片（battle_tag、英雄、標籤等）。RLS：本人讀寫；developer 可讀全部。
-public_profiles view：公開可查（anon/authenticated），不含 social_channels。
+public_profiles view：公開可查（anon/authenticated），含 nickname（LEFT JOIN user_profiles）。
 social_channels 讀取：需登入，透過 authenticated RLS policy 直接查 profiles 表。
 
 ### developer_whitelist 表

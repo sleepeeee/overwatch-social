@@ -25,7 +25,8 @@ import { Badge } from "@/components/ui/badge";
 import { SocialIcon } from "@/components/ui/SocialIcons";
 import { Sparkles, Save, Info, AlertTriangle, ArrowLeft, Gamepad2, ShieldAlert, Cpu } from "lucide-react";
 import { toPng } from "html-to-image";
-import { getMyProfile, saveProfile, saveDisplayName, getMyDisplayName } from "@/app/actions/profile";
+import { getMyProfile, saveProfile } from "@/app/actions/profile";
+import { getMyUserProfile, saveNickname } from "@/app/actions/userProfile";
 import { getGameSpecialTags } from "@/app/actions/tags";
 import Link from "next/link";
 import { useDevMode } from "@/hooks/useDevMode";
@@ -183,11 +184,11 @@ export default function ProfilePage() {
         setCardData(DEFAULT_CARD);
       }
     });
-    // 從 DB 取得已儲存的 display_name，覆蓋 localStorage/auth 衍生值
-    getMyDisplayName().then(dbName => {
-      if (dbName) {
+    // 從 user_profiles 取得全域暱稱，覆蓋 localStorage/auth 衍生值
+    getMyUserProfile().then(up => {
+      if (up?.nickname) {
         setUserProfile(prev => {
-          const updated = { ...prev, display_name: dbName };
+          const updated = { ...prev, display_name: up.nickname! };
           const key = `user_profile_hub_${prev.id}`;
           localStorage.setItem(key, JSON.stringify(updated));
           return updated;
@@ -210,7 +211,7 @@ export default function ProfilePage() {
   const handleSaveHub = async () => {
     const key = `user_profile_hub_${userProfile.id}`;
     localStorage.setItem(key, JSON.stringify(userProfile));
-    const result = await saveDisplayName(userProfile.display_name);
+    const result = await saveNickname(userProfile.display_name);
     if (result.error) {
       setErrorMsg(`暱稱儲存失敗：${result.error}`);
       return;
@@ -424,9 +425,14 @@ export default function ProfilePage() {
               {/* 暱稱與簡介編輯表單 */}
               <div className="flex-1 w-full space-y-4">
                 <div>
-                  <label className="text-xs font-black text-[#8c7c6c] mb-1.5 block">通用帳戶暱稱</label>
+                  <label className="text-xs font-black text-[#8c7c6c] mb-1.5 block">
+                    暱稱（全站顯示名稱）
+                    <span className="ml-2 text-[10px] font-normal text-[#8c7c6c]/60">
+                      ID：{user?.id?.slice(0, 8) ?? "—"}...
+                    </span>
+                  </label>
                   <Input
-                    placeholder="請輸入平台暱稱..."
+                    placeholder={user?.id ? `未設定時以 ID 顯示（${user.id.slice(0, 8)}...）` : "請輸入平台暱稱..."}
                     className="bg-white/60 border-[#8c7c6c]/20 focus:border-[#82b7cc] text-[#5d4037] font-black text-sm rounded-xl focus:ring-1 focus:ring-[#82b7cc]/30"
                     value={userProfile.display_name}
                     onChange={(e) => {

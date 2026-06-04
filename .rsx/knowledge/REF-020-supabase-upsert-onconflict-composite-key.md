@@ -6,6 +6,8 @@ status: active
 created: 2026-06-04
 tags: [supabase, upsert, composite-key, onConflict]
 source: https://supabase.com/docs/reference/javascript/upsert
+references_to: []
+referenced_by: [ADR-21, REF-022]
 ---
 
 ## 核心用法

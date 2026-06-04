@@ -26,6 +26,7 @@ import {
   Sun
 } from "lucide-react";
 import { addWhitelistEmail, removeWhitelistEmail, getAllProfilesForDeveloper } from "@/app/actions/developer";
+import UserListSection from "./components/UserListSection";
 import { HEROES_CONFIG } from "@/data/mockPlayers";
 
 interface ProfileRow {
@@ -883,132 +884,20 @@ export default function DeveloperConsoleClient({
                   <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-800 dark:text-slate-100 mt-0.5">
                     用戶管理 <span className="font-mono text-slate-400 font-normal">(USER MANAGEMENT)</span>
                   </h2>
-                  <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">查看所有已建立名片的玩家（最多 100 筆，不含聯絡方式）</p>
+                  <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">每位用戶的全域暱稱 + ID + 遊戲角色卡清單（點展開查看詳情）</p>
                 </div>
 
-                {/* Error / Denied State */}
-                {rlsEnabled && (
-                  <div className="bg-red-50/50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/50 rounded-xl p-8 text-center space-y-4">
-                    <div className="w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 flex items-center justify-center mx-auto text-lg">
-                      <Lock size={20} />
-                    </div>
-                    <div className="space-y-1 max-w-md mx-auto">
-                      <h3 className="text-sm font-bold text-red-700 dark:text-red-300">permission denied for table profiles</h3>
-                      <p className="text-xs text-red-600/80 dark:text-red-400/80 leading-relaxed font-mono">
-                        資料庫傳回安全性錯誤：當前連線因不具備足夠的 IAM 權限或未繞過 RLS 行級別安全政策，無法讀取資料表 <code className="px-1 py-0.5 rounded bg-red-100 dark:bg-red-950 font-bold">profiles</code> 的內容。
-                      </p>
-                    </div>
-                    <div className="pt-2 flex flex-col sm:flex-row gap-3 justify-center items-center">
-                      <button 
-                        onClick={handlePrivilegeElevation}
-                        className="px-4 py-2 rounded-lg text-xs font-bold text-white bg-red-600 hover:bg-red-700 shadow-md transition-all flex items-center gap-1.5 cursor-pointer"
-                      >
-                        <Terminal size={12} />
-                        <span>臨時提升權限繞過 RLS</span>
-                      </button>
-                      <button 
-                        onClick={handleToggleRLS}
-                        className="px-4 py-2 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 transition-all cursor-pointer"
-                      >
-                        關閉全局 RLS 限制
-                      </button>
-                    </div>
+                {/* 用戶列表（user_profiles + 角色卡）— 直接以 developer RLS policy 讀取，不需繞過 */}
+                <div className="space-y-4">
+                  <div className="px-5 py-3 bg-emerald-50/50 dark:bg-emerald-950/10 border border-emerald-500/20 rounded-xl flex items-center gap-2 text-xs text-emerald-600 dark:text-emerald-400">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                    </span>
+                    <span className="font-bold">連線正常：從 user_profiles 讀取全域身份 + 角色卡清單</span>
                   </div>
-                )}
-
-                {/* Table State (RLS Bypassed or custom simulated data) */}
-                {!rlsEnabled && (
-                  <div className="space-y-4">
-                    <div className="px-5 py-4 bg-emerald-50/50 dark:bg-emerald-950/10 border border-emerald-500/20 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-                      <div className="flex items-center gap-2 text-xs text-emerald-600 dark:text-emerald-400">
-                        <span className="relative flex h-2 w-2">
-                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                          <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                        </span>
-                        <span className="font-bold">連線成功：已暫時繞過安全限制讀取實體資料</span>
-                      </div>
-                      <span className="text-[10px] bg-emerald-100 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 px-2.5 py-0.5 rounded-full font-mono font-bold uppercase">Bypassed</span>
-                    </div>
-
-                    {usersLoading && (
-                      <div className="flex items-center justify-center py-16 gap-3 text-slate-400">
-                        <Loader2 size={20} className="animate-spin" />
-                        <span className="text-sm font-bold">載入用戶資料中...</span>
-                      </div>
-                    )}
-
-                    {usersError && !usersLoading && (
-                      <div className="p-4 rounded-xl border border-rose-500/20 bg-rose-500/8 text-rose-500 text-xs font-semibold flex items-center gap-2">
-                        <AlertCircle size={16} />
-                        <span>{usersError}</span>
-                      </div>
-                    )}
-
-                    {usersData && !usersLoading && (
-                      <>
-                        <div className="relative">
-                          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-                          <input
-                            type="text"
-                            placeholder="搜尋 BattleTag（server-side 過濾）..."
-                            value={usersSearch}
-                            onChange={e => handleUsersSearch(e.target.value)}
-                            className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl pl-9 pr-4 py-2.5 text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-[var(--theme-primary)] transition-all"
-                          />
-                        </div>
-
-                        <div className="bg-white dark:bg-[#202428] rounded-xl border border-slate-200 dark:border-slate-800/80 shadow-sm overflow-hidden">
-                          <div className="overflow-x-auto">
-                            <table className="w-full text-left border-collapse">
-                              <thead>
-                                <tr className="bg-slate-50/50 dark:bg-slate-900/30 text-slate-400 text-[10px] font-bold uppercase tracking-wider border-b border-slate-200/50 dark:border-slate-800/50">
-                                  <th className="px-6 py-4">玩家 ID</th>
-                                  <th className="px-6 py-4">玩家名稱 (BattleTag)</th>
-                                  <th className="px-6 py-4">英雄數</th>
-                                  <th className="px-6 py-4">公開狀態</th>
-                                  <th className="px-6 py-4">更新時間</th>
-                                </tr>
-                              </thead>
-                              <tbody className="divide-y divide-slate-100 dark:divide-slate-800/50 text-xs text-slate-600 dark:text-slate-300">
-                                {usersData.map(profile => (
-                                  <tr key={profile.user_id} className="hover:bg-slate-50/50 dark:hover:bg-slate-900/10 transition-colors">
-                                    <td className="px-6 py-3.5 font-mono text-[11px] text-slate-400">#{profile.user_id.slice(0, 8)}</td>
-                                    <td className="px-6 py-3.5 font-semibold">{profile.battle_tag || <span className="text-slate-400 italic">未命名</span>}</td>
-                                    <td className="px-6 py-3.5">
-                                      <span className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-[10px] font-bold">
-                                        {(profile.selected_heroes ?? []).length} 個英雄
-                                      </span>
-                                    </td>
-                                    <td className="px-6 py-3.5">
-                                      {profile.is_tag_visible ? (
-                                        <span className="text-emerald-500 flex items-center gap-1"><Eye size={12} /> 公開</span>
-                                      ) : (
-                                        <span className="text-slate-400 flex items-center gap-1"><EyeOff size={12} /> 隱藏</span>
-                                      )}
-                                    </td>
-                                    <td className="px-6 py-3.5 text-slate-400">
-                                      {taipeiFormatter.format(new Date(profile.updated_at))}
-                                    </td>
-                                  </tr>
-                                ))}
-                                {usersData.length === 0 && (
-                                  <tr>
-                                    <td colSpan={5} className="px-6 py-12 text-center text-slate-400 italic">
-                                      沒有找到玩家資料。
-                                    </td>
-                                  </tr>
-                                )}
-                              </tbody>
-                            </table>
-                          </div>
-                          <div className="px-6 py-3 border-t border-slate-200 dark:border-slate-800 text-[10px] text-slate-400 font-bold">
-                            {usersSearch ? `搜尋「${usersSearch}」結果` : `顯示前 ${usersData.length} 筆特工名片`}
-                          </div>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                )}
+                  <UserListSection />
+                </div>
 
               </div>
             )}
