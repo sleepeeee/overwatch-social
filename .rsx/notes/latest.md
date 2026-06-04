@@ -181,6 +181,14 @@ Tier: grep
 <!-- pre-check-log-end -->
 
 <!-- pre-check-log-start -->
+### [Step 0 pre-check] 全域暱稱 user identity dev console redesign (2026-06-04)
+Tier: grep
+命中：2 筆部分相關（ADR-16 display_name dual-write；F-016 display_name 缺陷）— 無直接命中「global nickname as ID」或「dev console user listing」
+使用者選擇：(a) 繼續 inline 探索（無需外部搜尋，需求明確為架構設計）
+待 propose change：user-identity-global-nickname + dev-console-user-listing
+<!-- pre-check-log-end -->
+
+<!-- pre-check-log-start -->
 ### [Step 0 pre-check] unique constraint user_id game one card per user (2026-06-04)
 Tier: grep
 命中：0 筆
