@@ -138,7 +138,7 @@ export default function OWCard({
 
   if (theme === "soft-midnight-lounge") {
     return (
-      <div className="theme-card relative w-full max-w-[420px] mx-auto p-6 overflow-hidden flex flex-col items-center justify-between text-center group/card gap-5" style={{ fontFamily: "var(--theme-font-family), sans-serif" }}>
+      <div className="midnight-player-artifact monitor-glow-artifacts theme-card relative w-full max-w-[420px] mx-auto p-6 overflow-hidden flex flex-col items-center justify-between text-center group/card gap-5" style={{ fontFamily: "var(--theme-font-family), sans-serif" }}>
         <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-[#a78bfa]/30 to-transparent" />
         <div className="w-full flex justify-between items-center text-[10px] tracking-widest text-[#a78bfa] uppercase font-bold">
           <span>{server}</span>
@@ -148,7 +148,7 @@ export default function OWCard({
           {selected_heroes.slice(0, 3).map((heroId, index) => {
             const heroInfo = heroId ? getHeroInfo(heroId) : null;
             return (
-              <div key={index} className="w-16 h-16 rounded-full border-2 border-white/5 overflow-hidden bg-black/40 -ml-3 first:ml-0 shadow-xl relative group/lounge-hero transition-transform duration-300 hover:scale-110 hover:z-20" style={{ zIndex: 10 - index }}>
+              <div key={index} className="w-16 h-16 rounded-full border-2 border-white/5 overflow-hidden bg-black/40 -ml-3 first:ml-0 shadow-xl relative group/lounge-hero transition-[border-color,box-shadow,filter] duration-300 hover:border-[#b7a8ff]/45 hover:shadow-[0_0_18px_rgba(183,168,255,0.24)] hover:z-20" style={{ zIndex: 10 - index }}>
                 {heroInfo ? (
                   <img src={`/images/heroes/full/${heroInfo.id}.png`} alt={heroInfo.name} className="w-full h-full object-cover scale-[1.6] translate-y-[8%]" draggable="false" />
                 ) : (

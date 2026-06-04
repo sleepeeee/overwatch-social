@@ -227,14 +227,14 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
     <div className="space-y-6 w-full animate-[fadeIn_0.4s_ease-out] relative pb-36">
       {/* 示範資料提示條（真實資料出現後自動消失）*/}
       {isShowingMockData && (
-        <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[#d8a070]/30 bg-[#d8a070]/8 text-[11px] font-bold text-[#8c7c6c] relative z-10">
+        <div className="quiet-lounge-surfaces flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[#d8a070]/30 bg-[#d8a070]/8 text-[11px] font-bold text-[#8c7c6c] relative z-10">
           <span className="w-1.5 h-1.5 rounded-full bg-[#d8a070] shrink-0 animate-pulse" />
           目前顯示的是示範資料，廣場尚無真實玩家名片。成為第一個建立名片的特工吧！
         </div>
       )}
 
       {/* 🚀 獨立懸浮篩選紙帶 (Floating Cloud Filter Ribbon) */}
-      <div className="w-full p-5 md:py-4 md:px-6 flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10 cloud-paper-panel">
+      <div className="quiet-lounge-surfaces w-full p-5 md:py-4 md:px-6 flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10 cloud-paper-panel">
         
         {/* 🌸 [Aesthetics] 手稿星芒 */}
         <div className="absolute -top-3 -left-3 pointer-events-none z-20">
@@ -339,7 +339,7 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
             {filteredPlayers.map((player) => (
               <div
                 key={player.card_id}
-                className="w-full flex justify-center hover:-translate-y-1 transition-transform duration-300 relative cursor-pointer"
+                className="midnight-player-artifact w-full flex justify-center transition-transform duration-300 relative cursor-pointer"
                 onClick={(e) => {
                   if ((e.target as HTMLElement).closest('[data-no-navigate]')) return;
                   router.push(`/player/${player.user_id}`);
@@ -361,7 +361,7 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
               <Button
                 onClick={handleLoadMore}
                 disabled={isLoadingMore}
-                className="bg-white/60 hover:bg-white border border-[#8c7c6c]/20 text-[#5d4037] font-extrabold text-xs px-8 py-4 rounded-2xl shadow-sm transition-all active:scale-95 disabled:opacity-50"
+                className="quiet-lounge-surfaces bg-white/60 hover:bg-white border border-[#8c7c6c]/20 text-[#5d4037] font-extrabold text-xs px-8 py-4 rounded-2xl shadow-sm transition-all active:scale-95 disabled:opacity-50"
               >
                 {isLoadingMore ? "載入中..." : "載入更多特工"}
               </Button>
@@ -369,7 +369,7 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
           )}
         </>
       ) : (
-        <div className="bg-[#fefcf8] border border-[#8c7c6c]/15 rounded-[28px] py-16 px-4 text-center max-w-xl mx-auto flex flex-col items-center justify-center gap-4 shadow-[0_20px_50px_rgba(140,124,108,0.04)]">
+        <div className="quiet-lounge-surfaces bg-[#fefcf8] border border-[#8c7c6c]/15 rounded-[28px] py-16 px-4 text-center max-w-xl mx-auto mb-24 flex flex-col items-center justify-center gap-4 shadow-[0_20px_50px_rgba(140,124,108,0.04)]">
           <div className="w-16 h-16 rounded-full bg-white/60 flex items-center justify-center text-[#82b7cc] border border-[#8c7c6c]/15 shadow-sm">
             <AlertCircle size={28} />
           </div>

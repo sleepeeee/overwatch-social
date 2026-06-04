@@ -12,7 +12,7 @@ export default function LoLSquare({ isPremiumStyle = true }: { isPremiumStyle?: 
 
   return (
     <div className="space-y-8 w-full animate-[fadeIn_0.4s_ease-out]">
-      <div className="ow-glass-panel p-5 border border-dashed border-[#8c7c6c]/25 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+      <div className="quiet-lounge-surfaces ow-glass-panel p-5 border border-dashed border-[#8c7c6c]/25 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-[#d8a070]/12 flex items-center justify-center text-[#d8a070]">
             <Shield size={20} />
@@ -29,7 +29,7 @@ export default function LoLSquare({ isPremiumStyle = true }: { isPremiumStyle?: 
         {MOCK_LOL_PLAYERS.map((player) => (
           <div
             key={player.id}
-            className="browse-preview-card relative w-full max-w-[360px] p-5 flex flex-col justify-between h-[320px] opacity-70 pointer-events-none select-none"
+            className="midnight-player-artifact browse-preview-card relative w-full max-w-[360px] p-5 flex flex-col justify-between h-[320px] opacity-70 pointer-events-none select-none"
           >
             <div className="absolute top-0 inset-x-0 z-20 flex items-center justify-center gap-1 bg-amber-400/90 text-amber-900 text-[9px] font-black py-0.5 tracking-widest rounded-t-2xl">
               ⚠ 示範資料 — 非真實玩家

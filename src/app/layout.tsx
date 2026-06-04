@@ -46,8 +46,8 @@ export default function RootLayout({
           <AuthProvider>
             {/* 開發者模式 banner（需要在 AuthProvider 內，因為使用 useAuth()）*/}
             <DevModeBanner />
-            <main className="flex-1 relative z-10">{children}</main>
-            <footer className="text-center py-4 text-gray-600 text-sm pb-24 relative z-10">
+            <main className="site-main flex-1 relative z-10">{children}</main>
+            <footer className="site-footer text-center py-4 text-gray-600 text-sm pb-24 relative z-10">
               © 2026 OW Social · 找到你的最佳特工戰友
             </footer>
             {/* 全局常駐的高質感毛玻璃懸浮導航列 */}
@@ -56,7 +56,10 @@ export default function RootLayout({
         </ThemeProvider>
         <Analytics />
         <SpeedInsights />
-      </body>
+      {/* impeccable-live-start */}
+<script src="http://localhost:8400/live.js"></script>
+{/* impeccable-live-end */}
+</body>
     </html>
   );
 }

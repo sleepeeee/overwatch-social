@@ -66,7 +66,7 @@ export default function BrowsePage() {
 
   if (authLoading) {
     return (
-      <div className="max-w-6xl mx-auto px-4 py-8 flex flex-col items-center justify-center min-h-[600px] gap-4">
+      <div className="brand-portal-shell atmosphere-shell midnight-room-depth max-w-6xl mx-auto px-4 py-8 flex flex-col items-center justify-center min-h-[600px] gap-4">
         <div className="w-12 h-12 border-4 border-[#82b7cc] border-t-transparent rounded-full animate-spin"></div>
         <p className="text-gray-400 text-sm font-bold animate-pulse">正在與名片大廳大門連接中...</p>
       </div>
@@ -75,12 +75,20 @@ export default function BrowsePage() {
 
   return (
     <div 
-      className="max-w-6xl mx-auto px-4 py-8 space-y-8 relative min-h-screen overflow-x-hidden pb-12"
+      className="brand-portal-shell atmosphere-shell midnight-room-depth max-w-6xl mx-auto px-4 py-8 space-y-8 relative min-h-screen overflow-x-hidden pb-32"
     >
-      <TopBar />
+      <aside className="brand-composition-rail absolute -left-28 top-28 hidden xl:flex flex-col items-center gap-4 z-20" aria-hidden="true">
+        <span className="brand-rail-mark" />
+        <span className="brand-rail-title" data-label="AFTER MIDNIGHT" />
+        <span className="brand-rail-subtitle" data-label="PLAYER IDENTITY HUB" />
+      </aside>
+
+      <div className="atmosphere-content">
+        <TopBar />
+      </div>
 
       {/* 🌸 莫蘭迪紙感手稿標頭 - 垂直層級重構 (無背板) */}
-      <div className="text-left space-y-2 relative z-10 animate-[fadeIn_0.5s_ease-out] pb-1 select-none max-w-2xl mx-auto">
+      <div className="atmosphere-content text-left space-y-2 relative z-10 animate-[fadeIn_0.5s_ease-out] pb-1 select-none max-w-2xl mx-auto">
         <div className="text-[10px] md:text-[11px] font-black uppercase tracking-[0.2em] text-[#8c7c6c]/60 flex items-center gap-1.5">
           <span>Lobby Directory</span>
           <span className="w-1.5 h-1.5 rounded-full bg-accent/40" />
@@ -96,10 +104,10 @@ export default function BrowsePage() {
       </div>
 
       {/* 獨立搜尋與分區藥丸滑動軌道 - 垂直介電隔離層 */}
-      <div className="flex flex-col gap-6 relative z-10 mb-6 max-w-2xl mx-auto select-none animate-[fadeIn_0.5s_ease-out]">
+      <div className="atmosphere-content flex flex-col gap-6 relative z-10 mb-6 max-w-2xl mx-auto select-none animate-[fadeIn_0.5s_ease-out]">
         {/* 🔍 搜尋太空艙 */}
         <div className="relative w-full">
-          <div className="relative w-full bg-card/60 backdrop-blur-xl border border-border rounded-full p-1.5 shadow-[0_20px_50px_rgba(140,124,108,0.04),inset_0_1px_0_rgba(255,255,255,0.95)] focus-within:border-accent/50 transition-all duration-300 flex items-center group/search relative z-10">
+          <div className="quiet-lounge-surfaces relative w-full bg-card/60 backdrop-blur-xl border border-border rounded-full p-1.5 shadow-[0_20px_50px_rgba(140,124,108,0.04),inset_0_1px_0_rgba(255,255,255,0.95)] focus-within:border-accent/50 transition-all duration-300 flex items-center group/search relative z-10">
             <Search className="ml-3.5 text-muted-foreground transition-colors shrink-0 group-focus-within/search:text-accent" size={18} />
             <Input
               type="text"
@@ -145,7 +153,7 @@ export default function BrowsePage() {
       </div>
 
       {/* 🚀 子廣場元件常駐 DOM 控制，消除 unmount 詭異 Loading 動畫 */}
-      <div className="w-full pt-2 relative z-10 animate-[fadeIn_0.5s_ease-out]">
+      <div className="artifact-gallery atmosphere-content w-full pt-2 relative z-10 animate-[fadeIn_0.5s_ease-out]">
         <div className={activeGame === "ow" ? "block" : "hidden"}>
           <OverwatchSquare searchQuery={searchQuery} />
         </div>

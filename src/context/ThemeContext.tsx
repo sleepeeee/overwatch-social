@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from "react";
 
-export type ThemeStyle = "original-baseline" | "soft-midnight-lounge" | "paper-card-social" | "cyber-matchmaking-hub";
+export type ThemeStyle = "original-baseline" | "soft-midnight-lounge" | "paper-card-social" | "cyber-matchmaking-hub" | "starry-midnight";
 
 interface ThemeContextType {
   theme: ThemeStyle;
@@ -17,7 +17,8 @@ const ALL_THEME_CLASSES = [
   "theme-original-baseline",
   "theme-soft-midnight-lounge",
   "theme-paper-card-social",
-  "theme-cyber-matchmaking-hub"
+  "theme-cyber-matchmaking-hub",
+  "theme-starry-midnight"
 ];
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {

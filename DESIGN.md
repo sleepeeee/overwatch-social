@@ -456,3 +456,157 @@ Before considering the work complete, verify:
 - No product features were removed.
 
 If these checks fail, continue with layout, component, and interaction changes before doing any more color work.
+
+
+# 15. AFTER MIDNIGHT — Low-Intrusive Social Philosophy
+
+AFTER MIDNIGHT is NOT:
+- a dating app
+- a real-time social feed
+- a Discord clone
+- a high-engagement platform
+- a competitive esports hub
+
+The platform is a:
+- low-intrusive player identity gallery
+- player-card plaza
+- quiet discovery space
+- slow exploration environment
+
+The core experience is:
+- browsing player cards
+- discovering player personalities
+- quietly exploring gaming identity
+- choosing whether to connect externally through actual games
+
+The platform should feel:
+- calm
+- emotionally safe
+- atmospheric
+- collectible
+- personal
+- slow-paced
+
+Avoid:
+- aggressive CTA behavior
+- engagement addiction patterns
+- oversized notification systems
+- social-pressure interaction loops
+- infinite-scroll dopamine UI
+- dating-app psychology
+
+---
+
+# 16. Card-First Hierarchy
+
+Player cards are the true product core.
+
+The homepage, filters, lobby modules, and navigation exist to support:
+- player-card exploration
+- player identity visibility
+- quiet browsing
+- compatibility scanning
+
+The UI hierarchy must prioritize:
+1. Player card readability
+2. Identity visibility
+3. Scan rhythm
+4. Exploration comfort
+5. Atmosphere
+
+Do not allow:
+- giant marketing hero sections
+- oversized dashboard panels
+- decorative sections overpowering cards
+- excessive empty showcase spacing
+
+---
+
+# 17. Theme Brand Direction Update
+
+The four themes now represent four emotional late-night spaces built on the same product skeleton.
+
+Theme switching must feel like:
+"the same platform existing in different emotional realities"
+
+NOT:
+"the same layout with different colors"
+
+The four themes should emotionally map to:
+
+1. Original / Quiet Morning Glass
+- soft daylight
+- airy
+- calm baseline
+- clean glass warmth
+
+2. AFTER MIDNIGHT / Midnight Lounge
+- premium late-night lounge
+- emotional midnight ambience
+- dim monitor glow
+- quiet companionship
+
+3. Paper Card Social
+- handcrafted card exchange
+- tactile player notes
+- collectible social cards
+- warm analog atmosphere
+
+4. Cyber Directory
+- structured player discovery
+- tactical scanning
+- operational matchmaking
+- clean metadata hierarchy
+
+---
+
+# 18. Homepage Direction
+
+The homepage should NOT become:
+- a SaaS dashboard
+- a marketing landing page
+- a social feed
+- a giant hero showcase
+
+The homepage should feel like:
+"a quiet entrance into the AFTER MIDNIGHT player universe"
+
+Hero sections must support:
+- atmosphere
+- emotional tone
+- discovery entry
+
+The homepage should gradually guide users toward:
+- player cards
+- card plaza
+- exploration
+- browsing
+
+Player cards must remain visually more important than decorative homepage modules.
+
+---
+
+# 19. Gallery Thinking Instead of Dashboard Thinking
+
+AFTER MIDNIGHT should evolve toward:
+- gallery UI
+- showcase UI
+- archive UI
+- player identity library
+
+NOT:
+- admin dashboard UI
+- analytics SaaS UI
+- B2B management interfaces
+
+Filters should feel like:
+"exploration tools"
+
+NOT:
+"backend filtering systems"
+
+Cards should feel like:
+"identity artifacts"
+
+NOT:
+"database records"

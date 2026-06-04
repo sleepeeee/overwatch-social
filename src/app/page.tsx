@@ -5,8 +5,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Compass, Users, Moon } from "lucide-react";
+import { 
+  Sparkles, Compass, Users, Moon, Heart, Shield, Layers, 
+  Calendar, RefreshCw, X, BookOpen, Terminal, Activity, Info
+} from "lucide-react";
 import TopBar from "@/components/TopBar";
+import { useTheme } from "@/context/ThemeContext";
 
 // 匯入 Morning Sketch 風格組件
 import FluidClipPath from "@/components/morning-sketch/FluidClipPath";
@@ -52,7 +56,14 @@ const messagesPool = [
 const tagsPool = ["快樂排位", "語音交流", "拒絕暴躁", "下班上線", "歡迎新手", "團隊至上"];
 
 export default function Home() {
+  const { theme } = useTheme();
   const [profiles, setProfiles] = useState<PlayerCard[]>(initialProfiles);
+  
+  // Lounge 主題 (樣式2) 的專用 Modal 狀態
+  const [isJillModalOpen, setIsJillModalOpen] = useState(false);
+  const [isLuckyAllyModalOpen, setIsLuckyAllyModalOpen] = useState(false);
+  const [isEventsModalOpen, setIsEventsModalOpen] = useState(false);
+
   // 實作「有新卡片加入就替換掉最舊的卡片 (維持3張)」的動態模擬器
   useEffect(() => {
     const avatarPool = [
@@ -92,199 +103,1107 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const card = e.currentTarget;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const rotateX = -(y - centerY) / 12;
+    const rotateY = (x - centerX) / 12;
+    
+    card.style.setProperty("--mouse-x", `${(x / rect.width) * 100}%`);
+    card.style.setProperty("--mouse-y", `${(y / rect.height) * 100}%`);
+    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+    card.style.boxShadow = `0 25px 55px rgba(192, 132, 252, 0.15), 0 0 30px rgba(0, 0, 0, 0.6)`;
+  };
+
+  const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
+    const card = e.currentTarget;
+    card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+    card.style.boxShadow = ``;
+  };
+
   return (
-    <div 
-      className="min-h-screen relative pb-32 transition-colors duration-500"
-    >
+    <div className="atmosphere-shell midnight-room-depth min-h-screen relative pb-32 transition-colors duration-500">
+      {theme === "starry-midnight" && (
+        <div className="starry-bg-container">
+          <div className="starry-dust" />
+          <div className="aurora-cloud-1" />
+          <div className="aurora-cloud-2" />
+        </div>
+      )}
       <FluidClipPath />
 
-      <main className="transition-all duration-500 ease-out p-6 md:p-8 min-h-screen w-full max-w-7xl mx-auto px-4 md:px-8 pt-6">
+      <main className="brand-portal-shell atmosphere-content transition-all duration-500 ease-out p-6 md:p-8 min-h-screen w-full max-w-7xl mx-auto px-4 md:px-8 pt-6">
+        <aside className="brand-composition-rail absolute -left-20 top-28 hidden xl:flex flex-col items-center gap-4 z-20" aria-hidden="true">
+          <span className="brand-rail-mark" />
+          <span className="brand-rail-title" data-label="AFTER MIDNIGHT" />
+          <span className="brand-rail-subtitle" data-label="PLAYER IDENTITY HUB" />
+        </aside>
         
         <TopBar />
 
-        <div className="space-y-8 max-w-7xl mx-auto z-10 relative">
-
-          {/* 🔴 [Hero Area] */}
-          <div
-            className="relative overflow-hidden p-6 sm:p-8 md:p-10 glass-panel organic-corners animate-[fadeInUp_0.8s_ease-out] w-full flex flex-col md:flex-row items-center justify-between gap-8 min-h-[260px]"
-          >
-            <div className="space-y-4.5 max-w-xl min-w-0 text-center md:text-left relative z-10">
-              <Badge className="bg-accent/15 text-foreground border border-accent/35 px-3 py-1 text-[10.5px] font-bold tracking-widest uppercase rounded-full flex items-center gap-1.5 shadow-[0_1px_8px_rgba(130,183,204,0.05)] w-fit mx-auto md:mx-0">
-                <Moon size={11} className="shrink-0 text-foreground fill-foreground/10" />
-                所有遊戲玩家的靈魂避風港
-              </Badge>
+        {/* 根據不同主題，渲染完全不同的首頁骨架，徹底解決 UI 堆疊擁擠、缺乏主題性的問題 */}
+        {theme === "starry-midnight" ? (
+          /* =========================================================================
+             🌌 樣式 5：星空漫步 (Constellation Odyssey) - 奢華、深邃、物理微動態
+             ========================================================================= */
+          <div className="space-y-12 max-w-7xl mx-auto z-10 relative">
+            
+            {/* 橫幅 (星軌行星公轉 + 明體口號) */}
+            <div 
+              className="relative overflow-hidden w-full rounded-[32px] border border-purple-500/10 p-6 sm:p-8 md:p-12 min-h-[460px] flex flex-col lg:flex-row items-center justify-between gap-8 md:gap-12 shadow-[0_25px_60px_rgba(0,0,0,0.7)] animate-[fadeInUp_0.8s_ease-out] bg-[#0a0a12]/40 backdrop-blur-xl"
+            >
+              {/* 星雲與極光背景 */}
+              <div className="absolute inset-0 starry-bg-container z-0" />
+              <div className="aurora-cloud-1 z-0" />
+              <div className="aurora-cloud-2 z-0" />
               
-              <h2 className="text-3xl sm:text-4xl font-bold tracking-wider leading-tight text-foreground break-words text-balance">
-                尋找心靈契合的 <span className="text-accent">最佳遊戲搭檔</span>
-              </h2>
-              
-              <p className="text-muted-foreground text-xs md:text-sm leading-relaxed font-normal">
-                不僅僅是戰友，更是心靈相通的夥伴。在這裡，建立專屬的磨砂玻璃遊戲名片，展示你的遊戲靈魂，秒速遇到懂你的排位與日常搭檔！
-              </p>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:flex md:flex-wrap gap-3 pt-2 justify-center md:justify-start">
-                <Link href="/profile">
-                  <Button className="w-full calm-btn-primary font-bold text-xs tracking-widest uppercase px-5 py-4.5 rounded-2xl cursor-pointer hover:scale-102 transition-transform shadow-md">
-                    <Sparkles size={11} className="mr-1.5" />
-                    建立遊戲名片
-                  </Button>
-                </Link>
+              {/* 左側標語與導覽 */}
+              <div className="relative z-10 space-y-6 max-w-xl text-center lg:text-left flex-grow">
+                <div className="flex items-center justify-center lg:justify-start gap-2 text-purple-300/90 select-none">
+                  <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
+                  <span className="text-[10px] font-bold tracking-[0.25em] uppercase font-mono">AFTER MIDNIGHT</span>
+                  <span className="text-[10px] opacity-40">|</span>
+                  <span className="text-[9px] font-bold tracking-[0.25em] uppercase text-purple-400 font-mono">CONSTELLATION ODYSSEY</span>
+                </div>
                 
-                <Link href="/browse">
-                  <Button variant="outline" className="w-full border-border text-muted-foreground hover:text-foreground bg-card/40 hover:bg-card/70 font-bold text-[10px] tracking-widest uppercase px-5 py-4.5 rounded-2xl shadow-sm transition-all duration-300 cursor-pointer hover:scale-102">
-                    <Compass size={11} className="mr-1.5" />
-                    漫步玩家廣場
-                  </Button>
-                </Link>
-              </div>
-            </div>
-
-            {/* 右側遊戲名片預覽：讓首屏一眼看出這是找隊友名片平台 */}
-            <div className="hidden md:flex relative z-10 pr-4 lg:pr-8">
-              <div className="relative w-64 rounded-[28px] border border-border bg-card/35 p-4 shadow-card backdrop-blur-xl rotate-2 hover:rotate-0 transition-transform duration-500">
-                <div className="flex items-center gap-3">
-                  <div className="relative w-14 h-14 rounded-2xl overflow-hidden border border-accent/25 bg-card/60 shrink-0">
-                    <Image
-                      src="/images/avatars/avatar_female_cheerful_square.png"
-                      alt="玩家名片預覽頭像"
-                      fill
-                      sizes="56px"
-                      className="object-cover"
-                    />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-[10px] font-black tracking-widest uppercase text-accent">ALLY CARD</p>
-                    <p className="text-sm font-black text-foreground truncate">深夜補位夥伴</p>
-                    <p className="text-[10px] font-bold text-muted-foreground truncate">Overwatch · 安娜</p>
-                  </div>
-                </div>
-                <div className="mt-4 rounded-2xl border border-border bg-card/35 p-3">
-                  <p className="line-clamp-2 text-[11px] leading-relaxed text-foreground">
-                    “今晚找溫和雙排，會補位、有麥、心態穩。”
-                  </p>
-                </div>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  <span className="pastel-tag-blue rounded-full px-2 py-0.5 text-[9px] font-black">#語音交流</span>
-                  <span className="pastel-tag-sand rounded-full px-2 py-0.5 text-[9px] font-black">#拒絕暴躁</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Widget 展示區 */}
-          <div className="space-y-8">
-
-            {/* 三欄等高 Widget Row */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 animate-[fadeInUp_0.9s_ease-out]">
-
-              {/* 🔵 LUCKY ALLY */}
-              <div className="flex">
-                <LuckyAlly />
-              </div>
-
-              {/* 🟣 站長隨筆手札 */}
-              <div className="flex">
-                <LotusWelcomeWidget />
-              </div>
-
-              {/* 🟢 LOBBY EVENTS */}
-              <div className="flex animate-[fadeInUp_1s_ease-out]">
-                <FeaturedArtists styleMode="B" />
-              </div>
-
-            </div>
-
-            {/* 💗 粉色區塊：最新在大廳啟航的玩家 (已實作滑動動畫與真實大頭貼) */}
-            <section className="space-y-4.5 w-full">
-                <div className="flex justify-between items-center px-1">
-                  <h3 className="text-sm font-bold text-[#3e2723] tracking-widest uppercase flex items-center gap-1.5">
-                    <Users size={16} className="text-[#82b7cc]" style={{ color: "rgba(var(--theme-accent-rgb), 0.85)" }} />
-                    🎉 最新在大廳啟航的玩家
-                  </h3>
-                  <span className="text-xs font-bold text-[#8c7c6c]/60 uppercase tracking-widest flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping inline-block" />
-                    即時連線更新中
+                <h2 className="text-3xl sm:text-4xl lg:text-[42px] font-medium leading-[1.3] text-white text-left font-serif-tc">
+                  永遠都發生在<br />
+                  <span className="text-purple-300 font-bold tracking-widest drop-shadow-[0_0_12px_rgba(192,132,252,0.4)]">
+                    午夜之後。
                   </span>
+                </h2>
+                
+                <p className="text-slate-300 text-xs md:text-sm leading-relaxed font-normal max-w-lg mx-auto lg:mx-0 text-left font-serif-tc opacity-90">
+                  當指針越過子夜，喧囂散去。在這裡，我們用星軌相連，用名片點亮孤單的星空，幫助你找到能在耳麥裡分享勝負的靈魂伴侶。
+                </p>
+
+                <div className="flex flex-col sm:flex-row gap-3.5 pt-2 justify-center lg:justify-start">
+                  <Link href="/browse">
+                    <Button className="w-full sm:w-auto bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs tracking-widest uppercase px-6 py-5 rounded-full cursor-pointer hover:scale-102 transition-transform shadow-[0_4px_20px_rgba(192,132,252,0.4)] border border-purple-400/20">
+                      探索星群
+                    </Button>
+                  </Link>
+                  
+                  <Link href="/profile">
+                    <Button variant="outline" className="w-full sm:w-auto border-purple-500/20 text-purple-200 hover:text-white bg-purple-950/20 hover:bg-purple-900/30 font-bold text-xs tracking-widest uppercase px-6 py-5 rounded-full transition-all duration-300 cursor-pointer hover:scale-102">
+                      登錄星軌
+                    </Button>
+                  </Link>
                 </div>
+              </div>
 
-                {/* 完整展示 3 份卡片，大氣的三欄 grid 佈局 (含滑動更新動畫過渡) */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 overflow-hidden py-1 px-0.5 w-full">
-                  {profiles.map((p, idx) => {
-                    const isNew = idx === 0;
+              {/* 右側：SVG 星體 3D 動態反光公轉圖形 */}
+              <div className="relative z-10 w-full lg:w-[400px] shrink-0 flex items-center justify-center">
+                <svg viewBox="0 0 800 640" className="w-full max-w-[360px] h-auto pointer-events-none drop-shadow-[0_0_30px_rgba(192,132,252,0.25)]">
+                  <defs>
+                    <linearGradient id="themeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#c084fc"/>
+                        <stop offset="100%" stopColor="#a78bfa"/>
+                    </linearGradient>
+                    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+                        <feGaussianBlur stdDeviation="8" result="blur"/>
+                        <feMerge>
+                            <feMergeNode in="blur"/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+                    <style>{`
+                      .planetary-orbit-1 {
+                          animation: orbitRotation 22s linear infinite;
+                          transform-origin: 400px 330px;
+                      }
+                      .planetary-orbit-2 {
+                          animation: orbitRotation 36s linear infinite reverse;
+                          transform-origin: 400px 330px;
+                      }
+                      .fluffy-cloud {
+                          fill: #09090e;
+                          stroke: url(#themeGrad);
+                          stroke-width: 1.2;
+                          opacity: 0.85;
+                          filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));
+                          animation: driftCloud 8s ease-in-out infinite alternate;
+                      }
+                      .cosmic-crescent {
+                          filter: drop-shadow(0 0 15px rgba(139, 92, 246, 0.45));
+                          transform-origin: 400px 330px;
+                          animation: moonFloat 6s ease-in-out infinite alternate;
+                      }
+                      @keyframes driftCloud {
+                          0% { transform: translate(-8px, 5px); opacity: 0.6; }
+                          100% { transform: translate(12px, -3px); opacity: 0.85; }
+                      }
+                      @keyframes moonFloat {
+                          0% { transform: translateY(0px) rotate(0deg); }
+                          100% { transform: translateY(-8px) rotate(1.5deg); }
+                      }
+                    `}</style>
+                  </defs>
+                  <g transform="translate(0, 10)">
+                      <ellipse className="orbit-path" cx="400" cy="330" rx="195" ry="50" transform="rotate(-15 400 330)" fill="none" stroke="url(#themeGrad)" strokeWidth="1.8" />
+                      <ellipse className="orbit-path" cx="400" cy="330" rx="210" ry="70" transform="rotate(-40 400 330)" fill="none" stroke="url(#themeGrad)" strokeWidth="1" strokeDasharray="10 8" />
 
-                    return (
-                      <div 
-                        key={p.id} 
-                        className={`glass-panel p-5 border border-white/40 flex flex-col justify-between h-[220px] transition-all duration-500 hover:border-accent/40 hover:-translate-y-1 hover:shadow-md ${
-                          isNew ? "animate-card-slide" : ""
-                        }`}
-                      >
-                        {/* 卡片頂部：頭像 + 姓名 + 段位，遊戲資訊獨立放下一層避免擁擠 */}
-                        <div className="flex justify-between items-start gap-2 w-full">
-                          <div className="flex items-center gap-2.5 min-w-0 flex-grow">
-                            {/* 真實大頭貼圖片 (與 profile 頁面設定 avatar_url 格式對應，Lorelei 禪意手繪風) */}
-                            <div className="w-8.5 h-8.5 rounded-xl overflow-hidden border border-[#8c7c6c]/15 shadow-sm shrink-0">
-                              <Image
-                                src={p.avatarUrl} 
-                                alt={p.name} 
-                                width={34}
-                                height={34}
-                                sizes="34px"
-                                className="w-full h-full object-cover"
-                                draggable={false}
-                              />
-                            </div>
-                            
-                            {/* 姓名獨立一層，避免與遊戲和英雄資訊互搶空間 */}
-                            <div className="min-w-0 flex-grow text-left">
-                              <h4 className="font-bold text-[#3e2723] text-sm truncate">{p.name}</h4>
-                              <p className="text-[10px] font-semibold text-[#8c7c6c]/80 truncate">尋找今日固定隊友</p>
-                            </div>
+                      <g className="planetary-orbit-1">
+                          <g transform="translate(195, 0)">
+                              <circle cx="400" cy="330" r="6" fill="url(#themeGrad)" filter="url(#softGlow)"/>
+                              <circle cx="400" cy="330" r="10" fill="none" stroke="#c084fc" strokeWidth="0.5" opacity="0.5"/>
+                          </g>
+                      </g>
+                      
+                      <g className="planetary-orbit-2">
+                          <g transform="translate(-210, 20)">
+                              <circle cx="400" cy="330" r="4.5" fill="#a78bfa" filter="url(#softGlow)"/>
+                          </g>
+                      </g>
+
+                      <g className="cosmic-crescent">
+                          <path d="M 400,170 A 150,150 0 0,1 400,470 A 136,143 0 0,0 400,170 Z" fill="url(#themeGrad)"/>
+                      </g>
+
+                      <g className="fluffy-cloud" transform="translate(0, 10)">
+                          <path d="M 330,385 C 310,385 295,365 310,345 C 305,325 325,305 345,315 C 355,300 380,305 385,320 C 405,320 415,335 405,355 C 415,375 390,390 375,380 C 360,395 340,395 330,385 Z"/>
+                          <path d="M 315,350 C 325,335 350,330 365,345" stroke="#c084fc" strokeWidth="0.6" fill="none" opacity="0.3"/>
+                          <path d="M 335,370 C 350,360 380,362 390,372" stroke="#a78bfa" strokeWidth="0.6" fill="none" opacity="0.3"/>
+                      </g>
+
+                      <g className="main-star" transform="translate(0, -10)">
+                          <circle cx="400" cy="170" r="10" fill="#c084fc" opacity="0.1" filter="url(#softGlow)"/>
+                          <path d="M 400,155 C 400,165 405,170 415,170 C 405,170 400,185 C 400,175 395,170 385,170 C 395,170 400,165 400,155 Z" fill="url(#themeGrad)"/>
+                      </g>
+
+                      <g className="twinkling-star" transform="translate(100, 150)">
+                          <path d="M 400,155 C 400,160 402,162 407,162 C 402,162 400,164 400,169 C 400,164 398,162 393,162 C 398,162 400,160 400,155 Z" fill="#a78bfa" opacity="0.8"/>
+                      </g>
+                  </g>
+                </svg>
+              </div>
+            </div>
+
+            {/* 公告欄收納鈕 */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 bg-purple-950/20 border border-purple-500/10 rounded-3xl p-4 max-w-3xl mx-auto shadow-sm backdrop-blur-md">
+              <span className="text-purple-300 text-xs font-semibold mr-1 flex items-center gap-1.5 font-mono">
+                <Info size={13} className="text-purple-400" />
+                CONSTELLATION BOARD
+              </span>
+              <div className="flex flex-wrap items-center justify-center gap-3 w-full sm:w-auto">
+                <button 
+                  onClick={() => setIsLuckyAllyModalOpen(true)}
+                  className="px-5 py-2.5 rounded-full border border-purple-500/15 bg-purple-900/20 hover:bg-purple-900/40 text-purple-200 hover:text-white transition-all duration-300 text-[11px] font-bold uppercase tracking-widest cursor-pointer shadow-sm"
+                >
+                  🎲 翻開今日幸友 (Lucky Ally)
+                </button>
+                <button 
+                  onClick={() => setIsEventsModalOpen(true)}
+                  className="px-5 py-2.5 rounded-full border border-purple-500/15 bg-purple-900/20 hover:bg-purple-900/40 text-purple-200 hover:text-white transition-all duration-300 text-[11px] font-bold uppercase tracking-widest cursor-pointer shadow-sm"
+                >
+                  📅 揪團活動日誌 (Events)
+                </button>
+              </div>
+            </div>
+
+            {/* 最新在大廳啟航的玩家 */}
+            <section className="space-y-6 w-full pt-4">
+              <div className="flex justify-between items-center px-1">
+                <h3 className="text-sm font-bold text-purple-200 tracking-widest uppercase flex items-center gap-2 font-serif-tc">
+                  <Users size={16} className="text-purple-400" />
+                  🌌 星軌最新啟航玩家
+                </h3>
+                <span className="text-[10px] font-bold text-purple-400 uppercase tracking-widest flex items-center gap-1.5 font-mono">
+                  <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-ping inline-block" />
+                  ORBIT ACTIVE
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 py-1 max-w-7xl mx-auto">
+                {profiles.map((p, idx) => {
+                  const isNew = idx === 0;
+                  return (
+                    <div 
+                      key={p.id} 
+                      onMouseMove={handleMouseMove}
+                      onMouseLeave={handleMouseLeave}
+                      className={`glass-panel p-6 border border-purple-500/15 bg-[#0a0a12]/50 hover:bg-[#0c0c16]/75 shadow-lg flex flex-col justify-between h-[240px] transition-all duration-500 starry-glow-card ${
+                        isNew ? "animate-card-slide" : ""
+                      }`}
+                      style={{
+                        boxShadow: "0 15px 35px rgba(0, 0, 0, 0.4)"
+                      }}
+                    >
+                      <div className="flex justify-between items-start gap-2 w-full">
+                        <div className="flex items-center gap-3 min-w-0 flex-grow">
+                          <div className="w-10 h-10 rounded-2xl overflow-hidden border border-purple-500/20 bg-slate-950/40 shrink-0">
+                            <Image
+                              src={p.avatarUrl} 
+                              alt={p.name} 
+                              width={40}
+                              height={40}
+                              sizes="40px"
+                              className="w-full h-full object-cover"
+                              draggable={false}
+                            />
                           </div>
-                          
-                          {/* 右側段位 Badge */}
-                          <div className="shrink-0 ml-1">
-                            <Badge className={`bg-[#ebdcd8]/50 border-none text-[#735954] text-xs font-bold px-2.5 py-0.5 rounded-lg shadow-sm whitespace-nowrap`}>
-                              {p.rank}
-                            </Badge>
+                          <div className="min-w-0 flex-grow text-left">
+                            <h4 className="font-extrabold text-slate-200 text-sm truncate">{p.name}</h4>
+                            <p className="text-[10px] font-bold text-purple-400/80 truncate">尋找今日固定隊友</p>
                           </div>
                         </div>
-
-                        <div className="flex items-center gap-1.5 w-full min-w-0">
-                          <span className="soft-home-badge soft-home-badge-compact bg-accent/85 text-white border-accent/40 shrink-0">
-                            {p.game}
-                          </span>
-                          <span className="soft-home-badge soft-home-badge-compact soft-home-badge-muted min-w-0 truncate justify-start">
-                            {p.hero}
-                          </span>
-                        </div>
-
-                        {/* 溫潤手感發言區 (高度收窄固定 h-[64px] min-h-[64px]，字體為 text-[12.5px]，釋放空間) */}
-                        <div className="bg-white/30 border border-white/60 rounded-2xl p-3 min-h-[58px] flex items-center shadow-[inset_0_1px_2px_rgba(74,62,61,0.01)] text-left w-full overflow-hidden shrink-0 my-1">
-                          <p className="text-[#3e2723] text-[12.5px] font-normal leading-relaxed italic opacity-95 line-clamp-2">
-                            &ldquo;{p.message}&rdquo;
-                          </p>
-                        </div>
-
-                        {/* 水粉貼紙標籤 */}
-                        <div className="flex flex-wrap gap-1.5 pt-2 border-t border-[#8c7c6c]/10 mt-1 shrink-0 w-full">
-                          {p.tags.map((tag) => (
-                            <span key={tag} className="soft-home-badge soft-home-badge-compact">
-                              #{tag}
-                            </span>
-                          ))}
+                        <div className="shrink-0 ml-1">
+                          <Badge className="bg-purple-950/60 border border-purple-500/20 text-purple-300 text-xs font-bold px-2.5 py-0.5 rounded-lg shadow-sm whitespace-nowrap">
+                            {p.rank}
+                          </Badge>
                         </div>
                       </div>
-                    );
-                  })}
+
+                      <div className="flex items-center gap-1.5 w-full min-w-0">
+                        <span className="soft-home-badge bg-purple-600/25 border border-purple-500/20 text-purple-300 shrink-0 text-[10px]">
+                          {p.game}
+                        </span>
+                        <span className="soft-home-badge bg-slate-800/50 text-slate-300 border-none min-w-0 truncate justify-start text-[10px]">
+                          {p.hero}
+                        </span>
+                      </div>
+
+                      <div className="bg-slate-950/40 border border-purple-500/10 rounded-2xl p-3 min-h-[58px] flex items-center w-full overflow-hidden shrink-0 my-1">
+                        <p className="text-slate-300 text-[12.5px] font-normal leading-relaxed italic opacity-95 line-clamp-2">
+                          &ldquo;{p.message}&rdquo;
+                        </p>
+                      </div>
+
+                      <div className="flex flex-wrap gap-1.5 pt-2 border-t border-white/5 mt-1 shrink-0 w-full">
+                        {p.tags.map((tag) => (
+                          <span key={tag} className="soft-home-badge bg-transparent border-purple-500/10 text-slate-400 text-[9.5px]">
+                            #{tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
+
+            {/* Modals for starry-midnight */}
+            {isJillModalOpen && (
+              <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 animate-[fadeIn_0.25s_ease-out]">
+                <div className="bg-[#0a0a12] border border-purple-500/20 rounded-[32px] w-full max-w-md p-7 shadow-2xl relative space-y-5 text-left">
+                  <button 
+                    onClick={() => setIsJillModalOpen(false)}
+                    className="absolute top-5.5 right-5.5 text-slate-400 hover:text-white cursor-pointer"
+                  >
+                    <X size={18} />
+                  </button>
+                  <div className="space-y-1.5">
+                    <span className="text-[10px] font-bold tracking-widest text-purple-400 uppercase">Jill's Letter</span>
+                    <h3 className="text-lg font-bold text-slate-200">站長隨筆手札 詳細記錄 ✍️</h3>
+                  </div>
+                  <div className="border-t border-white/5" />
+                  <p className="text-slate-300 text-xs md:text-sm leading-relaxed whitespace-pre-line font-light">
+                    {`歡迎來到 AFTER MIDNIGHT 的深夜沙龍。這個小小平台的誕生，是為了給在充滿排位高壓、爭執毒素的遊戲環境中感到倦怠的玩家，提供一個溫暖的避風港。
+
+在這裡，我們用名片點亮深夜的夜空。你不需要向任何人證明你的段位，也不需要強迫自己保持隨時待命的社交。
+
+只需靜靜展示你的遊戲節奏、喜好的角色與社交溫度。如果有相同的電波，就在遊戲內加個好友，安靜地一同排位吧。
+
+願這裡能成為你溫暖的停泊角落。`}
+                  </p>
+                  <div className="flex gap-3 pt-2">
+                    <Button 
+                      onClick={() => setIsJillModalOpen(false)}
+                      className="flex-1 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs tracking-widest uppercase py-4 rounded-xl"
+                    >
+                      回到沙龍
+                    </Button>
+                  </div>
                 </div>
+              </div>
+            )}
+
+            {isLuckyAllyModalOpen && (
+              <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 animate-[fadeIn_0.25s_ease-out]">
+                <div className="bg-[#0a0a12] border border-purple-500/20 rounded-[32px] w-full max-w-sm p-6 shadow-2xl relative">
+                  <button 
+                    onClick={() => setIsLuckyAllyModalOpen(false)}
+                    className="absolute top-5 right-5 text-slate-400 hover:text-white cursor-pointer z-50"
+                  >
+                    <X size={16} />
+                  </button>
+                  <LuckyAlly />
+                </div>
+              </div>
+            )}
+
+            {isEventsModalOpen && (
+              <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 animate-[fadeIn_0.25s_ease-out]">
+                <div className="bg-[#0a0a12] border border-purple-500/20 rounded-[32px] w-full max-w-lg p-6 shadow-2xl relative">
+                  <button 
+                    onClick={() => setIsEventsModalOpen(false)}
+                    className="absolute top-5 right-5 text-slate-400 hover:text-white cursor-pointer z-50"
+                  >
+                    <X size={16} />
+                  </button>
+                  <FeaturedArtists styleMode="B" />
+                </div>
+              </div>
+            )}
+
+          </div>
+        ) : theme === "soft-midnight-lounge" ? (
+          /* =========================================================================
+             🌌 樣式 2：暗夜沙龍 (Soft Midnight Lounge) - 靜謐、優雅、精緻
+             ========================================================================= */
+          <div className="space-y-12 max-w-7xl mx-auto z-10 relative">
+            
+            {/* 橫幅 (完全比照示例圖片重塑，背景為深夜窗台) */}
+            <div 
+              className="relative overflow-hidden w-full rounded-[32px] border border-white/5 p-6 sm:p-8 md:p-12 min-h-[460px] flex flex-col lg:flex-row items-center justify-between gap-8 md:gap-12 shadow-[0_20px_50px_rgba(0,0,0,0.5)] animate-[fadeInUp_0.8s_ease-out]"
+              style={{
+                backgroundImage: "url('/images/banners/midnight_window.png')",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+            >
+              {/* 微弱遮罩提升對比 */}
+              <div className="absolute inset-0 bg-slate-950/20 backdrop-brightness-[0.88] pointer-events-none z-0" />
+              
+              {/* 左側標語與導覽 */}
+              <div className="relative z-10 space-y-6 max-w-xl text-center lg:text-left flex-grow">
+                <div className="flex items-center justify-center lg:justify-start gap-2 text-purple-300/90 select-none">
+                  <Moon size={13} className="fill-purple-300/20" />
+                  <span className="text-[10px] font-bold tracking-[0.25em] uppercase">AFTER MIDNIGHT</span>
+                  <span className="text-[10px] opacity-40">|</span>
+                  <span className="text-[9px] font-bold tracking-[0.25em] uppercase text-purple-400">PLAYER IDENTITY HUB</span>
+                </div>
+                
+                <h2 className="text-3xl sm:text-4xl lg:text-[42px] font-bold tracking-wider leading-[1.25] text-white text-left">
+                  留下你的遊戲人格，<br />
+                  <span className="text-purple-300 font-extrabold">
+                    在深夜被同好發現。
+                  </span>
+                </h2>
+                
+                <p className="text-slate-300 text-xs md:text-sm leading-relaxed font-normal max-w-lg mx-auto lg:mx-0 text-left">
+                  AFTER MIDNIGHT 是一個玩家身份展示館。在這裡，你可以建立屬於自己的遊戲名片，讓有相同頻率的玩家找到你。
+                </p>
+
+                <div className="flex flex-col sm:flex-row gap-3.5 pt-2 justify-center lg:justify-start">
+                  <Link href="/browse">
+                    <Button className="w-full sm:w-auto bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs tracking-widest uppercase px-6 py-5 rounded-2xl cursor-pointer hover:scale-102 transition-transform shadow-[0_4px_15px_rgba(139,92,246,0.35)]">
+                      探索玩家卡片
+                    </Button>
+                  </Link>
+                  
+                  <Link href="/profile">
+                    <Button variant="outline" className="w-full sm:w-auto border-white/20 text-white hover:text-white bg-white/5 hover:bg-white/10 font-bold text-xs tracking-widest uppercase px-6 py-5 rounded-2xl transition-all duration-300 cursor-pointer hover:scale-102">
+                      建立名片
+                    </Button>
+                  </Link>
+                </div>
+
+                {/* 四大特色圖示 */}
+                <div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-5 gap-y-2.5 pt-4 text-purple-300/80 text-[10.5px] font-bold tracking-wider">
+                  <span className="flex items-center gap-1.5"><Heart size={12} className="text-purple-400" /> 低侵入社交</span>
+                  <span className="flex items-center gap-1.5"><Shield size={12} className="text-purple-400" /> 隱私友善</span>
+                  <span className="flex items-center gap-1.5"><Users size={12} className="text-purple-400" /> 同頻匹配</span>
+                  <span className="flex items-center gap-1.5"><Layers size={12} className="text-purple-400" /> 多遊戲支援</span>
+                </div>
+              </div>
+
+              {/* 右側：站長手札 (符合示例圖片) */}
+              <div className="relative z-10 w-full lg:w-[350px] shrink-0 rounded-3xl border border-white/10 bg-[#0d111b]/80 backdrop-blur-xl p-6 sm:p-7 shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex flex-col gap-4 text-left">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xs font-bold tracking-widest text-slate-400 uppercase flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-purple-500 animate-pulse" />
+                    站長手札
+                  </h3>
+                  <span className="text-[10px] font-mono text-purple-400/80 font-semibold">May 24</span>
+                </div>
+                
+                <div className="border-t border-white/5 my-0.5" />
+                
+                <p className="text-slate-300 text-[12.5px] font-normal leading-relaxed italic opacity-95">
+                  &ldquo;最近遇到很多值得約的玩家，每一張名片都有自己的故事，深夜是屬於我們的時間，希望這裡能成為你的停泊角落。&rdquo;
+                </p>
+                
+                <div className="text-[11px] text-purple-300/80 font-bold tracking-wide mt-1">— 站長 Jill</div>
+                
+                <Button 
+                  onClick={() => setIsJillModalOpen(true)}
+                  className="w-full bg-purple-900/40 hover:bg-purple-900/60 text-purple-200 border border-purple-500/20 font-bold text-[10.5px] tracking-widest uppercase py-4.5 rounded-xl mt-2 transition-all duration-300"
+                >
+                  閱讀更多
+                </Button>
+              </div>
+            </div>
+
+            {/* 靜謐控制條：將原本的 Widgets 收納於此，點擊再以 Modal 展開，免除首屏 UI 堆砌 */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 bg-slate-950/20 border border-white/5 rounded-3xl p-4 max-w-3xl mx-auto shadow-sm">
+              <span className="text-slate-400 text-xs font-semibold mr-1 flex items-center gap-1.5">
+                <Info size={13} className="text-purple-400" />
+                沙龍公告欄
+              </span>
+              <div className="flex flex-wrap items-center justify-center gap-3 w-full sm:w-auto">
+                <button 
+                  onClick={() => setIsLuckyAllyModalOpen(true)}
+                  className="px-5 py-2.5 rounded-full border border-purple-500/10 bg-purple-950/30 hover:bg-purple-950/50 text-purple-300 hover:text-white transition-all duration-300 text-[11px] font-bold uppercase tracking-widest cursor-pointer shadow-sm"
+                >
+                  🎲 翻開今日幸友 (Lucky Ally)
+                </button>
+                <button 
+                  onClick={() => setIsEventsModalOpen(true)}
+                  className="px-5 py-2.5 rounded-full border border-purple-500/10 bg-purple-950/30 hover:bg-purple-950/50 text-purple-300 hover:text-white transition-all duration-300 text-[11px] font-bold uppercase tracking-widest cursor-pointer shadow-sm"
+                >
+                  📅 揪團活動日誌 (Events)
+                </button>
+              </div>
+            </div>
+
+            {/* 最新啟航玩家區 (只展示 2 張卡片，增加呼吸空間，顯得優雅開闊) */}
+            <section className="space-y-6 w-full pt-4">
+              <div className="flex justify-between items-center px-1">
+                <h3 className="text-sm font-bold text-slate-300 tracking-widest uppercase flex items-center gap-2">
+                  <Users size={16} className="text-purple-400" />
+                  🌌 最新在大廳啟航的玩家
+                </h3>
+                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-purple-500 animate-ping inline-block" />
+                  深夜動態更新
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 py-1 max-w-7xl mx-auto">
+                {profiles.slice(0, 3).map((p, idx) => {
+                  const isNew = idx === 0;
+                  return (
+                    <div 
+                      key={p.id} 
+                      className={`glass-panel p-6 border border-white/5 bg-[#121625]/60 hover:bg-[#161b2c]/80 shadow-lg hover:border-purple-500/30 flex flex-col justify-between h-[240px] transition-all duration-500 ${
+                        isNew ? "animate-card-slide" : ""
+                      }`}
+                      style={{
+                        boxShadow: "0 15px 35px rgba(0, 0, 0, 0.25)"
+                      }}
+                    >
+                      <div className="flex justify-between items-start gap-2 w-full">
+                        <div className="flex items-center gap-3 min-w-0 flex-grow">
+                          <div className="w-10 h-10 rounded-2xl overflow-hidden border border-purple-500/20 bg-slate-950/40 shrink-0">
+                            <Image
+                              src={p.avatarUrl} 
+                              alt={p.name} 
+                              width={40}
+                              height={40}
+                              sizes="40px"
+                              className="w-full h-full object-cover"
+                              draggable={false}
+                            />
+                          </div>
+                          <div className="min-w-0 flex-grow text-left">
+                            <h4 className="font-extrabold text-slate-200 text-sm truncate">{p.name}</h4>
+                            <p className="text-[10px] font-bold text-slate-400/80 truncate">尋找今日固定隊友</p>
+                          </div>
+                        </div>
+                        <div className="shrink-0 ml-1">
+                          <Badge className="bg-purple-950/60 border border-purple-500/20 text-purple-300 text-xs font-bold px-2.5 py-0.5 rounded-lg shadow-sm whitespace-nowrap">
+                            {p.rank}
+                          </Badge>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-1.5 w-full min-w-0">
+                        <span className="soft-home-badge bg-purple-600/25 border border-purple-500/20 text-purple-300 shrink-0 text-[10px]">
+                          {p.game}
+                        </span>
+                        <span className="soft-home-badge bg-slate-800/50 text-slate-300 border-none min-w-0 truncate justify-start text-[10px]">
+                          {p.hero}
+                        </span>
+                      </div>
+
+                      <div className="bg-slate-950/40 border border-white/5 rounded-2xl p-3 min-h-[58px] flex items-center w-full overflow-hidden shrink-0 my-1">
+                        <p className="text-slate-300 text-[12.5px] font-normal leading-relaxed italic opacity-95 line-clamp-2">
+                          &ldquo;{p.message}&rdquo;
+                        </p>
+                      </div>
+
+                      <div className="flex flex-wrap gap-1.5 pt-2 border-t border-white/5 mt-1 shrink-0 w-full">
+                        {p.tags.map((tag) => (
+                          <span key={tag} className="soft-home-badge bg-transparent border-slate-700 text-slate-400 text-[9.5px]">
+                            #{tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
+
+            {/* ==================== 4. Lounge 專屬彈出 Modals ==================== */}
+            
+            {/* A. 站長手札詳細內容 Modal */}
+            {isJillModalOpen && (
+              <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 animate-[fadeIn_0.25s_ease-out]">
+                <div className="bg-[#121625] border border-purple-500/20 rounded-[32px] w-full max-w-md p-7 shadow-2xl relative space-y-5 text-left">
+                  <button 
+                    onClick={() => setIsJillModalOpen(false)}
+                    className="absolute top-5.5 right-5.5 text-slate-400 hover:text-white cursor-pointer"
+                  >
+                    <X size={18} />
+                  </button>
+                  <div className="space-y-1.5">
+                    <span className="text-[10px] font-bold tracking-widest text-purple-400 uppercase">Jill's Letter</span>
+                    <h3 className="text-lg font-bold text-slate-200">站長隨筆手札 詳細記錄 ✍️</h3>
+                  </div>
+                  <div className="border-t border-white/5" />
+                  <p className="text-slate-300 text-xs md:text-sm leading-relaxed whitespace-pre-line font-light">
+                    {`歡迎來到 AFTER MIDNIGHT 的深夜沙龍。這個小小平台的誕生，是為了給在充滿排位高壓、爭執毒素的遊戲環境中感到倦怠的玩家，提供一個溫暖的避風港。
+
+在這裡，我們用名片點亮深夜的夜空。你不需要向任何人證明你的段位，也不需要強迫自己保持隨時待命的社交。
+
+只需靜靜展示你的遊戲節奏、喜好的角色與社交溫度。如果有相同的電波，就在遊戲內加個好友，安靜地一同排位吧。
+
+願這裡能成為你溫暖的停泊角落。`}
+                  </p>
+                  <div className="flex gap-3 pt-2">
+                    <Button 
+                      onClick={() => setIsJillModalOpen(false)}
+                      className="flex-1 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs tracking-widest uppercase py-4 rounded-xl"
+                    >
+                      回到沙龍
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* B. Lucky Ally Modal */}
+            {isLuckyAllyModalOpen && (
+              <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 animate-[fadeIn_0.25s_ease-out]">
+                <div className="bg-[#121625] border border-purple-500/20 rounded-[32px] w-full max-w-sm p-6 shadow-2xl relative">
+                  <button 
+                    onClick={() => setIsLuckyAllyModalOpen(false)}
+                    className="absolute top-5 right-5 text-slate-400 hover:text-white cursor-pointer z-50"
+                  >
+                    <X size={16} />
+                  </button>
+                  <LuckyAlly />
+                </div>
+              </div>
+            )}
+
+            {/* C. Lobby Events Modal */}
+            {isEventsModalOpen && (
+              <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 animate-[fadeIn_0.25s_ease-out]">
+                <div className="bg-[#121625] border border-purple-500/20 rounded-[32px] w-full max-w-lg p-6 shadow-2xl relative">
+                  <button 
+                    onClick={() => setIsEventsModalOpen(false)}
+                    className="absolute top-5 right-5 text-slate-400 hover:text-white cursor-pointer z-50"
+                  >
+                    <X size={16} />
+                  </button>
+                  <FeaturedArtists styleMode="B" />
+                </div>
+              </div>
+            )}
+
+          </div>
+        ) : theme === "paper-card-social" ? (
+          /* =========================================================================
+             🍂 樣式 3：手作紙卡 (Paper Card Social) - 手作、溫馨、拼貼佈局
+             ========================================================================= */
+          <div className="space-y-12 max-w-7xl mx-auto z-10 relative">
+            
+            {/* 橫幅：大紙板風格 */}
+            <div 
+              className="relative overflow-hidden w-full rounded-[24px] border-2 border-[#4A3E3D] p-6 sm:p-8 md:p-12 bg-[#FCFAF6] shadow-[6px_6px_0px_#4A3E3D] flex flex-col md:flex-row items-center justify-between gap-8 md:gap-12 animate-[fadeInUp_0.8s_ease-out]"
+            >
+              <div className="space-y-5 max-w-lg text-center md:text-left flex-grow">
+                <div className="inline-flex items-center gap-1.5 text-[#E07A5F] border border-[#4A3E3D] bg-white px-3 py-1 rounded-sm text-[10px] font-bold tracking-widest uppercase shadow-[1px_1px_0px_#4A3E3D] w-fit mx-auto md:mx-0">
+                  <Sparkles size={11} />
+                  紙質名片收集冊
+                </div>
+                
+                <h2 className="text-3xl sm:text-4xl font-extrabold tracking-wider leading-tight text-[#4A3E3D] text-balance text-left">
+                  寫下你的遊戲人格，<br />
+                  <span className="text-[#E07A5F]">在此交換彼此的溫度。</span>
+                </h2>
+                
+                <p className="text-[#7C6D6C] text-xs md:text-sm leading-relaxed font-normal text-left">
+                  哈囉！這是我們的手作紙卡小本本。在這裡，沒有冷冰冰的網格，每一頁都是玩家親手書寫的小紙條。希望你也能在這裡，安靜地收集到知心玩伴。
+                </p>
+
+                <div className="flex flex-col sm:flex-row gap-3 pt-1.5 justify-center md:justify-start">
+                  <Link href="/browse">
+                    <Button className="w-full sm:w-auto bg-[#E07A5F] hover:bg-[#D16B50] text-white border-2 border-[#4A3E3D] font-bold text-xs tracking-widest uppercase px-6 py-4.5 rounded-sm cursor-pointer shadow-[3px_3px_0px_#4A3E3D] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[2px_2px_0px_#4A3E3D] transition-all">
+                      翻閱玩家卡片
+                    </Button>
+                  </Link>
+                  
+                  <Link href="/profile">
+                    <Button className="w-full sm:w-auto bg-white hover:bg-stone-50 text-[#4A3E3D] border-2 border-[#4A3E3D] font-bold text-xs tracking-widest uppercase px-6 py-4.5 rounded-sm cursor-pointer shadow-[3px_3px_0px_#4A3E3D] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[2px_2px_0px_#4A3E3D] transition-all">
+                      貼上我的紙條
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+
+              {/* 右側：拍立得照片質感卡片 */}
+              <div className="relative w-72 rounded-sm border-2 border-[#4A3E3D] bg-white p-5 shadow-[4px_4px_0px_#4A3E3D] shrink-0 rotate-2">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-24 h-6 bg-[#eae4d3]/80 border border-[#4A3E3D]/30 rotate-[-2deg] shadow-sm flex items-center justify-center text-[9px] font-bold text-[#7C6D6C]">膠帶固定</div>
+                <div className="flex items-center gap-3 mt-2">
+                  <div className="relative w-12 h-12 rounded-sm border border-[#4A3E3D] bg-[#FCFAF6] shrink-0">
+                    <Image
+                      src="/images/avatars/avatar_male_calm_square.png"
+                      alt="紙卡推薦"
+                      fill
+                      sizes="48px"
+                      className="object-cover p-0.5"
+                    />
+                  </div>
+                  <div className="min-w-0 text-left">
+                    <p className="text-[9px] font-bold uppercase text-[#E07A5F]">RECOMMENDED</p>
+                    <p className="text-xs font-black text-[#4A3E3D]">站長 Jill 的記事</p>
+                  </div>
+                </div>
+                <div className="mt-4 rounded-sm border border-[#4A3E3D] bg-[#FCFAF6] p-3 text-left">
+                  <p className="text-[11.5px] leading-relaxed text-[#4A3E3D] italic">
+                    “今晚有空的朋友，歡迎一起來開麥語音，彈性或一般都OK，心態好就行。”
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* 紙質公告板 (Bulletin Board) */}
+            <div className="border-2 border-[#4A3E3D] bg-[#FAF3E0] rounded-[24px] p-6 shadow-[4px_4px_0px_#4A3E3D] relative overflow-hidden">
+              <div className="absolute -right-6 -top-6 w-24 h-24 rounded-full border-2 border-[#4A3E3D]/25 bg-amber-200/10 pointer-events-none" />
+              <div className="text-left mb-6 border-b-2 border-[#4A3E3D]/10 pb-3">
+                <h3 className="text-xs font-black tracking-widest text-[#4A3E3D] uppercase flex items-center gap-1.5">
+                  📌 公告欄貼紙
+                </h3>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="rotate-[-0.5deg]">
+                  <LuckyAlly />
+                </div>
+                <div className="rotate-[0.8deg]">
+                  <LotusWelcomeWidget />
+                </div>
+                <div className="rotate-[-0.3deg]">
+                  <FeaturedArtists styleMode="B" />
+                </div>
+              </div>
+            </div>
+
+            {/* 卡片列表 */}
+            <section className="space-y-6 w-full">
+              <h3 className="text-sm font-extrabold text-[#4A3E3D] tracking-widest uppercase flex items-center gap-1.5 text-left">
+                📦 今日最新掛上牆壁的紙條
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-7 py-1 w-full">
+                {profiles.map((p, idx) => {
+                  const isNew = idx === 0;
+                  const rot = idx === 0 ? "rotate-[-0.8deg]" : idx === 1 ? "rotate-[0.5deg]" : "rotate-[-0.4deg]";
+                  return (
+                    <div 
+                      key={p.id} 
+                      className={`glass-panel p-5 border-2 border-[#4A3E3D] bg-[#FCFAF6] hover:bg-white flex flex-col justify-between h-[240px] transition-all duration-300 hover:shadow-[5px_5px_0px_#4A3E3D] shadow-[3px_3px_0px_#4A3E3D] ${rot} ${
+                        isNew ? "animate-card-slide" : ""
+                      }`}
+                    >
+                      <div className="flex justify-between items-start gap-2 w-full">
+                        <div className="flex items-center gap-2.5 min-w-0 flex-grow">
+                          <div className="w-9 h-9 rounded-sm overflow-hidden border border-[#4A3E3D] bg-white shrink-0">
+                            <Image
+                              src={p.avatarUrl} 
+                              alt={p.name} 
+                              width={36}
+                              height={36}
+                              sizes="36px"
+                              className="w-full h-full object-cover"
+                              draggable={false}
+                            />
+                          </div>
+                          <div className="min-w-0 flex-grow text-left">
+                            <h4 className="font-extrabold text-[#4A3E3D] text-sm truncate">{p.name}</h4>
+                            <p className="text-[10px] font-bold text-[#7C6D6C] truncate">尋找今日固定隊友</p>
+                          </div>
+                        </div>
+                        <div className="shrink-0 ml-1">
+                          <Badge className="bg-[#FAF0D7] border border-[#4A3E3D] text-[#4A3E3D] text-xs font-bold px-2 py-0.5 rounded-sm">
+                            {p.rank}
+                          </Badge>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-1.5 w-full min-w-0">
+                        <span className="soft-home-badge bg-[#E07A5F] text-white border border-[#4A3E3D] rounded-sm text-[9px]">
+                          {p.game}
+                        </span>
+                        <span className="soft-home-badge bg-white text-[#4A3E3D] border border-[#4A3E3D] rounded-sm min-w-0 truncate justify-start text-[9px]">
+                          {p.hero}
+                        </span>
+                      </div>
+
+                      <div className="bg-[#FAF6EF] border border-[#4A3E3D]/50 rounded-sm p-3 min-h-[58px] flex items-center w-full overflow-hidden shrink-0 my-1">
+                        <p className="text-[#4A3E3D] text-[12.5px] font-normal leading-relaxed italic opacity-95 line-clamp-2">
+                          &ldquo;{p.message}&rdquo;
+                        </p>
+                      </div>
+
+                      <div className="flex flex-wrap gap-1.5 pt-2 border-t border-[#4A3E3D]/10 mt-1 shrink-0 w-full">
+                        {p.tags.map((tag) => (
+                          <span key={tag} className="soft-home-badge bg-white border border-[#4A3E3D] rounded-sm text-[9px]">
+                            #{tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </section>
 
           </div>
+        ) : theme === "cyber-matchmaking-hub" ? (
+          /* =========================================================================
+             💻 樣式 4：和風禪意 (Washi Zen Wabi-sabi) - 留白、禪意、金色點綴
+             ========================================================================= */
+          <div className="space-y-12 max-w-7xl mx-auto z-10 relative">
+            
+            {/* 橫幅：和紙侘寂 */}
+            <div 
+              className="relative overflow-hidden w-full rounded-[28px] border border-[#f5d46b]/20 p-6 sm:p-8 md:p-12 min-h-[440px] flex flex-col md:flex-row items-center justify-between gap-8 md:gap-12 bg-white/60 backdrop-blur-md shadow-sm animate-[fadeInUp_0.8s_ease-out]"
+            >
+              {/* 金粉浮雲背景裝飾 (SVG blobs with very low opacity) */}
+              <div className="absolute -left-12 -top-12 w-48 h-48 rounded-full bg-[#f5d46b]/8 blur-[60px] pointer-events-none z-0" />
+              <div className="absolute right-12 bottom-12 w-64 h-64 rounded-full bg-[#82b7cc]/5 blur-[80px] pointer-events-none z-0" />
+              
+              <div className="space-y-6 max-w-xl text-center md:text-left flex-grow relative z-10">
+                <div className="inline-flex items-center gap-1.5 border border-[#f5d46b]/40 bg-white/50 px-3 py-1 text-[9.5px] font-bold tracking-[0.2em] text-[#8C7B70] rounded-full shadow-sm w-fit mx-auto md:mx-0">
+                  <Sparkles size={11} className="text-[#f5d46b] animate-[pulse_2s_infinite]" />
+                  WABI-SABI ZEN SPACE
+                </div>
+                
+                <h2 className="text-3xl sm:text-4xl font-extrabold tracking-wider leading-tight text-[#4A3C31] text-balance text-left">
+                  在晨霧霞紋之間，<br />
+                  <span className="text-[#8C7B70]">遇見志趣相投的伴侶。</span>
+                </h2>
+                
+                <p className="text-[#8C7B70] text-xs md:text-sm leading-relaxed font-normal text-left max-w-lg">
+                  這是一個和風禪意角落。沒有催促，沒有強迫，只有和紙的厚度與安靜的流動。在這裡，放鬆地瀏覽，遇見與你呼吸同頻的玩家。
+                </p>
 
-        </div>
+                <div className="flex flex-col sm:flex-row gap-3.5 pt-2 justify-center md:justify-start">
+                  <Link href="/browse">
+                    <Button className="w-full sm:w-auto bg-[#FAF8F5] hover:bg-white text-[#4A3C31] border border-[#f5d46b]/40 font-bold text-xs tracking-widest uppercase px-6 py-5 rounded-2xl cursor-pointer shadow-sm transition-all hover:border-[#f5d46b] hover:scale-102">
+                      漫步玩家廣場
+                    </Button>
+                  </Link>
+                  
+                  <Link href="/profile">
+                    <Button variant="outline" className="w-full sm:w-auto border-[#f5d46b]/30 text-[#8C7B70] hover:text-[#4A3C31] hover:bg-[#FAF8F5]/50 font-bold text-xs tracking-widest uppercase px-6 py-5 rounded-2xl transition-all duration-300 cursor-pointer hover:scale-102">
+                      留白個人名片
+                    </Button>
+                  </Link>
+                </div>
+
+                {/* 四大特色圖示 */}
+                <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-5 gap-y-2.5 pt-4 text-[#8C7B70] text-[10.5px] font-bold tracking-wider">
+                  <span className="flex items-center gap-1.5"><Heart size={12} className="text-[#f5d46b]" /> 侘寂留白</span>
+                  <span className="flex items-center gap-1.5"><Shield size={12} className="text-[#f5d46b]" /> 無壓匹配</span>
+                  <span className="flex items-center gap-1.5"><Users size={12} className="text-[#f5d46b]" /> 溫和對話</span>
+                  <span className="flex items-center gap-1.5"><Layers size={12} className="text-[#f5d46b]" /> 安靜陪伴</span>
+                </div>
+              </div>
+
+              {/* 右側：和紙隨記 */}
+              <div className="relative w-80 rounded-2xl border border-[#f5d46b]/25 bg-white/75 backdrop-blur-md p-6 shadow-sm shrink-0 text-left relative z-10 rotate-1 hover:rotate-0 transition-transform duration-500">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-20 h-5 bg-[#FAF8F5] border border-[#f5d46b]/15 rotate-[-1deg] shadow-sm flex items-center justify-center text-[9px] font-bold text-[#8C7B70]">霞紋便簽</div>
+                <div className="flex justify-between items-center text-[9px] text-[#8C7B70] mb-3 border-b border-[#f5d46b]/10 pb-2">
+                  <span>WABI_SABI_LOG</span>
+                  <span>● 靜夜</span>
+                </div>
+                <p className="text-[12px] leading-relaxed text-[#4A3C31] italic">
+                  “水波微漾，星子在夜空裡安睡。不急著開口，先在和紙上寫下你的名字。當電波交織，晨霧自會散去。”
+                </p>
+                <div className="border-t border-[#f5d46b]/10 my-3 pb-1" />
+                <div className="text-[10px] text-[#8C7B70] font-bold tracking-wide">— 站長 Jill</div>
+              </div>
+            </div>
+
+            {/* 禪風藝廊展示面板 */}
+            <div className="border border-[#f5d46b]/15 bg-white/40 backdrop-blur-sm rounded-[32px] p-6 shadow-sm relative overflow-hidden">
+              <div className="text-left mb-6 border-b border-[#f5d46b]/10 pb-3 flex justify-between items-center">
+                <span className="text-xs font-black tracking-widest text-[#4A3C31] uppercase">
+                  🌿 禪意大廳單元
+                </span>
+                <span className="text-[9px] text-[#8C7B70] uppercase tracking-widest flex items-center gap-1.5">
+                  <Activity size={10} className="text-[#f5d46b] animate-pulse" />
+                  靜水流深
+                </span>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                  <LuckyAlly />
+                </div>
+                <div>
+                  <LotusWelcomeWidget />
+                </div>
+                <div>
+                  <FeaturedArtists styleMode="B" />
+                </div>
+              </div>
+            </div>
+
+            {/* 啟航玩家卡片 */}
+            <section className="space-y-6 w-full text-left">
+              <h3 className="text-sm font-extrabold text-[#4A3C31] tracking-wider uppercase flex items-center gap-2">
+                🍵 最新在大廳啟航的玩家
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-7 py-1 w-full">
+                {profiles.map((p, idx) => {
+                  const isNew = idx === 0;
+                  return (
+                    <div 
+                      key={p.id} 
+                      className={`p-5 border border-[#f5d46b]/20 bg-white/60 hover:bg-white backdrop-blur-sm hover:border-[#f5d46b]/50 hover:shadow-md flex flex-col justify-between h-[240px] transition-all duration-300 rounded-[20px] ${
+                        isNew ? "animate-card-slide" : ""
+                      }`}
+                      style={{
+                        boxShadow: "0 8px 24px rgba(140, 123, 112, 0.03)"
+                      }}
+                    >
+                      <div className="flex justify-between items-start gap-2 w-full">
+                        <div className="flex items-center gap-3 min-w-0 flex-grow">
+                          <div className="w-9 h-9 rounded-xl overflow-hidden border border-[#f5d46b]/15 bg-white shrink-0">
+                            <Image
+                              src={p.avatarUrl} 
+                              alt={p.name} 
+                              width={36}
+                              height={36}
+                              sizes="36px"
+                              className="w-full h-full object-cover"
+                              draggable={false}
+                            />
+                          </div>
+                          <div className="min-w-0 flex-grow text-left">
+                            <h4 className="font-extrabold text-[#4A3C31] text-sm truncate">{p.name}</h4>
+                            <p className="text-[10px] text-[#8C7B70] truncate">尋找今日固定隊友</p>
+                          </div>
+                        </div>
+                        <div className="shrink-0 ml-1">
+                          <Badge className="bg-[#FAF8F5] border border-[#f5d46b]/20 text-[#8C7B70] text-xs font-bold px-2.5 py-0.5 rounded-lg shadow-sm whitespace-nowrap">
+                            {p.rank}
+                          </Badge>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-1.5 w-full min-w-0">
+                        <span className="soft-home-badge bg-[#f5d46b]/15 border border-[#f5d46b]/30 text-[#8C7B70] text-[9.5px]">
+                          {p.game}
+                        </span>
+                        <span className="soft-home-badge bg-[#FAF8F5] text-[#8C7B70] border border-[#f5d46b]/10 min-w-0 truncate justify-start text-[9.5px]">
+                          {p.hero}
+                        </span>
+                      </div>
+
+                      <div className="bg-white/40 border border-[#f5d46b]/10 rounded-2xl p-3 min-h-[58px] flex items-center w-full overflow-hidden shrink-0 my-1">
+                        <p className="text-[#4A3C31] text-[12.5px] font-normal leading-relaxed italic opacity-95 line-clamp-2">
+                          &ldquo;{p.message}&rdquo;
+                        </p>
+                      </div>
+
+                      <div className="flex flex-wrap gap-1.5 pt-2 border-t border-[#f5d46b]/10 mt-1 shrink-0 w-full">
+                        {p.tags.map((tag) => (
+                          <span key={tag} className="soft-home-badge bg-transparent border border-[#f5d46b]/15 text-[#8C7B70] text-[9px]">
+                            #{tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
+
+          </div>
+        ) : (
+          /* =========================================================================
+             🔴 樣式 1：原創基準 (Original / Baseline) - 保留原功能作為對照組
+             ========================================================================= */
+          <div className="space-y-8 max-w-7xl mx-auto z-10 relative">
+
+            {/* 🔴 [Hero Area] */}
+            <div
+              className="midnight-hero-stage monitor-glow-artifacts relative overflow-hidden p-6 sm:p-8 md:p-12 glass-panel organic-corners animate-[fadeInUp_0.8s_ease-out] w-full flex flex-col md:flex-row items-center justify-between gap-8 md:gap-12 min-h-[300px]"
+            >
+              <div className="midnight-hero-copy space-y-4.5 min-w-0 text-center md:text-left relative z-10">
+                <Badge className="bg-accent/15 text-foreground border border-accent/35 px-3 py-1 text-[10.5px] font-bold tracking-widest uppercase rounded-full flex items-center gap-1.5 shadow-[0_1px_8px_rgba(130,183,204,0.05)] w-fit mx-auto md:mx-0">
+                  <Moon size={11} className="shrink-0 text-foreground fill-foreground/10" />
+                  所有遊戲玩家的靈魂避風港
+                </Badge>
+                
+                <h2 className="text-3xl sm:text-4xl font-bold tracking-wider leading-tight text-foreground break-words text-balance text-left">
+                  尋找心靈契合的 <span className="text-accent">最佳遊戲搭檔</span>
+                </h2>
+                
+                <p className="text-muted-foreground text-xs md:text-sm leading-relaxed font-normal text-left">
+                  不僅僅是戰友，更是心靈相通的夥伴。在這裡，建立專屬的磨砂玻璃遊戲名片，展示你的遊戲靈魂，秒速遇到懂你的排位與日常搭檔！
+                </p>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:flex md:flex-wrap gap-3 pt-2 justify-center md:justify-start">
+                  <Link href="/profile">
+                    <Button className="w-full calm-btn-primary font-bold text-xs tracking-widest uppercase px-5 py-4.5 rounded-2xl cursor-pointer hover:scale-102 transition-transform shadow-md">
+                      建立遊戲名片
+                    </Button>
+                  </Link>
+                  
+                  <Link href="/browse">
+                    <Button variant="outline" className="w-full border-border text-muted-foreground hover:text-foreground bg-card/40 hover:bg-card/70 font-bold text-[10px] tracking-widest uppercase px-5 py-4.5 rounded-2xl shadow-sm transition-all duration-300 cursor-pointer hover:scale-102">
+                      漫步玩家廣場
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+
+              {/* 右側遊戲名片預覽 */}
+              <div className="hidden md:flex relative z-10 pr-2 lg:pr-8">
+                <div className="midnight-hero-pass midnight-player-artifact relative w-72 rounded-[28px] border border-border bg-card/35 p-5 shadow-card backdrop-blur-xl rotate-2 hover:rotate-0 transition-transform duration-500">
+                  <div className="flex items-center gap-3">
+                    <div className="relative w-14 h-14 rounded-2xl overflow-hidden border border-accent/25 bg-card/60 shrink-0">
+                      <Image
+                        src="/images/avatars/avatar_female_cheerful_square.png"
+                        alt="玩家名片預覽頭像"
+                        fill
+                        sizes="56px"
+                        className="object-cover"
+                      />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-[10px] font-black tracking-widest uppercase text-accent">ALLY CARD</p>
+                      <p className="text-sm font-black text-foreground truncate">深夜補位夥伴</p>
+                      <p className="text-[10px] font-bold text-muted-foreground truncate">Overwatch · 安娜</p>
+                    </div>
+                  </div>
+                  <div className="mt-4 rounded-2xl border border-border bg-card/35 p-3">
+                    <p className="line-clamp-2 text-[11px] leading-relaxed text-foreground">
+                      “今晚找溫和雙排，會補位、有麥、心態穩。”
+                    </p>
+                  </div>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <span className="pastel-tag-blue rounded-full px-2 py-0.5 text-[9px] font-black">#語音交流</span>
+                    <span className="pastel-tag-sand rounded-full px-2 py-0.5 text-[9px] font-black">#拒絕暴躁</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Widget 展示區 */}
+            <div className="space-y-8">
+              
+              {/* 三欄等高 Widget Row */}
+              <div className="quiet-lounge-surfaces rounded-[28px] p-1 grid grid-cols-1 md:grid-cols-3 gap-8 animate-[fadeInUp_0.9s_ease-out]">
+                
+                {/* 🔵 LUCKY ALLY */}
+                <div className="flex">
+                  <LuckyAlly />
+                </div>
+
+                {/* 🟣 站長隨筆手札 */}
+                <div className="flex">
+                  <LotusWelcomeWidget />
+                </div>
+
+                {/* 🟢 LOBBY EVENTS */}
+                <div className="flex animate-[fadeInUp_1s_ease-out]">
+                  <FeaturedArtists styleMode="B" />
+                </div>
+
+              </div>
+
+              {/* 最新在大廳啟航的玩家 */}
+              <section className="artifact-gallery space-y-5 w-full">
+                  <div className="flex justify-between items-center px-1">
+                    <h3 className="artifact-section-heading text-sm font-bold text-[#3e2723] tracking-widest uppercase flex items-center gap-1.5 text-left">
+                      <Users size={16} className="text-[#82b7cc]" style={{ color: "rgba(var(--theme-accent-rgb), 0.85)" }} />
+                      🎉 最新在大廳啟航的玩家
+                    </h3>
+                    <span className="text-xs font-bold text-[#8c7c6c]/60 uppercase tracking-widest flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping inline-block" />
+                      即時連線更新中
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-7 overflow-hidden py-1 px-0.5 w-full">
+                    {profiles.map((p, idx) => {
+                      const isNew = idx === 0;
+
+                      return (
+                        <div 
+                          key={p.id} 
+                          className={`midnight-player-artifact glass-panel p-5 border border-white/40 flex flex-col justify-between h-[232px] transition-all duration-500 hover:border-accent/40 hover:shadow-md ${
+                            isNew ? "animate-card-slide" : ""
+                          }`}
+                        >
+                          <div className="flex justify-between items-start gap-2 w-full">
+                            <div className="flex items-center gap-2.5 min-w-0 flex-grow">
+                              <div className="w-8.5 h-8.5 rounded-xl overflow-hidden border border-[#8c7c6c]/15 shadow-sm shrink-0">
+                                <Image
+                                  src={p.avatarUrl} 
+                                  alt={p.name} 
+                                  width={34}
+                                  height={34}
+                                  sizes="34px"
+                                  className="w-full h-full object-cover"
+                                  draggable={false}
+                                />
+                              </div>
+                              <div className="min-w-0 flex-grow text-left">
+                                <h4 className="font-bold text-[#3e2723] text-sm truncate">{p.name}</h4>
+                                <p className="text-[10px] font-semibold text-[#8c7c6c]/80 truncate">尋找今日固定隊友</p>
+                              </div>
+                            </div>
+                            <div className="shrink-0 ml-1">
+                              <Badge className="bg-[#ebdcd8]/50 border-none text-[#735954] text-xs font-bold px-2.5 py-0.5 rounded-lg shadow-sm whitespace-nowrap">
+                                {p.rank}
+                              </Badge>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-1.5 w-full min-w-0">
+                            <span className="soft-home-badge soft-home-badge-compact bg-accent/85 text-white border-accent/40 shrink-0">
+                              {p.game}
+                            </span>
+                            <span className="soft-home-badge soft-home-badge-compact soft-home-badge-muted min-w-0 truncate justify-start">
+                              {p.hero}
+                            </span>
+                          </div>
+
+                          <div className="bg-white/30 border border-white/60 rounded-2xl p-3 min-h-[58px] flex items-center shadow-[inset_0_1px_2px_rgba(74,62,61,0.01)] text-left w-full overflow-hidden shrink-0 my-1">
+                            <p className="text-[#3e2723] text-[12.5px] font-normal leading-relaxed italic opacity-95 line-clamp-2">
+                              &ldquo;{p.message}&rdquo;
+                            </p>
+                          </div>
+
+                          <div className="flex flex-wrap gap-1.5 pt-2 border-t border-[#8c7c6c]/10 mt-1 shrink-0 w-full">
+                            {p.tags.map((tag) => (
+                              <span key={tag} className="soft-home-badge soft-home-badge-compact">
+                                #{tag}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+              </section>
+            </div>
+          </div>
+        )}
       </main>
-
     </div>
   );
 }

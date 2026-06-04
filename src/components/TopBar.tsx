@@ -13,7 +13,8 @@ const THEMES = [
   { id: "theme-original-baseline", name: "原創基準", bg: "#F5F6F3", text: "#2F3A55" },
   { id: "theme-soft-midnight-lounge", name: "暗夜沙龍", bg: "#161a22", text: "#a78bfa" },
   { id: "theme-paper-card-social", name: "手作紙卡", bg: "#FCFAF6", text: "#4A3E3D" },
-  { id: "theme-cyber-matchmaking-hub", name: "配對中心", bg: "#0d1117", text: "#58a6ff" },
+  { id: "theme-cyber-matchmaking-hub", name: "和風禪意", bg: "#F6F4EE", text: "#8C7B70" },
+  { id: "theme-starry-midnight", name: "星空漫步", bg: "#09090e", text: "#c084fc" },
 ];
 
 export default function TopBar() {

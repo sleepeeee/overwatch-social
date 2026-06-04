@@ -224,3 +224,110 @@ When modifying UI:
 7. Run accessibility and contrast checks.
 
 Do not claim the theme system is complete if the themes only differ by color tokens.
+
+
+# Additional Product Clarification — Low-Intrusive Social
+
+AFTER MIDNIGHT intentionally avoids:
+- private messaging systems
+- real-time social dependency
+- forced engagement loops
+- dating mechanics
+- high-pressure matchmaking
+
+The product encourages:
+- quiet browsing
+- identity discovery
+- low-pressure exploration
+- player self-expression
+- external contact through actual games
+
+The platform exists to reduce:
+- toxicity
+- harassment
+- awkward forced interaction
+- social pressure
+- performative engagement
+
+---
+
+# Product Experience Goal
+
+The desired experience is:
+
+"I quietly browse player personalities and discover people who match my gaming rhythm."
+
+NOT:
+
+"I am trapped in another social media platform."
+
+---
+
+# Player Card Philosophy
+
+Player cards are not:
+- dating profiles
+- business profiles
+- esports stat cards
+
+They are:
+- player identity cards
+- gaming personality snapshots
+- social presence artifacts
+- collectible identity surfaces
+
+Every game card should communicate:
+- play rhythm
+- personality
+- social comfort
+- communication preference
+- atmosphere
+
+---
+
+# Homepage Philosophy
+
+The homepage should behave as:
+- an atmospheric entrance
+- a quiet world introduction
+- a player-universe gateway
+
+The homepage should NOT dominate the product.
+
+The true core of AFTER MIDNIGHT is:
+- the player card plaza
+- player discovery
+- identity exploration
+
+---
+
+# Visual Product Direction
+
+Move the product away from:
+- SaaS dashboards
+- esports websites
+- cyberpunk gamer UI
+- Discord-clone patterns
+
+Move the product toward:
+- player galleries
+- identity archives
+- collectible card systems
+- atmospheric browsing
+- quiet discovery interfaces
+
+---
+
+# Future Product Expansion
+
+Possible future additions:
+- lightweight team-up lobbies
+- player collections
+- enhanced card systems
+- game-specific discovery systems
+
+But all future features must preserve:
+- low-intrusive interaction
+- emotionally safe browsing
+- calm exploration rhythm
+- player-first atmosphere
