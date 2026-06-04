@@ -1,0 +1,167 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-06-03T20:29:10Z",
+  "title": "Design System: OW Social",
+  "extensions": {
+    "colorMeta": {
+      "primary": {
+        "role": "primary",
+        "displayName": "Morning Mist Blue",
+        "canonical": "oklch(74.4% 0.088 220)",
+        "tonalRamp": [
+          "oklch(25% 0.04 220)",
+          "oklch(35% 0.05 220)",
+          "oklch(48% 0.06 220)",
+          "oklch(60% 0.07 220)",
+          "oklch(74% 0.088 220)",
+          "oklch(84% 0.06 220)",
+          "oklch(92% 0.04 220)",
+          "oklch(97% 0.02 220)"
+        ]
+      },
+      "accent-sand": {
+        "role": "secondary",
+        "displayName": "Morandi Sand",
+        "canonical": "oklch(56.7% 0.034 70)",
+        "tonalRamp": [
+          "oklch(20% 0.02 70)",
+          "oklch(30% 0.025 70)",
+          "oklch(42% 0.03 70)",
+          "oklch(56.7% 0.034 70)",
+          "oklch(70% 0.028 70)",
+          "oklch(82% 0.02 70)",
+          "oklch(91% 0.015 70)",
+          "oklch(97% 0.008 70)"
+        ]
+      },
+      "highlight-yellow": {
+        "role": "secondary",
+        "displayName": "Autumn Goose Yellow",
+        "canonical": "oklch(86.1% 0.126 90)",
+        "tonalRamp": [
+          "oklch(35% 0.06 90)",
+          "oklch(48% 0.08 90)",
+          "oklch(62% 0.10 90)",
+          "oklch(74% 0.11 90)",
+          "oklch(86.1% 0.126 90)",
+          "oklch(91% 0.09 90)",
+          "oklch(95% 0.06 90)",
+          "oklch(98% 0.03 90)"
+        ]
+      },
+      "neutral-bg-warm": {
+        "role": "neutral",
+        "displayName": "Paper Warm White",
+        "canonical": "oklch(98.5% 0.009 85)"
+      },
+      "neutral-bg-cool": {
+        "role": "neutral",
+        "displayName": "Mist Cool White",
+        "canonical": "oklch(98% 0.007 210)"
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display Title",
+        "purpose": "主頁大標題、玩家卡片名字"
+      },
+      "body": {
+        "displayName": "Body Text",
+        "purpose": "玩家個人簡介、名片描述文字"
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "輔助標籤、按鈕標題"
+      }
+    },
+    "shadows": [
+      {
+        "name": "Breeze Glow",
+        "value": "0 8px 30px rgba(140, 124, 108, 0.025)",
+        "purpose": "毛玻璃面板靜止時的舒緩發光與懸浮感"
+      },
+      {
+        "name": "Watercolor Lift",
+        "value": "0 25px 60px -15px rgba(130, 183, 204, 0.07)",
+        "purpose": "Hover 狀態時水彩漂浮感與焦點反饋"
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out-smooth",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "水彩卡片與按鈕的 Hover 反饋轉場過渡"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Calm Primary Button",
+      "kind": "button",
+      "refersTo": "button-calm",
+      "description": "主要水彩質感按鈕，用於低壓力點擊與確認操作。",
+      "html": "<button class=\"ds-btn-calm\">主要按鈕</button>",
+      "css": ".ds-btn-calm { background-color: rgba(130, 183, 204, 0.25); color: #384d54; border: 1px solid rgba(130, 183, 204, 0.4); border-radius: 18px; padding: 8px 20px; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 4px 15px -3px rgba(130, 183, 204, 0.2); } .ds-btn-calm:hover { background-color: rgba(130, 183, 204, 0.38); transform: translateY(-1px) scale(1.02); box-shadow: 0 8px 22px -4px rgba(130, 183, 204, 0.35); }"
+    },
+    {
+      "name": "Pastel Sticker Tag",
+      "kind": "chip",
+      "description": "低飽和手寫虛線標籤貼紙，用於展示玩家特徵、MBTI 或遊戲定位。",
+      "html": "<span class=\"ds-pastel-tag\">貼紙標籤</span>",
+      "css": ".ds-pastel-tag { background-color: rgba(130, 183, 204, 0.18); color: #4a5d66; border: 1px dashed rgba(130, 183, 204, 0.3); border-radius: 999px; padding: 4px 12px; font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; }"
+    },
+    {
+      "name": "Glass Panel Container",
+      "kind": "card",
+      "refersTo": "card-glass",
+      "description": "溫潤毛玻璃面板，作為遊戲名片或廣場列表的核心容器。",
+      "html": "<div class=\"ds-glass-panel\"><h3>面板標題</h3><p>這是一段內容，展示玩家詳細遊戲資料與陪伴宣言。</p></div>",
+      "css": ".ds-glass-panel { background: rgba(255, 255, 255, 0.42); backdrop-filter: blur(32px) saturate(110%); -webkit-backdrop-filter: blur(32px) saturate(110%); border: 1px solid rgba(255, 255, 255, 0.55); border-radius: 32px; padding: 24px; box-shadow: 0 8px 30px rgba(140, 124, 108, 0.015), 0 25px 60px -15px rgba(140, 124, 108, 0.04), inset 0 1px 2px rgba(255, 255, 255, 0.7); color: #5d4037; transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); } .ds-glass-panel:hover { background: rgba(255, 255, 255, 0.55); border-color: rgba(255, 255, 255, 0.8); transform: translateY(-2px); box-shadow: 0 12px 35px rgba(140, 124, 108, 0.02), 0 35px 80px -12px rgba(140, 124, 108, 0.07), inset 0 1px 2px rgba(255, 255, 255, 0.9); } .ds-glass-panel h3 { margin-top: 0; font-size: 1.15rem; font-weight: 600; color: #5d4037; }"
+    },
+    {
+      "name": "Browse Tab Switcher",
+      "kind": "nav",
+      "description": "交友廣場頁籤切換器，用於篩選在線玩家、不同定位的隊友。",
+      "html": "<button class=\"ds-browse-tab active\"><span class=\"ds-tab-status\">105 在線</span><span class=\"ds-tab-title\">找隊友</span></button>",
+      "css": ".ds-browse-tab { display: inline-flex; flex-direction: column; justify-content: center; align-items: flex-start; gap: 0.2rem; border-radius: 1.1rem; border: 1px solid rgba(140, 124, 108, 0.16); background: rgba(255, 255, 255, 0.48); padding: 0.72rem 0.9rem; color: #6e655b; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 10px 30px -18px rgba(140, 124, 108, 0.18); } .ds-browse-tab:hover { border-color: rgba(130, 183, 204, 0.28); background: rgba(255, 255, 255, 0.62); transform: translateY(-1px); } .ds-browse-tab.active { border-color: rgba(130, 183, 204, 0.42); background: linear-gradient(135deg, rgba(130, 183, 204, 0.2), rgba(255, 255, 255, 0.74)); color: #3e2723; box-shadow: 0 16px 38px -20px rgba(130, 183, 204, 0.42); } .ds-tab-status { font-size: 0.62rem; font-weight: 700; opacity: 0.52; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Editorial Tea House (深夜玩家茶館)",
+    "overview": "這是一套為「泛遊戲玩家交友平台」量身定制的視覺系統。本系統徹底拋棄了主流電競社群高壓、熱血、富有攻擊性的冷酷霓虹或金屬齒輪感，轉而使用日系禪意手繪（Morning Sketch）的美學風格。它像一間深夜裡靜謐溫和的茶館，提供給疲憊的玩家一個平靜、真誠、有人情味且低壓力的陪伴空間。本視覺系統嚴格遵循「Product-first, Brand-enhanced」的設計哲學：介面的卡片、表單、過濾面板等核心功能佈局必須清晰、好滑、好讀且便於掃讀，不可因追求美感而犧牲可用性。",
+    "keyCharacteristics": [
+      "平靜低壓力：全站維持莫蘭迪低飽和度色調，絕無刺眼的純黑或高飽和螢光色。",
+      "手作呼吸感：以不對稱有機圓角、手繪波浪分隔線與點格底紋賦予介面溫潤的人情味。",
+      "輕盈掃讀性：毛玻璃背景需維持良好的透明度與飽和度平衡，確保桌機與手機雙端在快速滑動時字體依然清晰可辨。"
+    ],
+    "rules": [
+      {
+        "name": "The Rarity Rule",
+        "body": "晨風藍與鵝黃等高亮色在單一畫面中佔比不得超過 10%。它們的存在是為了引導視線與標註重點，而非將介面塗得花哨。",
+        "section": "colors"
+      },
+      {
+        "name": "The Deep Ink Rule",
+        "body": "嚴禁在任何文字上使用純黑色 (#000 或 #111)。所有字體必須使用溫潤的深木棕色 (#5d4037) 或深夜墨棕 (#3e2723)，以帶出紙張手稿的「人情味」。",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat-at-Rest Rule",
+        "body": "介面所有卡片與按鈕在靜止狀態下皆應保持平整，投影應稀薄至近乎隱形。只有在滑鼠 Hover、焦點選中或視窗彈出時，投影才會作為狀態反饋浮現。",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do 保持 WCAG AA 的文字對比度（≥ 4.5:1）。在毛玻璃背景上，若字體因背景溫潤渲染而難以辨識，必須調深字體色。",
+      "Do 確保手機版的卡片與標籤輕量化。在小螢幕（< 640px）下，自動將 blur 調低至 18px，並取消背景漂浮動畫以優化效能。",
+      "Do 保持現有的版塊結構與功能，僅在 border、shadow、bg 與 hover transition 上做打磨。"
+    ],
+    "donts": [
+      "Don't 使用任何 Overwatch 專屬橘藍黑配色、金屬邊框或科幻 HUD 特效。",
+      "Don't 使用純黑色 (#000 或 #111) 作為背景或文字。",
+      "Don't 使用高飽和度螢光色或常見的紫色 AI SaaS 漸層。",
+      "Don't 引入大於 1px 的單邊裝飾粗條（如 border-left-4 警告條）。這會破壞 Morning Sketch 的柔和調性。",
+      "Don't 破壞現有 Layout、新增分頁或移除現有版塊；本專案是 Product-first 的交友平台，絕不可改成單純展示的 landing page。"
+    ]
+  }
+}

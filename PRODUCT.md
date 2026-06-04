@@ -1,38 +1,226 @@
-# Product
+# Product: AFTER MIDNIGHT
 
 ## Register
 
 product
 
-## Users
-*   **泛遊戲玩家**（涵蓋 FPS、MOBA、RPG、休閒、合作、競技等各類遊戲，不限於鬥陣特攻）。
-*   **使用場景**：
-    *   **電腦端（Desktop）**：深度瀏覽交友廣場、編輯個人特工名片、查看玩家詳細資訊與尋求長期隊友。
-    *   **手機端（Mobile）**：快速滑動瀏覽玩家卡片、抓取重點資訊、進行輕量且直覺的社群互動。
-*   **要解決的痛點**：在充斥暴躁、毒性、過度競爭與壓迫感的主流遊戲社群中，提供一個能安心尋找志同道合隊友、真誠交流的柔和空間。
+AFTER MIDNIGHT must be treated as a product surface first and a brand surface second. The interface is an application for browsing, matching, editing, and contacting players. Brand atmosphere is important, but it must never override product clarity, form usability, card scanning, or interaction states.
 
-## Product Purpose
-*   **它是什麼**：一個兼具實用性與禪意美學的泛遊戲玩家名片與交友平台。
-*   **核心價值**：協助玩家建立個人化名片展示本命英雄與遊戲細節，並在廣場中快速過濾、找到心態成熟且合拍的隊友。
-*   **成功指標**：玩家能低壓力地瀏覽與互動，找到陪伴感與真誠的社群連結。
+## Product Summary
+
+AFTER MIDNIGHT is a general gaming social platform and player card exchange hub. It helps players create personal gaming cards, browse other players, discover compatible teammates, join lightweight lobby events, and start low-pressure social interaction.
+
+This is not:
+- a portfolio site
+- a pure landing page
+- an Overwatch-only fan site
+- a visual moodboard
+- a color theme demo
+
+## Core Product Jobs
+
+Users should be able to complete these jobs quickly:
+
+1. Understand what AFTER MIDNIGHT is.
+2. Browse the player plaza.
+3. Scan player cards and identify compatibility.
+4. Search or filter by game, platform, play style, communication preference, rank, and availability.
+5. Open or inspect a player card.
+6. Create or edit their own player profile/card.
+7. View lobby events or lightweight team-up opportunities.
+8. Copy or reveal contact information through a clear modal/toast flow.
+9. Switch between visual themes to compare style directions without losing product context.
+
+## Users
+
+Primary users are general gamers across FPS, MOBA, RPG, co-op, indie, party, casual, and competitive games.
+
+Common user groups:
+- Casual players looking for friendly teammates.
+- Competitive players looking for stable partners without toxic pressure.
+- Social players who want companionship and voice/chat compatibility.
+- Multi-game players who do not want the platform to feel locked to one title.
+- Mobile users who want quick scanning and lightweight interaction.
+- Desktop users who want deeper browsing, filtering, and profile editing.
+
+## Pain Points
+
+Mainstream gaming communities often feel noisy, toxic, overly competitive, or too focused on rank. AFTER MIDNIGHT should create a calmer alternative where players can show personality, preferences, boundaries, play rhythm, and compatibility.
+
+## Product Principles
+
+### 1. Product-first, atmosphere-enhanced
+
+The product must remain easy to use. Visual style should strengthen trust, warmth, and identity, but never hide information, weaken contrast, or make forms harder to complete.
+
+### 2. Preserve the existing product skeleton
+
+Do not remove current sections, pages, data, or flows. The current structure is the product skeleton.
+
+Must preserve:
+- Top navigation
+- Player Plaza
+- Card Directory / Name Card Plaza
+- Profile / Card Editor
+- Player cards
+- Lucky Ally
+- Admin Notes
+- Lobby Events
+- Search and filters
+- Modals
+- Toasts
+- Theme switcher
+- Empty, loading, error, hover, active, focus, disabled states
+
+### 3. Visual theme switcher is not a color switcher
+
+The theme switcher is for comparing different product UI directions. Each theme must have a distinct component language, not merely a different palette.
+
+A valid theme changes:
+- card anatomy
+- border radius strategy
+- elevation and shadow system
+- button shape and hierarchy
+- form field treatment
+- navigation active state
+- tag and badge style
+- background material
+- icon language
+- spacing density
+- hover/focus/active/loading behavior
+- mobile card layout
+
+An invalid theme only changes:
+- background color
+- text color
+- accent color
+- gradient
+- a few floating bubbles
+- decorative effects without component changes
+
+### 4. Same content, different interface language
+
+Every theme must preserve the same information and functions, but present them through a different visual system.
+
+For example, a player card must always contain:
+- avatar or identity marker
+- player name
+- games
+- platform or play style
+- rank/level if available
+- short bio or quote
+- tags
+- contact action
+
+But each theme should arrange and style those parts differently.
+
+### 5. General gaming, not single-game branding
+
+The platform should feel welcoming to multi-game players. Avoid visual systems that imply a specific game franchise, especially Overwatch. Do not use Blizzard-style orange/blue/black metal UI, sci-fi hero-shooter HUDs, or game-specific branding as the main identity.
+
+### 6. Calm social space, not generic SaaS
+
+Avoid both extremes:
+- not loud RGB esports
+- not sterile corporate SaaS
+
+The desired feeling is a low-pressure late-night gaming community with clear product utility.
 
 ## Brand Personality
-*   **語氣與調性**：平靜、溫柔、真誠、陪伴、低壓力、深夜感、安心感、有人味、不吵鬧、無攻擊性。
-*   **三詞個性**：溫潤（Warm）、安心（Safe）、真誠（Genuine）。
-*   **情感目標**：在視覺與交互上提供如同「深夜茶館」般的舒緩感，以柔和且低飽和度的視覺對抗電競的緊繃與焦躁。
 
-## Anti-references
-*   **電競與科幻風**：絕對不要鬥陣特攻橘藍黑白金屬感、暴雪式科幻 UI、Cyberpunk neon 與 RGB 電競 HUD 螢光色。
-*   **AI 罐頭設計（AI Slop）**：不要亮紫色漸變的 SaaS 模板感、冰冷的 B2B 工具感與無意義的卡片套卡片。
-*   **過度裝飾**：不要過度玻璃擬態導致字體可讀性下降，不要浮誇的動畫、發光或粒子特效干擾資訊掃讀。
-*   **結構破壞**：不要重排 Section、不要移除現有板塊，不要改動現有的 layout 流程與資訊架構，不應將實用型網站改為純展示型 Landing Page。
+Tone:
+- calm
+- warm
+- sincere
+- safe
+- lightly playful
+- late-night
+- human
+- non-aggressive
+- non-toxic
 
-## Design Principles
-1.  **實用優先，視覺輔助（Product-first, Brand-enhanced）**：保證廣場、名片編輯器與資訊過濾的流暢度與層級感，可用性永遠不為品牌氛圍妥協。
-2.  **平靜的呼吸感（Calming Breathability）**：藉由低飽和度色彩、溫潤毛玻璃與細緻手繪紋理，營造無壓力、柔和且具有人情味的掃讀體驗。
-3.  **克制與克守本分（Restrained Craftsmanship）**：只在配色、背景、卡片質感、字體層級、Hover 狀態、細節陰影、邊框（Border）與過渡（Transition）上進行美化，絕不新增無謂的特效或打亂原本的網頁結構。
+Three-word personality:
+- Warm
+- Safe
+- Genuine
 
-## Accessibility & Inclusion
-*   **高可讀性對比**：字體與毛玻璃背景必須達到 WCAG AA 標準（對比度 ≥ 4.5:1），避免因追求玻璃擬態或藝術字體而導致文字難以辨識。
-*   **響應式防禦**：確保在手機與電腦端均有良好的掃讀視角，手機版需極致輕量、防文字溢出與避免交互誤觸。
-*   **減速動效**：所有微交互動效需平滑且克制，並完全支援 `@media (prefers-reduced-motion: reduce)`。
+Emotional goal:
+Players should feel that this is a place to find people who match their rhythm, not a place that pressures them to perform.
+
+## Anti-References
+
+Do not use:
+- Overwatch-specific orange/blue/black/white metal styling
+- Blizzard-style sci-fi panels
+- high-saturation RGB esports visuals
+- generic purple/blue SaaS gradients
+- cold B2B dashboard aesthetics
+- meaningless cards inside cards
+- decorative bubbles as the only difference between themes
+- unreadable glassmorphism
+- excessive glow, particles, or motion
+- portfolio/landing-page hero patterns that replace product function
+- single-game fan-site framing
+
+## Style Exploration Goal
+
+The team is still deciding the final visual direction. The current task is to create multiple theme prototypes for discussion.
+
+The purpose of the prototypes is comparison, not final branding.
+
+Each prototype should answer:
+- How does the player card feel?
+- How does the profile editor feel?
+- How does browsing feel?
+- How does the theme communicate gaming/social identity?
+- Is the product still easy to use?
+- Does it feel clearly different from the other themes?
+
+## Active Theme Set
+
+The interface currently has four theme buttons. Use them as four product UI prototypes:
+
+1. Original / Baseline
+2. Soft Midnight Lounge
+3. Paper Card Social
+4. Cyber Matchmaking Hub
+
+Do not turn buttons 2-4 into simple recolors of the same layout.
+
+## Functional Acceptance Criteria
+
+A theme implementation is successful only if:
+
+- Cards look structurally different between themes.
+- Buttons have theme-specific shape, density, and state treatment.
+- Forms feel intentionally designed, not merely recolored.
+- Navigation active/hover/focus states are theme-specific.
+- Tags and badges have distinct visual systems.
+- Background treatment changes the spatial feeling without harming readability.
+- Mobile layout remains clean and usable.
+- Accessibility is not sacrificed for atmosphere.
+- The product skeleton remains intact.
+
+## Accessibility and Inclusion
+
+- Text contrast should target WCAG AA.
+- Focus-visible states must be clear.
+- Interactive elements must have obvious hover, active, disabled, and loading states.
+- Motion must support `prefers-reduced-motion`.
+- Mobile layout must avoid text overflow, tiny tap targets, and cramped card stacks.
+- Empty states and error states must be friendly, explicit, and actionable.
+
+## Implementation Guidance for AI Agents
+
+Before coding, inspect existing sections and components. Identify the product skeleton first.
+
+When modifying UI:
+1. Preserve data and flows.
+2. Create or refine design tokens per theme.
+3. Refactor repeated UI patterns into reusable themeable component rules where possible.
+4. Apply distinct component anatomy per theme.
+5. Verify interaction states.
+6. Verify responsive behavior.
+7. Run accessibility and contrast checks.
+
+Do not claim the theme system is complete if the themes only differ by color tokens.

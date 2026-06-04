@@ -1,158 +1,458 @@
 ---
-name: OW Social
-description: 泛遊戲玩家社群平台的 Morning Sketch 禪意手繪美學設計系統
-colors:
-  primary: "#82b7cc"
-  accent-sand: "#8c7c6c"
-  highlight-yellow: "#f5d46b"
-  neutral-bg-warm: "#fcf9f2"
-  neutral-bg-cool: "#f4f8fa"
-  ink-dark: "#3e2723"
-  ink-text: "#5d4037"
-  border-soft: "rgba(140, 124, 108, 0.12)"
-typography:
-  display:
-    fontFamily: "var(--font-noto-sans-tc), sans-serif"
-    fontSize: "1.75rem"
-    fontWeight: 700
-    lineHeight: 1.2
-  body:
-    fontFamily: "var(--font-noto-sans-tc), sans-serif"
-    fontSize: "0.95rem"
-    fontWeight: 400
-    lineHeight: 1.6
-  label:
-    fontFamily: "var(--font-geist-mono), monospace"
-    fontSize: "0.75rem"
-    fontWeight: 700
-rounded:
-  card: "32px"
-  button: "18px"
-  tab: "1.1rem"
-spacing:
-  gap-sm: "8px"
-  gap-md: "16px"
-  gap-lg: "24px"
-components:
-  button-calm:
-    backgroundColor: "rgba(130, 183, 204, 0.25)"
-    textColor: "#384d54"
-    rounded: "{rounded.button}"
-    padding: "8px 20px"
-  card-glass:
-    backgroundColor: "rgba(255, 255, 255, 0.42)"
-    rounded: "{rounded.card}"
-    padding: "24px"
+name: AFTER MIDNIGHT
+description: Product-first multi-theme design system for a general gaming social platform and player card exchange hub. The theme switcher compares distinct UI directions, not simple recolors.
+register: product
+theme_count: 4
+active_themes:
+  - original-baseline
+  - soft-midnight-lounge
+  - paper-card-social
+  - cyber-matchmaking-hub
+core_rule: "Theme switching is not color switching. Each theme must change component language, card anatomy, interaction states, spacing rhythm, and surface treatment while preserving the same product skeleton."
 ---
 
-# Design System: OW Social
+# Design System: AFTER MIDNIGHT
 
-## 1. Overview
+## 1. Design Intent
 
-**Creative North Star: "The Editorial Tea House" (深夜玩家茶館)**
+AFTER MIDNIGHT is a general gaming social platform for player cards, teammate discovery, lobby events, and lightweight social interaction.
 
-這是一套為「泛遊戲玩家交友平台」量身定制的視覺系統。本系統徹底拋棄了主流電競社群高壓、熱血、富有攻擊性的冷酷霓虹或金屬齒輪感，轉而使用日系禪意手繪（Morning Sketch）的美學風格。它像一間深夜裡靜謐溫和的茶館，提供給疲憊的玩家一個平靜、真誠、有人情味且低壓力的陪伴空間。
+The design system must support product clarity first. Visual atmosphere should make the platform feel memorable, warm, and discussion-worthy, but it must not reduce usability.
 
-本視覺系統嚴格遵循 **「Product-first, Brand-enhanced」** 的設計哲學：介面的卡片、表單、過濾面板等核心功能佈局必須清晰、好滑、好讀且便於掃讀，不可因追求美感而犧牲可用性。在此前提下，以低飽和配色、微弱紙張噪點、手寫虛線貼紙以及流體水彩暈染進行視覺氛圍的柔化與點綴。
+This system exists to prevent a common AI failure mode: creating four theme buttons that only change color. Four themes must mean four interface directions.
 
-**Key Characteristics:**
-*   **平靜低壓力**：全站維持莫蘭迪低飽和度色調，絕無刺眼的純黑或高飽和螢光色。
-*   **手作呼吸感**：以不對稱有機圓角、手繪波浪分隔線與點格底紋賦予介面溫潤的人情味。
-*   **輕盈掃讀性**：毛玻璃背景需維持良好的透明度與飽和度平衡，確保桌機與手機雙端在快速滑動時字體依然清晰可辨。
+## 2. Non-Negotiable Product Skeleton
 
----
+The following sections and functions must remain available in every theme:
 
-## 2. Colors
+- Top navigation
+- Player Plaza
+- Name Card / Directory Plaza
+- Profile / Player Card Editor
+- Player cards
+- Lucky Ally
+- Admin Notes
+- Lobby Events
+- Search and filters
+- Contact modal
+- Copy/toast feedback
+- Theme switcher
+- Empty, loading, error, hover, active, focus, and disabled states
 
-全站色彩以莫蘭迪低飽和度配色為主，使用 data-style (A / B / AB) 三種主題配置，並嚴格維持柔和的情感基調。
+Do not delete, hide, or replace these with a pure landing page.
 
-### Primary
-*   **晨風藍 (Morning Mist Blue)** (`#82b7cc` / oklch(74.4% 0.088 220)): 象徵清晨的霧氣，用於主要點綴色、活動狀態邊框與強調型徽章。
+## 3. Theme Architecture
 
-### Secondary
-*   **莫蘭迪沙棕 (Morandi Sand)** (`#8c7c6c` / oklch(56.7% 0.034 70)): 象徵大地與紙質溫度，用於次要裝飾、邊框線條與暗色標籤。
-*   **秋鵝黃 (Goose Yellow)** (`#f5d46b` / oklch(86.1% 0.126 90)): 用於高亮強調、水彩背景色斑混色。
+The current interface has four theme buttons. They should map to four different product UI prototypes.
 
-### Neutral
-*   **深夜墨棕 (Night Ink)** (`#3e2723` / oklch(26.1% 0.05 19)): 系統最暗色，僅用於活動狀態標籤文字或標題點綴。
-*   **暖棕字體 (Warm Wood)** (`#5d4037` / oklch(37.4% 0.046 25)): Canonical 的正文與標題字體色，取代生硬的純黑。
-*   **和紙暖白 (Paper Warm)** (`#fcf9f2` / oklch(98.5% 0.009 85)): Style A 的主要背景色基底。
-*   **晨霧冷白 (Mist Cool)** (`#f4f8fa` / oklch(98% 0.007 210)): Style B 的主要背景色基底。
+### Theme 1: Original / Baseline
 
-### Named Rules
-**The Rarity Rule (稀有原則).** 晨風藍與鵝黃等高亮色在單一畫面中佔比不得超過 10%。它們的存在是為了引導視線與標註重點，而非將介面塗得花哨。
+Purpose:
+Keep the existing AFTER MIDNIGHT look as the control group. This theme is used for comparison.
 
----
+Design behavior:
+- Preserve the current layout, spacing, and card language.
+- Only clean obvious inconsistencies.
+- Do not over-polish into one of the experimental styles.
+- This is the reference point for evaluating whether the other themes are genuinely different.
 
-## 3. Typography
+### Theme 2: Soft Midnight Lounge
 
-**Display Font:** Noto Sans TC (`var(--font-noto-sans-tc)`)
-**Body Font:** Noto Sans TC (`var(--font-noto-sans-tc)`)
-**Label/Mono Font:** Geist Mono (`var(--font-geist-mono)`)
+Concept:
+A late-night gaming lounge for calm teammate discovery. Mature, quiet, dark, soft, social, and atmospheric.
 
-本系統使用統一的字型家族搭配字重與色彩對比，營造出如同傳統編輯刊物（Editorial Layout）般精緻且清晰的字體層級。
+User feeling:
+"I am entering a calm after-hours gaming lounge where I can find people who match my rhythm."
 
-### Hierarchy
-*   **Display / Title** (Bold (700), 1.75rem, Line-height 1.2, Color: `#5d4037`): 用於主頁大標題、玩家姓名展示。
-*   **Headline** (Semi-Bold (600), 1.15rem, Line-height 1.3, Color: `#5d4037`): 用於版塊卡片標題。
-*   **Body** (Regular (400), 0.95rem, Line-height 1.6, Color: `#5d4037`): 用於玩家個人留言、名片說明文字。單行長度建議控制在 65–75ch 以利於長時間閱讀。
-*   **Label** (Bold (700), 0.75rem, Line-height 1.1, Color: `#6e655b`): 用於卡片上方輔助標籤、按鈕標題。
-*   **Mono** (Medium (500), 0.75rem, Line-height 1, Color: `#6e655b`): 用於 BattleTag、代碼與系統參數。
+Surface language:
+- Deep tinted background, not pure black.
+- Large soft panels with subtle inner light.
+- Lounge-like cards that feel like invitation cards or member cards.
+- Soft bloom or ambient glow used sparingly.
+- Low contrast decoration, high contrast text.
 
-### Named Rules
-**The Deep Ink Rule (深墨原則).** 嚴禁在任何文字上使用純黑色 (`#000` 或 `#111`)。所有字體必須使用溫潤的深木棕色 (`#5d4037`) 或深夜墨棕 (`#3e2723`)，以帶出紙張手稿的「人情味」。
+Card anatomy:
+- Player cards should feel like premium lounge passes.
+- Avatar/identity marker can sit in a soft lit capsule or circular badge.
+- Player name and current intent should be prominent.
+- Game tags should feel like quiet chips, not loud stickers.
+- Contact CTA should feel calm but clearly clickable.
 
----
+Buttons:
+- Rounded pill buttons.
+- Primary buttons use strong contrast against the dark surface.
+- Secondary buttons use translucent fills and clear borders.
+- Hover: slight lift and surface brightening.
+- Active: pressed depth.
+- Disabled: visible but subdued.
 
-## 4. Elevation
+Forms:
+- Dark elevated fields with visible labels.
+- Focus state should use a clear ring or illuminated border.
+- Helper and error text must be readable.
 
-本系統不依賴大範圍或深黑色的投影。層級的區分完全通過**毛玻璃的模糊遮罩（Backdrop Blur）**、**淡色彩的層疊（Tonal Layering）**以及**精緻的 L 型裁切定位線（Wafer Marks）**來達成。
+Navigation:
+- Active tab should feel like a lit lounge sign or subtle underline glow.
+- Hover should be calm and readable, not neon.
 
-### Shadow Vocabulary
-*   **禪意微光 (Breeze Glow)** (`box-shadow: 0 8px 30px rgba(140, 124, 108, 0.025)`): 用於毛玻璃卡片的靜止狀態，帶來極微弱的懸浮感。
-*   **水彩浮力 (Watercolor Lift)** (`box-shadow: 0 25px 60px -15px rgba(130, 183, 204, 0.07)`): 用於 Hover 時的卡片，模擬水彩在紙上微微浮起的邊界感。
+Background:
+- One or two ambient gradients are acceptable.
+- Do not use many floating bubbles.
+- No RGB gamer lighting.
 
-### Named Rules
-**The Flat-at-Rest Rule (靜止扁平原則).** 介面所有卡片與按鈕在靜止狀態下皆應保持平整，投影應稀薄至近乎隱形。只有在滑鼠 Hover、焦點選中或視窗彈出時，投影才會作為狀態反饋浮現。
+Motion:
+- Smooth, slow, soft.
+- Avoid bounce-heavy or flashy motion.
 
----
+### Theme 3: Paper Card Social
 
-## 5. Components
+Concept:
+A player card exchange board. Warm paper, stickers, notes, tags, soft physical layering, and friendly social discovery.
 
-### Buttons
-*   **Shape:** 溫和的圓角（18px）。
-*   **水彩主按鈕 (Calm Button)**: 背景色為 `rgba(130, 183, 204, 0.25)`，文字 `#384d54`，邊框為淡藍色。Hover 時背景加深至 `0.38`，並伴隨 `translateY(-1px) scale(1.02)` 的微過渡。
-*   **科技微動態按鈕**: 具有全息反射掃光 (`linear-gradient`) 效果，僅用於開發者後台或強調功能。
+User feeling:
+"I am browsing a cozy board of player cards, like exchanging handmade game profile cards."
 
-### Cards / Containers
-*   **手繪毛玻璃面板 (Glass Panel)**:
-    *   **質感**：背景 `rgba(255, 255, 255, 0.42)`，模糊度 `blur(32px)`，邊框淡白 `rgba(255, 255, 255, 0.55)`。
-    *   **圓角**：支援 32px 大圓角，或有機不對稱圓角 (`organic-corners`: 38px 28px 42px 34px) 營造黏土手作感。
-*   **藝術家手稿畫框 (Morning Sketch Card)**:
-    *   採用紙白色底 (`#fefcf8`)，並於四個角落放置晶圓定位 L 線 (`wafer-mark`) 裝飾。
+Surface language:
+- Warm light background.
+- Paper sheets, card stacks, note-like sections.
+- Soft physical shadows.
+- Slightly irregular or layered surfaces may be used, but keep alignment clean.
+- Stickers and labels may appear as tags or badges.
 
-### Tabs / Navigation
-*   **廣場篩選標籤 (Browse Tab)**:
-    *   採用 `1.1rem` 圓角，靜止時背景為 `rgba(255, 255, 255, 0.48)`。
-    *   選中時為 `browse-tab-active`，底色改為淡黃/藍漸變，文字變為最深的 `#3e2723`。
+Card anatomy:
+- Player cards should feel like collectible social cards or profile notes.
+- Use clear zones: identity, games, play style, message, tags, CTA.
+- Tags may feel like stickers or label tape.
+- Quotes can feel like handwritten note blocks, but text must remain readable.
 
-### Tags / Chips
-*   **手寫虛線貼紙 (Pastel Sticker Tag)**:
-    *   底色為超低飽和度的粉藍/粉粉/粉綠 (`rgba(130, 183, 204, 0.18)` 等)。
-    *   帶有 `1px dashed` 虛線邊框，呈現手作貼紙質感。
+Buttons:
+- Soft pill or rounded rectangle.
+- Primary CTA can feel like a paper label or stamp.
+- Secondary buttons can be outlined tabs.
+- Hover: slight paper lift.
+- Active: pressed paper effect.
+- Disabled: faded paper surface.
 
----
+Forms:
+- Fields may feel like paper input strips or form labels.
+- Labels must be explicit.
+- Error states can use a small red note or border, not aggressive alerts.
+- Focus state should be obvious.
 
-## 6. Do's and Don'ts
+Navigation:
+- Active tab can resemble a pinned label, folder tab, or selected note.
+- Avoid hidden active states.
 
-### Do:
-*   **Do** 保持 WCAG AA 的文字對比度（≥ 4.5:1）。在毛玻璃背景上，若字體因背景暈染而難以辨識，必須調深字體色。
-*   **Do** 確保手機版的卡片與標籤輕量化。在小螢幕（`< 640px`）下，自動將 blur 調低至 `18px`，並取消背景漂浮動畫以優化效能。
-*   **Do** 保持現有的版塊結構與功能，僅在 border、shadow、bg 與 hover transition 上做打磨。
+Background:
+- Subtle paper grain or layered cards.
+- Avoid decorative clutter behind text.
 
-### Don't:
-*   **Don't** 使用任何 Overwatch 專屬橘藍黑配色、金屬硬邊框或科幻 HUD 特效。
-*   **Don't** 使用純黑色 (`#000` 或 `#111`) 作為背景或文字。
-*   **Don't** 使用高飽和度螢光色或常見的紫色 AI SaaS 漸層。
-*   **Don't** 引入大於 1px 的單邊裝飾粗條（如 `border-left-4` 警告條）。這會破壞 Morning Sketch 的柔和調性。
-*   **Don't** 破壞現有 Layout、新增分頁或移除現有版塊；本專案是 Product-first 的交友平台，絕不可改成單純展示的 landing page。
+Motion:
+- Gentle lift, small slide, soft fade.
+- No excessive wobble.
+
+### Theme 4: Cyber Matchmaking Hub
+
+Concept:
+A clean matchmaking interface for multi-game player discovery. Structured, technical, sharp, data-rich, but not cyberpunk neon.
+
+User feeling:
+"I am using a precise teammate matching system that helps me scan compatibility quickly."
+
+Surface language:
+- Structured panels.
+- Sharper corners than other themes.
+- Thin borders, grid lines, status lights, data rows.
+- Controlled accent colors.
+- No heavy neon, no RGB, no Blade Runner mood.
+
+Card anatomy:
+- Player cards should feel like compact profile data panels.
+- Use rows, metadata chips, status indicators, compatibility cues.
+- Game/platform/rank/playstyle should be scannable.
+- CTA should be clear and system-like.
+
+Buttons:
+- More rectangular or lightly rounded.
+- Primary buttons feel like action controls.
+- Secondary buttons feel like interface tabs.
+- Hover: border brightening or panel inversion.
+- Active: selected system state.
+- Disabled: reduced opacity with still-visible shape.
+
+Forms:
+- Structured labels and input rows.
+- Focus state can use a technical outline or scanning border.
+- Error state should be direct and precise.
+
+Navigation:
+- Active tab can use a segmented control, data tab, or selected panel state.
+- Hover should show system affordance.
+
+Background:
+- Fine grid or subtle panel segmentation.
+- Scanning lines are allowed only if very subtle.
+- Avoid futuristic clutter that blocks reading.
+
+Motion:
+- Fast but controlled.
+- Short transitions.
+- Optional scan effect on loading, but must support reduced motion.
+
+## 4. Theme Difference Matrix
+
+Every theme must differ in at least these dimensions:
+
+| Dimension | Original / Baseline | Soft Midnight Lounge | Paper Card Social | Cyber Matchmaking Hub |
+|---|---|---|---|---|
+| Background | Existing | Dark lounge atmosphere | Warm paper surface | Structured grid/panel surface |
+| Card shape | Existing | Large soft lounge pass | Layered paper card | Data panel |
+| Radius | Existing | Large rounded | Medium/organic rounded | Small/medium precise |
+| Shadow | Existing | Soft glow/elevation | Paper lift/shadow | Minimal shadow, border hierarchy |
+| Buttons | Existing | Calm pills | Label/stamp buttons | System controls |
+| Tags | Existing | Muted chips | Stickers/labels | Data badges/status chips |
+| Navigation | Existing | Soft lit active state | Folder/tab active state | Segmented/data active state |
+| Forms | Existing | Dark illuminated fields | Paper form strips | Structured data inputs |
+| Motion | Existing | Slow soft transitions | Gentle paper lift | Fast precise transitions |
+
+If a proposed implementation cannot fill this matrix with visible differences, it is not a valid theme implementation.
+
+## 5. Component System
+
+### 5.1 Player Card
+
+Required content:
+- Avatar or identity marker
+- Player name
+- Current status or intent
+- Game list
+- Platform/playstyle/rank if available
+- Short bio or quote
+- Tags
+- Contact/open action
+
+Theme-specific expectations:
+- Soft Midnight Lounge: lounge pass, premium profile card, soft glow.
+- Paper Card Social: social note/card exchange, sticker tags.
+- Cyber Matchmaking Hub: data panel, compact scanning, status indicators.
+
+Do not simply reuse the same card with different color variables.
+
+### 5.2 Lobby Event Card
+
+Required content:
+- Event title
+- Game/category
+- Date/time
+- Participant count or availability
+- Join action
+- Status
+
+Theme-specific expectations:
+- Soft Midnight Lounge: evening event invitation.
+- Paper Card Social: bulletin board event note.
+- Cyber Matchmaking Hub: scheduled session row or mission card.
+
+### 5.3 Profile / Card Editor
+
+Required content:
+- Clear sections
+- Labels
+- Helper text
+- Inputs
+- Save button
+- Loading/success feedback
+- Error state
+
+Design requirements:
+- Form labels must never disappear.
+- Placeholder text is not a replacement for labels.
+- Focus state must be visible.
+- Field groups must be easier to scan than decorative backgrounds.
+- Mobile layout must stack logically.
+
+### 5.4 Search and Filters
+
+Required behavior:
+- Search input is visually prominent enough to find.
+- Filter chips show selected/unselected states.
+- Clear filter/reset action must be easy to locate.
+- No-result state must explain what happened and suggest next steps.
+
+### 5.5 Navigation
+
+Required behavior:
+- Current section must be obvious.
+- Hover state must be visible.
+- Active state must be distinct from hover.
+- Mobile navigation must not feel like an afterthought.
+
+### 5.6 Buttons
+
+Button hierarchy:
+- Primary: main next action
+- Secondary: alternate action
+- Ghost: low-emphasis action
+- Danger: destructive or cautionary action
+- Disabled: unavailable action
+- Loading: action in progress
+
+Every theme must define a different button feel. Do not only change fill color.
+
+### 5.7 Tags and Badges
+
+Use tags for:
+- Games
+- Platform
+- Communication preference
+- Play style
+- Rank/level
+- Availability
+- Mood or social preference
+
+Badges must be compact, readable, and theme-specific.
+
+### 5.8 Modal and Toast
+
+Modal:
+- Must clearly show the player/contact context.
+- Must preserve readability and focus management.
+- Must have obvious close action.
+
+Toast:
+- Must confirm copy/save actions.
+- Should be short and friendly.
+- Must not block important content.
+
+## 6. Typography
+
+Use typography to support scanning.
+
+Recommended hierarchy:
+- Display: page/hero title
+- Section title: plaza/editor/event blocks
+- Card title: player name or event title
+- Body: player intro, descriptions
+- Label: field labels and compact UI text
+- Mono: BattleTag, Discord handle, IDs, codes
+
+Rules:
+- Do not use decorative fonts for core data.
+- Do not reduce body text below readable size.
+- Labels should be compact but legible.
+- Use line-height generously for bios and descriptions.
+
+## 7. Spacing and Density
+
+Each theme may use different density:
+
+- Soft Midnight Lounge: more spacious, calm, larger panels.
+- Paper Card Social: medium density, layered but readable.
+- Cyber Matchmaking Hub: denser, more structured, optimized for scanning.
+
+Do not let any theme become cramped on mobile.
+
+## 8. Color and Contrast
+
+Color is only one part of theme design.
+
+Rules:
+- Text contrast should target WCAG AA.
+- Do not place low-opacity text on textured or glass backgrounds.
+- Accent colors must identify actions or states, not decorate everything.
+- Do not use color as the only indicator of selected/error/success states.
+
+## 9. Motion and Interaction
+
+All themes need interaction states:
+- hover
+- active
+- focus-visible
+- disabled
+- loading
+- selected
+- empty
+- error
+- success
+
+Motion rules:
+- Use short transitions for usability.
+- Use motion to confirm interaction, not to distract.
+- Support `@media (prefers-reduced-motion: reduce)`.
+
+Theme motion:
+- Soft Midnight Lounge: slow fade, soft lift.
+- Paper Card Social: paper lift, gentle slide.
+- Cyber Matchmaking Hub: precise snap, scan/load micro-interaction.
+
+## 10. Accessibility
+
+Required:
+- Visible focus rings.
+- Keyboard navigability.
+- Clear hit targets on mobile.
+- No essential information conveyed by color alone.
+- Readable text over all backgrounds.
+- Reduced motion support.
+- Empty/error states with clear wording.
+
+## 11. Do
+
+- Preserve product skeleton and all current flows.
+- Build four visually distinct UI prototypes.
+- Make theme differences visible in component anatomy.
+- Improve card scanning and form usability.
+- Keep the platform general gaming, not single-game.
+- Use the current reference files as inspiration, not as layout replacements.
+- Prefer reusable theme tokens and component variants.
+
+## 12. Do Not
+
+- Do not create three recolors of the same UI.
+- Do not make floating bubbles the main theme difference.
+- Do not only edit colors, shadows, and borders.
+- Do not delete product sections.
+- Do not replace the app with a portfolio or landing page.
+- Do not make it Overwatch-only.
+- Do not use loud RGB esports or cyberpunk neon.
+- Do not hide labels or weaken contrast.
+- Do not ignore mobile layout.
+- Do not claim a theme is done before hover/focus/active/loading/empty/error states are handled.
+
+## 13. AI Agent Workflow
+
+Recommended workflow:
+
+1. Read PRODUCT.md and DESIGN.md.
+2. Identify the existing product skeleton.
+3. Map the four theme buttons to the active themes.
+4. Create or refine theme tokens.
+5. Redesign core components per theme:
+   - PlayerCard
+   - EventCard
+   - ProfileEditor
+   - SearchFilter
+   - Navigation
+   - Button
+   - Tag/Badge
+   - Modal/Toast
+6. Verify that themes differ beyond color.
+7. Verify responsive behavior.
+8. Run accessibility and contrast checks.
+
+## 14. Acceptance Checklist
+
+Before considering the work complete, verify:
+
+- The four theme buttons switch between four visibly different UI systems.
+- Removing color mentally, the themes still feel different.
+- Player cards are structurally different across experimental themes.
+- Forms are theme-specific and usable.
+- Buttons and navigation states are theme-specific.
+- Tags and badges are not identical recolors.
+- Backgrounds support the theme without harming readability.
+- Mobile layout is intentionally handled.
+- WCAG contrast and focus states are checked.
+- No product features were removed.
+
+If these checks fail, continue with layout, component, and interaction changes before doing any more color work.

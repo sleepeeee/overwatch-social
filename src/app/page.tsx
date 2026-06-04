@@ -94,7 +94,6 @@ export default function Home() {
 
   return (
     <div 
-      data-style="A"
       className="min-h-screen relative pb-32 transition-colors duration-500"
     >
       <FluidClipPath />
@@ -110,16 +109,16 @@ export default function Home() {
             className="relative overflow-hidden p-6 sm:p-8 md:p-10 glass-panel organic-corners animate-[fadeInUp_0.8s_ease-out] w-full flex flex-col md:flex-row items-center justify-between gap-8 min-h-[260px]"
           >
             <div className="space-y-4.5 max-w-xl min-w-0 text-center md:text-left relative z-10">
-              <Badge className="bg-[#82b7cc]/15 text-[#2a454d] border border-[#82b7cc]/35 px-3 py-1 text-[10.5px] font-bold tracking-widest uppercase rounded-full flex items-center gap-1.5 shadow-[0_1px_8px_rgba(130,183,204,0.05)] w-fit mx-auto md:mx-0">
-                <Moon size={11} className="shrink-0 text-[#2a454d] fill-[#2a454d]/10" />
+              <Badge className="bg-accent/15 text-foreground border border-accent/35 px-3 py-1 text-[10.5px] font-bold tracking-widest uppercase rounded-full flex items-center gap-1.5 shadow-[0_1px_8px_rgba(130,183,204,0.05)] w-fit mx-auto md:mx-0">
+                <Moon size={11} className="shrink-0 text-foreground fill-foreground/10" />
                 所有遊戲玩家的靈魂避風港
               </Badge>
               
-              <h2 className="text-3xl sm:text-4xl font-bold tracking-wider leading-tight text-[#3e2723] break-words text-balance">
-                尋找心靈契合的 <span className="text-[#82b7cc]">最佳遊戲搭檔</span>
+              <h2 className="text-3xl sm:text-4xl font-bold tracking-wider leading-tight text-foreground break-words text-balance">
+                尋找心靈契合的 <span className="text-accent">最佳遊戲搭檔</span>
               </h2>
               
-              <p className="text-[#8c7c6c] text-xs md:text-sm leading-relaxed font-normal">
+              <p className="text-muted-foreground text-xs md:text-sm leading-relaxed font-normal">
                 不僅僅是戰友，更是心靈相通的夥伴。在這裡，建立專屬的磨砂玻璃遊戲名片，展示你的遊戲靈魂，秒速遇到懂你的排位與日常搭檔！
               </p>
 
@@ -132,7 +131,7 @@ export default function Home() {
                 </Link>
                 
                 <Link href="/browse">
-                  <Button variant="outline" className="w-full border-[#8c7c6c]/10 text-[#8c7c6c] hover:text-[#5d4037] bg-white/40 hover:bg-white/70 font-bold text-[10px] tracking-widest uppercase px-5 py-4.5 rounded-2xl shadow-sm transition-all duration-300 cursor-pointer hover:scale-102">
+                  <Button variant="outline" className="w-full border-border text-muted-foreground hover:text-foreground bg-card/40 hover:bg-card/70 font-bold text-[10px] tracking-widest uppercase px-5 py-4.5 rounded-2xl shadow-sm transition-all duration-300 cursor-pointer hover:scale-102">
                     <Compass size={11} className="mr-1.5" />
                     漫步玩家廣場
                   </Button>
@@ -142,9 +141,9 @@ export default function Home() {
 
             {/* 右側遊戲名片預覽：讓首屏一眼看出這是找隊友名片平台 */}
             <div className="hidden md:flex relative z-10 pr-4 lg:pr-8">
-              <div className="relative w-64 rounded-[28px] border border-white/60 bg-white/35 p-4 shadow-[0_18px_55px_rgba(140,124,108,0.08)] backdrop-blur-xl rotate-2 hover:rotate-0 transition-transform duration-500">
+              <div className="relative w-64 rounded-[28px] border border-border bg-card/35 p-4 shadow-card backdrop-blur-xl rotate-2 hover:rotate-0 transition-transform duration-500">
                 <div className="flex items-center gap-3">
-                  <div className="relative w-14 h-14 rounded-2xl overflow-hidden border border-[#82b7cc]/25 bg-white/60 shrink-0">
+                  <div className="relative w-14 h-14 rounded-2xl overflow-hidden border border-accent/25 bg-card/60 shrink-0">
                     <Image
                       src="/images/avatars/avatar_female_cheerful_square.png"
                       alt="玩家名片預覽頭像"
@@ -154,13 +153,13 @@ export default function Home() {
                     />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-[10px] font-black tracking-widest uppercase text-[#82b7cc]">ALLY CARD</p>
-                    <p className="text-sm font-black text-[#3e2723] truncate">深夜補位夥伴</p>
-                    <p className="text-[10px] font-bold text-[#8c7c6c] truncate">Overwatch · 安娜</p>
+                    <p className="text-[10px] font-black tracking-widest uppercase text-accent">ALLY CARD</p>
+                    <p className="text-sm font-black text-foreground truncate">深夜補位夥伴</p>
+                    <p className="text-[10px] font-bold text-muted-foreground truncate">Overwatch · 安娜</p>
                   </div>
                 </div>
-                <div className="mt-4 rounded-2xl border border-white/70 bg-white/35 p-3">
-                  <p className="line-clamp-2 text-[11px] leading-relaxed text-[#5d4037]">
+                <div className="mt-4 rounded-2xl border border-border bg-card/35 p-3">
+                  <p className="line-clamp-2 text-[11px] leading-relaxed text-foreground">
                     “今晚找溫和雙排，會補位、有麥、心態穩。”
                   </p>
                 </div>
@@ -216,7 +215,7 @@ export default function Home() {
                     return (
                       <div 
                         key={p.id} 
-                        className={`glass-panel p-5 border border-white/40 flex flex-col justify-between h-[220px] transition-all duration-500 hover:border-[#82b7cc]/40 hover:-translate-y-1 hover:shadow-md ${
+                        className={`glass-panel p-5 border border-white/40 flex flex-col justify-between h-[220px] transition-all duration-500 hover:border-accent/40 hover:-translate-y-1 hover:shadow-md ${
                           isNew ? "animate-card-slide" : ""
                         }`}
                       >
@@ -252,7 +251,7 @@ export default function Home() {
                         </div>
 
                         <div className="flex items-center gap-1.5 w-full min-w-0">
-                          <span className="soft-home-badge soft-home-badge-compact bg-[#82b7cc]/85 text-white border-[#82b7cc]/40 shrink-0">
+                          <span className="soft-home-badge soft-home-badge-compact bg-accent/85 text-white border-accent/40 shrink-0">
                             {p.game}
                           </span>
                           <span className="soft-home-badge soft-home-badge-compact soft-home-badge-muted min-w-0 truncate justify-start">

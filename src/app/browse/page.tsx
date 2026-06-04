@@ -75,106 +75,72 @@ export default function BrowsePage() {
 
   return (
     <div 
-      data-theme-expert="true"
-      className="max-w-6xl mx-auto px-4 py-8 space-y-6 relative min-h-screen overflow-x-hidden pb-12"
+      className="max-w-6xl mx-auto px-4 py-8 space-y-8 relative min-h-screen overflow-x-hidden pb-12"
     >
-
-
       <TopBar />
 
-      {/* 🥞 視覺總監指定：首頁同款 Soft UI + Organic Shapes 背景裝飾層 (只用 ms-blob 類別，不新增漸變色與 icon) */}
-      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden select-none">
-        <div 
-          className="ms-blob ms-blob-sand absolute top-[-5%] right-[-5%] w-[60vw] h-[60vw] max-w-[650px] max-h-[650px] opacity-[0.25] animate-mist-a" 
-          aria-hidden="true"
-        />
-        <div 
-          className="ms-blob ms-blob-yellow absolute bottom-[10%] left-[-8%] w-[65vw] h-[65vw] max-w-[700px] max-h-[700px] opacity-[0.22] animate-mist-b" 
-          aria-hidden="true"
-        />
-        <div 
-          className="ms-blob ms-blob-rose absolute top-[35%] left-[20%] w-[50vw] h-[50vw] max-w-[500px] max-h-[500px] opacity-[0.16] animate-mist-c" 
-          aria-hidden="true"
-        />
+      {/* 🌸 莫蘭迪紙感手稿標頭 - 垂直層級重構 (無背板) */}
+      <div className="text-left space-y-2 relative z-10 animate-[fadeIn_0.5s_ease-out] pb-1 select-none max-w-2xl mx-auto">
+        <div className="text-[10px] md:text-[11px] font-black uppercase tracking-[0.2em] text-[#8c7c6c]/60 flex items-center gap-1.5">
+          <span>Lobby Directory</span>
+          <span className="w-1.5 h-1.5 rounded-full bg-accent/40" />
+          <span>名片廣場</span>
+        </div>
+        <h1 className="text-xl md:text-2xl font-black tracking-tight text-foreground leading-none pt-0.5">
+          多遊戲玩家招募大廳
+        </h1>
+        <div className="w-12 h-[1px] bg-gradient-to-r from-[#8c7c6c]/25 to-transparent my-2" />
+        <p className="text-muted-foreground font-medium text-[12px] md:text-[13px] leading-relaxed">
+          保留你熟悉的廣場節奏，換上全息極光與手稿紙感宇宙。搜尋今天想一起開局的夥伴，或自由瀏覽不同的遊戲分區。
+        </p>
       </div>
 
-      {/* Layout A: 雙欄雜誌排版 (4:8) */}
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 items-center relative z-10 mb-10 select-none">
-        {/* 左側：精緻標頭 (md:col-span-4) */}
-        <div className="md:col-span-4 space-y-4 animate-[fadeIn_0.5s_ease-out]">
-          {/* 星盤徽章與標籤融合 */}
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-2xl bg-[#82b7cc]/8 border border-[#82b7cc]/20 backdrop-blur-sm shadow-[inset_0_1px_1px_rgba(255,255,255,0.6)]">
-              <CelestialAstrolabe />
-            </div>
-            <div className="space-y-0.5">
-              <div className="text-[9px] font-black uppercase tracking-[0.2em] text-[#8c7c6c]/60">
-                Lobby Directory
-              </div>
-              <div className="text-[10px] font-bold text-[#82b7cc]">
-                名片廣場
-              </div>
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <h1 className="text-xl md:text-2xl font-black tracking-tight text-[#3e2723] leading-none pt-0.5">
-              多遊戲玩家招募大廳
-            </h1>
-            <div className="w-12 h-[1px] bg-gradient-to-r from-[#8c7c6c]/25 to-transparent my-2" />
-            <p className="text-[#8c7c6c]/90 font-medium text-[12px] md:text-[13px] leading-relaxed">
-              保留你熟悉的廣場節奏，換上晨霧紙感宇宙。搜尋今天想一起開局的夥伴。
-            </p>
+      {/* 獨立搜尋與分區藥丸滑動軌道 - 垂直介電隔離層 */}
+      <div className="flex flex-col gap-6 relative z-10 mb-6 max-w-2xl mx-auto select-none animate-[fadeIn_0.5s_ease-out]">
+        {/* 🔍 搜尋太空艙 */}
+        <div className="relative w-full">
+          <div className="relative w-full bg-card/60 backdrop-blur-xl border border-border rounded-full p-1.5 shadow-[0_20px_50px_rgba(140,124,108,0.04),inset_0_1px_0_rgba(255,255,255,0.95)] focus-within:border-accent/50 transition-all duration-300 flex items-center group/search relative z-10">
+            <Search className="ml-3.5 text-muted-foreground transition-colors shrink-0 group-focus-within/search:text-accent" size={18} />
+            <Input
+              type="text"
+              placeholder="搜尋玩家 BattleTag、常用英雄、留言關鍵字或 MBTI..."
+              className="w-full bg-transparent border-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus:border-none focus-visible:border-none shadow-none text-foreground text-sm py-4 pl-3 pr-10"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            {searchQuery && (
+              <button
+                onClick={handleResetSearch}
+                className="absolute right-4 top-1/2 -translate-y-1/2 p-1 text-[#8c7c6c] hover:text-red-500 transition-colors cursor-pointer border-none bg-transparent"
+                title="清空搜尋"
+              >
+                <RotateCcw size={14} />
+              </button>
+            )}
           </div>
         </div>
 
-        {/* 右側：搜尋太空艙與分區選取器 (md:col-span-8) */}
-        <div className="md:col-span-8 flex flex-col gap-4 animate-[fadeIn_0.5s_ease-out]">
-          {/* 🔍 搜尋太空艙 */}
-          <div className="relative w-full">
-            <div className="relative w-full bg-[#fefcf8]/90 border border-[#8c7c6c]/18 rounded-full p-1.5 shadow-[0_20px_50px_rgba(140,124,108,0.04),inset_0_1px_0_rgba(255,255,255,0.95)] focus-within:border-[#82b7cc]/50 transition-all duration-300 flex items-center group/search relative z-10">
-              <Search className="ml-3.5 text-[#8c7c6c]/70 transition-colors shrink-0 group-focus-within/search:text-[#82b7cc]" size={18} />
-              <Input
-                type="text"
-                placeholder="搜尋玩家 BattleTag、常用英雄、留言關鍵字或 MBTI..."
-                className="w-full bg-transparent border-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 focus:border-none focus-visible:border-none shadow-none text-[#5d4037] text-sm py-4 pl-3 pr-10"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              {searchQuery && (
-                <button
-                  onClick={handleResetSearch}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 p-1 text-[#8c7c6c] hover:text-red-500 transition-colors cursor-pointer border-none bg-transparent"
-                  title="清空搜尋"
-                >
-                  <RotateCcw size={14} />
-                </button>
-              )}
-            </div>
-          </div>
-
-          {/* 🥞 分區 Tab */}
-          <div className="flex flex-wrap gap-2.5 justify-center md:justify-start w-full">
-            {gameTabs.map((game) => {
-              const isSelected = activeGame === game.id;
-              return (
-                <button
-                  key={game.id}
-                  onClick={() => setActiveGame(game.id)}
-                  className={`browse-tab active:scale-95 cursor-pointer min-w-[130px] sm:min-w-[156px] ${isSelected ? "browse-tab-active" : ""}`}
-                >
-                  <div className="flex items-center gap-2">
-                    <span className="text-[14px] leading-none">{game.icon}</span>
-                    <span className="text-[12px] font-black text-[#3e2723]">{game.label}</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-[9px] font-semibold text-[#8c7c6c]">{game.subtitle}</span>
-                    {game.status && <span className="browse-tab-status text-[#8c7c6c] text-[8px]">{game.status}</span>}
-                  </div>
-                </button>
-              );
-            })}
-          </div>
+        {/* 🥞 分區 Tab */}
+        <div className="flex flex-wrap gap-2.5 justify-center w-full">
+          {gameTabs.map((game) => {
+            const isSelected = activeGame === game.id;
+            return (
+              <button
+                key={game.id}
+                onClick={() => setActiveGame(game.id)}
+                className={`browse-tab active:scale-95 cursor-pointer min-w-[130px] sm:min-w-[156px] ${isSelected ? "browse-tab-active" : ""}`}
+              >
+                <div className="flex items-center gap-2">
+                  <span className="text-[14px] leading-none">{game.icon}</span>
+                  <span className="text-[12px] font-black text-foreground">{game.label}</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[9px] font-semibold text-[#8c7c6c]">{game.subtitle}</span>
+                  {game.status && <span className="browse-tab-status text-[#8c7c6c] text-[8px]">{game.status}</span>}
+                </div>
+              </button>
+            );
+          })}
         </div>
       </div>
 

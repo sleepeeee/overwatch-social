@@ -7,43 +7,28 @@ import { Moon, Sun, Palette, Check, LogOut } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 import { useDevMode } from "@/hooks/useDevMode";
+import { useTheme, ThemeStyle } from "@/context/ThemeContext";
 
 const THEMES = [
-  { id: "theme-blueberry", name: "藍莓優格", bg: "#F5F6F3", text: "#2F3A55" },
-  { id: "theme-botanics", name: "森系香草", bg: "#FAF6EF", text: "#4A5A3A" },
-  { id: "theme-nordic", name: "極簡畫廊", bg: "#F3F4F6", text: "#1F2937" },
-  { id: "theme-holographic", name: "全息極光", bg: "#F5F3FF", text: "#8b5cf6" },
+  { id: "theme-original-baseline", name: "原創基準", bg: "#F5F6F3", text: "#2F3A55" },
+  { id: "theme-soft-midnight-lounge", name: "暗夜沙龍", bg: "#161a22", text: "#a78bfa" },
+  { id: "theme-paper-card-social", name: "手作紙卡", bg: "#FCFAF6", text: "#4A3E3D" },
+  { id: "theme-cyber-matchmaking-hub", name: "配對中心", bg: "#0d1117", text: "#58a6ff" },
 ];
 
 export default function TopBar() {
   const router = useRouter();
   const { user } = useAuth();
   const { isDeveloper } = useDevMode();
+  const { theme, setTheme, isDark, setIsDark } = useTheme();
   const [loginPending, setLoginPending] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [activeTheme, setActiveTheme] = useState("theme-blueberry");
-  const [isDark, setIsDark] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
 
   // 初始化時同步明暗與主題狀態
   useEffect(() => {
     setMounted(true);
-    const savedTheme = localStorage.getItem("theme-style") || "theme-blueberry";
-    const savedDark = localStorage.getItem("theme-dark") === "true";
-    
-    setActiveTheme(savedTheme);
-    setIsDark(savedDark);
-
-    const html = document.documentElement;
-    html.classList.remove("theme-blueberry", "theme-botanics", "theme-nordic", "theme-swiss", "theme-holographic");
-    html.classList.add(savedTheme);
-    
-    if (savedDark) {
-      html.classList.add("dark");
-    } else {
-      html.classList.remove("dark");
-    }
   }, []);
 
   // 監聽點擊外部關閉選單
@@ -60,23 +45,12 @@ export default function TopBar() {
   }, []);
 
   const handleThemeChange = (themeId: string) => {
-    setActiveTheme(themeId);
-    const html = document.documentElement;
-    html.classList.remove("theme-blueberry", "theme-botanics", "theme-nordic", "theme-swiss", "theme-holographic");
-    html.classList.add(themeId);
-    localStorage.setItem("theme-style", themeId);
+    const parsedTheme = themeId.replace("theme-", "") as ThemeStyle;
+    setTheme(parsedTheme);
   };
 
   const toggleDarkMode = () => {
-    const nextDark = !isDark;
-    setIsDark(nextDark);
-    const html = document.documentElement;
-    if (nextDark) {
-      html.classList.add("dark");
-    } else {
-      html.classList.remove("dark");
-    }
-    localStorage.setItem("theme-dark", nextDark ? "true" : "false");
+    setIsDark(!isDark);
   };
 
   const handleLogout = async () => {
@@ -131,31 +105,34 @@ export default function TopBar() {
                 配色風格 (明亮版)
               </div>
               <div className="flex flex-col gap-0.5 mb-2">
-                {THEMES.map((t) => (
-                  <button
-                    key={t.id}
-                    type="button"
-                    onClick={() => {
-                      handleThemeChange(t.id);
-                      setIsOpen(false);
-                    }}
-                    className={`flex items-center justify-between w-full text-left px-2 py-1.5 rounded-xl transition-all duration-200 text-xs ${
-                      activeTheme === t.id && !isDark
-                        ? "bg-[#5c6b8d]/10 dark:bg-stone-800 text-[#2f3a55] dark:text-white font-semibold"
-                        : "hover:bg-stone-100 dark:hover:bg-stone-800/50 text-stone-700 dark:text-stone-300"
-                    }`}
-                  >
-                    <div className="flex items-center gap-2">
-                      {/* Color dots preview */}
-                      <span className="flex w-3.5 h-3.5 rounded-full overflow-hidden border border-stone-200 dark:border-stone-700 shrink-0">
-                        <span className="w-1/2 h-full" style={{ backgroundColor: t.bg }} />
-                        <span className="w-1/2 h-full" style={{ backgroundColor: t.text }} />
-                      </span>
-                      <span className="truncate">{t.name}</span>
-                    </div>
-                    {activeTheme === t.id && !isDark && <Check className="w-3.5 h-3.5" />}
-                  </button>
-                ))}
+                {THEMES.map((t) => {
+                  const isCurrent = theme === t.id.replace("theme-", "");
+                  return (
+                    <button
+                      key={t.id}
+                      type="button"
+                      onClick={() => {
+                        handleThemeChange(t.id);
+                        setIsOpen(false);
+                      }}
+                      className={`flex items-center justify-between w-full text-left px-2 py-1.5 rounded-xl transition-all duration-200 text-xs ${
+                        isCurrent && !isDark
+                          ? "bg-[#5c6b8d]/10 dark:bg-stone-800 text-[#2f3a55] dark:text-white font-semibold"
+                          : "hover:bg-stone-100 dark:hover:bg-stone-800/50 text-stone-700 dark:text-stone-300"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        {/* Color dots preview */}
+                        <span className="flex w-3.5 h-3.5 rounded-full overflow-hidden border border-stone-200 dark:border-stone-700 shrink-0">
+                          <span className="w-1/2 h-full" style={{ backgroundColor: t.bg }} />
+                          <span className="w-1/2 h-full" style={{ backgroundColor: t.text }} />
+                        </span>
+                        <span className="truncate">{t.name}</span>
+                      </div>
+                      {isCurrent && !isDark && <Check className="w-3.5 h-3.5" />}
+                    </button>
+                  );
+                })}
               </div>
 
               <div className="border-t border-stone-100 dark:border-stone-800/80 my-1.5" />
@@ -202,7 +179,7 @@ export default function TopBar() {
           {isDeveloper && (
             <Link
               href="/developer"
-              className="flex items-center gap-2 px-4 py-2 rounded-2xl border border-amber-500/30 bg-amber-500/10 text-[9px] font-bold tracking-widest uppercase text-amber-800 hover:bg-amber-500/20 transition-all duration-300"
+              className="theme-btn flex items-center gap-2 px-4 py-2 rounded-2xl border border-amber-500/30 bg-amber-500/10 text-[9px] font-bold tracking-widest uppercase text-amber-800 hover:bg-amber-500/20 transition-all duration-300"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
               開發者後台
@@ -210,7 +187,7 @@ export default function TopBar() {
           )}
           <button
             onClick={handleLogout}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-2xl border border-[#8c7c6c]/20 bg-white/20 text-[9px] font-bold tracking-widest uppercase text-[#8c7c6c]/70 hover:bg-[#8c7c6c]/8 hover:text-[#5d4037] transition-all duration-300"
+            className="theme-btn flex items-center gap-1.5 px-3 py-2 rounded-2xl border border-[#8c7c6c]/20 bg-white/20 text-[9px] font-bold tracking-widest uppercase text-[#8c7c6c]/70 hover:bg-[#8c7c6c]/8 hover:text-[#5d4037] transition-all duration-300"
             title="登出"
           >
             <LogOut size={10} />
@@ -221,7 +198,7 @@ export default function TopBar() {
         <button
           onClick={handleGoogleLogin}
           disabled={loginPending}
-          className="group relative flex h-9 w-9 shrink-0 items-center justify-center gap-2.5 rounded-2xl border border-[#8c7c6c]/20 bg-white/40 p-0 text-[9px] font-bold tracking-widest uppercase text-[#5d4037] hover:text-[#3e2723] hover:bg-white hover:border-[#82b7cc]/40 shadow-sm transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed sm:h-auto sm:w-auto sm:px-4 sm:py-2"
+          className="theme-btn group relative flex h-9 w-9 shrink-0 items-center justify-center gap-2.5 rounded-2xl border border-[#8c7c6c]/20 bg-white/40 p-0 text-[9px] font-bold tracking-widest uppercase text-[#5d4037] hover:text-[#3e2723] hover:bg-white hover:border-[#82b7cc]/40 shadow-sm transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed sm:h-auto sm:w-auto sm:px-4 sm:py-2"
           aria-label={loginPending ? "Google 登入跳轉中" : "使用 Google 登入"}
         >
           <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24">

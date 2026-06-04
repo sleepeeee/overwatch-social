@@ -48,6 +48,8 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+  --shadow-card: var(--shadow-card-val);
+  --border-card: var(--border-card-val);
 }
 
 :root {
@@ -83,7 +85,229 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
+  /* 字體定義 */
+  --font-noto-sans-tc: "Noto Sans TC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-geist-sans: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-geist-mono: "Geist Mono", monospace;
+
+  /* 動態主題預設變數 (藍莓優格) */
+  --theme-bg-gradient: radial-gradient(circle at 50% 0%, #FFFFFF 0%, #F5F6F3 100%);
+  --shadow-card-val: 0 8px 30px rgba(47, 58, 85, 0.06), 0 2px 8px rgba(47, 58, 85, 0.03);
+  --border-card-val: 1px solid rgba(47, 58, 85, 0.08);
+
+  --glass-bg: rgba(255, 255, 255, 0.65);
+  --glass-blur: blur(20px);
+  --glass-border: 1px solid rgba(47, 58, 85, 0.12);
+  --glass-radius: 24px;
+  --glass-hover-bg: rgba(255, 255, 255, 0.75);
+  --glass-hover-border: 1px solid rgba(47, 58, 85, 0.2);
+  --organic-radius: 24px;
+  --shadow-card-hover-val: 0 12px 35px rgba(47, 58, 85, 0.1);
+  --accent: #82b7cc;
+  --accent-foreground: #2F3A55;
 }
+
+/* 原創基準 (theme-original-baseline) */
+.theme-original-baseline {
+  --background: #F5F6F3;
+  --foreground: #2F3A55;
+  --card: #FFFFFF;
+  --card-foreground: #2F3A55;
+  --muted-foreground: #5D6A85;
+  --border: rgba(47, 58, 85, 0.15);
+  --ring: #82b7cc;
+  --theme-bg-gradient: radial-gradient(circle at 50% 0%, #FFFFFF 0%, #F5F6F3 100%);
+  --shadow-card-val: 0 8px 30px rgba(47, 58, 85, 0.06), 0 2px 8px rgba(47, 58, 85, 0.03);
+  --border-card-val: 1px solid rgba(47, 58, 85, 0.08);
+  --accent: #82b7cc;
+  --accent-foreground: #2F3A55;
+  --glass-bg: rgba(255, 255, 255, 0.65);
+  --glass-blur: blur(20px);
+  --glass-border: 1px solid rgba(47, 58, 85, 0.12);
+  --glass-radius: 24px;
+  --glass-hover-bg: rgba(255, 255, 255, 0.75);
+  --glass-hover-border: 1px solid rgba(47, 58, 85, 0.2);
+  --organic-radius: 24px;
+  --shadow-card-hover-val: 0 12px 35px rgba(47, 58, 85, 0.1);
+
+  /* Spacing and structural tokens */
+  --theme-card-radius: 24px;
+  --theme-card-shadow: 0 8px 30px rgba(47, 58, 85, 0.06), 0 2px 8px rgba(47, 58, 85, 0.03);
+  --theme-card-shadow-hover: 0 12px 35px rgba(47, 58, 85, 0.1);
+  --theme-card-border: 1px solid rgba(47, 58, 85, 0.08);
+  --theme-card-border-hover: 1px solid rgba(47, 58, 85, 0.2);
+  --theme-inner-radius: 16px;
+  --theme-inner-border: 1px solid rgba(47, 58, 85, 0.12);
+  --theme-inner-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.01);
+  --theme-button-radius: 12px;
+  --theme-input-radius: 12px;
+  --theme-input-border: 1px solid rgba(47, 58, 85, 0.15);
+  --theme-input-focus-border-color: #82b7cc;
+  --theme-input-focus-ring: 0 0 0 2px rgba(130, 183, 204, 0.5);
+  --theme-tag-radius: 9999px;
+  --theme-tag-border: 1px dashed rgba(130, 183, 204, 0.3);
+  --theme-font-family: var(--font-sans);
+  --theme-letter-spacing: normal;
+  --theme-text-transform: none;
+  --theme-transition-duration: 300ms;
+  --theme-transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
+  --theme-card-rotate: 0deg;
+  --theme-card-rotate-mobile: 0deg;
+  --theme-card-hover-translate-y: -2px;
+  --theme-card-hover-translate-y-mobile: -1px;
+}
+
+/* 暗夜沙龍 (theme-soft-midnight-lounge) */
+.theme-soft-midnight-lounge {
+  --background: #0f1115;
+  --foreground: #e2e8f0;
+  --card: #161a22;
+  --card-foreground: #cbd5e1;
+  --muted-foreground: #94a3b8; /* 提升對比度，滿足 WCAG 規範 */
+  --border: rgba(255, 255, 255, 0.08);
+  --ring: #8b5cf6;
+  --theme-bg-gradient: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #09090b 100%);
+  --shadow-card-val: 0 15px 50px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  --border-card-val: 1px solid rgba(255, 255, 255, 0.08);
+  --accent: #a78bfa;
+  --accent-foreground: #1e1b4b;
+  --glass-bg: rgba(22, 26, 34, 0.7);
+  --glass-blur: blur(24px);
+  --glass-border: 1px solid rgba(255, 255, 255, 0.08);
+  --glass-radius: 32px;
+  --glass-hover-bg: rgba(22, 26, 34, 0.85);
+  --glass-hover-border: 1px solid rgba(167, 139, 250, 0.3);
+  --organic-radius: 32px;
+  --shadow-card-hover-val: 0 20px 60px rgba(167, 139, 250, 0.1), 0 0 30px rgba(0, 0, 0, 0.7);
+
+  /* Spacing and structural tokens */
+  --theme-card-radius: 32px;
+  --theme-card-shadow: 0 10px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  --theme-card-shadow-hover: 0 15px 50px rgba(167, 139, 250, 0.08), 0 0 25px rgba(0, 0, 0, 0.6);
+  --theme-card-border: 1px solid rgba(255, 255, 255, 0.06);
+  --theme-card-border-hover: 1px solid rgba(167, 139, 250, 0.2);
+  --theme-inner-radius: 24px;
+  --theme-inner-border: 1px solid rgba(255, 255, 255, 0.06);
+  --theme-inner-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
+  --theme-button-radius: 9999px; /* Pill style */
+  --theme-input-radius: 0px; /* Underline input style */
+  --theme-input-border: none;
+  --theme-input-focus-border-color: #a78bfa;
+  --theme-input-focus-ring: none;
+  --theme-tag-radius: 9999px;
+  --theme-tag-border: 1px solid rgba(255, 255, 255, 0.1);
+  --theme-font-family: var(--font-sans);
+  --theme-letter-spacing: 0.06em;
+  --theme-text-transform: none;
+  --theme-transition-duration: 400ms; /* Soft transition */
+  --theme-transition-timing: cubic-bezier(0.16, 1, 0.3, 1);
+  --theme-card-rotate: 0deg;
+  --theme-card-rotate-mobile: 0deg;
+  --theme-card-hover-translate-y: -2px; /* 降低位移幅度，保持穩定 */
+  --theme-card-hover-translate-y-mobile: 0px; /* 手機端禁止 hover 位移，防誤觸 */
+}
+
+/* 手作紙卡 (theme-paper-card-social) */
+.theme-paper-card-social {
+  --background: #FAF6EF;
+  --foreground: #4A3E3D;
+  --card: #FCFAF6;
+  --card-foreground: #4A3E3D;
+  --muted-foreground: #7C6D6C;
+  --border: #4A3E3D;
+  --ring: #D4A373;
+  --theme-bg-gradient: radial-gradient(circle at 50% 0%, #FCFAF6 0%, #FAF6EF 100%);
+  --shadow-card-val: 4px 4px 0px #4A3E3D;
+  --border-card-val: 2px solid #4A3E3D;
+  --accent: #E07A5F;
+  --accent-foreground: #FCFAF6;
+  --glass-bg: #FCFAF6;
+  --glass-blur: 0px;
+  --glass-border: 2px solid #4A3E3D;
+  --glass-radius: 16px;
+  --glass-hover-bg: #FCFAF6;
+  --glass-hover-border: 2px solid #E07A5F;
+  --organic-radius: 20px 16px 24px 18px;
+  --shadow-card-hover-val: 6px 6px 0px #4A3E3D;
+
+  /* Spacing and structural tokens */
+  --theme-card-radius: 20px 16px 24px 18px;
+  --theme-card-shadow: 4px 4px 0px #4A3E3D;
+  --theme-card-shadow-hover: 6px 6px 0px #4A3E3D;
+  --theme-card-border: 2px solid #4A3E3D;
+  --theme-card-border-hover: 2px solid #4A3E3D;
+  --theme-inner-radius: 12px;
+  --theme-inner-border: 2px solid #4A3E3D;
+  --theme-inner-shadow: none;
+  --theme-button-radius: 8px;
+  --theme-input-radius: 6px;
+  --theme-input-border: 2px solid #4A3E3D;
+  --theme-input-focus-border-color: #E07A5F;
+  --theme-input-focus-ring: none;
+  --theme-tag-radius: 6px;
+  --theme-tag-border: 2px solid #4A3E3D;
+  --theme-font-family: var(--font-sans);
+  --theme-letter-spacing: normal;
+  --theme-text-transform: none;
+  --theme-transition-duration: 250ms;
+  --theme-transition-timing: cubic-bezier(0.34, 1.56, 0.64, 1); /* Elastic lift */
+  --theme-card-rotate: 0.8deg; /* 降低旋轉度，提高大廳排版穩定度 */
+  --theme-card-rotate-mobile: 0deg; /* 手機版完全不旋轉，確保觸控熱區準確 */
+  --theme-card-hover-translate-y: -2px; /* 降低位移 */
+  --theme-card-hover-translate-y-mobile: 0px; /* 手機端禁止 hover 位移 */
+}
+
+/* 配對中心 (theme-cyber-matchmaking-hub) */
+.theme-cyber-matchmaking-hub {
+  --background: #0d1117;
+  --foreground: #c9d1d9;
+  --card: #161b22;
+  --card-foreground: #c9d1d9;
+  --muted-foreground: #8b949e;
+  --border: #30363d;
+  --ring: #58a6ff;
+  --theme-bg-gradient: linear-gradient(180deg, #090d16 0%, #0d1117 100%);
+  --shadow-card-val: none;
+  --border-card-val: 1px solid #30363d;
+  --accent: #58a6ff;
+  --accent-foreground: #0d1117;
+  --glass-bg: #161b22;
+  --glass-blur: 0px;
+  --glass-border: 1px solid #30363d;
+  --glass-radius: 0px;
+  --glass-hover-bg: #1f242c;
+  --glass-hover-border: 1px solid #58a6ff;
+  --organic-radius: 0px;
+  --shadow-card-hover-val: none;
+
+  /* Spacing and structural tokens */
+  --theme-card-radius: 0px;
+  --theme-card-shadow: none;
+  --theme-card-shadow-hover: none;
+  --theme-card-border: 1px solid #30363d;
+  --theme-card-border-hover: 1px solid #58a6ff;
+  --theme-inner-radius: 0px;
+  --theme-inner-border: 1px solid #30363d;
+  --theme-inner-shadow: none;
+  --theme-button-radius: 0px;
+  --theme-input-radius: 0px;
+  --theme-input-border: 1px solid #30363d;
+  --theme-input-focus-border-color: #58a6ff;
+  --theme-input-focus-ring: none;
+  --theme-tag-radius: 0px;
+  --theme-tag-border: 1px solid #30363d;
+  --theme-font-family: var(--font-sans); /* 預設回歸易讀無襯線體，防全站 monospace 造成閱讀疲勞 */
+  --theme-letter-spacing: -0.01em;
+  --theme-text-transform: none;
+  --theme-transition-duration: 80ms; /* Fast digital snap */
+  --theme-transition-timing: steps(2, end);
+  --theme-card-rotate: 0deg;
+  --theme-card-rotate-mobile: 0deg;
+  --theme-card-hover-translate-y: 0px;
+  --theme-card-hover-translate-y-mobile: 0px;
+}
+
 
 .dark {
   --background: oklch(0.145 0 0);
@@ -117,6 +341,12 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+
+  /* 夜間版時覆蓋動態變數 */
+  --shadow-card-val: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+  --border-card-val: 1px solid rgba(255, 255, 255, 0.15) !important;
+  --theme-bg-gradient: radial-gradient(circle at 50% 0%, #14171E 0%, #0B0D12 100%) !important;
+  --muted-foreground: oklch(0.708 0 0) !important;
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -270,31 +500,25 @@
 
 /* 🌸 [Morning Sketch] 有機溫潤玻璃擬態 (Organic Glassmorphism) */
 .glass-panel {
-  background: rgba(255, 255, 255, 0.42) !important;
-  backdrop-filter: blur(32px) saturate(110%);
-  -webkit-backdrop-filter: blur(32px) saturate(110%);
-  border: 1px solid rgba(255, 255, 255, 0.55) !important;
-  border-radius: 32px; /* 溫暖的 32px 大圓角 */
-  box-shadow: 
-    0 8px 30px rgba(var(--theme-accent-rgb), 0.015),
-    0 25px 60px -15px rgba(var(--theme-accent-rgb), 0.04),
-    inset 0 1px 2px rgba(255, 255, 255, 0.7) !important;
+  background: var(--glass-bg, rgba(255, 255, 255, 0.42)) !important;
+  backdrop-filter: var(--glass-blur, blur(32px)) saturate(110%);
+  -webkit-backdrop-filter: var(--glass-blur, blur(32px)) saturate(110%);
+  border: var(--glass-border, 1px solid rgba(255, 255, 255, 0.55)) !important;
+  border-radius: var(--glass-radius, 32px) !important;
+  box-shadow: var(--shadow-card-val) !important;
   transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .glass-panel:hover {
-  background: rgba(255, 255, 255, 0.55) !important;
-  border-color: rgba(255, 255, 255, 0.8) !important;
+  background: var(--glass-hover-bg, rgba(255, 255, 255, 0.55)) !important;
+  border: var(--glass-hover-border, 1px solid rgba(255, 255, 255, 0.8)) !important;
   transform: translateY(-2px);
-  box-shadow: 
-    0 12px 35px rgba(var(--theme-accent-rgb), 0.02),
-    0 35px 80px -12px rgba(var(--theme-accent-rgb), 0.07),
-    inset 0 1px 2px rgba(255, 255, 255, 0.9) !important;
+  box-shadow: var(--shadow-card-hover-val) !important;
 }
 
 /* 有機不對稱圓角 (手繪黏土溫潤感) */
 .organic-corners {
-  border-radius: 38px 28px 42px 34px !important;
+  border-radius: var(--organic-radius, 38px 28px 42px 34px) !important;
 }
 
 /* 🌸 背景雲霧斑塊慢漂浮動畫 */
@@ -992,3 +1216,395 @@ html, body {
 .animate-hud-pulse { animation: hudPulse 2s infinite ease-in-out; }
 .scrollbar-none::-webkit-scrollbar { display:none; }
 .scrollbar-none { -ms-overflow-style:none; scrollbar-width:none; }
+
+/* 🔮 全息極光大面積立體偏光玻璃球 */
+.macro-glass-sphere {
+  border-radius: 50%;
+  position: fixed;
+  background: radial-gradient(circle at 30% 30%, 
+    rgba(255, 255, 255, 0.92) 0%, 
+    rgba(255, 255, 255, 0.15) 45%, 
+    rgba(139, 92, 246, 0.05) 75%, 
+    rgba(139, 92, 246, 0.18) 100%
+  );
+  border: 1.2px solid rgba(255, 255, 255, 0.7) !important;
+  box-shadow: 
+    inset -6px -6px 14px rgba(139, 92, 246, 0.15),
+    inset 6px 6px 10px rgba(255, 255, 255, 0.95),
+    0 25px 55px -15px rgba(139, 92, 246, 0.1) !important;
+  backdrop-filter: blur(14px) saturate(110%);
+  -webkit-backdrop-filter: blur(14px) saturate(110%);
+  pointer-events: none;
+  z-index: 5;
+  transition: transform 0.8s ease-out;
+}
+
+/* ===================================================================
+   🎨 MULTI-THEME STRUCTURAL PRESENTATION HELPERS
+   =================================================================== */
+
+/* 1. Theme Card Container */
+.theme-card {
+  border-radius: var(--theme-card-radius) !important;
+  box-shadow: var(--theme-card-shadow) !important;
+  border: var(--theme-card-border) !important;
+  font-family: var(--theme-font-family) !important;
+  transition: all var(--theme-transition-duration) var(--theme-transition-timing) !important;
+  transform: rotate(var(--theme-card-rotate, 0deg)) !important;
+}
+
+@media (max-width: 768px) {
+  .theme-card {
+    transform: rotate(var(--theme-card-rotate-mobile, 0deg)) !important;
+  }
+}
+
+.theme-card:hover {
+  box-shadow: var(--theme-card-shadow-hover) !important;
+  border: var(--theme-card-border-hover) !important;
+  transform: translateY(var(--theme-card-hover-translate-y, -2px)) rotate(var(--theme-card-rotate, 0deg)) !important;
+}
+
+@media (max-width: 768px) {
+  .theme-card:hover {
+    transform: translateY(var(--theme-card-hover-translate-y-mobile, -1px)) rotate(var(--theme-card-rotate-mobile, 0deg)) !important;
+  }
+}
+
+/* 2. Theme Inner Panel (Comments, Hero grid placeholder, event sections) */
+.theme-inner-panel {
+  border-radius: var(--theme-inner-radius) !important;
+  border: var(--theme-inner-border) !important;
+  box-shadow: var(--theme-inner-shadow) !important;
+  transition: all var(--theme-transition-duration) var(--theme-transition-timing) !important;
+}
+
+/* 3. Theme Button */
+.theme-btn {
+  border-radius: var(--theme-button-radius) !important;
+  font-family: var(--theme-font-family) !important;
+  letter-spacing: var(--theme-letter-spacing) !important;
+  text-transform: var(--theme-text-transform) !important;
+  transition: all var(--theme-transition-duration) var(--theme-transition-timing) !important;
+}
+
+/* 4. Theme Input / Textarea fields */
+.theme-input {
+  border-radius: var(--theme-input-radius) !important;
+  border: var(--theme-input-border) !important;
+  box-shadow: none !important;
+  font-family: var(--theme-font-family) !important;
+  transition: all var(--theme-transition-duration) var(--theme-transition-timing) !important;
+  outline: none !important;
+}
+
+.theme-input:focus {
+  border-color: var(--theme-input-focus-border-color) !important;
+  box-shadow: var(--theme-input-focus-ring) !important;
+}
+
+/* Theme-specific custom inputs presentation layer override */
+.theme-soft-midnight-lounge .theme-input {
+  border-bottom: 2px solid rgba(255, 255, 255, 0.15) !important;
+  background-color: transparent !important;
+  padding-left: 0.25rem !important;
+  padding-right: 0.25rem !important;
+  border-radius: 0px !important;
+}
+.theme-soft-midnight-lounge .theme-input:focus {
+  border-bottom-color: var(--theme-input-focus-border-color) !important;
+  box-shadow: none !important;
+}
+
+.theme-paper-card-social .theme-input {
+  box-shadow: inset 2px 2px 0px rgba(74, 62, 61, 0.15) !important;
+}
+.theme-paper-card-social .theme-input:focus {
+  outline: 2px solid #4A3E3D !important;
+  outline-offset: 1px !important;
+  box-shadow: none !important;
+}
+
+.theme-cyber-matchmaking-hub .theme-input {
+  position: relative !important;
+}
+.theme-cyber-matchmaking-hub .theme-input:focus {
+  border-color: var(--theme-input-focus-border-color) !important;
+  outline: 1px solid var(--theme-input-focus-border-color) !important;
+  box-shadow: none !important;
+}
+
+/* 5. Theme Tag / Badge */
+.theme-tag {
+  border-radius: var(--theme-tag-radius) !important;
+  border: var(--theme-tag-border) !important;
+  font-family: var(--theme-font-family) !important;
+  transition: all var(--theme-transition-duration) var(--theme-transition-timing) !important;
+}
+
+/* 6. Theme Specific Navigation Overrides */
+.theme-soft-midnight-lounge .browse-tab-active {
+  border-bottom: 2px solid #a78bfa !important;
+  background: rgba(167, 139, 250, 0.1) !important;
+  color: #a78bfa !important;
+  box-shadow: 0 4px 15px rgba(167, 139, 250, 0.2) !important;
+  border-radius: 9999px !important;
+}
+
+.theme-paper-card-social .browse-tab-active {
+  border: 2px solid #4A3E3D !important;
+  background: #FCFAF6 !important;
+  color: #4A3E3D !important;
+  box-shadow: 3px 3px 0px #4A3E3D !important;
+  border-radius: 6px !important;
+}
+
+.theme-cyber-matchmaking-hub .browse-tab-active {
+  border: 1px solid #58a6ff !important;
+  background: #1f242c !important;
+  color: #58a6ff !important;
+  box-shadow: none !important;
+  border-radius: 0px !important;
+}
+
+/* 7. Animation / Motion accessibility reduced-motion guardrail */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition-duration: 0s !important;
+    animation-duration: 0s !important;
+    animation-iteration-count: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+}
+
+/* 8. Typography and Typeset overrides per theme */
+.theme-soft-midnight-lounge h1,
+.theme-soft-midnight-lounge h2,
+.theme-soft-midnight-lounge h3,
+.theme-soft-midnight-lounge h4,
+.theme-soft-midnight-lounge .browse-tab span,
+.theme-soft-midnight-lounge button {
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+  font-weight: 800 !important;
+}
+
+.theme-paper-card-social h1,
+.theme-paper-card-social h2,
+.theme-paper-card-social h3,
+.theme-paper-card-social h4 {
+  font-weight: 900 !important;
+  letter-spacing: -0.01em !important;
+}
+
+.theme-cyber-matchmaking-hub h1,
+.theme-cyber-matchmaking-hub h2,
+.theme-cyber-matchmaking-hub h3,
+.theme-cyber-matchmaking-hub h4 {
+  font-weight: 700 !important;
+}
+
+/* 僅將特定代碼、系統標籤、按鈕、輸入框與標記設定為 monospace，保持長段文字的閱讀舒適度 */
+.theme-cyber-matchmaking-hub .font-mono,
+.theme-cyber-matchmaking-hub .cyber-meta,
+.theme-cyber-matchmaking-hub button,
+.theme-cyber-matchmaking-hub input,
+.theme-cyber-matchmaking-hub textarea,
+.theme-cyber-matchmaking-hub .theme-tag {
+  font-family: var(--font-mono), monospace !important;
+  letter-spacing: -0.01em !important;
+}
+
+
+/* ===================================================================
+   🎨 MULTI-THEME STATE-SPECIFIC POLISH OVERRIDES
+   =================================================================== */
+
+/* 1. Lounge Buttons Polish */
+.theme-soft-midnight-lounge .theme-btn:hover {
+  background: rgba(167, 139, 250, 0.15) !important;
+  color: #a78bfa !important;
+  border-color: #a78bfa !important;
+  box-shadow: 0 0 20px rgba(167, 139, 250, 0.3) !important;
+}
+.theme-soft-midnight-lounge .theme-btn:active {
+  transform: scale(0.96) !important;
+}
+.theme-soft-midnight-lounge .theme-btn:focus {
+  box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.4) !important;
+}
+
+/* 2. Paper Buttons Polish */
+.theme-paper-card-social .theme-btn:hover {
+  transform: translate(-2px, -2px) !important;
+  box-shadow: 4px 4px 0px #4A3E3D !important;
+}
+.theme-paper-card-social .theme-btn:active {
+  transform: translate(2px, 2px) !important;
+  box-shadow: 0px 0px 0px #4A3E3D !important;
+}
+.theme-paper-card-social .theme-btn:focus {
+  outline: 2px solid #4A3E3D !important;
+  outline-offset: 2px !important;
+}
+
+/* 3. Cyber Buttons Polish */
+.theme-cyber-matchmaking-hub .theme-btn:hover {
+  background: #58a6ff !important;
+  color: #0d1117 !important;
+  border-color: #58a6ff !important;
+  box-shadow: none !important;
+}
+.theme-cyber-matchmaking-hub .theme-btn:active {
+  background: #1f242c !important;
+  color: #58a6ff !important;
+  border-color: #58a6ff !important;
+}
+.theme-cyber-matchmaking-hub .theme-btn:focus {
+  outline: 1px dashed #58a6ff !important;
+  outline-offset: 2px !important;
+}
+
+/* 4. Universal Disabled States Polish */
+.theme-btn:disabled,
+.theme-input:disabled {
+  opacity: 0.45 !important;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+}
+
+.theme-soft-midnight-lounge .theme-btn:disabled {
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: rgba(255, 255, 255, 0.2) !important;
+  border-color: transparent !important;
+}
+
+.theme-paper-card-social .theme-btn:disabled {
+  background: #FAF6EF !important;
+  color: #a09090 !important;
+  border-color: #a09090 !important;
+  box-shadow: 1px 1px 0px #a09090 !important;
+}
+
+.theme-cyber-matchmaking-hub .theme-btn:disabled {
+  background: transparent !important;
+  color: #30363d !important;
+  border-color: #30363d !important;
+}
+
+/* 5. Toast / Modal Styling Polish Override */
+.theme-soft-midnight-lounge div[role="status"] {
+  border-radius: 9999px !important;
+  background: rgba(22, 26, 34, 0.9) !important;
+  border: 1px solid rgba(167, 139, 250, 0.3) !important;
+  backdrop-filter: blur(12px) !important;
+  color: #e2e8f0 !important;
+}
+
+.theme-paper-card-social div[role="status"] {
+  border-radius: 8px !important;
+  background: #FCFAF6 !important;
+  border: 2px solid #4A3E3D !important;
+  box-shadow: 4px 4px 0px #4A3E3D !important;
+  color: #4A3E3D !important;
+}
+
+.theme-cyber-matchmaking-hub div[role="status"] {
+  border-radius: 0px !important;
+  background: #161b22 !important;
+  border: 1px solid #58a6ff !important;
+  color: #58a6ff !important;
+  font-family: var(--theme-font-family), monospace !important;
+}
+
+@keyframes scan-animation {
+  0% {
+    top: 0%;
+  }
+  50% {
+    top: 100%;
+  }
+  100% {
+    top: 0%;
+  }
+}
+
+/* ===================================================================
+   🛡️ PHASE 3 GOVERNED DESIGN SYSTEM RULES & MOBILE OPTIMIZATIONS
+   =================================================================== */
+
+/* 1. 行動端優先可用性 (Mobile Touch Targets Protection) */
+@media (max-width: 768px) {
+  /* 讓 theme-btn 在手機端擁有更大的隱形觸控點擊熱區，防止誤觸或點不到 */
+  .theme-btn,
+  button.theme-btn,
+  .theme-card button {
+    position: relative;
+  }
+  .theme-btn::before,
+  button.theme-btn::before,
+  .theme-card button::before {
+    content: "";
+    position: absolute;
+    top: -6px;
+    bottom: -6px;
+    left: -4px;
+    right: -4px;
+    pointer-events: auto;
+    z-index: 10;
+  }
+
+  /* 擴展 FloatingDock 底座選項的觸控點擊熱區 */
+  .fixed.bottom-4 a,
+  .fixed.bottom-6 a {
+    position: relative;
+  }
+  .fixed.bottom-4 a::before,
+  .fixed.bottom-6 a::before {
+    content: "";
+    position: absolute;
+    top: -8px;
+    bottom: -8px;
+    left: -6px;
+    right: -6px;
+    pointer-events: auto;
+    z-index: 10;
+  }
+
+  /* 提升行動端滾動穩定度，關閉所有 card 和 button 的 hover 位移與縮放，避免誤觸或視覺震顫 */
+  .theme-card:hover,
+  .glass-panel:hover,
+  .browse-tab:hover,
+  .browse-preview-card:hover,
+  .theme-btn:hover {
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* 2. WCAG-aware 焦點可見性與無障礙強化 (WCAG AA Compliance) */
+:focus-visible {
+  outline: 2px solid var(--theme-input-focus-border-color, var(--ring)) !important;
+  outline-offset: 2px !important;
+}
+
+/* 禁用狀態的灰階無障礙區分度 */
+.theme-btn:disabled,
+button:disabled,
+input:disabled,
+textarea:disabled,
+select:disabled {
+  filter: grayscale(1) opacity(0.5) !important;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+}
+
+/* 3. 限制與收斂系統中的 overdesign behavior (Restraint & Anti-noise) */
+.theme-card,
+.glass-panel,
+.theme-btn {
+  /* 確保互動不產生多重物理動效疊加 (例如 scale 與 rotate 同時觸發) */
+  will-change: transform, opacity;
+}
+
