@@ -66,6 +66,7 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
   const [isMounted, setIsMounted] = useState(false);
   const [heroAlignments, setHeroAlignments] = useState<Record<string, AlignmentConfig>>(HERO_ALIGNMENTS);
   const [isShowingMockData, setIsShowingMockData] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [hasMore, setHasMore] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const requestCounterRef = useRef<number>(0);  // 遞增計數器，比 Date.now() 更可靠
@@ -144,6 +145,8 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
     } else {
       setHasMore(false);
     }
+
+    if (!append) setIsLoading(false);
   };
 
   useEffect(() => {
@@ -321,7 +324,12 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
         </div>
       </div>
 
-      {filteredPlayers.length > 0 ? (
+      {isLoading ? (
+        <div className="flex flex-col items-center justify-center py-20 gap-3 text-[#8c7c6c]">
+          <div className="w-8 h-8 rounded-full border-2 border-[#82b7cc]/30 border-t-[#82b7cc] animate-spin" />
+          <span className="text-xs font-bold tracking-widest">招募特工中⋯</span>
+        </div>
+      ) : filteredPlayers.length > 0 ? (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
             {filteredPlayers.map((player) => (
