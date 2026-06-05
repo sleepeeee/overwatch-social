@@ -158,55 +158,56 @@
   --theme-card-hover-translate-y-mobile: -1px;
 }
 
-/* 暗夜沙龍 (theme-soft-midnight-lounge) */
+/* 包浩斯排版 (theme-soft-midnight-lounge) */
 .theme-soft-midnight-lounge {
-  --background: #0f1115;
-  --foreground: #e2e8f0;
-  --card: #161a22;
-  --card-foreground: #cbd5e1;
-  --muted-foreground: #94a3b8; /* 提升對比度，滿足 WCAG 規範 */
-  --border: rgba(255, 255, 255, 0.08);
-  --ring: #8b5cf6;
-  --theme-bg-gradient: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #09090b 100%);
-  --shadow-card-val: 0 15px 50px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  --border-card-val: 1px solid rgba(255, 255, 255, 0.08);
-  --accent: #a78bfa;
-  --accent-foreground: #1e1b4b;
-  --glass-bg: rgba(22, 26, 34, 0.7);
-  --glass-blur: blur(24px);
-  --glass-border: 1px solid rgba(255, 255, 255, 0.08);
-  --glass-radius: 32px;
-  --glass-hover-bg: rgba(22, 26, 34, 0.85);
-  --glass-hover-border: 1px solid rgba(167, 139, 250, 0.3);
-  --organic-radius: 32px;
-  --shadow-card-hover-val: 0 20px 60px rgba(167, 139, 250, 0.1), 0 0 30px rgba(0, 0, 0, 0.7);
+  --background: #f3f3f3;
+  --foreground: #000000;
+  --card: #ffffff;
+  --card-foreground: #000000;
+  --muted-foreground: #555555;
+  --border: #000000;
+  --ring: #ff0000;
+  --theme-bg-gradient: linear-gradient(180deg, #ffffff 0%, #e5e5e5 100%);
+  --shadow-card-val: none;
+  --border-card-val: 1px solid #000000;
+  --accent: #ff0000;
+  --accent-foreground: #ffffff;
+  --glass-bg: #ffffff;
+  --glass-blur: 0px;
+  --glass-border: 1px solid #000000;
+  --glass-radius: 0px;
+  --glass-hover-bg: #ffffff;
+  --glass-hover-border: 2px solid #000000;
+  --organic-radius: 0px;
+  --shadow-card-hover-val: none;
 
   /* Spacing and structural tokens */
-  --theme-card-radius: 32px;
-  --theme-card-shadow: 0 10px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.03);
-  --theme-card-shadow-hover: 0 15px 50px rgba(167, 139, 250, 0.08), 0 0 25px rgba(0, 0, 0, 0.6);
-  --theme-card-border: 1px solid rgba(255, 255, 255, 0.06);
-  --theme-card-border-hover: 1px solid rgba(167, 139, 250, 0.2);
-  --theme-inner-radius: 24px;
-  --theme-inner-border: 1px solid rgba(255, 255, 255, 0.06);
-  --theme-inner-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
-  --theme-button-radius: 9999px; /* Pill style */
-  --theme-input-radius: 0px; /* Underline input style */
-  --theme-input-border: none;
-  --theme-input-focus-border-color: #a78bfa;
+  --theme-card-radius: 0px;
+  --theme-card-shadow: none;
+  --theme-card-shadow-hover: none;
+  --theme-card-border: 1px solid #000000;
+  --theme-card-border-hover: 2px solid #000000;
+  --theme-inner-radius: 0px;
+  --theme-inner-border: 1px solid #000000;
+  --theme-inner-shadow: none;
+  --theme-button-radius: 0px;
+  --theme-input-radius: 0px;
+  --theme-input-border: 1px solid #000000;
+  --theme-input-focus-border-color: #ff0000;
   --theme-input-focus-ring: none;
-  --theme-tag-radius: 9999px;
-  --theme-tag-border: 1px solid rgba(255, 255, 255, 0.1);
-  --theme-font-family: var(--font-sans);
-  --theme-letter-spacing: 0.06em;
-  --theme-text-transform: none;
-  --theme-transition-duration: 400ms; /* Soft transition */
-  --theme-transition-timing: cubic-bezier(0.16, 1, 0.3, 1);
+  --theme-tag-radius: 0px;
+  --theme-tag-border: 1px solid #000000;
+  --theme-font-family: var(--font-noto-sans-tc);
+  --theme-letter-spacing: 0.02em;
+  --theme-text-transform: uppercase;
+  --theme-transition-duration: 150ms;
+  --theme-transition-timing: steps(4, end);
   --theme-card-rotate: 0deg;
   --theme-card-rotate-mobile: 0deg;
-  --theme-card-hover-translate-y: -2px; /* 降低位移幅度，保持穩定 */
-  --theme-card-hover-translate-y-mobile: 0px; /* 手機端禁止 hover 位移，防誤觸 */
+  --theme-card-hover-translate-y: 0px;
+  --theme-card-hover-translate-y-mobile: 0px;
 }
+
 
 /* 手作紙卡 (theme-paper-card-social) */
 .theme-paper-card-social {
@@ -258,105 +259,107 @@
   --theme-card-hover-translate-y-mobile: 0px; /* 手機端禁止 hover 位移 */
 }
 
-/* 和風禪意 (theme-cyber-matchmaking-hub) */
+/* 蒸汽龐克手稿 (theme-cyber-matchmaking-hub) */
 .theme-cyber-matchmaking-hub {
-  --background: #F6F4EE;
-  --foreground: #4A3C31;
-  --card: #FFFFFF;
-  --card-foreground: #4A3C31;
-  --muted-foreground: #8C7B70;
-  --border: rgba(140, 123, 112, 0.16);
-  --ring: #ebdcd8;
-  --theme-bg-gradient: radial-gradient(circle at 50% 0%, #FAF8F5 0%, #F1EEE6 100%);
-  --shadow-card-val: 0 8px 32px rgba(140, 123, 112, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.6);
-  --border-card-val: 1px solid rgba(140, 123, 112, 0.12);
-  --accent: #f5d46b;
-  --accent-foreground: #4A3C31;
-  --glass-bg: rgba(255, 255, 255, 0.75);
-  --glass-blur: blur(20px);
-  --glass-border: 1px solid rgba(245, 212, 107, 0.22); /* 金粉細線 */
-  --glass-radius: 20px;
-  --glass-hover-bg: rgba(255, 255, 255, 0.85);
-  --glass-hover-border: 1px solid rgba(245, 212, 107, 0.45);
-  --organic-radius: 24px 20px 24px 20px;
-  --shadow-card-hover-val: 0 12px 36px rgba(140, 123, 112, 0.1), 0 0 16px rgba(245, 212, 107, 0.15);
+  --background: #f4ead4;
+  --foreground: #3e2723;
+  --card: #faf6ef;
+  --card-foreground: #3e2723;
+  --muted-foreground: #8c7b70;
+  --border: #8d6e63;
+  --ring: #d84315;
+  --theme-bg-gradient: radial-gradient(circle at 50% 0%, #faf0d7 0%, #e8d8b8 100%);
+  --shadow-card-val: 2px 2px 8px rgba(141, 110, 99, 0.15);
+  --border-card-val: 1px solid #8d6e63;
+  --accent: #b18f4d;
+  --accent-foreground: #faf6ef;
+  --glass-bg: #faf6ef;
+  --glass-blur: 0px;
+  --glass-border: 1px solid #8d6e63;
+  --glass-radius: 4px;
+  --glass-hover-bg: #fffbf5;
+  --glass-hover-border: 2px solid #b18f4d;
+  --organic-radius: 4px;
+  --shadow-card-hover-val: 4px 4px 12px rgba(141, 110, 99, 0.25);
 
   /* Spacing and structural tokens */
-  --theme-card-radius: 20px;
-  --theme-card-shadow: 0 8px 32px rgba(140, 123, 112, 0.05);
-  --theme-card-shadow-hover: 0 12px 36px rgba(140, 123, 112, 0.1), 0 0 20px rgba(245, 212, 107, 0.12);
-  --theme-card-border: 1px solid rgba(140, 123, 112, 0.12);
-  --theme-card-border-hover: 1px solid rgba(245, 212, 107, 0.4);
-  --theme-inner-radius: 14px;
-  --theme-inner-border: 1px solid rgba(140, 123, 112, 0.1);
+  --theme-card-radius: 4px;
+  --theme-card-shadow: 2px 2px 6px rgba(141, 110, 99, 0.1);
+  --theme-card-shadow-hover: 4px 4px 12px rgba(141, 110, 99, 0.2);
+  --theme-card-border: 1px solid #8d6e63;
+  --theme-card-border-hover: 2px solid #b18f4d;
+  --theme-inner-radius: 2px;
+  --theme-inner-border: 1px solid #8d6e63;
   --theme-inner-shadow: none;
-  --theme-button-radius: 16px;
-  --theme-input-radius: 12px;
-  --theme-input-border: 1px solid rgba(140, 123, 112, 0.2);
-  --theme-input-focus-border-color: #f5d46b;
-  --theme-input-focus-ring: 0 0 0 2px rgba(245, 212, 107, 0.25);
-  --theme-tag-radius: 9999px;
-  --theme-tag-border: 1px solid rgba(140, 123, 112, 0.15);
-  --theme-font-family: var(--font-sans);
-  --theme-letter-spacing: normal;
+  --theme-button-radius: 2px;
+  --theme-input-radius: 2px;
+  --theme-input-border: 1px solid #8d6e63;
+  --theme-input-focus-border-color: #b18f4d;
+  --theme-input-focus-ring: none;
+  --theme-tag-radius: 2px;
+  --theme-tag-border: 1px solid #8d6e63;
+  --theme-font-family: Georgia, serif;
+  --theme-letter-spacing: 0.01em;
   --theme-text-transform: none;
-  --theme-transition-duration: 350ms;
+  --theme-transition-duration: 300ms;
   --theme-transition-timing: cubic-bezier(0.25, 0.8, 0.25, 1);
   --theme-card-rotate: 0deg;
   --theme-card-rotate-mobile: 0deg;
-  --theme-card-hover-translate-y: -1.5px;
+  --theme-card-hover-translate-y: -1px;
   --theme-card-hover-translate-y-mobile: 0px;
 }
 
-/* 星空漫步 (theme-starry-midnight) */
+
+/* 賽博街機廳 (theme-starry-midnight) */
 .theme-starry-midnight {
-  --background: #09090e;
-  --foreground: #e2e8f0;
-  --card: #0a0a12;
-  --card-foreground: #cbd5e1;
-  --muted-foreground: #94a3b8;
-  --border: rgba(192, 132, 252, 0.15); /* 紫色微光邊框 */
-  --ring: #c084fc;
-  --theme-bg-gradient: radial-gradient(circle at 50% 0%, oklch(0.12 0.03 290) 0%, oklch(0.06 0.01 285) 100%);
-  --shadow-card-val: 0 15px 50px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  --border-card-val: 1px solid rgba(192, 132, 252, 0.15);
-  --accent: #c084fc;
-  --accent-foreground: #1e1b4b;
-  --glass-bg: rgba(10, 10, 18, 0.5);
-  --glass-blur: blur(28px);
-  --glass-border: 1px solid rgba(192, 132, 252, 0.15);
-  --glass-radius: 32px;
-  --glass-hover-bg: rgba(10, 10, 18, 0.65);
-  --glass-hover-border: 1px solid rgba(192, 132, 252, 0.35);
-  --organic-radius: 32px;
-  --shadow-card-hover-val: 0 20px 60px rgba(192, 132, 252, 0.12), 0 0 30px rgba(0, 0, 0, 0.7);
+  --background: #000000;
+  --foreground: #00f0ff;
+  --card: #08080f;
+  --card-foreground: #00f0ff;
+  --muted-foreground: #ffd700;
+  --border: #ff007f;
+  --ring: #ffd700;
+  --theme-bg-gradient: linear-gradient(180deg, #08000f 0%, #000000 100%);
+  --shadow-card-val: 0 0 15px rgba(255, 0, 127, 0.25);
+  --border-card-val: 1px solid #ff007f;
+  --accent: #ff007f;
+  --accent-foreground: #000000;
+  --glass-bg: rgba(8, 8, 15, 0.8);
+  --glass-blur: 0px;
+  --glass-border: 1px solid #ff007f;
+  --glass-radius: 0px;
+  --glass-hover-bg: rgba(12, 12, 22, 0.9);
+  --glass-hover-border: 2px solid #00f0ff;
+  --organic-radius: 0px;
+  --shadow-card-hover-val: 0 0 25px rgba(0, 240, 255, 0.4);
 
   /* Spacing and structural tokens */
-  --theme-card-radius: 32px;
-  --theme-card-shadow: 0 10px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.03);
-  --theme-card-shadow-hover: 0 15px 50px rgba(192, 132, 252, 0.1), 0 0 25px rgba(0, 0, 0, 0.6);
-  --theme-card-border: 1px solid rgba(192, 132, 252, 0.12);
-  --theme-card-border-hover: 1px solid rgba(192, 132, 252, 0.3);
-  --theme-inner-radius: 24px;
-  --theme-inner-border: 1px solid rgba(192, 132, 252, 0.12);
-  --theme-inner-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
-  --theme-button-radius: 9999px;
-  --theme-input-radius: 9999px;
-  --theme-input-border: 1px solid rgba(192, 132, 252, 0.2);
-  --theme-input-focus-border-color: #c084fc;
-  --theme-input-focus-ring: 0 0 0 2px rgba(192, 132, 252, 0.25);
-  --theme-tag-radius: 9999px;
-  --theme-tag-border: 1px solid rgba(192, 132, 252, 0.2);
-  --theme-font-family: var(--font-sans);
-  --theme-letter-spacing: 0.06em;
-  --theme-text-transform: none;
-  --theme-transition-duration: 400ms;
-  --theme-transition-timing: cubic-bezier(0.16, 1, 0.3, 1);
+  --theme-card-radius: 0px;
+  --theme-card-shadow: 0 0 10px rgba(255, 0, 127, 0.15);
+  --theme-card-shadow-hover: 0 0 20px rgba(0, 240, 255, 0.35);
+  --theme-card-border: 1px solid #ff007f;
+  --theme-card-border-hover: 1px solid #00f0ff;
+  --theme-inner-radius: 0px;
+  --theme-inner-border: 1px solid #ff007f;
+  --theme-inner-shadow: none;
+  --theme-button-radius: 0px;
+  --theme-input-radius: 0px;
+  --theme-input-border: 1px solid #ff007f;
+  --theme-input-focus-border-color: #ffd700;
+  --theme-input-focus-ring: none;
+  --theme-tag-radius: 0px;
+  --theme-tag-border: 1px solid #ff007f;
+  --theme-font-family: var(--font-geist-mono);
+  --theme-letter-spacing: 0.08em;
+  --theme-text-transform: uppercase;
+  --theme-transition-duration: 200ms;
+  --theme-transition-timing: steps(3, end);
   --theme-card-rotate: 0deg;
   --theme-card-rotate-mobile: 0deg;
-  --theme-card-hover-translate-y: -2px;
+  --theme-card-hover-translate-y: 0px;
   --theme-card-hover-translate-y-mobile: 0px;
 }
+
 
 
 .dark {

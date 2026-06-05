@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Search, RotateCcw, Compass } from "lucide-react";
+import { Search, RotateCcw, Compass, PanelRight, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import TopBar from "@/components/TopBar";
 import { useAuth } from "@/context/AuthContext";
@@ -59,6 +59,7 @@ export default function BrowsePage() {
   const { authLoading } = useAuth();
   const [activeGame, setActiveGame] = useState<GameId>("ow");
   const [searchQuery, setSearchQuery] = useState("");
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const handleResetSearch = () => {
     setSearchQuery("");
@@ -88,19 +89,30 @@ export default function BrowsePage() {
       </div>
 
       {/* 🌸 莫蘭迪紙感手稿標頭 - 垂直層級重構 (無背板) */}
-      <div className="atmosphere-content text-left space-y-2 relative z-10 animate-[fadeIn_0.5s_ease-out] pb-1 select-none max-w-2xl mx-auto">
-        <div className="text-[10px] md:text-[11px] font-black uppercase tracking-[0.2em] text-[#8c7c6c]/60 flex items-center gap-1.5">
-          <span>Lobby Directory</span>
-          <span className="w-1.5 h-1.5 rounded-full bg-accent/40" />
-          <span>名片廣場</span>
+      <div className="atmosphere-content text-left space-y-2 relative z-10 animate-[fadeIn_0.5s_ease-out] pb-1 select-none max-w-2xl mx-auto flex justify-between items-start">
+        <div className="space-y-2 flex-grow">
+          <div className="text-[10px] md:text-[11px] font-black uppercase tracking-[0.2em] text-[#8c7c6c]/60 flex items-center gap-1.5">
+            <span>Lobby Directory</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-accent/40" />
+            <span>名片廣場</span>
+          </div>
+          <h1 className="text-xl md:text-2xl font-black tracking-tight text-foreground leading-none pt-0.5">
+            多遊戲玩家招募大廳
+          </h1>
+          <div className="w-12 h-[1px] bg-gradient-to-r from-[#8c7c6c]/25 to-transparent my-2" />
+          <p className="text-muted-foreground font-medium text-[12px] md:text-[13px] leading-relaxed">
+            保留你熟悉的廣場節奏，換上全息極光與手稿紙感宇宙。搜尋今天想一起開局的夥伴，或自由瀏覽不同的遊戲分區。
+          </p>
         </div>
-        <h1 className="text-xl md:text-2xl font-black tracking-tight text-foreground leading-none pt-0.5">
-          多遊戲玩家招募大廳
-        </h1>
-        <div className="w-12 h-[1px] bg-gradient-to-r from-[#8c7c6c]/25 to-transparent my-2" />
-        <p className="text-muted-foreground font-medium text-[12px] md:text-[13px] leading-relaxed">
-          保留你熟悉的廣場節奏，換上全息極光與手稿紙感宇宙。搜尋今天想一起開局的夥伴，或自由瀏覽不同的遊戲分區。
-        </p>
+
+        {/* 打開抽屜按鈕 */}
+        <button
+          onClick={() => setIsDrawerOpen(true)}
+          className="ml-4 p-2.5 rounded-xl border border-[#8c7c6c]/20 hover:border-purple-500/40 bg-card/40 hover:bg-purple-950/20 text-[#8c7c6c] hover:text-purple-300 transition-all duration-300 cursor-pointer shadow-sm group shrink-0"
+          title="開啟沙龍工具箱 (待開發)"
+        >
+          <PanelRight size={18} className="group-hover:rotate-6 transition-transform" />
+        </button>
       </div>
 
       {/* 獨立搜尋與分區藥丸滑動軌道 - 垂直介電隔離層 */}
@@ -162,6 +174,42 @@ export default function BrowsePage() {
         </div>
         <div className={activeGame === "lol" ? "block" : "hidden"}>
           <LoLSquare />
+        </div>
+      </div>
+
+      {/* 🌌 可收合面板 (Drawer/Slide-over) placeholder - (待開發) */}
+      <div 
+        className={`fixed inset-y-0 right-0 z-50 w-80 bg-[#0d111b]/95 backdrop-blur-xl border-l border-purple-500/20 shadow-2xl transform transition-transform duration-300 ease-in-out ${
+          isDrawerOpen ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
+        <div className="p-6 h-full flex flex-col justify-between text-left">
+          <div className="space-y-6">
+            <div className="flex items-center justify-between pb-4 border-b border-white/5">
+              <h3 className="text-xs font-bold tracking-widest text-purple-300 font-mono uppercase">
+                LOBBY WIDGETS (待開發)
+              </h3>
+              <button 
+                onClick={() => setIsDrawerOpen(false)}
+                className="text-slate-400 hover:text-white transition-colors cursor-pointer border-none bg-transparent"
+                title="關閉面板"
+              >
+                <X size={16} />
+              </button>
+            </div>
+            <div className="flex flex-col items-center justify-center py-20 text-center space-y-4">
+              <div className="w-12 h-12 rounded-full border border-dashed border-purple-500/30 flex items-center justify-center text-purple-400 animate-pulse">
+                ⏳
+              </div>
+              <div className="space-y-1">
+                <p className="text-xs font-bold text-slate-300">側欄組件工具箱</p>
+                <p className="text-[10px] text-slate-500">翻牌幸友與揪團活動將收納於此</p>
+              </div>
+            </div>
+          </div>
+          <div className="text-[9px] font-mono text-slate-600 text-center uppercase tracking-widest">
+            After Midnight Hub V2
+          </div>
         </div>
       </div>
     </div>
