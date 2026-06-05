@@ -26,18 +26,16 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [isDark, setIsDarkState] = useState<boolean>(false);
 
   useEffect(() => {
-    // 從 localStorage 獲取初始主題
-    const savedThemeId = localStorage.getItem("theme-style") || "theme-original-baseline";
+    // 強制使用原創基準 (original-baseline)
     const savedDark = localStorage.getItem("theme-dark") === "true";
     
-    const parsedTheme = savedThemeId.replace("theme-", "") as ThemeStyle;
-    setThemeState(parsedTheme);
+    setThemeState("original-baseline");
     setIsDarkState(savedDark);
 
-    // 同步到 documentElement class
+    // 同步到 documentElement class，強制只套用 theme-original-baseline
     const html = document.documentElement;
     html.classList.remove(...ALL_THEME_CLASSES);
-    html.classList.add(`theme-${parsedTheme}`);
+    html.classList.add("theme-original-baseline");
     if (savedDark) {
       html.classList.add("dark");
     } else {
@@ -46,11 +44,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const setTheme = (newTheme: ThemeStyle) => {
-    setThemeState(newTheme);
-    localStorage.setItem("theme-style", `theme-${newTheme}`);
+    // 不允許切換到其他主題，永遠維持 original-baseline
+    setThemeState("original-baseline");
     const html = document.documentElement;
     html.classList.remove(...ALL_THEME_CLASSES);
-    html.classList.add(`theme-${newTheme}`);
+    html.classList.add("theme-original-baseline");
   };
 
   const setIsDark = (dark: boolean) => {
@@ -84,3 +82,4 @@ export function useTheme(): ThemeContextType {
   }
   return ctx;
 }
+

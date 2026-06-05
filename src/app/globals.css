@@ -1,6 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@300;400;600&family=Noto+Serif+TC:wght@200;400&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+
 
 @custom-variant dark (&:is(.dark *));
 
@@ -158,205 +160,9 @@
   --theme-card-hover-translate-y-mobile: -1px;
 }
 
-/* 暗夜沙龍 (theme-soft-midnight-lounge) */
-.theme-soft-midnight-lounge {
-  --background: #F5F6F3;
-  --foreground: #2F3A55;
-  --card: #FFFFFF;
-  --card-foreground: #2F3A55;
-  --muted-foreground: #5D6A85;
-  --border: rgba(47, 58, 85, 0.15);
-  --ring: #82b7cc;
-  --theme-bg-gradient: radial-gradient(circle at 50% 0%, #FFFFFF 0%, #F5F6F3 100%);
-  --shadow-card-val: 0 8px 30px rgba(47, 58, 85, 0.06), 0 2px 8px rgba(47, 58, 85, 0.03);
-  --border-card-val: 1px solid rgba(47, 58, 85, 0.08);
-  --accent: #82b7cc;
-  --accent-foreground: #2F3A55;
-  --glass-bg: rgba(255, 255, 255, 0.65);
-  --glass-blur: blur(20px);
-  --glass-border: 1px solid rgba(47, 58, 85, 0.12);
-  --glass-radius: 24px;
-  --glass-hover-bg: rgba(255, 255, 255, 0.75);
-  --glass-hover-border: 1px solid rgba(47, 58, 85, 0.2);
-  --organic-radius: 24px;
-  --shadow-card-hover-val: 0 12px 35px rgba(47, 58, 85, 0.1);
 
-  /* Spacing and structural tokens */
-  --theme-card-radius: 24px;
-  --theme-card-shadow: 0 8px 30px rgba(47, 58, 85, 0.06), 0 2px 8px rgba(47, 58, 85, 0.03);
-  --theme-card-shadow-hover: 0 12px 35px rgba(47, 58, 85, 0.1);
-  --theme-card-border: 1px solid rgba(47, 58, 85, 0.08);
-  --theme-card-border-hover: 1px solid rgba(47, 58, 85, 0.2);
-  --theme-inner-radius: 16px;
-  --theme-inner-border: 1px solid rgba(47, 58, 85, 0.12);
-  --theme-inner-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.01);
-  --theme-button-radius: 12px;
-  --theme-input-radius: 12px;
-  --theme-input-border: 1px solid rgba(47, 58, 85, 0.15);
-  --theme-input-focus-border-color: #82b7cc;
-  --theme-input-focus-ring: 0 0 0 2px rgba(130, 183, 204, 0.5);
-  --theme-tag-radius: 9999px;
-  --theme-tag-border: 1px dashed rgba(130, 183, 204, 0.3);
-  --theme-font-family: var(--font-sans);
-  --theme-letter-spacing: normal;
-  --theme-text-transform: none;
-  --theme-transition-duration: 300ms;
-  --theme-transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
-  --theme-card-rotate: 0deg;
-  --theme-card-rotate-mobile: 0deg;
-  --theme-card-hover-translate-y: -2px;
-  --theme-card-hover-translate-y-mobile: -1px;
-}
 
-/* 手作紙卡 (theme-paper-card-social) */
-.theme-paper-card-social {
-  --background: #FAF6EF;
-  --foreground: #4A3E3D;
-  --card: #FCFAF6;
-  --card-foreground: #4A3E3D;
-  --muted-foreground: #7C6D6C;
-  --border: #4A3E3D;
-  --ring: #D4A373;
-  --theme-bg-gradient: radial-gradient(circle at 50% 0%, #FCFAF6 0%, #FAF6EF 100%);
-  --shadow-card-val: 4px 4px 0px #4A3E3D;
-  --border-card-val: 2px solid #4A3E3D;
-  --accent: #E07A5F;
-  --accent-foreground: #FCFAF6;
-  --glass-bg: #FCFAF6;
-  --glass-blur: 0px;
-  --glass-border: 2px solid #4A3E3D;
-  --glass-radius: 16px;
-  --glass-hover-bg: #FCFAF6;
-  --glass-hover-border: 2px solid #E07A5F;
-  --organic-radius: 20px 16px 24px 18px;
-  --shadow-card-hover-val: 6px 6px 0px #4A3E3D;
 
-  /* Spacing and structural tokens */
-  --theme-card-radius: 20px 16px 24px 18px;
-  --theme-card-shadow: 4px 4px 0px #4A3E3D;
-  --theme-card-shadow-hover: 6px 6px 0px #4A3E3D;
-  --theme-card-border: 2px solid #4A3E3D;
-  --theme-card-border-hover: 2px solid #4A3E3D;
-  --theme-inner-radius: 12px;
-  --theme-inner-border: 2px solid #4A3E3D;
-  --theme-inner-shadow: none;
-  --theme-button-radius: 8px;
-  --theme-input-radius: 6px;
-  --theme-input-border: 2px solid #4A3E3D;
-  --theme-input-focus-border-color: #E07A5F;
-  --theme-input-focus-ring: none;
-  --theme-tag-radius: 6px;
-  --theme-tag-border: 2px solid #4A3E3D;
-  --theme-font-family: var(--font-sans);
-  --theme-letter-spacing: normal;
-  --theme-text-transform: none;
-  --theme-transition-duration: 250ms;
-  --theme-transition-timing: cubic-bezier(0.34, 1.56, 0.64, 1); /* Elastic lift */
-  --theme-card-rotate: 0.8deg; /* 降低旋轉度，提高大廳排版穩定度 */
-  --theme-card-rotate-mobile: 0deg; /* 手機版完全不旋轉，確保觸控熱區準確 */
-  --theme-card-hover-translate-y: -2px; /* 降低位移 */
-  --theme-card-hover-translate-y-mobile: 0px; /* 手機端禁止 hover 位移 */
-}
-
-/* 和風禪意 (theme-cyber-matchmaking-hub) */
-.theme-cyber-matchmaking-hub {
-  --background: #F6F4EE;
-  --foreground: #4A3C31;
-  --card: #FFFFFF;
-  --card-foreground: #4A3C31;
-  --muted-foreground: #8C7B70;
-  --border: rgba(140, 123, 112, 0.16);
-  --ring: #ebdcd8;
-  --theme-bg-gradient: radial-gradient(circle at 50% 0%, #FAF8F5 0%, #F1EEE6 100%);
-  --shadow-card-val: 0 8px 32px rgba(140, 123, 112, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.6);
-  --border-card-val: 1px solid rgba(140, 123, 112, 0.12);
-  --accent: #f5d46b;
-  --accent-foreground: #4A3C31;
-  --glass-bg: rgba(255, 255, 255, 0.75);
-  --glass-blur: blur(20px);
-  --glass-border: 1px solid rgba(245, 212, 107, 0.22); /* 金粉細線 */
-  --glass-radius: 20px;
-  --glass-hover-bg: rgba(255, 255, 255, 0.85);
-  --glass-hover-border: 1px solid rgba(245, 212, 107, 0.45);
-  --organic-radius: 24px 20px 24px 20px;
-  --shadow-card-hover-val: 0 12px 36px rgba(140, 123, 112, 0.1), 0 0 16px rgba(245, 212, 107, 0.15);
-
-  /* Spacing and structural tokens */
-  --theme-card-radius: 20px;
-  --theme-card-shadow: 0 8px 32px rgba(140, 123, 112, 0.05);
-  --theme-card-shadow-hover: 0 12px 36px rgba(140, 123, 112, 0.1), 0 0 20px rgba(245, 212, 107, 0.12);
-  --theme-card-border: 1px solid rgba(140, 123, 112, 0.12);
-  --theme-card-border-hover: 1px solid rgba(245, 212, 107, 0.4);
-  --theme-inner-radius: 14px;
-  --theme-inner-border: 1px solid rgba(140, 123, 112, 0.1);
-  --theme-inner-shadow: none;
-  --theme-button-radius: 16px;
-  --theme-input-radius: 12px;
-  --theme-input-border: 1px solid rgba(140, 123, 112, 0.2);
-  --theme-input-focus-border-color: #f5d46b;
-  --theme-input-focus-ring: 0 0 0 2px rgba(245, 212, 107, 0.25);
-  --theme-tag-radius: 9999px;
-  --theme-tag-border: 1px solid rgba(140, 123, 112, 0.15);
-  --theme-font-family: var(--font-sans);
-  --theme-letter-spacing: normal;
-  --theme-text-transform: none;
-  --theme-transition-duration: 350ms;
-  --theme-transition-timing: cubic-bezier(0.25, 0.8, 0.25, 1);
-  --theme-card-rotate: 0deg;
-  --theme-card-rotate-mobile: 0deg;
-  --theme-card-hover-translate-y: -1.5px;
-  --theme-card-hover-translate-y-mobile: 0px;
-}
-
-/* 星空漫步 (theme-starry-midnight) */
-.theme-starry-midnight {
-  --background: #09090e;
-  --foreground: #e2e8f0;
-  --card: #0a0a12;
-  --card-foreground: #cbd5e1;
-  --muted-foreground: #94a3b8;
-  --border: rgba(192, 132, 252, 0.15); /* 紫色微光邊框 */
-  --ring: #c084fc;
-  --theme-bg-gradient: radial-gradient(circle at 50% 0%, oklch(0.12 0.03 290) 0%, oklch(0.06 0.01 285) 100%);
-  --shadow-card-val: 0 15px 50px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  --border-card-val: 1px solid rgba(192, 132, 252, 0.15);
-  --accent: #c084fc;
-  --accent-foreground: #1e1b4b;
-  --glass-bg: rgba(10, 10, 18, 0.5);
-  --glass-blur: blur(28px);
-  --glass-border: 1px solid rgba(192, 132, 252, 0.15);
-  --glass-radius: 32px;
-  --glass-hover-bg: rgba(10, 10, 18, 0.65);
-  --glass-hover-border: 1px solid rgba(192, 132, 252, 0.35);
-  --organic-radius: 32px;
-  --shadow-card-hover-val: 0 20px 60px rgba(192, 132, 252, 0.12), 0 0 30px rgba(0, 0, 0, 0.7);
-
-  /* Spacing and structural tokens */
-  --theme-card-radius: 32px;
-  --theme-card-shadow: 0 10px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.03);
-  --theme-card-shadow-hover: 0 15px 50px rgba(192, 132, 252, 0.1), 0 0 25px rgba(0, 0, 0, 0.6);
-  --theme-card-border: 1px solid rgba(192, 132, 252, 0.12);
-  --theme-card-border-hover: 1px solid rgba(192, 132, 252, 0.3);
-  --theme-inner-radius: 24px;
-  --theme-inner-border: 1px solid rgba(192, 132, 252, 0.12);
-  --theme-inner-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
-  --theme-button-radius: 9999px;
-  --theme-input-radius: 9999px;
-  --theme-input-border: 1px solid rgba(192, 132, 252, 0.2);
-  --theme-input-focus-border-color: #c084fc;
-  --theme-input-focus-ring: 0 0 0 2px rgba(192, 132, 252, 0.25);
-  --theme-tag-radius: 9999px;
-  --theme-tag-border: 1px solid rgba(192, 132, 252, 0.2);
-  --theme-font-family: var(--font-sans);
-  --theme-letter-spacing: 0.06em;
-  --theme-text-transform: none;
-  --theme-transition-duration: 400ms;
-  --theme-transition-timing: cubic-bezier(0.16, 1, 0.3, 1);
-  --theme-card-rotate: 0deg;
-  --theme-card-rotate-mobile: 0deg;
-  --theme-card-hover-translate-y: -2px;
-  --theme-card-hover-translate-y-mobile: 0px;
-}
 
 
 .dark {
@@ -1353,36 +1159,7 @@ html, body {
   box-shadow: var(--theme-input-focus-ring) !important;
 }
 
-/* Theme-specific custom inputs presentation layer override */
-.theme-soft-midnight-lounge .theme-input {
-  border-bottom: 2px solid rgba(255, 255, 255, 0.15) !important;
-  background-color: transparent !important;
-  padding-left: 0.25rem !important;
-  padding-right: 0.25rem !important;
-  border-radius: 0px !important;
-}
-.theme-soft-midnight-lounge .theme-input:focus {
-  border-bottom-color: var(--theme-input-focus-border-color) !important;
-  box-shadow: none !important;
-}
 
-.theme-paper-card-social .theme-input {
-  box-shadow: inset 2px 2px 0px rgba(74, 62, 61, 0.15) !important;
-}
-.theme-paper-card-social .theme-input:focus {
-  outline: 2px solid #4A3E3D !important;
-  outline-offset: 1px !important;
-  box-shadow: none !important;
-}
-
-.theme-cyber-matchmaking-hub .theme-input {
-  position: relative !important;
-}
-.theme-cyber-matchmaking-hub .theme-input:focus {
-  border-color: var(--theme-input-focus-border-color) !important;
-  outline: 1px solid var(--theme-input-focus-border-color) !important;
-  box-shadow: none !important;
-}
 
 /* 5. Theme Tag / Badge */
 .theme-tag {
@@ -1393,29 +1170,7 @@ html, body {
 }
 
 /* 6. Theme Specific Navigation Overrides */
-.theme-soft-midnight-lounge .browse-tab-active {
-  border-bottom: 2px solid #a78bfa !important;
-  background: rgba(167, 139, 250, 0.1) !important;
-  color: #a78bfa !important;
-  box-shadow: 0 4px 15px rgba(167, 139, 250, 0.2) !important;
-  border-radius: 9999px !important;
-}
 
-.theme-paper-card-social .browse-tab-active {
-  border: 2px solid #4A3E3D !important;
-  background: #FCFAF6 !important;
-  color: #4A3E3D !important;
-  box-shadow: 3px 3px 0px #4A3E3D !important;
-  border-radius: 6px !important;
-}
-
-.theme-cyber-matchmaking-hub .browse-tab-active {
-  border: 1px solid #58a6ff !important;
-  background: #1f242c !important;
-  color: #58a6ff !important;
-  box-shadow: none !important;
-  border-radius: 0px !important;
-}
 
 /* 7. Animation / Motion accessibility reduced-motion guardrail */
 @media (prefers-reduced-motion: reduce) {
@@ -1429,92 +1184,15 @@ html, body {
 }
 
 /* 8. Typography and Typeset overrides per theme */
-.theme-soft-midnight-lounge h1,
-.theme-soft-midnight-lounge h2,
-.theme-soft-midnight-lounge h3,
-.theme-soft-midnight-lounge h4,
-.theme-soft-midnight-lounge .browse-tab span,
-.theme-soft-midnight-lounge button {
-  letter-spacing: 0.12em !important;
-  text-transform: uppercase !important;
-  font-weight: 800 !important;
-}
 
-.theme-paper-card-social h1,
-.theme-paper-card-social h2,
-.theme-paper-card-social h3,
-.theme-paper-card-social h4 {
-  font-weight: 900 !important;
-  letter-spacing: -0.01em !important;
-}
-
-.theme-cyber-matchmaking-hub h1,
-.theme-cyber-matchmaking-hub h2,
-.theme-cyber-matchmaking-hub h3,
-.theme-cyber-matchmaking-hub h4 {
-  font-weight: 700 !important;
-}
-
-/* 僅將特定代碼、系統標籤、按鈕、輸入框與標記設定為 monospace，保持長段文字的閱讀舒適度 */
-.theme-cyber-matchmaking-hub .font-mono,
-.theme-cyber-matchmaking-hub .cyber-meta,
-.theme-cyber-matchmaking-hub button,
-.theme-cyber-matchmaking-hub input,
-.theme-cyber-matchmaking-hub textarea,
-.theme-cyber-matchmaking-hub .theme-tag {
-  font-family: var(--font-mono), monospace !important;
-  letter-spacing: -0.01em !important;
-}
 
 
 /* ===================================================================
    🎨 MULTI-THEME STATE-SPECIFIC POLISH OVERRIDES
    =================================================================== */
 
-/* 1. Lounge Buttons Polish */
-.theme-soft-midnight-lounge .theme-btn:hover {
-  background: rgba(167, 139, 250, 0.15) !important;
-  color: #a78bfa !important;
-  border-color: #a78bfa !important;
-  box-shadow: 0 0 20px rgba(167, 139, 250, 0.3) !important;
-}
-.theme-soft-midnight-lounge .theme-btn:active {
-  transform: scale(0.96) !important;
-}
-.theme-soft-midnight-lounge .theme-btn:focus {
-  box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.4) !important;
-}
 
 /* 2. Paper Buttons Polish */
-.theme-paper-card-social .theme-btn:hover {
-  transform: translate(-2px, -2px) !important;
-  box-shadow: 4px 4px 0px #4A3E3D !important;
-}
-.theme-paper-card-social .theme-btn:active {
-  transform: translate(2px, 2px) !important;
-  box-shadow: 0px 0px 0px #4A3E3D !important;
-}
-.theme-paper-card-social .theme-btn:focus {
-  outline: 2px solid #4A3E3D !important;
-  outline-offset: 2px !important;
-}
-
-/* 3. Cyber Buttons Polish */
-.theme-cyber-matchmaking-hub .theme-btn:hover {
-  background: #58a6ff !important;
-  color: #0d1117 !important;
-  border-color: #58a6ff !important;
-  box-shadow: none !important;
-}
-.theme-cyber-matchmaking-hub .theme-btn:active {
-  background: #1f242c !important;
-  color: #58a6ff !important;
-  border-color: #58a6ff !important;
-}
-.theme-cyber-matchmaking-hub .theme-btn:focus {
-  outline: 1px dashed #58a6ff !important;
-  outline-offset: 2px !important;
-}
 
 /* 4. Universal Disabled States Polish */
 .theme-btn:disabled,
@@ -1524,49 +1202,10 @@ html, body {
   pointer-events: none !important;
 }
 
-.theme-soft-midnight-lounge .theme-btn:disabled {
-  background: rgba(255, 255, 255, 0.05) !important;
-  color: rgba(255, 255, 255, 0.2) !important;
-  border-color: transparent !important;
-}
 
-.theme-paper-card-social .theme-btn:disabled {
-  background: #FAF6EF !important;
-  color: #a09090 !important;
-  border-color: #a09090 !important;
-  box-shadow: 1px 1px 0px #a09090 !important;
-}
-
-.theme-cyber-matchmaking-hub .theme-btn:disabled {
-  background: transparent !important;
-  color: #30363d !important;
-  border-color: #30363d !important;
-}
 
 /* 5. Toast / Modal Styling Polish Override */
-.theme-soft-midnight-lounge div[role="status"] {
-  border-radius: 9999px !important;
-  background: rgba(22, 26, 34, 0.9) !important;
-  border: 1px solid rgba(167, 139, 250, 0.3) !important;
-  backdrop-filter: blur(12px) !important;
-  color: #e2e8f0 !important;
-}
 
-.theme-paper-card-social div[role="status"] {
-  border-radius: 8px !important;
-  background: #FCFAF6 !important;
-  border: 2px solid #4A3E3D !important;
-  box-shadow: 4px 4px 0px #4A3E3D !important;
-  color: #4A3E3D !important;
-}
-
-.theme-cyber-matchmaking-hub div[role="status"] {
-  border-radius: 0px !important;
-  background: #161b22 !important;
-  border: 1px solid #58a6ff !important;
-  color: #58a6ff !important;
-  font-family: var(--theme-font-family), monospace !important;
-}
 
 @keyframes scan-animation {
   0% {
@@ -1662,210 +1301,11 @@ select:disabled {
    🌌 樣式 5：星空漫步專屬動畫與極光發光樣式
    =================================================================== */
 
-.theme-starry-midnight .starry-bg-container {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  z-index: 0;
-  pointer-events: none;
-  background-image: 
-    linear-gradient(rgba(192, 132, 252, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(192, 132, 252, 0.03) 1px, transparent 1px);
-  background-size: 40px 40px;
-}
-
-.theme-starry-midnight .starry-dust {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background-image: 
-    radial-gradient(1px 1px at 10% 20%, #fff, transparent),
-    radial-gradient(1.5px 1.5px at 20% 30%, rgba(255,255,255,0.8), transparent),
-    radial-gradient(1px 1px at 30% 10%, rgba(192, 132, 252, 0.6), transparent),
-    radial-gradient(2px 2px at 40% 70%, #fff, transparent),
-    radial-gradient(1px 1px at 50% 40%, rgba(255,255,255,0.4), transparent),
-    radial-gradient(1.5px 1.5px at 60% 80%, rgba(192, 132, 252, 0.7), transparent),
-    radial-gradient(1px 1px at 70% 50%, #fff, transparent),
-    radial-gradient(2.5px 2.5px at 80% 20%, rgba(255,255,255,0.9), transparent),
-    radial-gradient(1px 1px at 90% 60%, rgba(192, 132, 252, 0.5), transparent),
-    radial-gradient(1.5px 1.5px at 95% 30%, #fff, transparent);
-  animation: starry-twinkle 8s infinite ease-in-out alternate;
-  opacity: 0.45;
-}
-
-.theme-starry-midnight .aurora-cloud-1 {
-  position: absolute;
-  top: -10%;
-  left: 10%;
-  width: 50%;
-  height: 60%;
-  background: radial-gradient(circle, oklch(0.7 0.22 300 / 0.08) 0%, transparent 70%);
-  filter: blur(120px);
-  animation: aurora-float 20s infinite alternate ease-in-out;
-}
-
-.theme-starry-midnight .aurora-cloud-2 {
-  position: absolute;
-  bottom: -10%;
-  right: 15%;
-  width: 55%;
-  height: 65%;
-  background: radial-gradient(circle, oklch(0.75 0.18 320 / 0.06) 0%, transparent 75%);
-  filter: blur(140px);
-  animation: aurora-float 25s infinite alternate-reverse ease-in-out;
-}
-
-/* Keyframes for Theme 5 */
-@keyframes starry-twinkle {
-  0% { opacity: 0.3; }
-  50% { opacity: 0.6; }
-  100% { opacity: 0.4; }
-}
-
-@keyframes aurora-float {
-  0% {
-    transform: translate(0, 0) scale(1);
-  }
-  100% {
-    transform: translate(3vw, 5vh) scale(1.15);
-  }
-}
-
-/* Orbit Path and Celestial Body Animation */
-.theme-starry-midnight .orbit-path {
-  stroke-dasharray: 4 6;
-  opacity: 0.15;
-}
-
-@keyframes orbitRotation {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-/* Radial Glow & Tilt Cards */
-.theme-starry-midnight .starry-glow-card {
-  position: relative;
-  overflow: hidden;
-  transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease;
-  transform-style: preserve-3d;
-}
-
-.theme-starry-midnight .starry-glow-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    300px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-    rgba(192, 132, 252, 0.08),
-    transparent 80%
-  );
-  z-index: 1;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.5s ease;
-}
-
-.theme-starry-midnight .starry-glow-card:hover::before {
-  opacity: 1;
-}
-
-.theme-starry-midnight .starry-glow-card::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(
-    to bottom right,
-    rgba(192, 132, 252, 0.25),
-    transparent 40%,
-    transparent 60%,
-    rgba(192, 132, 252, 0.1)
-  );
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-  z-index: 2;
-}
-
-.theme-starry-midnight .font-serif-tc {
-  font-family: "Noto Serif TC", serif;
-}
 
 /* =========================================================================
    🌌 主題視覺升級懸浮粒子動畫與樣式 (去霓虹)
    ========================================================================= */
 
-/* 1. 靜夜星塵粒子 (Starry Dust) */
-.starry-dust-particle {
-  position: absolute;
-  border-radius: 50%;
-  background-color: #faf8f5;
-  pointer-events: none;
-  opacity: 0.2;
-  animation: starry-twinkle 6s ease-in-out infinite alternate;
-}
-
-@keyframes starry-twinkle {
-  0% {
-    transform: translateY(0) scale(0.8);
-    opacity: 0.2;
-  }
-  50% {
-    opacity: 0.8;
-  }
-  100% {
-    transform: translateY(-40px) scale(1.2);
-    opacity: 0.3;
-  }
-}
-
-/* 2. 深夜微塵粒子 (Lounge Dust) */
-.lounge-dust-particle {
-  position: absolute;
-  pointer-events: none;
-  border-radius: 50%;
-  background-color: rgba(167, 139, 250, 0.4);
-  opacity: 0.15;
-  animation: lounge-drift 15s ease-in-out infinite alternate;
-}
-
-@keyframes lounge-drift {
-  0% {
-    transform: translate(0, 0) scale(0.8);
-    opacity: 0.1;
-  }
-  100% {
-    transform: translate(40px, -50px) scale(1.2);
-    opacity: 0.3;
-  }
-}
-
-/* 3. 禪風金粉粒子 (Zen Gold Dust) */
-.zen-gold-particle {
-  position: absolute;
-  pointer-events: none;
-  border-radius: 50%;
-  background-color: #f5d46b;
-  opacity: 0.2;
-  animation: zen-gold-drift 10s ease-in-out infinite alternate;
-}
-
-@keyframes zen-gold-drift {
-  0% {
-    transform: translate(0, 0) scale(0.7);
-    opacity: 0.1;
-  }
-  100% {
-    transform: translate(-30px, -40px) scale(1.1);
-    opacity: 0.3;
-  }
-}
 
 /* 4. 處理 reduced-motion */
 @media (prefers-reduced-motion: reduce) {
@@ -1876,5 +1316,21 @@ select:disabled {
     transform: none !important;
   }
 }
+
+/* =========================================================================
+   🌌 深色星雲漂移背景 (Nebula Drift Background)
+   ========================================================================= */
+
+/* =========================================================================
+   🌌 深色底部欄樣式 (Deep Atmospheric Footer)
+   ========================================================================= */
+
+.site-footer {
+  background-color: #030305 !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.0075);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.0025);
+}
+
+
 
 

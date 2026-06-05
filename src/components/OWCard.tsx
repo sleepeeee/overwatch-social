@@ -8,7 +8,6 @@ import { SocialIcon } from "@/components/ui/SocialIcons";
 import { HERO_ALIGNMENTS, DEFAULT_ALIGNMENT } from "@/data/heroAlignments";
 import { HeroCardBackground } from "./HeroCardBackground";
 import { getHeroBackgroundConfig } from "@/data/heroBackgrounds";
-import { useTheme } from "@/context/ThemeContext";
 
 interface OWCardProps {
   cardData: OWPlayerCard;
@@ -28,7 +27,6 @@ export default function OWCard({
   const [copiedTag, setCopiedTag] = useState(false);
   const [activeSocial, setActiveSocial] = useState<string | null>(null);
   const [copiedSocial, setCopiedSocial] = useState<string | null>(null);
-  const { theme } = useTheme();
 
   // 🛡️ [Mitigation] 強固解構，全面配置預設值，徹底阻斷型別缺失與空指針崩潰
   const {
@@ -137,110 +135,6 @@ export default function OWCard({
   };
 
 
-
-  if (theme === "paper-card-social") {
-    return (
-      <div className="theme-card relative w-full max-w-[420px] mx-auto p-5 overflow-hidden flex flex-col justify-between group/card bg-[#FCFAF6] border-2 border-[#4A3E3D]" style={{ fontFamily: "var(--theme-font-family), sans-serif" }}>
-        <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-20 h-5 bg-[#D4A373]/30 border-x-2 border-b-2 border-dashed border-[#4A3E3D] z-20 pointer-events-none" />
-        <div className="flex justify-between items-center border-b-2 border-[#4A3E3D] pb-2 mb-3">
-          <span className="font-extrabold text-[10px] tracking-wider text-[#4A3E3D]">特工手札 ID</span>
-          <span className="theme-tag bg-[#E07A5F]/10 text-[#E07A5F] border border-[#4A3E3D] px-2 py-0.5 text-[9px] font-bold rounded">{server}</span>
-        </div>
-        <div className="grid grid-cols-3 gap-2 mb-3">
-          {selected_heroes.slice(0, 3).map((heroId, index) => {
-            const heroInfo = heroId ? getHeroInfo(heroId) : null;
-            return (
-              <div key={index} className="bg-white border border-[#4A3E3D] p-1 shadow-[2px_2px_0px_#4A3E3D] flex flex-col justify-between h-[120px] relative select-none">
-                <div className="relative w-full h-[78%] bg-stone-100 overflow-hidden border border-stone-200">
-                  {heroInfo ? (
-                    <img src={`/images/heroes/full/${heroInfo.id}.png`} alt={heroInfo.name} className="w-full h-full object-cover scale-[1.6] translate-y-[12%]" draggable="false" />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-stone-300"><Sparkles size={12} /></div>
-                  )}
-                </div>
-                <span className="text-[9px] font-bold text-[#4A3E3D] text-center truncate pt-0.5">{heroInfo?.name || "待解鎖"}</span>
-              </div>
-            );
-          })}
-        </div>
-        <div className="mb-2.5">
-          <h4 className="font-extrabold text-xs text-[#4A3E3D] tracking-tight">玩家暱稱: {getDisplayBattleTag()}</h4>
-        </div>
-        <div className="theme-inner-panel relative bg-[#FAF0D7] border border-[#4A3E3D] p-3 mb-3.5 shadow-[2px_2px_0px_#4A3E3D] rotate-[-0.5deg]">
-          <div className="absolute top-[-5px] left-3 w-3 h-3 rounded-full bg-red-500 border border-[#4A3E3D] shadow-sm" />
-          <p className="text-[11px] font-bold text-[#4A3E3D] leading-relaxed pt-1">&ldquo;{message || "這裡空空如也，等特工寫下字跡..."}&rdquo;</p>
-        </div>
-        <div className="flex flex-wrap gap-1 mb-3.5 min-h-[26px] items-center">
-          {tags.length > 0 ? tags.map((tagText) => (
-            <span key={tagText} className="theme-tag bg-white border border-[#4A3E3D] px-2 py-0.5 text-[9px] font-bold shadow-[1px_1px_0px_#4A3E3D] hover:scale-105 rounded-sm">#{tagText}</span>
-          )) : <span className="text-[9px] text-[#7c6d6c]/60 italic font-bold">未貼貼紙</span>}
-        </div>
-        <div className="flex justify-between items-center border-t border-[#4A3E3D] pt-2.5 mt-auto">
-          <span className="text-[9px] font-bold text-[#4A3E3D]">🎤 {mic_status === "mic-on" ? "語音: 可開麥" : "語音: 不用麥"}</span>
-          {(isEditable || is_tag_visible) && battle_tag !== "已隱藏#xxxx" && (
-            <button onClick={handleCopyTag} className="theme-btn px-3 py-1 bg-[#E07A5F] hover:bg-[#D16B50] text-white text-[9px] font-black border border-[#4A3E3D] shadow-[2px_2px_0px_#4A3E3D] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[0px_0px_0px_#4A3E3D] relative transition-all cursor-pointer rounded-sm">
-              {copiedTag ? "已蓋印章" : "複製資料"}
-              {copiedTag && <span className="absolute -top-8 right-0 bg-gray-900 text-white text-[9px] py-1 px-2 rounded shadow-md whitespace-nowrap z-50">複製成功！</span>}
-            </button>
-          )}
-        </div>
-      </div>
-    );
-  }
-
-  if (theme === "cyber-matchmaking-hub") {
-    const primaryHeroId = selected_heroes[0];
-    const primaryHeroInfo = primaryHeroId ? getHeroInfo(primaryHeroId) : null;
-    return (
-      <div className="theme-card relative w-full max-w-[420px] mx-auto p-4 flex flex-col justify-between group/card bg-[#161b22] border border-[#30363d] rounded-none" style={{ fontFamily: "var(--theme-font-family), sans-serif" }}>
-        <div className="cyber-corner-tl" />
-        <div className="cyber-corner-tr" />
-        <div className="cyber-corner-bl" />
-        <div className="cyber-corner-br" />
-        <div className="flex justify-between items-center text-[8px] border-b border-[#30363d] pb-1.5 mb-3 text-[#58a6ff] font-mono">
-          <span>[SYS_MATCH: ACTIVE]</span>
-          <span>LOC: {server.toUpperCase()}</span>
-        </div>
-        <div className="grid grid-cols-2 gap-3 mb-3 border border-[#30363d] p-2 bg-[#0d1117]/60">
-          <div className="flex flex-col gap-1 border-r border-[#30363d] pr-2">
-            <div className="relative w-full h-[84px] bg-black/40 border border-[#30363d] overflow-hidden select-none">
-              {primaryHeroInfo ? (
-                <img src={`/images/heroes/full/${primaryHeroInfo.id}.png`} alt="主玩英雄" className="w-full h-full object-cover scale-[1.5] translate-y-[10%]" draggable="false" />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-[#58a6ff]/20 text-[9px] font-mono">N/A</div>
-              )}
-              <div className="absolute inset-x-0 h-[1.5px] bg-[#58a6ff]/40 top-0 animate-[scan-animation_2s_linear_infinite]" />
-            </div>
-            <span className="text-[9px] font-bold text-slate-300 truncate pt-1 font-mono">ID: {getDisplayBattleTag()}</span>
-          </div>
-          <div className="flex flex-col justify-between text-[8px] gap-1 pl-1 font-mono">
-            <div className="flex justify-between"><span className="text-[#8b949e]">GAME:</span><span className="text-slate-200">OW_2</span></div>
-            <div className="flex justify-between"><span className="text-[#8b949e]">ROLE:</span><span className="text-slate-200 truncate max-w-[60px]">{primaryHeroInfo ? primaryHeroInfo.role.toUpperCase() : "UNKNOWN"}</span></div>
-            <div className="flex justify-between"><span className="text-[#8b949e]">MBTI:</span><span className="text-[#58a6ff]">{mbti?.toUpperCase() || "UNKNOWN"}</span></div>
-            <div className="flex justify-between"><span className="text-[#8b949e]">MIC:</span><span className={mic_status === "mic-on" ? "text-emerald-400" : "text-amber-500"}>{mic_status === "mic-on" ? "ON" : "OFF"}</span></div>
-            <div className="flex justify-between border-t border-[#30363d] pt-1 mt-0.5"><span className="text-[#8b949e]">COMPAT:</span><span className="text-emerald-400 font-bold">96%</span></div>
-          </div>
-        </div>
-        <div className="bg-[#0d1117] border border-[#30363d] p-2 text-[9px] mb-3 leading-relaxed min-h-[54px]">
-          <span className="text-[#8b949e] block text-[7px] mb-0.5 font-mono">[LOG_MSG]</span>
-          <p className="text-[#c9d1d9] font-sans">{message || "No console messages recorded..."}</p>
-        </div>
-        <div className="flex flex-wrap gap-1 mb-3.5 min-h-[24px] items-center font-mono">
-          {tags.length > 0 ? tags.map((t) => (
-            <span key={t} className="theme-tag text-[8px] border border-[#30363d] px-1.5 py-0.5 text-[#58a6ff]">[{t.toUpperCase()}]</span>
-          )) : <span className="text-[8px] text-slate-600">[NO_TAGS]</span>}
-        </div>
-        <div className="w-full mt-auto">
-          {(isEditable || is_tag_visible) && battle_tag !== "已隱藏#xxxx" && (
-            <button onClick={handleCopyTag} className="theme-btn w-full py-1 text-center bg-transparent border border-[#58a6ff] hover:bg-[#58a6ff] hover:text-[#0d1117] text-[#58a6ff] text-[9px] font-bold uppercase transition-all tracking-wider relative cursor-pointer font-mono">
-              {copiedTag ? "> COPY_SUCCESS <" : "> EXECUTE_CONNECT <"}
-              {copiedTag && <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-[9px] py-1 px-2 rounded shadow-md whitespace-nowrap z-50 font-sans normal-case">複製成功！</span>}
-            </button>
-          )}
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="theme-card relative w-full max-w-[420px] mx-auto p-5 overflow-hidden flex flex-col justify-between group/card" style={{ fontFamily: "var(--theme-font-family), sans-serif" }}>

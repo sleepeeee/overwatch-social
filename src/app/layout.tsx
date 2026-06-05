@@ -47,7 +47,7 @@ export default function RootLayout({
             {/* 開發者模式 banner（需要在 AuthProvider 內，因為使用 useAuth()）*/}
             <DevModeBanner />
             <main className="site-main flex-1 relative z-10">{children}</main>
-            <footer className="site-footer text-center py-4 text-gray-600 text-sm pb-24 relative z-10">
+            <footer className="site-footer text-center py-5 text-gray-400/50 text-xs pb-24 relative z-10">
               © 2026 OW Social · 找到你的最佳特工戰友
             </footer>
             {/* 全局常駐的高質感毛玻璃懸浮導航列 */}
