@@ -136,52 +136,7 @@ export default function OWCard({
     return platform.charAt(0).toUpperCase() + platform.slice(1);
   };
 
-  if (theme === "soft-midnight-lounge") {
-    return (
-      <div className="midnight-player-artifact monitor-glow-artifacts theme-card relative w-full max-w-[420px] mx-auto p-6 overflow-hidden flex flex-col items-center justify-between text-center group/card gap-5" style={{ fontFamily: "var(--theme-font-family), sans-serif" }}>
-        <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-[#a78bfa]/30 to-transparent" />
-        <div className="w-full flex justify-between items-center text-[10px] tracking-widest text-[#a78bfa] uppercase font-bold">
-          <span>{server}</span>
-          {mbti && <span className="bg-[#a78bfa]/10 px-2.5 py-0.5 rounded-full">{mbti}</span>}
-        </div>
-        <div className="flex justify-center items-center py-2 select-none">
-          {selected_heroes.slice(0, 3).map((heroId, index) => {
-            const heroInfo = heroId ? getHeroInfo(heroId) : null;
-            return (
-              <div key={index} className="w-16 h-16 rounded-full border-2 border-white/5 overflow-hidden bg-black/40 -ml-3 first:ml-0 shadow-xl relative group/lounge-hero transition-[border-color,box-shadow,filter] duration-300 hover:border-[#b7a8ff]/45 hover:shadow-[0_0_18px_rgba(183,168,255,0.24)] hover:z-20" style={{ zIndex: 10 - index }}>
-                {heroInfo ? (
-                  <img src={`/images/heroes/full/${heroInfo.id}.png`} alt={heroInfo.name} className="w-full h-full object-cover scale-[1.6] translate-y-[8%]" draggable="false" />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-white/10"><Sparkles size={16} /></div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-        <div className="space-y-1">
-          <h3 className="text-lg font-bold tracking-wider text-slate-100">{getDisplayBattleTag()}</h3>
-          <p className="text-[10px] tracking-widest text-slate-500 uppercase">{languages.join(' · ') || "一般語言"}</p>
-        </div>
-        <div className="px-4 py-2">
-          <p className="text-slate-300 text-xs md:text-sm italic leading-relaxed">&ldquo;{message || "這個特工靜靜待命..."}&rdquo;</p>
-        </div>
-        <div className="flex flex-wrap justify-center gap-1.5 min-h-[28px] items-center">
-          {tags.length > 0 ? tags.map((t) => (
-            <span key={t} className="theme-tag text-[9px] font-bold px-3 py-1 bg-white/5 border border-white/10 text-[#a78bfa] rounded-full">#{t}</span>
-          )) : <span className="text-[9px] text-slate-600 italic">尚未設定標籤</span>}
-        </div>
-        <div className="w-full pt-3 border-t border-white/5 flex justify-between items-center mt-auto">
-          <span className="text-[10px] text-slate-400 font-medium">{mic_status === "mic-on" ? "📢 可開麥交流" : "🔇 不用語音"}</span>
-          {(isEditable || is_tag_visible) && battle_tag !== "已隱藏#xxxx" && (
-            <button onClick={handleCopyTag} className="theme-btn px-4 py-1.5 text-[9px] tracking-widest font-black uppercase border border-[#a78bfa]/40 hover:border-[#a78bfa] text-[#a78bfa] rounded-full transition-all relative cursor-pointer bg-[#a78bfa]/5 hover:bg-[#a78bfa]/15">
-              {copiedTag ? "已複製" : "複製 BTAG"}
-              {copiedTag && <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-[9px] py-1 px-2 rounded shadow-md whitespace-nowrap z-50 normal-case">複製成功！</span>}
-            </button>
-          )}
-        </div>
-      </div>
-    );
-  }
+
 
   if (theme === "paper-card-social") {
     return (
