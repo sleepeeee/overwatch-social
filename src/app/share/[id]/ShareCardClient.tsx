@@ -5,7 +5,6 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, Sparkles } from "lucide-react";
-import TopBar from "@/components/TopBar";
 import OWCard from "@/components/OWCard";
 import FluidClipPath from "@/components/morning-sketch/FluidClipPath";
 import { toPng } from "html-to-image";
@@ -48,8 +47,6 @@ export default function ShareCardClient({ cardData }: Props) {
       <FluidClipPath />
 
       <main className="p-6 md:p-8 min-h-screen w-full max-w-7xl mx-auto px-4 md:px-8 pt-6 z-10 relative">
-        <TopBar />
-
         <div className="space-y-8 max-w-2xl mx-auto pt-6 flex flex-col items-center">
           {/* 返回與引導區 */}
           <div className="w-full flex flex-col sm:flex-row justify-between items-center gap-4 border-b border-[#8c7c6c]/10 pb-4">

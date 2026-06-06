@@ -39,6 +39,13 @@ export default function LoginModal({
     }
   };
 
+  // 配置主題樣式 (僅保留 Original / Baseline 樣式)
+  let closeBtnClass = "absolute top-3 right-3 w-6 h-6 flex items-center justify-center rounded-lg text-[#8c7c6c]/50 hover:text-[#5d4037] hover:bg-[#8c7c6c]/8 transition-all";
+  let iconWrapperClass = "w-11 h-11 rounded-2xl bg-[#82b7cc]/12 border border-[#82b7cc]/25 flex items-center justify-center mx-auto text-[#82b7cc]";
+  let titleClass = "text-sm font-bold text-[#3e2723] tracking-wide";
+  let descClass = "text-[10.5px] text-[#8c7c6c] leading-relaxed";
+  let loginBtnClass = "w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl border border-[#8c7c6c]/20 bg-white/40 text-[10px] font-bold tracking-widest uppercase text-[#5d4037] hover:bg-white hover:border-[#82b7cc]/40 shadow-sm transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed";
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
@@ -57,24 +64,24 @@ export default function LoginModal({
         {closable && (
           <button
             onClick={onClose}
-            className="absolute top-3 right-3 w-6 h-6 flex items-center justify-center rounded-lg text-[#8c7c6c]/50 hover:text-[#5d4037] hover:bg-[#8c7c6c]/8 transition-all"
+            className={closeBtnClass}
           >
             <X size={13} />
           </button>
         )}
 
         {/* 圖示 */}
-        <div className="w-11 h-11 rounded-2xl bg-[#82b7cc]/12 border border-[#82b7cc]/25 flex items-center justify-center mx-auto">
-          <svg viewBox="0 0 100 100" className="w-5 h-5 text-[#82b7cc]">
-            <path d="M 50,75 C 34,68 36,55 50,35 C 64,55 66,68 50,75 Z" fill="currentColor" />
+        <div className={iconWrapperClass}>
+          <svg viewBox="0 0 100 100" className="w-5 h-5 fill-current">
+            <path d="M 50,75 C 34,68 36,55 50,35 C 64,55 66,68 50,75 Z" />
           </svg>
         </div>
 
         <div className="space-y-1.5">
-          <h3 className="text-sm font-bold text-[#3e2723] tracking-wide">
+          <h3 className={titleClass}>
             {title}
           </h3>
-          <p className="text-[10.5px] text-[#8c7c6c] leading-relaxed">
+          <p className={descClass}>
             {description}
           </p>
         </div>
@@ -82,7 +89,7 @@ export default function LoginModal({
         <button
           onClick={handleLogin}
           disabled={loginPending}
-          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl border border-[#8c7c6c]/20 bg-white/40 text-[10px] font-bold tracking-widest uppercase text-[#5d4037] hover:bg-white hover:border-[#82b7cc]/40 shadow-sm transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+          className={loginBtnClass}
         >
           <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24">
             <path fill="#EA4335" d="M12.24 10.285V14.4h6.887c-.648 2.41-2.519 4.114-5.136 4.114-3.466 0-6.277-2.81-6.277-6.277 0-3.466 2.81-6.277 6.277-6.277 1.558 0 2.977.569 4.083 1.503l3.14-3.14C19.167 1.83 15.938 1 12.24 1 6.033 1 1 6.033 1 12.24s5.033 11.24 11.24 11.24c6.16 0 10.993-4.32 10.993-10.993 0-.616-.068-1.22-.178-1.78l-10.815-.422z" />
@@ -96,3 +103,4 @@ export default function LoginModal({
     </div>
   );
 }
+

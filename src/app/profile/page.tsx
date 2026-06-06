@@ -1,14 +1,11 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
-import { OWPlayerCard, type UserProfile, type HeroConfig } from "@/types/card";
+import { OWPlayerCard, type UserProfile } from "@/types/card";
 import {
   HEROES_CONFIG,
-  PRESET_TAGS,
   SERVER_OPTIONS,
   MBTI_OPTIONS,
-  LANGUAGE_OPTIONS,
   MIC_OPTIONS,
   SOCIAL_PLATFORMS
 } from "@/data/mockPlayers";
@@ -17,46 +14,32 @@ import InteractiveAvatar from "@/components/InteractiveAvatar";
 import { getHeroAlignments } from "@/app/actions/alignment";
 import type { AlignmentConfig } from "@/data/heroAlignments";
 import { HERO_ALIGNMENTS } from "@/data/heroAlignments";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { SocialIcon } from "@/components/ui/SocialIcons";
-import { Sparkles, Save, Info, AlertTriangle, ArrowLeft, Gamepad2, ShieldAlert, Cpu } from "lucide-react";
+import { Save, ArrowLeft, Gamepad2, AlertTriangle, Eye, EyeOff, LockKeyhole } from "lucide-react";
 import { toPng } from "html-to-image";
 import { getMyProfile, saveProfile } from "@/app/actions/profile";
 import { getMyUserProfile, saveNickname } from "@/app/actions/userProfile";
 import { getGameSpecialTags } from "@/app/actions/tags";
 import Link from "next/link";
-import { useDevMode } from "@/hooks/useDevMode";
-import LoginModal from "@/components/LoginModal";
-import TopBar from "@/components/TopBar";
 import { useAuth } from "@/context/AuthContext";
 
 const DEFAULT_CARD: OWPlayerCard = {
   card_id: "card-current-user",
   user_id: "user-current-user",
-  server: "Asia Server",
-  battle_tag: "愛喝奶茶#3342",
+  server: "亞洲 (Asia)",
+  battle_tag: "",
   is_tag_visible: true,
-  selected_heroes: ["winston", "tracer"],
-  tags: ["團隊至上", "主坦玩家"],
+  selected_heroes: [],
+  tags: [],
   message: "GGWP！一起加油，推車到底啦 🚀",
   languages: ["繁體中文"],
-  mic_status: "mic-on",
-  social_channels: {
-    discord: "akira#1234"
-  },
+  mic_status: "listen-only",
+  social_channels: {},
   mbti: "INFJ"
 };
-
-const heroRoleTabs: Array<{ value: "all" | HeroConfig["role"]; label: string }> = [
-  { value: "all", label: "全部" },
-  { value: "tank", label: "肉盾 🛡️" },
-  { value: "damage", label: "攻擊 ⚔️" },
-  { value: "support", label: "支援 ➕" }
-];
 
 interface SpecialTag {
   id: string;
@@ -66,29 +49,308 @@ interface SpecialTag {
   created_at: string;
 }
 
+const VAL_HEROES = [
+  { id: "omen", name: "歐門 (Omen)", role: "controller" },
+  { id: "jett", name: "捷提 (Jett)", role: "duelist" },
+  { id: "sage", name: "聖祈 (Sage)", role: "sentinel" },
+  { id: "sova", name: "蘇法 (Sova)", role: "initiator" },
+  { id: "reyna", name: "雷娜 (Reyna)", role: "duelist" },
+  { id: "cypher", name: "瑟符 (Cypher)", role: "sentinel" },
+];
+
+const LOL_HEROES = [
+  { id: "jhin", name: "燼 (Jhin)", role: "adc" },
+  { id: "missfortune", name: "好運姐 (Miss Fortune)", role: "adc" },
+  { id: "ahri", name: "阿璃 (Ahri)", role: "mage" },
+  { id: "yasuo", name: "犽宿 (Yasuo)", role: "fighter" },
+  { id: "lux", name: "拉克絲 (Lux)", role: "mage" },
+  { id: "thresh", name: "瑟雷西 (Thresh)", role: "support" },
+];
+
+const getColorClasses = (game: "ow" | "val" | "lol" | null) => {
+  switch (game) {
+    case "val":
+      return {
+        name: "特戰英豪",
+        englishName: "Valorant | 特戰英豪",
+        primary: "rose",
+        bg: "bg-rose-500/20",
+        text: "text-rose-400",
+        border: "border-rose-500/40",
+        focusBorder: "focus:border-rose-500 focus:ring-rose-500/30",
+        accentBtn: "bg-rose-500/10 hover:bg-rose-500 border-rose-500/20 text-rose-400 hover:text-white",
+        saveBtn: "bg-rose-600 hover:bg-rose-500 text-white shadow-[0_6px_20px_rgba(244,63,94,0.3)] border-rose-500/30",
+        glow: "shadow-[0_0_10px_rgba(244,63,94,0.2)]",
+        tagGlow: "shadow-[0_0_8px_rgba(244,63,94,0.15)]",
+        headerGlow: "bg-rose-500",
+        badge: "bg-rose-500/10 border border-rose-500/20 text-rose-400",
+        borderFocus: "focus:border-rose-500 focus:ring-rose-500/30",
+        textLight: "text-rose-300",
+        tagBtnSelected: "bg-rose-500/20 text-rose-400 border-rose-500/40",
+        micBtnSelected: "bg-rose-500/20 border-rose-500/60 text-white",
+        sidebarGlow: "from-rose-950/20 via-black/40 to-rose-950/10"
+      };
+    case "lol":
+      return {
+        name: "英雄聯盟",
+        englishName: "League of Legends | 英雄聯盟",
+        primary: "blue",
+        bg: "bg-blue-500/20",
+        text: "text-blue-400",
+        border: "border-blue-500/40",
+        focusBorder: "focus:border-blue-500 focus:ring-blue-500/30",
+        accentBtn: "bg-blue-500/10 hover:bg-blue-500 border-blue-500/20 text-blue-400 hover:text-white",
+        saveBtn: "bg-blue-600 hover:bg-blue-500 text-white shadow-[0_6px_20px_rgba(59,130,246,0.3)] border-blue-500/30",
+        glow: "shadow-[0_0_10px_rgba(59,130,246,0.2)]",
+        tagGlow: "shadow-[0_0_8px_rgba(59,130,246,0.15)]",
+        headerGlow: "bg-blue-500",
+        badge: "bg-blue-500/10 border border-blue-500/20 text-blue-400",
+        borderFocus: "focus:border-blue-500 focus:ring-blue-500/30",
+        textLight: "text-blue-300",
+        tagBtnSelected: "bg-blue-500/20 text-blue-400 border-blue-500/40",
+        micBtnSelected: "bg-blue-500/20 border-blue-500/60 text-white",
+        sidebarGlow: "from-blue-950/20 via-black/40 to-blue-950/10"
+      };
+    case "ow":
+    default:
+      return {
+        name: "鬥陣特攻",
+        englishName: "Overwatch | 鬥陣特攻",
+        primary: "amber",
+        bg: "bg-amber-500/20",
+        text: "text-amber-400",
+        border: "border-amber-500/40",
+        focusBorder: "focus:border-amber-500 focus:ring-amber-500/30",
+        accentBtn: "bg-amber-500/10 hover:bg-amber-500 border-amber-500/20 text-amber-400 hover:text-white",
+        saveBtn: "bg-amber-500 hover:bg-amber-500/90 text-white shadow-[0_6px_20px_rgba(245,158,11,0.3)] border-amber-500/30",
+        glow: "shadow-[0_0_10px_rgba(245,158,11,0.2)]",
+        tagGlow: "shadow-[0_0_8px_rgba(245,158,11,0.15)]",
+        headerGlow: "bg-amber-500",
+        badge: "bg-amber-500/10 border border-amber-500/20 text-amber-400",
+        borderFocus: "focus:border-amber-500 focus:ring-amber-500/30",
+        textLight: "text-amber-300",
+        tagBtnSelected: "bg-amber-500/20 text-amber-400 border-amber-500/40",
+        micBtnSelected: "bg-amber-500/20 border-amber-500/60 text-white",
+        sidebarGlow: "from-amber-950/20 via-black/40 to-amber-950/10"
+      };
+  }
+};
+
+function CosmicLivePreviewCard({
+  cardData,
+  gameType,
+  colorClasses,
+}: {
+  cardData: OWPlayerCard;
+  gameType: "val" | "lol";
+  colorClasses: any;
+}) {
+  const {
+    server = "",
+    battle_tag = "",
+    selected_heroes = [],
+    tags = [],
+    message = "",
+    mic_status = "listen-only",
+    social_channels = {},
+    mbti
+  } = cardData;
+
+  const displayTag = battle_tag || `${gameType === "val" ? "Valorant" : "League"}Player#0000`;
+
+  return (
+    <div
+      className="glass-card relative w-full max-w-[420px] mx-auto p-5 overflow-hidden flex flex-col justify-between group/card rounded-2xl border border-white/[0.05] hover:shadow-[0_0_30px_rgba(192,132,252,0.15)] transition-all duration-700"
+      style={{ fontFamily: "var(--theme-font-family), sans-serif" }}
+    >
+      {/* 頂部發光邊條 */}
+      <div className={`absolute top-0 left-0 right-0 h-[2.5px] opacity-40 transition-opacity duration-700 group-hover/card:opacity-100 ${colorClasses.headerGlow}`}></div>
+
+      {/* 浮水印 */}
+      <div className="absolute right-[-20px] bottom-[-20px] w-[180px] h-[180px] text-white/[0.015] pointer-events-none select-none z-0">
+        {gameType === "val" ? (
+          <span className="text-[120px] font-black tracking-tighter opacity-10">VAL</span>
+        ) : (
+          <span className="text-[120px] font-black tracking-tighter opacity-10">LOL</span>
+        )}
+      </div>
+
+      {/* Header */}
+      <div className="flex justify-between items-center border-b border-white/[0.04] pb-3 mb-4 gap-2">
+        <span className="text-zinc-400 font-bold text-[11px] sm:text-xs tracking-widest uppercase whitespace-nowrap shrink-0">
+          {gameType === "val" ? "Valorant | 特戰英豪" : "League of Legends | 英雄聯盟"}
+        </span>
+        <span className={`${colorClasses.bg} ${colorClasses.text} border ${colorClasses.border} px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-black tracking-widest whitespace-nowrap shrink-0 uppercase`}>
+          {server}
+        </span>
+      </div>
+
+      {/* UID */}
+      <div className="bg-black/40 border border-white/[0.03] rounded-xl p-3 flex items-center justify-between mb-4 relative z-10">
+        <div className="flex flex-col">
+          <span className="text-[9px] text-zinc-400 font-mono">UID</span>
+          <span className="text-xs text-zinc-100 font-mono font-semibold mt-0.5">{displayTag}</span>
+        </div>
+      </div>
+
+      {/* Hero Showcase Window */}
+      <div className="relative w-full h-[180px] overflow-hidden mb-4 flex border border-white/[0.05] rounded-xl bg-black/20">
+        {[0, 1, 2].map((index) => {
+          const heroId = selected_heroes[index];
+          const heroList = gameType === "val" ? VAL_HEROES : LOL_HEROES;
+          const heroInfo = heroList.find(h => h.id === heroId);
+
+          return (
+            <div key={index} className="relative flex-1 h-full border-r border-white/[0.05] last:border-r-0 overflow-hidden group/hero flex flex-col justify-between">
+              {heroInfo ? (
+                <>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent z-10 pointer-events-none"></div>
+                  {/* 懸浮角色名稱標籤 */}
+                  <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-sm border border-white/10 px-2 py-0.5 rounded-full text-center whitespace-nowrap z-20">
+                    <span className="text-[8px] font-sans font-medium text-zinc-100 tracking-wide">{heroInfo.name.split(" ")[0]}</span>
+                  </div>
+                  <div className="relative w-full h-[90%] flex justify-center items-start select-none transition-transform duration-500 group-hover/hero:scale-[1.03] z-10 mt-2">
+                    <img
+                      src={`/images/heroes/full/${gameType}_${heroInfo.id}.png`}
+                      alt={heroInfo.name}
+                      className="max-w-[150%] max-h-[120%] object-contain select-none filter drop-shadow-[0_6px_12px_rgba(0,0,0,0.5)]"
+                      draggable="false"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = '/images/heroes/silhouette.png';
+                      }}
+                    />
+                  </div>
+                </>
+              ) : (
+                <div className="w-full h-full flex flex-col justify-center items-center text-zinc-600 p-2 text-center bg-white/[0.005] opacity-60 hover:opacity-100 transition-opacity">
+                  <span className="text-zinc-650 text-sm">✦</span>
+                  <span className="text-[8px] font-mono text-zinc-500 tracking-wider mt-1">空欄位</span>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Tags Section */}
+      <div className="flex flex-wrap justify-center gap-1.5 mb-4 px-1 min-h-[34px] items-center">
+        {tags.length > 0 ? (
+          tags.map((tagText: string) => (
+            <span
+              key={tagText}
+              className={`text-[9px] font-medium bg-zinc-800/40 border border-white/[0.04] text-zinc-200 rounded-full px-2.5 py-1 transition-all duration-300 hover:scale-[1.03]`}
+            >
+              #{tagText}
+            </span>
+          ))
+        ) : (
+          <span className="text-[10px] text-zinc-500 italic font-bold">尚未設定標籤</span>
+        )}
+      </div>
+
+      {/* Whisper quote box */}
+      <div className={`bg-white/[0.015] border-l-2 ${colorClasses.border} p-3 rounded-r-lg mb-4 flex-grow flex flex-col justify-between`}>
+        <div className="text-zinc-400 text-xs font-bold flex gap-1 items-start mb-1">
+          <span className="text-[9px] uppercase tracking-widest text-zinc-500 font-mono">留言 // Whisper</span>
+        </div>
+        <p className="text-zinc-200 text-[11px] leading-relaxed font-light font-sans italic px-1 break-words line-clamp-3">
+          "{message || "這個玩家很慢速，什麼都沒有留下..."}"
+        </p>
+      </div>
+
+      {/* Card Footer */}
+      <div className="flex flex-col gap-3 pt-3 border-t border-white/[0.04] mt-auto">
+        <div className="flex justify-between items-center gap-2">
+          <div className="flex items-center gap-1.5 text-[10px] text-zinc-300 font-mono min-w-0">
+            <span>🌐</span>
+            <span className="inline-block truncate max-w-[140px] sm:max-w-[170px] align-middle text-zinc-400">繁體中文</span>
+          </div>
+          <div className="flex items-center gap-1.5 shrink-0">
+            <div className={`flex items-center px-1.5 py-0.5 rounded ${colorClasses.bg} ${colorClasses.text} border ${colorClasses.border} text-[8px] tracking-wide gap-1 select-none`}>
+              <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+              <span>
+                {mic_status === 'mic-on' ? "可開麥" : mic_status === 'listen-only' ? "僅聽麥" : "不用麥"}
+              </span>
+            </div>
+            {mbti && (
+              <span className={`bg-white/5 text-zinc-300 border border-white/10 rounded px-1.5 py-0.5 text-[8px] font-bold font-mono`}>
+                {mbti}
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Social Platforms Links */}
+        <div className="flex items-center gap-2">
+          {social_channels && Object.entries(social_channels).map(([platform, isEnabled]) => {
+            if (!isEnabled) return null;
+            return (
+              <div
+                key={platform}
+                className="w-7 h-7 rounded-full flex items-center justify-center shadow-sm border border-white/5 bg-white/[0.03] text-zinc-300"
+              >
+                <span className="text-[10px]">
+                  {platform === "discord" && "👾"}
+                  {platform === "steam" && "🎮"}
+                  {platform === "x" && "𝕏"}
+                  {platform === "line" && "💬"}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function ProfilePage() {
-  const router = useRouter();
-  const { isDeveloper } = useDevMode();
-  const [activeSection, setActiveSection] = useState<"hub" | "ow-edit">("hub");
+  const { user, authLoading, userProfile: authUserProfile } = useAuth();
+  const [editingGame, setEditingGame] = useState<"ow" | "val" | "lol" | null>(null);
+  const [mounted, setMounted] = useState(false);
   
   // 頂層 UserProfile 狀態
   const [userProfile, setUserProfile] = useState<UserProfile>({
     id: "user-current-user",
-    display_name: "愛喝奶茶",
+    display_name: "深夜觀察者",
     avatar_url: "/images/avatars/avatar_female_elegant_square.png",
-    bio: "GGWP！一起加油，推車到底啦 🚀"
+    bio: "我在此處靜靜注視著夜空，收錄來自各個平行遊戲宇宙的玩家足跡。"
   });
 
   // 鬥陣名片狀態
   const [cardData, setCardData] = useState<OWPlayerCard>(DEFAULT_CARD);
   
+  // 特戰英豪名片狀態
+  const [valCardData, setValCardData] = useState<OWPlayerCard>({
+    ...DEFAULT_CARD,
+    card_id: "card-current-user-val",
+    server: "亞太 (APAC)",
+    selected_heroes: ["omen", "jett", ""],
+    tags: ["慢節奏", "不計輸贏"],
+    message: "喜歡在微弱的夜光下漫步。默默守候深夜防區。"
+  });
+
+  // 英雄聯盟名片狀態
+  const [lolCardData, setLolCardData] = useState<OWPlayerCard>({
+    ...DEFAULT_CARD,
+    card_id: "card-current-user-lol",
+    server: "台灣 (TW)",
+    selected_heroes: ["jhin", "missfortune", ""],
+    tags: ["孤寂流浪者", "浪漫主義"],
+    message: "不追求大師段位，只想在深夜的召喚峽谷編織完美的華麗謝幕。"
+  });
+
+  const currentCard = editingGame === "ow" ? cardData : editingGame === "val" ? valCardData : lolCardData;
+  const setCard = editingGame === "ow" ? setCardData : editingGame === "val" ? setValCardData : setLolCardData;
+  const colorClasses = getColorClasses(editingGame);
+  const currentHeroesConfig = editingGame === "ow" ? HEROES_CONFIG : editingGame === "val" ? VAL_HEROES : LOL_HEROES;
+
   // 各種 UI 控制狀態
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
   const [hubSaved, setHubSaved] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [heroRoleFilter, setHeroRoleFilter] = useState<"all" | "tank" | "damage" | "support">("all");
-  const { user, authLoading, userProfile: authUserProfile } = useAuth();
+  const [heroRoleFilter, setHeroRoleFilter] = useState<"All" | "Tank" | "Dps" | "Support">("All");
   const [heroAlignments, setHeroAlignments] = useState<Record<string, AlignmentConfig>>(HERO_ALIGNMENTS);
   const [dbTags, setDbTags] = useState<SpecialTag[]>([]);
 
@@ -98,13 +360,23 @@ export default function ProfilePage() {
   const [sharing, setSharing] = useState(false);
   const [shareSuccess, setShareSuccess] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
+  const [toast, setToast] = useState({ show: false, message: "" });
+
+  const triggerToast = (message: string) => {
+    setToast({ show: false, message: "" });
+    setTimeout(() => {
+      setToast({ show: true, message });
+    }, 50);
+    setTimeout(() => {
+      setToast(prev => prev.message === message ? { show: false, message: "" } : prev);
+    }, 4000);
+  };
 
   const handleExportImage = async () => {
     if (!cardRef.current) return;
     setExportingImage(true);
     setErrorMsg(null);
     try {
-      // 確保導出時的磨砂玻璃效果與解析度
       const dataUrl = await toPng(cardRef.current, {
         cacheBust: true,
         backgroundColor: "transparent",
@@ -114,10 +386,11 @@ export default function ProfilePage() {
         }
       });
       const link = document.createElement("a");
-      const name = cardData.battle_tag ? cardData.battle_tag.split("#")[0] : "player";
-      link.download = `ow-card-${name}.png`;
+      const name = currentCard.battle_tag ? currentCard.battle_tag.split("#")[0] : "player";
+      link.download = `${editingGame}-card-${name}.png`;
       link.href = dataUrl;
       link.click();
+      triggerToast("名片圖片下載功能已準備就緒，圖片已成功匯出！");
     } catch (err) {
       console.error("導出圖片失敗:", err);
       setErrorMsg("導出圖片失敗，請重試！");
@@ -130,10 +403,13 @@ export default function ProfilePage() {
     setErrorMsg(null);
     setSharing(true);
     try {
-      await saveProfile(cardData);
+      if (editingGame === "ow") {
+        await saveProfile(cardData);
+      }
       const shareUrl = `${window.location.origin}/share/${user?.id || "mock-user-id"}`;
       await navigator.clipboard.writeText(shareUrl);
       setShareSuccess(true);
+      triggerToast("「專屬分享連結」已成功封入您的剪貼簿！✨");
       setTimeout(() => setShareSuccess(false), 2500);
     } catch (err) {
       console.error("產生分享連結失敗:", err);
@@ -143,7 +419,6 @@ export default function ProfilePage() {
     }
   };
 
-
   // 初始化：載入特色標籤 + 英雄對準參數
   useEffect(() => {
     getGameSpecialTags("overwatch").then(res => {
@@ -152,9 +427,10 @@ export default function ProfilePage() {
       }
     });
     getHeroAlignments().then(setHeroAlignments);
+    setMounted(true);
   }, []);
 
-  // Auth seed：以 per-user localStorage 優先，無快取時使用 Auth metadata
+  // Auth seed：以 per-user localStorage 優先
   useEffect(() => {
     if (!authUserProfile) return;
     const key = `user_profile_hub_${authUserProfile.id}`;
@@ -173,7 +449,7 @@ export default function ProfilePage() {
     setUserProfile(authUserProfile);
   }, [authUserProfile]);
 
-  // user 變化時載入名片資料 + display_name（auth state 由 AuthContext 統一管理）
+  // user 變化時載入名片資料 + display_name + 載入本地暫存的多遊戲名片
   useEffect(() => {
     if (!user) return;
     getMyProfile("overwatch").then(profile => {
@@ -184,7 +460,6 @@ export default function ProfilePage() {
         setCardData(DEFAULT_CARD);
       }
     });
-    // 從 user_profiles 取得全域暱稱，覆蓋 localStorage/auth 衍生值
     getMyUserProfile().then(up => {
       if (up?.nickname) {
         setUserProfile(prev => {
@@ -195,9 +470,18 @@ export default function ProfilePage() {
         });
       }
     });
+
+    // 載入 Val & LoL 本地暫存名片
+    const cachedVal = localStorage.getItem(`player_card_val_${user.id}`);
+    if (cachedVal) {
+      try { setValCardData(JSON.parse(cachedVal)); } catch {}
+    }
+    const cachedLol = localStorage.getItem(`player_card_lol_${user.id}`);
+    if (cachedLol) {
+      try { setLolCardData(JSON.parse(cachedLol)); } catch {}
+    }
   }, [user?.id]);
 
-  // 變更頭像 handler
   const handleAvatarChange = (newUrl: string) => {
     setUserProfile((prev) => {
       const updated = { ...prev, avatar_url: newUrl };
@@ -207,7 +491,6 @@ export default function ProfilePage() {
     });
   };
 
-  // 儲存通用帳戶檔案 handler（localStorage + Supabase 雙寫）
   const handleSaveHub = async () => {
     const key = `user_profile_hub_${userProfile.id}`;
     localStorage.setItem(key, JSON.stringify(userProfile));
@@ -217,35 +500,57 @@ export default function ProfilePage() {
       return;
     }
     setHubSaved(true);
+    triggerToast("特工帳戶通用設定已成功儲存！");
     setTimeout(() => setHubSaved(false), 2000);
   };
 
-  // 原有鬥陣名片編輯 handlers
   const handleToggleHero = (heroId: string) => {
     setErrorMsg(null);
-    setCardData((prev) => {
-      const selected = prev.selected_heroes || [];
+    setCard((prev) => {
+      let selected = [...(prev.selected_heroes || [])];
+      while (selected.length < 3) {
+        selected.push("");
+      }
+      selected = selected.slice(0, 3);
+
       if (selected.includes(heroId)) {
         return {
           ...prev,
-          selected_heroes: selected.filter((id) => id !== heroId)
+          selected_heroes: selected.map(id => id === heroId ? "" : id)
         };
       } else {
-        if (selected.length >= 3) {
+        const firstEmptyIdx = selected.indexOf("");
+        if (firstEmptyIdx === -1) {
           setErrorMsg("常用英雄最多只能選擇三個喔！");
           return prev;
         }
+        selected[firstEmptyIdx] = heroId;
         return {
           ...prev,
-          selected_heroes: [...selected, heroId]
+          selected_heroes: selected
         };
       }
     });
   };
 
+  const handleClearHeroSlot = (idx: number) => {
+    setCard((prev) => {
+      let selected = [...(prev.selected_heroes || [])];
+      while (selected.length < 3) {
+        selected.push("");
+      }
+      selected = selected.slice(0, 3);
+      selected[idx] = "";
+      return {
+        ...prev,
+        selected_heroes: selected
+      };
+    });
+  };
+
   const handleToggleTag = (tagText: string) => {
     setErrorMsg(null);
-    setCardData((prev) => {
+    setCard((prev) => {
       const selected = prev.tags || [];
       if (selected.includes(tagText)) {
         return {
@@ -267,16 +572,12 @@ export default function ProfilePage() {
 
   const handleToggleSocial = (platformId: string) => {
     setErrorMsg(null);
-    setCardData((prev) => {
+    setCard((prev) => {
       const currentChannels = { ...(prev.social_channels || {}) };
       const isActive = !!currentChannels[platformId as keyof typeof prev.social_channels];
       const activeCount = Object.keys(currentChannels).length;
       
       if (isActive) {
-        if (activeCount <= 1) {
-          setErrorMsg("為保障聯絡暢通，最少必須填寫一個聯絡管道喔！");
-          return prev;
-        }
         delete currentChannels[platformId as keyof typeof prev.social_channels];
       } else {
         if (activeCount >= 3) {
@@ -293,131 +594,173 @@ export default function ProfilePage() {
     });
   };
 
-  const handleToggleLanguage = (lang: string) => {
-    setErrorMsg(null);
-    setCardData((prev) => {
-      const current = prev.languages || [];
-      if (current.includes(lang)) {
-        if (current.length <= 1) return prev;
-        return {
-          ...prev,
-          languages: current.filter((l) => l !== lang)
-        };
-      } else {
-        if (current.length >= 3) {
-          setErrorMsg("溝通語言最多只能選擇三個喔，以維護卡片完美視覺！");
-          return prev;
-        }
-        return {
-          ...prev,
-          languages: [...current, lang]
-        };
-      }
-    });
-  };
-
-  const getPlatformEmoji = (platformId: string) => {
-    switch (platformId) {
-      case 'discord': return '👾';
-      case 'steam': return '🎮';
-      case 'x': return '𝕏';
-      case 'line': return '💬';
-      default: return '🔗';
-    }
-  };
-
-  const getPlatformColor = (platformId: string, isActive: boolean) => {
-    if (!isActive) {
-      return "bg-white/30 border-[#8c7c6c]/15 text-[#8c7c6c] hover:bg-white/60 hover:border-[#8c7c6c]/30 hover:text-[#5d4037] transition-all";
-    }
-    switch (platformId) {
-      case 'discord':
-        return "bg-[#5865F2]/12 border-[#5865F2] text-[#5865F2] shadow-[0_4px_12px_rgba(88,101,242,0.15)] scale-[1.02]";
-      case 'steam':
-        return "bg-[#171a21]/10 border-[#171a21]/40 text-[#3e2723] shadow-[0_4px_12px_rgba(23,26,33,0.05)] scale-[1.02]";
-      case 'x':
-        return "bg-[#0f1419]/10 border-[#0f1419]/40 text-[#3e2723] shadow-[0_4px_12px_rgba(15,20,25,0.05)] scale-[1.02]";
-      case 'line':
-        return "bg-[#06C755]/12 border-[#06C755] text-[#06b34c] shadow-[0_4px_12px_rgba(6,199,85,0.15)] scale-[1.02]";
-      default:
-        return "bg-[#82b7cc]/12 border-[#82b7cc] text-[#82b7cc]";
-    }
-  };
-
-  // 儲存名片 handler
   const handleSaveCard = async () => {
     if (!user) return;
     setErrorMsg(null);
     
-    if (!cardData.battle_tag || !cardData.battle_tag.trim()) {
-      setErrorMsg("請填寫您的 BattleTag！");
+    if (!currentCard.battle_tag || !currentCard.battle_tag.trim()) {
+      setErrorMsg("請填寫您的 遊戲 ID (BattleTag)！");
       return;
     }
 
-    const activeSocials = Object.entries(cardData.social_channels || {}).filter(
+    const activeSocials = Object.entries(currentCard.social_channels || {}).filter(
       ([_, value]) => !!value && value.trim() !== ""
     );
     
     if (activeSocials.length === 0) {
-      setErrorMsg("為保障聯絡暢通，最少必須填寫一個通訊軟體帳號！");
-      return;
-    }
-    if (activeSocials.length > 3) {
-      setErrorMsg("通訊軟體最多填寫三個，以保障名片版面整潔！");
+      setErrorMsg("為保障聯絡暢通，最少必須填寫一個聯絡管道！");
       return;
     }
 
     setSaving(true);
-    const result = await saveProfile(cardData);
-    setSaving(false);
-    if (result.error) {
-      setErrorMsg(result.error);
-      return;
+    if (editingGame === "ow") {
+      const result = await saveProfile(cardData);
+      setSaving(false);
+      if (result.error) {
+        setErrorMsg(result.error);
+        return;
+      }
+      setSaved(true);
+      setShowShareModal(true);
+      triggerToast("特工名片已成功儲存並同步至廣場！✨");
+      setTimeout(() => setSaved(false), 2000);
+    } else {
+      // 本地暫存特戰英豪與英雄聯盟
+      const key = `player_card_${editingGame}_${user.id}`;
+      localStorage.setItem(key, JSON.stringify(currentCard));
+      setSaving(false);
+      setSaved(true);
+      triggerToast(`您的《${editingGame === "val" ? "特戰英豪" : "英雄聯盟"}》名片設定已成功儲存！✨`);
+      setTimeout(() => {
+        setSaved(false);
+        setEditingGame(null);
+      }, 1500);
     }
-    setSaved(true);
-    // 🌟 儲存成功時，自動彈出分享對話框 Modal
-    setShowShareModal(true);
-    setTimeout(() => setSaved(false), 2000);
-    router.refresh();
   };
 
-  // 移除 authLoading spinner：LoginModal show={!authLoading && !user} 已足夠守門
-  // 不再阻擋整個頁面渲染，避免 Supabase 連線慢時卡在 spinner
+  const handleGoogleLogin = async () => {
+    const { createClient } = await import("@/lib/supabase/client");
+    const supabase = createClient();
+    await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
+    });
+  };
 
-  // 1. 渲染：主入口 UserProfile Hub
-  if (activeSection === "hub") {
+  const handleGoogleLogout = async () => {
+    const { createClient } = await import("@/lib/supabase/client");
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    window.location.href = "/";
+  };
+
+  // ================= 0. 避免 SSR 水合不一致 =================
+  if (!mounted) {
     return (
-      <div className="max-w-4xl mx-auto px-4 py-8 space-y-12">
-        <TopBar />
-        {/* 頂部 Hub 標題 */}
-        <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-          <div className="text-center sm:text-left">
-            <h1 className="text-3xl font-extrabold tracking-tight text-[#3e2723] flex items-center justify-center sm:justify-start gap-2 flex-wrap">
-              <Gamepad2 className="text-[#82b7cc] animate-pulse" /> 特工帳戶主控台
-            </h1>
-            <p className="text-[#8c7c6c] mt-1 font-semibold text-sm">
-              管理您的通用帳戶，並在「遊戲檔案庫」中整理歸檔多款遊戲的名片。
-            </p>
-          </div>
+      <div className="relative min-h-screen flex flex-col justify-between z-10 selection:bg-auroraMint/30 text-zinc-100 max-w-4xl mx-auto px-4 py-8 space-y-12">
+        <div className="flex items-center justify-center py-20 relative z-10">
+          <div className="w-8 h-8 rounded-full border border-zinc-500 border-t-transparent animate-spin"></div>
         </div>
+      </div>
+    );
+  }
 
-        {/* 上半部：通用個人檔案編輯區 */}
-        <Card className="glass-panel text-[#5d4037] overflow-hidden relative">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-[#82b7cc]/15 to-transparent rounded-bl-full pointer-events-none" />
-          <CardContent className="p-6 md:p-8">
-            <h2 className="font-extrabold text-base tracking-widest text-[#82b7cc] uppercase mb-6 flex items-center gap-2 border-b border-[#8c7c6c]/10 pb-2">
-              👤 通用個人檔案
+  // ================= 1. 未登入守門狀態：顯示優雅的 Continue with Google 🔒 面板 =================
+  if (!user && !authLoading) {
+    return (
+      <div className="relative min-h-screen flex flex-col justify-between z-10 selection:bg-auroraMint/30 text-zinc-100">
+        <div className="fixed inset-0 ambient-space-glows pointer-events-none z-0"></div>
+        
+        <main className="atmosphere-content p-6 md:p-8 min-h-screen w-full max-w-7xl mx-auto px-4 md:px-8 pt-6 relative z-10">
+          <div className="max-w-md mx-auto py-16 px-4 text-center space-y-6 animate-fade-in text-left">
+            <div className="relative mx-auto flex h-16 w-16 items-center justify-center">
+              <div className="absolute inset-0 rounded-full bg-auroraMint/10 blur-xl"></div>
+              <div className="relative flex h-12 w-12 items-center justify-center rounded-2xl border border-auroraMint/25 bg-[#0b0914]/80 text-auroraMint shadow-[0_0_24px_rgba(192,132,252,0.22)]">
+                <LockKeyhole size={24} strokeWidth={2.2} />
+              </div>
+            </div>
+            
+            <div className="space-y-2 text-center">
+              <h2 className="font-sans font-bold text-2xl text-white tracking-wide">進入全域身份工作室</h2>
+              <p className="text-xs text-zinc-400 font-light leading-relaxed max-w-sm mx-auto">
+                工作室為私人名片創作空間。為了安全歸檔您的慢速玩家名片、頭像與常用英雄立繪，請先對接您的 Google 帳戶星軌。
+              </p>
+            </div>
+
+            <div className="flex justify-center pt-2">
+              <button 
+                onClick={handleGoogleLogin}
+                className="flex items-center space-x-2.5 h-10 px-6 rounded-full text-xs tracking-wide transition-all duration-300 font-sans text-white hover:text-white border border-white/10 hover:border-auroraMint/30 bg-white/[0.02] hover:bg-auroraMint/5 shadow-[0_4px_20px_rgba(0,0,0,0.4)] cursor-pointer"
+              >
+                <svg className="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/>
+                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/>
+                </svg>
+                <span className="font-semibold">Continue with Google</span>
+              </button>
+            </div>
+
+            <div className="pt-4 text-center text-[10px] text-zinc-500 font-mono tracking-widest">
+              SECURE SESSION • PRIVATE WORKSPACE
+            </div>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  // ================= 2. 已登入的主入口狀態：特工帳戶主控台 (editingGame === null) =================
+  if (editingGame === null) {
+    return (
+      <div className="relative min-h-screen z-10 selection:bg-auroraMint/30 text-zinc-100 max-w-4xl mx-auto px-4 py-8 space-y-12">
+        <div className="fixed inset-0 ambient-space-glows pointer-events-none z-0"></div>
+
+        <div className="relative z-10 space-y-12 w-full">
+          {/* Toast */}
+          {toast.show && (
+            <div className="fixed bottom-6 right-6 z-50 max-w-md animate-fade-in">
+              <div className="glass-panel border-auroraMint/30 p-4 rounded-xl shadow-[0_10px_30px_rgba(139,92,246,0.15)] flex items-start space-x-3 bg-[#050409]/95">
+                <div className="w-5 h-5 rounded-full bg-auroraTeal/20 border border-auroraMint/50 flex items-center justify-center text-auroraMint mt-0.5 text-xs">✓</div>
+                <div className="flex-1">
+                  <p className="text-[10px] text-zinc-400 font-mono tracking-widest">COSMIC SIGNAL</p>
+                  <p className="text-xs text-white mt-1 font-sans leading-relaxed">{toast.message}</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 頂部 Hub 標題 */}
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div className="text-center sm:text-left">
+              <h1 className="text-2xl font-black tracking-wider text-white flex items-center justify-center sm:justify-start gap-2.5">
+                <Gamepad2 className="text-auroraMint animate-pulse" /> 特工帳戶主控台
+              </h1>
+              <p className="text-zinc-400 mt-1 text-xs font-mono tracking-wide uppercase">
+                PLAYER IDENTITY STUDIO
+              </p>
+            </div>
+          </div>
+
+          {/* 上半部：通用個人檔案編輯區 */}
+          <div className="glass-panel rounded-[24px] overflow-hidden relative border border-white/[0.03] p-6 md:p-8">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-auroraTeal/10 to-transparent rounded-bl-full pointer-events-none" />
+            <h2 className="font-sans font-bold text-sm tracking-widest text-auroraMint uppercase mb-6 flex items-center gap-2 border-b border-white/5 pb-2">
+              👤 通用個人檔案 // Global Profile
             </h2>
             
             <div className="flex flex-col md:flex-row items-center gap-8">
-              {/* 智慧 InteractiveAvatar 元件 */}
-              <div className="shrink-0">
+              {/* InteractiveAvatar 元件 */}
+              <div className="shrink-0 flex flex-col items-center">
                 <InteractiveAvatar
                   currentAvatarUrl={userProfile.avatar_url}
                   onAvatarChange={handleAvatarChange}
                   displayName={userProfile.display_name}
                 />
-                <p className="text-[10px] text-center text-[#8c7c6c]/80 mt-2 font-bold tracking-wider">
+                <p className="text-[10px] text-zinc-400 mt-2 font-bold tracking-wider">
                   💡 點選頭像更換
                 </p>
               </div>
@@ -425,15 +768,10 @@ export default function ProfilePage() {
               {/* 暱稱與簡介編輯表單 */}
               <div className="flex-1 w-full space-y-4">
                 <div>
-                  <label className="text-xs font-black text-[#8c7c6c] mb-1.5 block">
-                    暱稱（全站顯示名稱）
-                    <span className="ml-2 text-[10px] font-normal text-[#8c7c6c]/60">
-                      ID：{user?.id?.slice(0, 8) ?? "—"}...
-                    </span>
-                  </label>
+                  <label className="text-[10px] font-bold text-zinc-400 mb-1.5 block font-mono">通用帳戶暱稱</label>
                   <Input
-                    placeholder={user?.id ? `未設定時以 ID 顯示（${user.id.slice(0, 8)}...）` : "請輸入平台暱稱..."}
-                    className="bg-white/60 border-[#8c7c6c]/20 focus:border-[#82b7cc] text-[#5d4037] font-black text-sm rounded-xl focus:ring-1 focus:ring-[#82b7cc]/30"
+                    placeholder="請輸入平台暱稱..."
+                    className="bg-black/40 border-white/10 focus:border-auroraMint text-zinc-200 font-semibold text-sm rounded-xl focus:ring-1 focus:ring-auroraMint/30 h-10"
                     value={userProfile.display_name}
                     onChange={(e) => {
                       setUserProfile({ ...userProfile, display_name: e.target.value });
@@ -442,10 +780,10 @@ export default function ProfilePage() {
                 </div>
 
                 <div>
-                  <label className="text-xs font-black text-[#8c7c6c] mb-1.5 block">全域個人簡介</label>
+                  <label className="text-[10px] font-bold text-zinc-400 mb-1.5 block font-mono">全域個人簡介</label>
                   <Textarea
                     placeholder="輸入一句話自我介紹，這將展現在所有關聯的名片上..."
-                    className="bg-white/60 border-[#8c7c6c]/20 focus:border-[#82b7cc] text-[#5d4037] resize-none text-sm rounded-xl"
+                    className="bg-black/40 border-white/10 focus:border-auroraMint text-zinc-200 resize-none text-sm rounded-xl"
                     rows={2}
                     value={userProfile.bio || ""}
                     onChange={(e) => {
@@ -454,236 +792,315 @@ export default function ProfilePage() {
                   />
                 </div>
 
-                <div className="flex justify-end pt-1">
+                <div className="flex justify-between items-center pt-1">
+                  {/* Google 登出按鈕 */}
+                  <button
+                    onClick={handleGoogleLogout}
+                    className="px-4 py-2 rounded-xl border border-white/5 bg-white/[0.02] hover:bg-rose-950/20 hover:border-rose-500/20 text-rose-400 transition-all text-xs font-mono flex items-center gap-1.5 cursor-pointer"
+                  >
+                    LOGOUT / 登出
+                  </button>
+
                   <Button
                     onClick={handleSaveHub}
-                    className="bg-[#82b7cc] hover:bg-[#82b7cc]/90 text-white font-extrabold text-xs px-6 py-4.5 rounded-xl shadow-md transition-all active:scale-95 cursor-pointer flex items-center gap-1.5"
+                    className="bg-auroraTeal hover:bg-auroraTeal/90 text-white font-extrabold text-xs px-6 py-4.5 rounded-xl shadow-md transition-all active:scale-95 cursor-pointer flex items-center gap-1.5 border-none"
                   >
-                    <Save size={13} />
                     {hubSaved ? "✓ 儲存成功" : "儲存帳戶設定"}
                   </Button>
                 </div>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
 
-        {/* 下半部：我的遊戲檔案庫 (歸檔卡片) */}
-        <div className="space-y-4">
-          <h2 className="font-extrabold text-base tracking-widest text-[#8c7c6c] uppercase px-1">
-            🗂️ 我的遊戲檔案庫
-          </h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* 1. 鬥陣特工名片 - 已啟用且可編輯 */}
-            <div className="bg-gradient-to-br from-[#f5d46b]/12 via-white/70 to-[#82b7cc]/12 backdrop-blur-md border border-[#f5d46b]/35 hover:border-[#82b7cc]/50 rounded-[24px] p-5 shadow-sm hover:shadow-[#82b7cc]/10 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group">
-              <div>
-                <div className="flex justify-between items-start mb-4">
-                  <span className="text-[20px] filter saturate-100 group-hover:scale-110 transition-transform">🥞</span>
-                  <span className="bg-emerald-500/10 border border-emerald-500/25 text-emerald-600 px-2 py-0.5 rounded-full text-[9px] font-black tracking-wider flex items-center gap-1 shadow-sm">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                    已綁定
-                  </span>
-                </div>
-                
-                <h3 className="text-sm font-black text-[#3e2723]">鬥陣特工名片</h3>
-                <p className="text-[10px] text-[#8c7c6c] font-semibold mt-0.5">Overwatch Card Hub</p>
-                
-                <div className="my-5 bg-white/40 border border-[#8c7c6c]/10 rounded-xl p-3 space-y-1 shadow-sm">
-                  <div className="text-[10px] font-extrabold text-[#8c7c6c] uppercase">當前綁定玩家</div>
-                  <div className="text-xs font-black text-[#5d4037] truncate">{cardData.battle_tag || "未設定"}</div>
+          {/* 下半部：我的遊戲檔案庫 */}
+          <div className="space-y-4">
+            <h2 className="font-sans font-bold text-sm tracking-widest text-zinc-300 uppercase px-1 font-mono">
+              🗂️ 我的遊戲檔案庫 // Games Library
+            </h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* 1. 🥞 鬥陣特工名片 - 已啟用且可編輯 */}
+              <div className="glass-card border border-white/5 hover:border-auroraMint/30 rounded-[24px] p-5 shadow-sm hover:shadow-[0_0_20px_rgba(192,132,252,0.15)] hover:-translate-y-1 transition-all duration-500 flex flex-col justify-between group cursor-default">
+                <div>
+                  <div className="flex justify-between items-start mb-4">
+                    <span className="text-[20px] filter saturate-100 group-hover:scale-110 transition-transform">🥞</span>
+                    <span className="bg-green-500/10 border border-green-500/25 text-green-400 px-2.5 py-0.5 rounded-full text-[9px] font-black tracking-wider flex items-center gap-1 shadow-sm font-mono">
+                      <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                      ACTIVE
+                    </span>
+                  </div>
                   
-                  {/* 小型英雄簡介預覽 */}
-                  <div className="flex gap-1.5 mt-2.5">
-                    {cardData.selected_heroes.map((heroId) => (
-                      <div key={heroId} className="w-6 h-6 rounded-full overflow-hidden border border-[#8c7c6c]/15 bg-white shadow-sm flex items-center justify-center shrink-0">
-                        <img
-                          src={`/images/heroes/avatars/${heroId}.png`}
-                          alt={heroId}
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).src = '/images/heroes/silhouette.png';
-                          }}
-                        />
-                      </div>
-                    ))}
+                  <h3 className="text-sm font-black text-zinc-100">鬥陣特工名片</h3>
+                  <p className="text-[10px] text-zinc-400 font-semibold mt-0.5 font-mono">Overwatch Identity</p>
+                  
+                  <div className="my-5 bg-black/40 border border-white/5 rounded-xl p-3 space-y-1 shadow-sm">
+                    <div className="text-[9px] font-bold text-zinc-400 uppercase font-mono">當前綁定玩家 // UID</div>
+                    <div className="text-xs font-semibold text-zinc-200 truncate">{cardData.battle_tag || "未設定 (請點擊編輯)"}</div>
+                    
+                    {/* 英雄頭像預覽 */}
+                    <div className="flex gap-1.5 mt-3">
+                      {cardData.selected_heroes.filter(Boolean).map((heroId) => (
+                        <div key={heroId} className="w-6 h-6 rounded-full overflow-hidden border border-white/10 bg-black/40 flex items-center justify-center shrink-0">
+                          <img
+                            src={`/images/heroes/avatars/${heroId}.png`}
+                            alt={heroId}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src = '/images/heroes/silhouette.png';
+                            }}
+                          />
+                        </div>
+                      ))}
+                      {cardData.selected_heroes.filter(Boolean).length === 0 && (
+                        <span className="text-[9px] text-zinc-500 italic font-mono">No heroes configured</span>
+                      )}
+                    </div>
                   </div>
                 </div>
+                
+                <Button
+                  onClick={() => setEditingGame("ow")}
+                  className="w-full bg-auroraTeal/10 hover:bg-auroraTeal border border-auroraTeal/20 text-auroraTeal hover:text-white py-2.5 text-xs font-bold rounded-xl transition-all duration-300 shadow-sm cursor-pointer"
+                >
+                  點擊編輯遊戲名片
+                </Button>
               </div>
-              
-              <Button
-                onClick={() => setActiveSection("ow-edit")}
-                className="w-full bg-[#82b7cc]/12 hover:bg-[#82b7cc] border border-[#82b7cc]/25 text-[#82b7cc] hover:text-white py-2.5 text-xs font-black rounded-xl transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer"
-              >
-                點擊編輯遊戲名片
-              </Button>
-            </div>
 
-            {/* 2. 特戰英豪名片 - 灰階佔位卡 */}
-            <div className="bg-white/40 backdrop-blur-sm border border-[#a0a29f]/20 rounded-[24px] p-5 flex flex-col justify-between filter grayscale opacity-70 hover:opacity-85 transition-all duration-300">
-              <div>
-                <div className="flex justify-between items-start mb-4">
-                  <span className="text-[20px]">🎯</span>
-                  <span className="bg-[#8c7c6c]/12 border border-[#8c7c6c]/20 text-[#8c7c6c] px-2 py-0.5 rounded-full text-[9px] font-black tracking-wider shadow-sm">
-                    即將推出
-                  </span>
+              {/* 2. 🎯 特戰英豪名片 - 已解禁 */}
+              <div className="glass-card border border-white/5 hover:border-rose-500/30 rounded-[24px] p-5 shadow-sm hover:shadow-[0_0_20px_rgba(244,63,94,0.15)] hover:-translate-y-1 transition-all duration-500 flex flex-col justify-between group cursor-default">
+                <div>
+                  <div className="flex justify-between items-start mb-4">
+                    <span className="text-[20px] filter saturate-100 group-hover:scale-110 transition-transform">🎯</span>
+                    <span className="bg-rose-500/10 border border-rose-500/25 text-rose-400 px-2.5 py-0.5 rounded-full text-[9px] font-black tracking-wider flex items-center gap-1 shadow-sm font-mono">
+                      <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
+                      ACTIVE
+                    </span>
+                  </div>
+                  
+                  <h3 className="text-sm font-black text-zinc-100">特戰英豪名片</h3>
+                  <p className="text-[10px] text-zinc-400 font-semibold mt-0.5 font-mono">Valorant Identity</p>
+                  
+                  <div className="my-5 bg-black/40 border border-white/5 rounded-xl p-3 space-y-1 shadow-sm">
+                    <div className="text-[9px] font-bold text-zinc-400 uppercase font-mono">當前綁定玩家 // UID</div>
+                    <div className="text-xs font-semibold text-zinc-200 truncate">{valCardData.battle_tag || "未設定 (請點擊編輯)"}</div>
+                    
+                    {/* 英雄頭像預覽 */}
+                    <div className="flex gap-1.5 mt-3">
+                      {valCardData.selected_heroes.filter(Boolean).map((heroId) => (
+                        <div key={heroId} className="w-6 h-6 rounded-full overflow-hidden border border-white/10 bg-black/40 flex items-center justify-center shrink-0">
+                          <img
+                            src={`/images/heroes/avatars/val_${heroId}.png`}
+                            alt={heroId}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src = '/images/heroes/silhouette.png';
+                            }}
+                          />
+                        </div>
+                      ))}
+                      {valCardData.selected_heroes.filter(Boolean).length === 0 && (
+                        <span className="text-[9px] text-zinc-550 italic font-mono">No agents configured</span>
+                      )}
+                    </div>
+                  </div>
                 </div>
                 
-                <h3 className="text-sm font-black text-[#8c7c6c]">特戰英豪名片</h3>
-                <p className="text-[10px] text-[#8c7c6c]/70 font-semibold mt-0.5">Valorant Card Hub</p>
-                
-                <div className="my-5 bg-[#e0e0e0]/20 border border-[#a0a29f]/10 rounded-xl p-3 space-y-1 shadow-sm">
-                  <div className="text-[10px] font-extrabold text-[#8c7c6c]/60 uppercase">當前綁定玩家</div>
-                  <div className="text-xs font-black text-[#8c7c6c]/50 truncate">{userProfile.display_name}#VAL</div>
-                  <div className="w-full h-1 bg-[#8c7c6c]/10 rounded-full mt-3 animate-pulse" />
-                </div>
+                <Button
+                  onClick={() => setEditingGame("val")}
+                  className="w-full bg-rose-500/10 hover:bg-rose-500 border border-rose-500/20 text-rose-400 hover:text-white py-2.5 text-xs font-bold rounded-xl transition-all duration-300 shadow-sm cursor-pointer"
+                >
+                  點擊編輯遊戲名片
+                </Button>
               </div>
-              
-              <Button
-                disabled
-                className="w-full bg-[#8c7c6c]/5 border border-[#8c7c6c]/15 text-[#8c7c6c]/60 py-2.5 text-xs font-black rounded-xl cursor-not-allowed shadow-none"
-              >
-                連結名片（即將推出）
-              </Button>
-            </div>
 
-            {/* 3. 英雄聯盟名片 - 灰階佔位卡 */}
-            <div className="bg-white/40 backdrop-blur-sm border border-[#a0a29f]/20 rounded-[24px] p-5 flex flex-col justify-between filter grayscale opacity-70 hover:opacity-85 transition-all duration-300">
-              <div>
-                <div className="flex justify-between items-start mb-4">
-                  <span className="text-[20px]">👑</span>
-                  <span className="bg-[#8c7c6c]/12 border border-[#8c7c6c]/20 text-[#8c7c6c] px-2 py-0.5 rounded-full text-[9px] font-black tracking-wider shadow-sm">
-                    即將推出
-                  </span>
+              {/* 3. 👑 英雄聯盟名片 - 已解禁 */}
+              <div className="glass-card border border-white/5 hover:border-blue-500/30 rounded-[24px] p-5 shadow-sm hover:shadow-[0_0_20px_rgba(59,130,246,0.15)] hover:-translate-y-1 transition-all duration-500 flex flex-col justify-between group cursor-default">
+                <div>
+                  <div className="flex justify-between items-start mb-4">
+                    <span className="text-[20px] filter saturate-100 group-hover:scale-110 transition-transform">👑</span>
+                    <span className="bg-blue-500/10 border border-blue-500/25 text-blue-400 px-2.5 py-0.5 rounded-full text-[9px] font-black tracking-wider flex items-center gap-1 shadow-sm font-mono">
+                      <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
+                      ACTIVE
+                    </span>
+                  </div>
+                  
+                  <h3 className="text-sm font-black text-zinc-100">英雄聯盟名片</h3>
+                  <p className="text-[10px] text-zinc-400 font-semibold mt-0.5 font-mono">League of Legends</p>
+                  
+                  <div className="my-5 bg-black/40 border border-white/5 rounded-xl p-3 space-y-1 shadow-sm">
+                    <div className="text-[9px] font-bold text-zinc-400 uppercase font-mono">當前綁定玩家 // UID</div>
+                    <div className="text-xs font-semibold text-zinc-200 truncate">{lolCardData.battle_tag || "未設定 (請點擊編輯)"}</div>
+                    
+                    {/* 英雄頭像預覽 */}
+                    <div className="flex gap-1.5 mt-3">
+                      {lolCardData.selected_heroes.filter(Boolean).map((heroId) => (
+                        <div key={heroId} className="w-6 h-6 rounded-full overflow-hidden border border-white/10 bg-black/40 flex items-center justify-center shrink-0">
+                          <img
+                            src={`/images/heroes/avatars/lol_${heroId}.png`}
+                            alt={heroId}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src = '/images/heroes/silhouette.png';
+                            }}
+                          />
+                        </div>
+                      ))}
+                      {lolCardData.selected_heroes.filter(Boolean).length === 0 && (
+                        <span className="text-[9px] text-zinc-550 italic font-mono">No champions configured</span>
+                      )}
+                    </div>
+                  </div>
                 </div>
                 
-                <h3 className="text-sm font-black text-[#8c7c6c]">英雄聯盟名片</h3>
-                <p className="text-[10px] text-[#8c7c6c]/70 font-semibold mt-0.5">League of Legends Card</p>
-                
-                <div className="my-5 bg-[#e0e0e0]/20 border border-[#a0a29f]/10 rounded-xl p-3 space-y-1 shadow-sm">
-                  <div className="text-[10px] font-extrabold text-[#8c7c6c]/60 uppercase">當前綁定玩家</div>
-                  <div className="text-xs font-black text-[#8c7c6c]/50 truncate">{userProfile.display_name}#TW</div>
-                  <div className="w-full h-1 bg-[#8c7c6c]/10 rounded-full mt-3 animate-pulse" />
-                </div>
+                <Button
+                  onClick={() => setEditingGame("lol")}
+                  className="w-full bg-blue-500/10 hover:bg-blue-500 border border-blue-500/20 text-blue-400 hover:text-white py-2.5 text-xs font-bold rounded-xl transition-all duration-300 shadow-sm cursor-pointer"
+                >
+                  點擊編輯遊戲名片
+                </Button>
               </div>
-              
-              <Button
-                disabled
-                className="w-full bg-[#8c7c6c]/5 border border-[#8c7c6c]/15 text-[#8c7c6c]/60 py-2.5 text-xs font-black rounded-xl cursor-not-allowed shadow-none"
-              >
-                連結名片（即將推出）
-              </Button>
             </div>
           </div>
         </div>
-
-        {/* 未登入限制 */}
-        <LoginModal
-          show={!authLoading && !user}
-          closable={false}
-          title="登入後才能使用主控台"
-          description="以 Google 帳號登入，快速管理你的多遊戲社交卡片與個人頭像"
-        />
       </div>
     );
   }
 
-  // 2. 渲染：鬥陣特工名片編輯表單 (ow-edit 段落)
+  // ================= 3. 進入特定名片編輯狀態 (editingGame !== null) =================
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8 space-y-6">
-      <TopBar />
-      {/* 返回 Hub 的控制面板 */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <button
-          onClick={() => {
-            setErrorMsg(null);
-            setActiveSection("hub");
-          }}
-          className="inline-flex items-center gap-2 bg-white/60 hover:bg-white border border-[#8c7c6c]/20 hover:border-[#82b7cc]/50 text-[#5d4037] hover:text-[#82b7cc] px-4 py-2.5 rounded-xl text-xs font-black tracking-widest uppercase transition-all shadow-sm active:scale-95 cursor-pointer"
-        >
-          <ArrowLeft size={14} className="stroke-[3]" />
-          <span>返回特工主控台</span>
-        </button>
+    <div className="relative min-h-screen z-10 selection:bg-auroraMint/30 text-zinc-100 max-w-6xl mx-auto px-4 py-8 space-y-6">
+      <div className="fixed inset-0 ambient-space-glows pointer-events-none z-0"></div>
 
-        <div className="bg-[#82b7cc]/10 border border-[#82b7cc]/25 rounded-2xl py-2 px-3 text-xs text-[#82b7cc] flex items-center gap-2 shadow-sm">
-          <span>正在自訂：《鬥陣特工》專屬戰力名片</span>
-        </div>
-      </div>
-
-      {errorMsg && (
-        <div className="bg-red-500/10 border border-red-500/20 text-red-700 px-4 py-3 rounded-2xl flex items-center gap-3 text-sm animate-shake">
-          <AlertTriangle className="text-red-500 shrink-0" size={18} />
-          <span>{errorMsg}</span>
+      {/* Toast */}
+      {toast.show && (
+        <div className="fixed bottom-6 right-6 z-50 max-w-md animate-fade-in">
+          <div className="glass-panel border-auroraMint/30 p-4 rounded-xl shadow-[0_10px_30px_rgba(139,92,246,0.15)] flex items-start space-x-3 bg-[#050409]/95">
+            <div className="w-5 h-5 rounded-full bg-auroraTeal/20 border border-auroraMint/50 flex items-center justify-center text-auroraMint mt-0.5 text-xs">✓</div>
+            <div className="flex-1">
+              <p className="text-[10px] text-zinc-400 font-mono tracking-widest">COSMIC SIGNAL</p>
+              <p className="text-xs text-white mt-1 font-sans leading-relaxed">{toast.message}</p>
+            </div>
+          </div>
         </div>
       )}
 
-      {/* 左右分割版面 */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* 左側：名片即時預覽 */}
-        <div className="lg:col-span-5 flex flex-col items-center gap-4 lg:sticky lg:top-24">
-          <h2 className="text-sm font-bold tracking-widest text-[#8c7c6c] uppercase">即時名片預覽</h2>
-          <div ref={cardRef} className="rounded-[28px] overflow-hidden">
-            <OWCard cardData={cardData} isLoggedIn={true} isEditable={true} customAlignments={heroAlignments} />
-          </div>
+      <div className="relative z-10 space-y-6 w-full">
+        {/* 控制面板 */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 w-full">
+          <button
+            onClick={() => {
+              setErrorMsg(null);
+              setEditingGame(null);
+            }}
+            className={`inline-flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-${colorClasses.primary}-500/50 text-zinc-300 hover:text-white px-4 py-2.5 rounded-xl text-xs font-bold tracking-widest uppercase transition-all shadow-sm active:scale-95 cursor-pointer font-mono`}
+          >
+            <ArrowLeft size={14} className="stroke-[3]" />
+            <span>← 返回特工主控台</span>
+          </button>
 
-          {/* 🌟 匯出圖片與複製連結按鈕區 */}
-          <div className="w-full max-w-[320px] grid grid-cols-2 gap-3 mt-2">
-            <Button
-              type="button"
-              onClick={handleExportImage}
-              disabled={exportingImage}
-              className="bg-white/60 hover:bg-white border border-[#8c7c6c]/20 hover:border-[#82b7cc]/50 text-[#5d4037] hover:text-[#82b7cc] rounded-xl py-2.5 px-3 text-xs font-black tracking-wider transition-all shadow-sm active:scale-95 cursor-pointer flex items-center justify-center gap-1.5"
-            >
-              <span>💾</span>
-              <span>{exportingImage ? "導出中..." : "保存圖片"}</span>
-            </Button>
-            <Button
-              type="button"
-              onClick={handleShareLink}
-              disabled={sharing}
-              className="bg-white/60 hover:bg-white border border-[#8c7c6c]/20 hover:border-[#82b7cc]/50 text-[#5d4037] hover:text-[#82b7cc] rounded-xl py-2.5 px-3 text-xs font-black tracking-wider transition-all shadow-sm active:scale-95 cursor-pointer flex items-center justify-center gap-1.5"
-            >
-              <span>🔗</span>
-              <span>{shareSuccess ? "已複製！" : "複製連結"}</span>
-            </Button>
+          <div className={`${colorClasses.bg} border ${colorClasses.border} rounded-xl py-2 px-3 text-xs ${colorClasses.text} flex items-center gap-2 shadow-sm font-mono`}>
+            <span>正在自訂：《{colorClasses.name}》專屬戰力名片</span>
           </div>
-
-          <p className="text-xs text-[#8c7c6c]/80 italic text-center max-w-[320px] font-semibold mt-1">
-            ✨ 卡片效果將會同步更新，這也是其他玩家在廣場上看到的最終樣貌。
-          </p>
         </div>
 
-        {/* 右側：編輯表單 */}
-        <div className="lg:col-span-7 space-y-6">
-          <Card className="glass-panel text-[#5d4037]">
-            <CardContent className="pt-6 space-y-5">
-              <h2 className="font-extrabold text-lg text-[#82b7cc] border-b border-[#8c7c6c]/10 pb-2 flex items-center gap-2">
-                🥞 玩家基礎設定
-              </h2>
+        {errorMsg && (
+          <div className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-2xl flex items-center gap-3 text-sm animate-shake">
+            <AlertTriangle className="text-red-500 shrink-0" size={18} />
+            <span>{errorMsg}</span>
+          </div>
+        )}
+
+        {/* 左右分割排版 */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start w-full">
+          {/* 左側：名片即時預覽 */}
+          <div className="lg:col-span-4 flex flex-col items-center gap-4 lg:sticky lg:top-24">
+            <h2 className="text-[10px] font-bold tracking-widest text-zinc-400 uppercase font-mono">即時名片預覽 // Live Preview</h2>
+            
+            <div ref={cardRef} className="rounded-[28px] overflow-hidden relative">
+              {editingGame === "ow" ? (
+                <OWCard cardData={cardData} isLoggedIn={true} isEditable={true} customAlignments={heroAlignments} />
+              ) : (
+                <CosmicLivePreviewCard cardData={currentCard} gameType={editingGame} colorClasses={colorClasses} />
+              )}
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* 點擊清空英雄立繪插槽按鈕 Overlay (專門對接 3 格常用立繪的✕清空) */}
+              <div className="absolute top-[175px] left-1/2 -translate-x-1/2 w-[340px] grid grid-cols-3 gap-2 px-3 h-32 pointer-events-none">
+                {[0, 1, 2].map((idx) => {
+                  const heroId = currentCard.selected_heroes[idx];
+                  if (!heroId) return <div key={idx} />;
+                  return (
+                    <div key={idx} className="relative h-full w-full">
+                      <button
+                        type="button"
+                        onClick={() => handleClearHeroSlot(idx)}
+                        className="pointer-events-auto absolute top-1 right-1 w-4 h-4 bg-black/80 text-[8px] text-rose-450 hover:text-white rounded-full flex items-center justify-center border border-white/10 hover:border-rose-550 active:scale-90 transition-all font-sans cursor-pointer"
+                        title="清空此位置"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* 💾 匯出圖片與複製連結按鈕區 */}
+            <div className="w-full max-w-[320px] grid grid-cols-2 gap-3 mt-2">
+              <Button
+                type="button"
+                onClick={handleExportImage}
+                disabled={exportingImage}
+                className={`bg-white/5 hover:bg-white/10 border border-white/10 hover:border-${colorClasses.primary}-500/50 text-zinc-300 hover:text-white rounded-xl py-2.5 px-3 text-xs font-bold transition-all shadow-sm active:scale-95 cursor-pointer flex items-center justify-center gap-1.5 font-mono`}
+              >
+                <span>💾 保存圖片</span>
+              </Button>
+              <Button
+                type="button"
+                onClick={handleShareLink}
+                disabled={sharing}
+                className={`bg-white/5 hover:bg-white/10 border border-white/10 hover:border-${colorClasses.primary}-500/50 text-zinc-300 hover:text-white rounded-xl py-2.5 px-3 text-xs font-bold transition-all shadow-sm active:scale-95 cursor-pointer flex items-center justify-center gap-1.5 font-mono`}
+              >
+                <span>🔗 {shareSuccess ? "已複製！" : "複製連結"}</span>
+              </Button>
+            </div>
+
+            <p className="text-[10px] text-zinc-500 italic text-center max-w-[320px] mt-1 font-semibold leading-relaxed">
+              ✨ 點擊預覽圖中英雄插槽右上角的「✕」可將其移去。
+            </p>
+          </div>
+
+          {/* 右側：編輯表單 */}
+          <div className="lg:col-span-8 space-y-6">
+            
+            {/* SECTION 1: 玩家基礎設定 */}
+            <div className="glass-panel p-6 rounded-2xl space-y-4 text-left border border-white/[0.03]">
+              <h3 className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest border-b border-white/[0.04] pb-2 font-mono">
+                🦁 玩家基礎設定 // Base Configs
+              </h3>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-bold text-[#8c7c6c] mb-1.5 block">BattleTag (遊戲ID)</label>
+                  <label className="text-[10px] font-bold text-zinc-400 mb-1.5 block font-mono">BattleTag (遊戲ID)</label>
                   <Input
                     placeholder="例如: 愛喝奶茶#3342"
-                    className="bg-white/50 border-[#8c7c6c]/20 focus:border-[#82b7cc] text-[#5d4037] font-mono rounded-xl focus:ring-1 focus:ring-[#82b7cc]/20"
-                    value={cardData.battle_tag}
+                    className={`bg-black/40 border-white/10 ${colorClasses.focusBorder} text-zinc-200 font-mono rounded-xl focus:ring-1 h-10`}
+                    value={currentCard.battle_tag}
                     onChange={(e) => {
                       setErrorMsg(null);
-                      setCardData({ ...cardData, battle_tag: e.target.value });
+                      setCard({ ...currentCard, battle_tag: e.target.value });
                     }}
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold text-[#8c7c6c] mb-1.5 block">遊玩伺服器</label>
+                  <label className="text-[10px] font-bold text-zinc-400 mb-1.5 block font-mono">遊玩伺服器</label>
                   <select
-                    className="w-full bg-white/50 border border-[#8c7c6c]/20 rounded-xl py-2 px-3 text-sm focus:border-[#82b7cc] text-[#5d4037] font-semibold"
-                    value={cardData.server}
-                    onChange={(e) => setCardData({ ...cardData, server: e.target.value })}
+                    className={`w-full bg-black/40 border border-white/10 rounded-xl py-2 px-3 text-xs ${colorClasses.focusBorder} text-zinc-200 font-semibold h-10 focus:outline-none`}
+                    value={currentCard.server}
+                    onChange={(e) => setCard({ ...currentCard, server: e.target.value })}
                   >
-                    {SERVER_OPTIONS.map((opt) => (
-                      <option key={opt} value={opt}>
+                    {(editingGame === "val" ? ["亞太 (APAC)", "北美 (NA)", "歐洲 (EU)"] : editingGame === "lol" ? ["台灣 (TW)", "韓國 (KR)", "北美 (NA)"] : SERVER_OPTIONS).map((opt) => (
+                      <option key={opt} value={opt} className="bg-obsidian text-zinc-200 font-semibold">
                         {opt}
                       </option>
                     ))}
@@ -691,23 +1108,24 @@ export default function ProfilePage() {
                 </div>
               </div>
 
-              <div className="bg-white/40 p-4.5 rounded-2xl border border-[#8c7c6c]/12 flex justify-between items-center shadow-[0_2px_8px_rgba(0,0,0,0.01)]">
+              {/* 直接隱藏名片 */}
+              <div className="bg-black/20 p-4.5 rounded-2xl border border-white/5 flex justify-between items-center shadow-[0_2px_8px_rgba(0,0,0,0.01)]">
                 <div className="space-y-0.5 max-w-[80%]">
-                  <span className="text-xs font-black text-[#3e2723] block">直接隱藏卡片</span>
-                  <span className="text-[10px] text-[#8c7c6c] font-semibold block leading-relaxed">
+                  <span className="text-xs font-bold text-zinc-200 block font-sans">直接隱藏卡片 // Hidden Card</span>
+                  <span className="text-[9px] text-zinc-400 font-semibold block leading-relaxed font-sans">
                     開啟後，您的特工名片將直接從交友廣場（河道）中消失，其他玩家將無法瀏覽到您的任何資訊。
                   </span>
                 </div>
                 <button
                   type="button"
-                  onClick={() => setCardData({ ...cardData, is_tag_visible: !cardData.is_tag_visible })}
+                  onClick={() => setCard({ ...currentCard, is_tag_visible: !currentCard.is_tag_visible })}
                   className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 cursor-pointer shadow-sm ${
-                    !cardData.is_tag_visible ? "bg-[#82b7cc]" : "bg-[#a0a29f]/40"
+                    !currentCard.is_tag_visible ? `bg-${colorClasses.primary}-500` : "bg-white/10"
                   }`}
                 >
                   <span
                     className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200 ${
-                      !cardData.is_tag_visible ? "translate-x-6" : "translate-x-1"
+                      !currentCard.is_tag_visible ? "translate-x-6" : "translate-x-1"
                     }`}
                   />
                 </button>
@@ -715,324 +1133,204 @@ export default function ProfilePage() {
 
               <div>
                 <div className="flex justify-between items-center mb-1.5">
-                  <label className="text-xs font-bold text-[#8c7c6c] block">自我介紹留言 (限100字)</label>
-                  <span className={`text-[10px] font-bold ${cardData.message.length > 100 ? "text-red-500" : "text-[#8c7c6c]/50"}`}>
-                    {cardData.message.length} / 100
+                  <label className="text-[10px] font-bold text-zinc-400 block font-mono">自我介紹留言 (限100字)</label>
+                  <span className={`text-[9px] font-bold font-mono ${currentCard.message.length > 100 ? "text-red-500" : "text-zinc-500"}`}>
+                    {currentCard.message.length} / 100
                   </span>
                 </div>
                 <Textarea
                   placeholder="GGWP！一起加油，推車到底啦 🚀"
-                  className="bg-white/50 border-[#8c7c6c]/20 focus:border-[#82b7cc] text-[#5d4037] resize-none text-sm rounded-xl"
-                  rows={3}
-                  value={cardData.message}
+                  className={`bg-black/40 border-white/10 ${colorClasses.focusBorder} text-zinc-200 resize-none text-xs rounded-xl`}
+                  rows={2}
+                  value={currentCard.message}
                   onChange={(e) => {
                     if (e.target.value.length <= 110) {
-                      setCardData({ ...cardData, message: e.target.value });
+                      setCard({ ...currentCard, message: e.target.value });
                     }
                   }}
                 />
               </div>
 
               <div>
-                <label className="text-xs font-bold text-[#8c7c6c] mb-2 block">語音溝通狀態</label>
+                <label className="text-[10px] font-bold text-zinc-400 mb-2 block font-mono">語音溝通狀態</label>
                 <div className="grid grid-cols-3 gap-2">
                   {MIC_OPTIONS.map((opt) => (
-                    <Button
+                    <button
                       key={opt.value}
                       type="button"
-                      variant="secondary"
-                      onClick={() => setCardData({ ...cardData, mic_status: opt.value as OWPlayerCard["mic_status"] })}
-                      className={`text-xs font-bold py-2 rounded-xl border transition-all duration-300 active:scale-95 cursor-pointer shadow-sm ${
-                        cardData.mic_status === opt.value
-                          ? "bg-[#82b7cc] border-[#82b7cc] text-white"
-                          : "bg-white/40 border-[#8c7c6c]/15 hover:bg-white text-[#8c7c6c] hover:text-[#3e2723]"
+                      onClick={() => setCard({ ...currentCard, mic_status: opt.value as OWPlayerCard["mic_status"] })}
+                      className={`text-[10px] font-bold py-2 rounded-xl border transition-all duration-300 cursor-pointer shadow-sm font-mono ${
+                        currentCard.mic_status === opt.value
+                          ? `${colorClasses.bg} ${colorClasses.border} text-white font-semibold`
+                          : "bg-black/30 border-white/[0.04] text-zinc-400 hover:text-white"
                       }`}
                     >
                       {opt.label}
-                    </Button>
+                    </button>
                   ))}
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <div className="flex justify-between items-center mb-2">
-                    <label className="text-xs font-bold text-[#8c7c6c] block">溝通語言 (最多 3 個)</label>
-                    <span className="text-[9px] font-black text-[#8c7c6c]/70 bg-white/40 px-2 py-0.5 rounded-lg border border-[#8c7c6c]/15 shadow-sm">
-                      已選 {cardData.languages.length} / 3
-                    </span>
-                  </div>
-                  <div className="flex flex-wrap gap-1.5">
-                    {LANGUAGE_OPTIONS.map((lang) => {
-                      const isSelected = cardData.languages.includes(lang);
-                      return (
-                        <Badge
-                          key={lang}
-                          onClick={() => handleToggleLanguage(lang)}
-                          className={`cursor-pointer px-2.5 py-1 text-xs transition-all duration-300 rounded shadow-sm border ${
-                            isSelected
-                              ? "bg-[#82b7cc] hover:bg-[#82b7cc]/90 text-white border-[#82b7cc]"
-                              : "bg-white/40 text-[#8c7c6c] hover:bg-white border-[#8c7c6c]/15"
-                          }`}
-                        >
-                          {lang}
-                        </Badge>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                <div>
-                  <label className="text-xs font-bold text-[#8c7c6c] mb-1.5 block">MBTI 人格特質 (可選)</label>
+                  <label className="text-[10px] font-bold text-zinc-400 mb-1.5 block font-mono">MBTI 人格特質 (可選)</label>
                   <select
-                    className="w-full bg-white/50 border border-[#8c7c6c]/20 rounded-xl py-2 px-3 text-sm focus:border-[#82b7cc] text-[#5d4037] font-semibold"
-                    value={cardData.mbti || ""}
-                    onChange={(e) => setCardData({ ...cardData, mbti: e.target.value || undefined })}
+                    className={`w-full bg-black/40 border border-white/10 rounded-xl py-2 px-3 text-xs ${colorClasses.focusBorder} text-zinc-200 font-semibold h-10 focus:outline-none`}
+                    value={currentCard.mbti || ""}
+                    onChange={(e) => setCard({ ...currentCard, mbti: e.target.value || undefined })}
                   >
-                    <option value="" className="text-[#8c7c6c]">不公開</option>
+                    <option value="" className="bg-obsidian text-zinc-400 font-semibold">不公開 // Secret</option>
                     {MBTI_OPTIONS.map((opt) => (
-                      <option key={opt} value={opt} className="text-[#5d4037]">
+                      <option key={opt} value={opt} className="bg-obsidian text-zinc-200 font-semibold">
                         {opt}
                       </option>
                     ))}
                   </select>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
 
-          {/* 常用英雄選擇 */}
-          <Card className="glass-panel text-[#5d4037]">
-            <CardContent className="pt-6 space-y-4">
-              <div className="flex justify-between items-center border-b border-[#8c7c6c]/10 pb-2">
-                <h2 className="font-extrabold text-lg text-[#82b7cc] flex items-center gap-2">
-                  🛡️ 常用英雄展示 (最多 3 個)
-                </h2>
-                <span className="text-[9px] font-black text-[#8c7c6c]/70 bg-white/40 px-2 py-0.5 rounded-lg border border-[#8c7c6c]/15 shadow-sm">
-                  已選 {cardData.selected_heroes.length} / 3
-                </span>
+            {/* SECTION 2: 常用英雄展示 (點擊填入插槽) */}
+            <div className="glass-panel p-6 rounded-2xl space-y-4 text-left border border-white/[0.03]">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-white/[0.04] pb-2">
+                <h3 className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest flex items-center gap-1.5 font-mono">
+                  <span>🛡️ 常用英雄展示 (最多 3 個) // Favorite Heroes</span>
+                </h3>
+                {/* 篩選標籤 */}
+                {editingGame === "ow" && (
+                  <div className="flex space-x-1 bg-black/40 p-0.5 rounded border border-white/5 text-[9px] font-mono">
+                    {["All", "Tank", "Dps", "Support"].map((role) => (
+                      <button
+                        key={role}
+                        type="button"
+                        onClick={() => setHeroRoleFilter(role as any)}
+                        className={`px-2 py-1 rounded transition-colors cursor-pointer ${
+                          heroRoleFilter === role ? "bg-white/10 text-white font-bold" : "text-zinc-400 hover:text-white"
+                        }`}
+                      >
+                        {role === "All" ? "全部" : role === "Tank" ? "肉盾 🛡️" : role === "Dps" ? "攻擊 ⚔️" : "支援 ➕"}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
-              <div className="flex flex-wrap gap-1.5 pb-3 border-b border-[#8c7c6c]/10">
-                {heroRoleTabs.map((tab) => (
-                  <button
-                    key={tab.value}
-                    type="button"
-                    onClick={() => setHeroRoleFilter(tab.value)}
-                    className={`text-[10px] font-bold px-3 py-1.5 rounded-lg transition-colors border cursor-pointer ${
-                      heroRoleFilter === tab.value
-                        ? "bg-[#82b7cc] border-[#82b7cc] text-white"
-                        : "bg-white/40 border-[#8c7c6c]/15 text-[#8c7c6c] hover:bg-white"
-                    }`}
-                  >
-                    {tab.label}
-                  </button>
-                ))}
-              </div>
-              
-              <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 max-h-[300px] overflow-y-auto pr-1">
-                {HEROES_CONFIG.filter(
-                  (hero) => heroRoleFilter === "all" || hero.role === heroRoleFilter
-                ).map((hero) => {
-                  const isSelected = cardData.selected_heroes.includes(hero.id);
+
+              {/* 英雄頭像網格 */}
+              <div className="grid grid-cols-3 sm:grid-cols-6 gap-3 max-h-[320px] overflow-y-auto pr-1">
+                {currentHeroesConfig.filter((hero) => {
+                  if (editingGame !== "ow") return true;
+                  if (heroRoleFilter === "All") return true;
+                  if (heroRoleFilter === "Tank") return hero.role === "tank";
+                  if (heroRoleFilter === "Dps") return hero.role === "damage";
+                  return hero.role === "support";
+                }).map((hero) => {
+                  const isSelected = currentCard.selected_heroes.includes(hero.id);
                   return (
                     <button
                       key={hero.id}
                       type="button"
                       onClick={() => handleToggleHero(hero.id)}
-                      className={`relative p-2 rounded-xl flex flex-col items-center justify-center border transition-all duration-300 group cursor-pointer ${
+                      className={`p-2 rounded-xl border flex flex-col items-center justify-center space-y-1.5 transition-all cursor-pointer ${
                         isSelected
-                          ? "bg-[#82b7cc]/15 border-[#82b7cc] text-[#3e2723]"
-                          : "bg-white/40 border-[#8c7c6c]/15 text-[#8c7c6c] hover:bg-white"
+                          ? `${colorClasses.bg} ${colorClasses.border} text-white ${colorClasses.glow}`
+                          : "bg-black/30 border-white/[0.03] text-zinc-400 hover:text-white hover:border-white/10"
                       }`}
                     >
-                      <div className="w-10 h-10 rounded-full overflow-hidden border border-[#8c7c6c]/15 bg-white/60 flex justify-center items-center group-hover:scale-105 transition-transform mb-1.5 select-none shadow-sm">
+                      <div className="w-8 h-8 rounded-full overflow-hidden border border-white/10 bg-black/40 flex justify-center items-center shadow-sm">
                         <img 
-                          src={`/images/heroes/avatars/${hero.id}.png`} 
+                          src={editingGame === "ow" ? `/images/heroes/avatars/${hero.id}.png` : `/images/heroes/avatars/${editingGame}_${hero.id}.png`} 
                           alt={hero.name} 
-                          className="w-full h-full object-cover select-none"
-                          draggable="false"
+                          className="w-full h-full object-cover"
                           onError={(e) => {
                             (e.target as HTMLImageElement).src = '/images/heroes/silhouette.png';
                           }}
                         />
                       </div>
-                      <span className="text-xs font-bold truncate max-w-full">{hero.name}</span>
+                      <span className="text-[9px] font-sans truncate w-full text-center tracking-wide">{hero.name}</span>
                     </button>
                   );
                 })}
               </div>
-            </CardContent>
-          </Card>
+            </div>
 
-          {/* 特色標籤選擇 */}
-          <Card className="glass-panel text-[#5d4037]">
-            <CardContent className="pt-6 space-y-4">
-              <div className="flex justify-between items-center border-b border-[#8c7c6c]/10 pb-2">
-                <h2 className="font-extrabold text-lg text-[#82b7cc] flex items-center gap-2">
-                  🏷️ 特色標籤選擇 (最多 3 個)
-                </h2>
-                <span className="text-[9px] font-black text-[#8c7c6c]/70 bg-white/40 px-2 py-0.5 rounded-lg border border-[#8c7c6c]/15 shadow-sm">
-                  已選 {cardData.tags.length} / 3
-                </span>
+            {/* SECTION 3: 特色標籤選擇 */}
+            <div className="glass-panel p-6 rounded-2xl space-y-3 text-left border border-white/[0.03]">
+              <div className="flex justify-between text-[10px] font-bold text-zinc-400 border-b border-white/[0.04] pb-2 font-mono">
+                <span className="uppercase tracking-widest">🏷️ 特色標籤選擇 (最多 3 個) // Styles Labels</span>
+                <span className="text-[9px] text-zinc-500 font-normal font-mono">已選 {currentCard.tags.length}/3</span>
               </div>
-              <div className="flex flex-wrap gap-2">
-                {dbTags.map((tag) => {
-                  const isSelected = cardData.tags.includes(tag.tag_name);
+              <div className="flex flex-wrap gap-1.5">
+                {(editingGame === "ow" ? dbTags.map((tag) => tag.tag_name) : (editingGame === "val" ? ["慢節奏", "不計輸贏", "槍法流", "身法怪", "幽默特工", "深夜寂靜"] : ["孤寂流浪者", "浪漫主義", "歡樂ARAM", "峽谷隱士", "專精單線", "只玩大亂鬥"])).map((tagName) => {
+                  const isSelected = currentCard.tags.includes(tagName);
                   return (
                     <button
-                      key={tag.id}
+                      key={tagName}
                       type="button"
-                      onClick={() => handleToggleTag(tag.tag_name)}
-                      className={`cursor-pointer px-3 py-1.5 text-xs font-extrabold rounded-full border shadow-sm transition-all duration-300 ${
+                      onClick={() => handleToggleTag(tagName)}
+                      className={`text-[10px] font-mono px-3 py-1.5 rounded-full border transition-all cursor-pointer ${
                         isSelected
-                          ? `${tag.style_class} scale-105 shadow-inner`
-                          : "bg-white/40 text-[#8c7c6c] hover:bg-white border-[#8c7c6c]/15"
+                          ? `${colorClasses.bg} ${colorClasses.text} ${colorClasses.border} font-bold ${colorClasses.tagGlow}`
+                          : "bg-white/[0.01] border-white/[0.06] text-zinc-400 hover:text-white"
                       }`}
                     >
-                      #{tag.tag_name}
-                    </button>
-                  );
-                })}
-                {dbTags.length === 0 && (
-                  <span className="text-xs text-[#8c7c6c]/60 italic font-semibold">載入特色標籤中...</span>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* 常用聯絡管道 */}
-          <Card className="glass-panel text-[#5d4037]">
-            <CardContent className="pt-6 space-y-4">
-              <div className="flex justify-between items-center border-b border-[#8c7c6c]/10 pb-2">
-                <h2 className="font-extrabold text-lg text-[#82b7cc] flex items-center gap-2">
-                  💬 常用聯絡管道設定 (1~3 個)
-                </h2>
-                <span className="text-[9px] font-black text-[#8c7c6c]/70 bg-white/40 px-2 py-0.5 rounded-lg border border-[#8c7c6c]/15 shadow-sm">
-                  已選 {Object.keys(cardData.social_channels || {}).length} / 3
-                </span>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                {SOCIAL_PLATFORMS.map((platform) => {
-                  const isActive = !!(cardData.social_channels || {})[platform.id as keyof typeof cardData.social_channels];
-                  
-                  return (
-                    <button
-                      key={platform.id}
-                      type="button"
-                      onClick={() => handleToggleSocial(platform.id)}
-                      className={`p-3 rounded-xl border flex items-center gap-3 transition-all duration-300 cursor-pointer ${getPlatformColor(platform.id, isActive)}`}
-                    >
-                      <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0" style={{
-                        backgroundColor: isActive ? undefined : "rgba(255, 255, 255, 0.4)",
-                        color: isActive ? "#fff" : "#8c7c6c"
-                      }}>
-                        <SocialIcon platform={platform.id} className="w-5 h-5" />
-                      </div>
-                      <div className="text-left min-w-0 flex-1">
-                        <span className="text-sm font-bold truncate text-[#3e2723] block">{platform.label}</span>
-                        <span className="text-[10px] text-[#8c7c6c] block truncate font-semibold">
-                          {isActive ? "已開啟展示" : "未開啟展示"}
-                        </span>
-                      </div>
+                      #{tagName}
                     </button>
                   );
                 })}
               </div>
-            </CardContent>
-          </Card>
-
-          <Button
-            onClick={handleSaveCard}
-            className="w-full bg-[#82b7cc] hover:bg-[#82b7cc]/90 text-white py-6 text-base font-bold shadow-[0_6px_20px_rgba(130,183,204,0.3)] transition-all duration-300 active:scale-98 flex items-center justify-center gap-2 rounded-xl border border-[#82b7cc]/30 cursor-pointer"
-          >
-            <Save size={18} />
-            {saving ? "正在儲存..." : saved ? "✓ 名片儲存成功！" : "儲存並發布我的名片"}
-          </Button>
-        </div>
-      </div>
-
-      {/* 🌟 儲存成功自動彈出的分享對話框 (Modal) */}
-      {showShareModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/30 backdrop-blur-sm transition-all duration-300">
-          <div className="glass-panel max-w-sm w-full p-6 text-center space-y-4 border border-white/60 relative shadow-2xl animate-[fadeInUp_0.3s_ease-out] rounded-[28px] bg-white/45">
-            
-            {/* 關閉按鈕 */}
-            <button
-              onClick={() => setShowShareModal(false)}
-              className="absolute top-4 right-4 text-[#8c7c6c]/70 hover:text-[#3e2723] font-bold text-sm transition-colors cursor-pointer w-6 h-6 rounded-full bg-white/50 hover:bg-white flex items-center justify-center shadow-sm"
-            >
-              ✕
-            </button>
-
-            <div className="w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 flex items-center justify-center mx-auto text-xl animate-bounce">
-              🎉
             </div>
 
-            <div className="space-y-1">
-              <h3 className="text-base font-extrabold text-[#3e2723]">特工名片發布成功！</h3>
-              <p className="text-[11px] text-[#8c7c6c] leading-relaxed">
-                您的最新遊戲名片已成功儲存並同步至廣場。快複製您的專屬連結分享，或將精美名片保存為圖片吧！
+            {/* SECTION 4: 常用聯絡管道設定 */}
+            <div className="glass-panel p-6 rounded-2xl space-y-3 text-left border border-white/[0.03]">
+              <div className="flex justify-between text-[10px] font-bold text-zinc-400 border-b border-white/[0.04] pb-2 font-mono">
+                <span className="uppercase tracking-widest">💬 常用聯絡管道設定 (1~3個) // Contact Platforms</span>
+                <span className="text-[9px] text-zinc-500 font-normal font-mono">已選 {Object.keys(currentCard.social_channels || {}).length}/3</span>
+              </div>
+              <p className="text-[9px] text-zinc-400 leading-relaxed">
+                為落實寂靜低侵入社交宣言，系統在名片上僅以「展示發光圖標」呈現，不公開聯絡 ID 文字，以保護您的通訊隱私。點選即可啟動對應聯絡管道展示。
               </p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+                {SOCIAL_PLATFORMS.map((platform) => {
+                  const isActive = !!(currentCard.social_channels || {})[platform.id as keyof typeof currentCard.social_channels];
+                  return (
+                    <div
+                      key={platform.id}
+                      onClick={() => handleToggleSocial(platform.id)}
+                      className={`p-3.5 rounded-xl border flex items-center justify-between cursor-pointer transition-all ${
+                        isActive
+                          ? "bg-purple-950/20 border-purple-500/50 shadow-[0_0_10px_rgba(168,85,247,0.1)]"
+                          : "bg-black/30 border-white/[0.04] opacity-50 hover:opacity-80"
+                      }`}
+                    >
+                      <div className="flex items-center space-x-3">
+                        <span className="text-base text-purple-400">
+                          {platform.id === "discord" && "👾"}
+                          {platform.id === "steam" && "🎮"}
+                          {platform.id === "x" && "𝕏"}
+                          {platform.id === "line" && "💬"}
+                        </span>
+                        <span className="text-xs text-zinc-100 font-bold font-mono">{platform.label}</span>
+                      </div>
+                      <span className="text-[8px] px-2 py-0.5 rounded bg-white/5 border border-white/10 text-zinc-400 font-mono">
+                        {isActive ? "ACTIVE / 展示中" : "INACTIVE"}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
 
-            {/* 分享連結複製區 */}
-            <div className="bg-white/50 p-2.5 rounded-2xl border border-[#8c7c6c]/15 flex items-center justify-between gap-2 shadow-[inset_0_1px_2px_rgba(0,0,0,0.02)]">
-              <input
-                type="text"
-                readOnly
-                value={typeof window !== "undefined" ? `${window.location.origin}/share/${user?.id || "mock-user-id"}` : ""}
-                className="bg-transparent text-xs text-[#5d4037] font-mono outline-none flex-1 truncate select-all px-1.5"
-                onClick={(e) => (e.target as HTMLInputElement).select()}
-              />
-              <Button
-                type="button"
-                onClick={handleShareLink}
-                disabled={sharing}
-                className="bg-[#82b7cc] hover:bg-[#82b7cc]/90 text-white rounded-lg py-1 px-2.5 text-[10px] font-black h-7 tracking-wider transition-all active:scale-95 cursor-pointer shrink-0"
-              >
-                {shareSuccess ? "已複製" : "複製"}
-              </Button>
-            </div>
-
-            {/* 動作按鈕 */}
-            <div className="grid grid-cols-2 gap-3 pt-1">
-              <Button
-                type="button"
-                onClick={handleExportImage}
-                disabled={exportingImage}
-                className="bg-white/60 hover:bg-white border border-[#8c7c6c]/20 hover:border-[#82b7cc]/50 text-[#5d4037] hover:text-[#82b7cc] rounded-xl py-2 px-3 text-xs font-black transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-sm"
-              >
-                <span>💾</span>
-                <span>{exportingImage ? "導出中..." : "保存圖片"}</span>
-              </Button>
-              
-              <Link
-                href={`/share/${user?.id || "mock-user-id"}`}
-                target="_blank"
-                className="w-full"
-              >
-                <Button
-                  type="button"
-                  className="w-full border-none bg-[#82b7cc]/15 text-[#82b7cc] hover:bg-[#82b7cc] hover:text-white rounded-xl py-2 px-3 text-xs font-black transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-sm"
-                >
-                  <span>🌐</span>
-                  <span>前往分享頁</span>
-                </Button>
-              </Link>
-            </div>
-
+            {/* 儲存名片按鈕 */}
+            <Button
+              onClick={handleSaveCard}
+              className={`w-full ${colorClasses.saveBtn} py-6 text-sm font-bold transition-all duration-300 active:scale-98 flex items-center justify-center gap-2 rounded-xl cursor-pointer`}
+            >
+              {saving ? "正在同步資料庫..." : saved ? "✓ 名片儲存成功！" : `儲存並發布我的${colorClasses.name}名片`}
+            </Button>
           </div>
         </div>
-      )}
-
-      {/* 未登入限制 */}
-      <LoginModal
-        show={!authLoading && !user}
-        closable={false}
-        title="登入後才能建立名片"
-        description="以 Google 帳號登入，建立你的特工名片並公開到交友廣場"
-      />
+      </div>
     </div>
   );
 }

@@ -33,8 +33,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
 
   useEffect(() => {
-    // 💡 在開發環境下自動模擬登入，防止在本地測試時卡在 Google 登入限制中
-    if (process.env.NODE_ENV === "development") {
+    // 只有明確開啟時才模擬登入，避免本機預覽時跳過工作室守門畫面。
+    if (process.env.NODE_ENV === "development" && process.env.NEXT_PUBLIC_ENABLE_DEV_AUTH_MOCK === "true") {
       const mockUser = {
         id: "mock-user-id",
         app_metadata: {},

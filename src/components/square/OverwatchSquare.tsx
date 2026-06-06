@@ -7,7 +7,7 @@ import { MOCK_PLAYERS, HEROES_CONFIG, SERVER_OPTIONS, MIC_OPTIONS } from "@/data
 import OWCard from "@/components/OWCard";
 import LoginModal from "@/components/LoginModal";
 import { Button } from "@/components/ui/button";
-import { RotateCcw, AlertCircle } from "lucide-react";
+import { RotateCcw, AlertCircle, Search, ChevronDown } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { getHeroAlignments } from "@/app/actions/alignment";
 import { getPublicProfiles } from "@/app/actions/browse";
@@ -16,39 +16,8 @@ import { HERO_ALIGNMENTS } from "@/data/heroAlignments";
 import { useAuth } from "@/context/AuthContext";
 
 interface OverwatchSquareProps {
-  searchQuery: string;
+  searchQuery?: string;
   isPremiumStyle?: boolean;
-}
-
-// 🌸 [Aesthetics] 手寫四角星芒裝飾 SVG 組件
-function PencilStar({ className = "w-4 h-4" }: { className?: string }) {
-  return (
-    <svg 
-      viewBox="0 0 24 24" 
-      className={`${className} text-[#8c7c6c]/45 animate-pulse`} 
-      fill="none" 
-      stroke="currentColor" 
-      strokeWidth="1.2"
-      style={{ animationDuration: "3.5s" }}
-    >
-      <path d="M12 2 C12 10 14 12 22 12 C14 12 12 14 12 22 C12 14 10 12 2 12 C10 12 12 10 12 2 Z" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-// 🌸 [Aesthetics] SVG Doodles 手繪裝飾線
-function DoodleLine({ className = "w-10 h-1.5" }: { className?: string }) {
-  return (
-    <svg 
-      viewBox="0 0 80 8" 
-      className={`${className} text-[#f5d46b]/80 fill-none stroke-current`} 
-      strokeWidth="1.6" 
-      strokeLinecap="round" 
-      pointerEvents="none"
-    >
-      <path d="M 2,4 C 25,1 55,7 78,3" />
-    </svg>
-  );
 }
 
 const PAGE_SIZE = 20;
@@ -60,6 +29,7 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
 
   const [players, setPlayers] = useState<OWPlayerCard[]>([]);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [localSearchQuery, setLocalSearchQuery] = useState("");
   const [selectedRole, setSelectedRole] = useState("全部");
   const [selectedServer, setSelectedServer] = useState("全部");
   const [selectedMic, setSelectedMic] = useState("全部");
@@ -71,6 +41,7 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const requestCounterRef = useRef<number>(0);  // 遞增計數器，比 Date.now() 更可靠
   const searchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const effectiveSearchQuery = searchQuery ?? localSearchQuery;
 
   const toPlayerCard = (row: Record<string, unknown>): OWPlayerCard => ({
     card_id: (row.card_id as string) ?? (row.user_id as string),
@@ -157,26 +128,26 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
     loadPlayers("", 0);
   }, []);
 
-  // searchQuery 變化時 debounce 觸發 server-side 搜尋
+  // 搜尋條件變化時 debounce 觸發 server-side 搜尋
   useEffect(() => {
     if (!isMounted) return;
     if (searchDebounceRef.current) clearTimeout(searchDebounceRef.current);
     searchDebounceRef.current = setTimeout(() => {
-      loadPlayers(searchQuery, 0, false, selectedServer, selectedMic);
+      loadPlayers(effectiveSearchQuery, 0, false, selectedServer, selectedMic);
     }, 300);
     return () => {
       if (searchDebounceRef.current) clearTimeout(searchDebounceRef.current);
     };
-  }, [searchQuery]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [effectiveSearchQuery, isMounted]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // server / mic 篩選變化時重新從 DB 拉取（offset 重設為 0）
   useEffect(() => {
     if (!isMounted) return;
-    loadPlayers(searchQuery, 0, false, selectedServer, selectedMic);
-  }, [selectedServer, selectedMic]); // eslint-disable-line react-hooks/exhaustive-deps
+    loadPlayers(effectiveSearchQuery, 0, false, selectedServer, selectedMic);
+  }, [selectedServer, selectedMic, isMounted]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleLoadMore = () => {
-    loadPlayers(searchQuery, players.length, true, selectedServer, selectedMic);
+    loadPlayers(effectiveSearchQuery, players.length, true, selectedServer, selectedMic);
   };
 
   const getHeroRole = (heroId: string) => {
@@ -188,6 +159,7 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
     setSelectedRole("全部");
     setSelectedServer("全部");
     setSelectedMic("全部");
+    setLocalSearchQuery("");
   };
 
   // client-side 過濾（role/server/mic + 英雄名稱搜尋，對已載入的資料）
@@ -195,19 +167,19 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
     if (!player.is_tag_visible) return false;
 
     // 英雄名稱搜尋（client-side，需 HEROES_CONFIG lookup）
-    if (searchQuery.trim()) {
+    if (effectiveSearchQuery.trim()) {
       const matchesHeroQuery = (player.selected_heroes || []).some((heroId) => {
         const hero = HEROES_CONFIG.find(h => h.id === heroId);
-        return hero && hero.name.toLowerCase().includes(searchQuery.toLowerCase());
+        return hero && hero.name.toLowerCase().includes(effectiveSearchQuery.toLowerCase());
       });
       // DB 已做 battle_tag/message/mbti 過濾，這裡只補英雄名稱
       // 不重複過濾 text fields（由 DB 決定）
       if (isShowingMockData && !matchesHeroQuery) {
         // Mock 模式下做完整 client-side 過濾
         const matchesText =
-          player.battle_tag.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          (player.message || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-          (player.mbti || "").toLowerCase().includes(searchQuery.toLowerCase());
+          player.battle_tag.toLowerCase().includes(effectiveSearchQuery.toLowerCase()) ||
+          (player.message || "").toLowerCase().includes(effectiveSearchQuery.toLowerCase()) ||
+          (player.mbti || "").toLowerCase().includes(effectiveSearchQuery.toLowerCase());
         if (!matchesText && !matchesHeroQuery) return false;
       }
     }
@@ -230,96 +202,119 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
   }
 
   return (
-    <div className="space-y-6 w-full animate-[fadeIn_0.4s_ease-out] relative pb-36">
+    <div className="space-y-6 w-full animate-[fadeIn_0.4s_ease-out] relative pb-8">
       {/* 示範資料提示條（真實資料出現後自動消失）*/}
       {isShowingMockData && (
-        <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[#d8a070]/30 bg-[#d8a070]/8 text-[11px] font-bold text-[#8c7c6c] relative z-10">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#d8a070] shrink-0 animate-pulse" />
+        <div className="glass-card flex items-center gap-2 px-4 py-2.5 rounded-xl border border-auroraMint/20 bg-auroraMint/5 text-[11px] font-bold text-zinc-300 relative z-10">
+          <span className="w-1.5 h-1.5 rounded-full bg-auroraMint shrink-0 animate-pulse" />
           目前顯示的是示範資料，廣場尚無真實玩家名片。成為第一個建立名片的特工吧！
         </div>
       )}
 
-      {/* 🚀 獨立懸浮篩選紙帶 (Floating Cloud Filter Ribbon) */}
-      <div className="w-full p-5 md:py-4 md:px-6 flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10 cloud-paper-panel">
-        
-        {/* 🌸 [Aesthetics] 手稿星芒 */}
-        <div className="absolute -top-3 -left-3 pointer-events-none z-20">
-          <PencilStar className="w-6 h-6 text-[#82b7cc]/60" />
-        </div>
-        <div className="absolute -bottom-2.5 -right-2.5 pointer-events-none z-20">
-          <PencilStar className="w-5 h-5 text-[#f5d46b]/60 rotate-[15deg]" />
+      <div className="glass-card w-full p-5 md:p-6 space-y-5 relative z-10 rounded-xl border border-white/[0.06]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <p className="text-[10px] text-zinc-400 uppercase tracking-[0.18em] font-mono font-medium">
+            調整探索頻率 // Overwatch Search & Filter
+          </p>
+          <span className="text-[9px] text-auroraMint lowercase font-mono tracking-[0.12em]">({filteredPlayers.length} active)</span>
         </div>
 
-        {/* 左翼：遊玩伺服器 */}
-        <div className="space-y-1.5 w-full md:w-[22%]">
-          <label className="text-[10px] font-black uppercase tracking-widest text-[#8c7c6c]/80 flex justify-between">
-            <span>遊玩伺服器</span>
-            <span className="text-[9px] text-[#82b7cc] lowercase">({filteredPlayers.length} active)</span>
-          </label>
-          <select
-            className="w-full bg-white/60 border border-[#8c7c6c]/18 rounded-2xl py-2.5 px-3 text-xs focus:border-[#82b7cc] text-[#5d4037] font-semibold shadow-[0_10px_24px_-20px_rgba(140,124,108,0.22)] focus-visible:outline-none"
-            value={selectedServer}
-            onChange={(e) => setSelectedServer(e.target.value)}
-          >
-            <option value="全部">全部伺服器</option>
-            {SERVER_OPTIONS.map((opt) => (
-              <option key={opt} value={opt}>
-                {opt}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* 中腹：常用定位黏土按鈕 */}
-        <div className="space-y-1.5 w-full md:w-[48%] flex flex-col items-center">
-          <label className="text-[10px] font-black uppercase tracking-widest text-[#8c7c6c]/80 w-full text-center md:text-left md:pl-2 relative flex items-center justify-center md:justify-start gap-1">
-            <span>常用定位</span>
-            <DoodleLine className="w-10 h-1.5 opacity-60 inline-block align-middle ml-1" />
-          </label>
-          <div className="flex gap-2 w-full justify-center">
-            {["全部", "坦克", "輸出", "支援"].map((role) => (
-              <button
-                key={role}
-                onClick={() => setSelectedRole(role)}
-                className={`px-4 py-2.5 text-[10px] font-extrabold transition-all duration-500 hover:scale-[1.03] active:scale-[0.98] outline-1 outline-offset-[-3.5px] cursor-pointer flex-1 text-center flex items-center justify-center gap-1 rounded-xl ${
-                  selectedRole === role
-                    ? "bg-[#82b7cc]/15 text-[#384d54] border border-[#82b7cc]/40 shadow-[inset_0_1px_2.5px_rgba(130,183,204,0.1),0_4px_12px_rgba(130,183,204,0.04)]"
-                    : "bg-white/50 text-[#8c7c6c] border border-[#8c7c6c]/18 hover:bg-white/80"
-                }`}
-              >
-                <span>{role === "坦克" ? "🛡️" : role === "輸出" ? "⚔️" : role === "支援" ? "➕" : ""}</span>
-                <span>{role}</span>
-              </button>
-            ))}
+        <div className="grid grid-cols-1 lg:grid-cols-[1.35fr_0.9fr_1.45fr_0.9fr] gap-4 items-end">
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-mono font-medium uppercase tracking-[0.16em] text-zinc-400">搜尋名片</label>
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" size={14} />
+              <input
+                type="text"
+                placeholder="搜尋名稱、常用角色、深夜標籤..."
+                value={localSearchQuery}
+                onChange={(e) => setLocalSearchQuery(e.target.value)}
+                className="h-11 w-full rounded-lg border border-white/[0.08] bg-black/40 pl-9 pr-9 text-xs text-zinc-200 placeholder-zinc-500 transition-all duration-300 focus:border-auroraMint/50 focus:outline-none"
+              />
+              {localSearchQuery && (
+                <button
+                  onClick={() => setLocalSearchQuery("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-zinc-500 transition-colors hover:text-zinc-200"
+                  title="清空搜尋"
+                >
+                  x
+                </button>
+              )}
+            </div>
           </div>
-        </div>
 
-        {/* 右翼：語音溝通習慣 + 重置按鈕 */}
-        <div className="space-y-1.5 w-full md:w-[30%]">
-          <label className="text-[10px] font-black uppercase tracking-widest text-[#8c7c6c]/80">語音溝通習慣</label>
-          <div className="flex gap-2">
-            <select
-              className="w-full bg-white/60 border border-[#8c7c6c]/18 rounded-2xl py-2.5 px-3 text-xs focus:border-[#82b7cc] text-[#5d4037] font-semibold shadow-[0_10px_24px_-20px_rgba(140,124,108,0.22)] focus-visible:outline-none"
-              value={selectedMic}
-              onChange={(e) => setSelectedMic(e.target.value)}
-            >
-              <option value="全部">全部語音狀態</option>
-              {MIC_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </select>
-
-            {(selectedRole !== "全部" || selectedServer !== "全部" || selectedMic !== "全部") && (
-              <button
-                onClick={handleResetFilters}
-                className="flex items-center justify-center p-2.5 bg-white/60 border border-[#8c7c6c]/18 hover:bg-white/80 rounded-2xl text-xs font-bold text-[#8c7c6c] transition-colors shrink-0 cursor-pointer shadow-[0_10px_24px_-20px_rgba(140,124,108,0.22)]"
-                title="重置篩選"
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-mono font-medium uppercase tracking-[0.16em] text-zinc-400">遊玩伺服器</label>
+            <div className="relative">
+              <select
+                className="h-11 w-full appearance-none rounded-lg border border-white/[0.08] bg-black/40 pl-3 pr-10 text-xs font-semibold text-zinc-200 transition-all duration-300 focus:border-auroraMint/50 focus:outline-none"
+                value={selectedServer}
+                onChange={(e) => setSelectedServer(e.target.value)}
               >
-                <RotateCcw size={14} />
-              </button>
-            )}
+                <option value="全部">全部伺服器</option>
+                {SERVER_OPTIONS.map((opt) => (
+                  <option key={opt} value={opt}>
+                    {opt}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-500" size={14} />
+            </div>
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-mono font-medium uppercase tracking-[0.16em] text-zinc-400">
+              <span>常用定位</span>
+            </label>
+            <div className="grid grid-cols-4 gap-2">
+              {["全部", "坦克", "輸出", "支援"].map((role) => {
+                const isSelected = selectedRole === role;
+                return (
+                  <button
+                    key={role}
+                    onClick={() => setSelectedRole(role)}
+                    className={`h-11 rounded-lg border px-2 text-[10px] font-semibold tracking-[0.04em] transition-all duration-300 active:scale-[0.96] outline-none cursor-pointer text-center flex items-center justify-center gap-1 ${
+                      isSelected
+                        ? "border-auroraMint/70 bg-auroraMint/15 text-white shadow-[0_0_18px_rgba(192,132,252,0.38)]"
+                        : "border-white/[0.08] bg-black/30 text-zinc-400 hover:border-white/15 hover:bg-white/[0.04] hover:text-zinc-200"
+                    }`}
+                  >
+                    <span>{role === "坦克" ? "🛡️" : role === "輸出" ? "⚔️" : role === "支援" ? "✚" : ""}</span>
+                    <span>{role}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-mono font-medium uppercase tracking-[0.16em] text-zinc-400">語音溝通習慣</label>
+            <div className="flex gap-2">
+              <div className="relative flex-1">
+                <select
+                  className="h-11 w-full appearance-none rounded-lg border border-white/[0.08] bg-black/40 pl-3 pr-10 text-xs font-semibold text-zinc-200 transition-all duration-300 focus:border-auroraMint/50 focus:outline-none"
+                  value={selectedMic}
+                  onChange={(e) => setSelectedMic(e.target.value)}
+                >
+                  <option value="全部">全部語音狀態</option>
+                  {MIC_OPTIONS.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-500" size={14} />
+              </div>
+              {(selectedRole !== "全部" || selectedServer !== "全部" || selectedMic !== "全部" || localSearchQuery) && (
+                <button
+                  onClick={handleResetFilters}
+                  className="flex h-11 w-11 items-center justify-center rounded-lg border border-white/[0.08] bg-black/30 text-zinc-400 transition-all hover:border-auroraMint/40 hover:bg-auroraMint/10 hover:text-white shrink-0 cursor-pointer"
+                  title="重置篩選"
+                >
+                  <RotateCcw size={14} />
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -335,7 +330,7 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
             {filteredPlayers.map((player) => (
               <div
                 key={player.card_id}
-                className="w-full flex justify-center hover:-translate-y-1 transition-transform duration-300 relative cursor-pointer"
+                className="midnight-player-artifact w-full flex justify-center transition-transform duration-300 relative cursor-pointer"
                 onClick={(e) => {
                   if ((e.target as HTMLElement).closest('[data-no-navigate]')) return;
                   router.push(`/player/${player.user_id}`);
@@ -357,7 +352,7 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
               <Button
                 onClick={handleLoadMore}
                 disabled={isLoadingMore}
-                className="bg-white/60 hover:bg-white border border-[#8c7c6c]/20 text-[#5d4037] font-extrabold text-xs px-8 py-4 rounded-2xl shadow-sm transition-all active:scale-95 disabled:opacity-50"
+                className="border border-auroraMint/20 bg-auroraMint/10 hover:bg-auroraMint/20 text-zinc-100 font-bold text-xs px-8 py-4 rounded-xl transition-all active:scale-95 disabled:opacity-50"
               >
                 {isLoadingMore ? "載入中..." : "載入更多特工"}
               </Button>
@@ -365,19 +360,19 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
           )}
         </>
       ) : (
-        <div className="bg-[#fefcf8] border border-[#8c7c6c]/15 rounded-[28px] py-16 px-4 text-center max-w-xl mx-auto flex flex-col items-center justify-center gap-4 shadow-[0_20px_50px_rgba(140,124,108,0.04)]">
-          <div className="w-16 h-16 rounded-full bg-white/60 flex items-center justify-center text-[#82b7cc] border border-[#8c7c6c]/15 shadow-sm">
+        <div className="glass-card border border-white/[0.06] rounded-2xl py-16 px-4 text-center max-w-xl mx-auto mb-24 flex flex-col items-center justify-center gap-4">
+          <div className="w-16 h-16 rounded-full bg-auroraMint/8 flex items-center justify-center text-auroraMint border border-auroraMint/20 shadow-[0_0_18px_rgba(192,132,252,0.2)]">
             <AlertCircle size={28} />
           </div>
           <div className="space-y-1">
-            <h3 className="text-[#3e2723] font-extrabold text-lg">沒有找到符合條件的名片</h3>
-            <p className="text-[#8c7c6c] text-xs max-w-sm mx-auto">
+            <h3 className="text-zinc-100 font-extrabold text-lg">沒有找到符合條件的名片</h3>
+            <p className="text-zinc-400 text-xs max-w-sm mx-auto">
               試著調整您的篩選選項，或在右側重置所有條件，以瀏覽廣場上更多的鬥陣特工特工！
             </p>
           </div>
           <Button
             onClick={handleResetFilters}
-            className="bg-[#82b7cc] hover:bg-[#82b7cc]/90 text-white font-extrabold text-xs px-6 py-4.5 mt-2 rounded-xl shadow-md transition-all active:scale-95"
+            className="bg-auroraMint/20 hover:bg-auroraMint/30 text-white border border-auroraMint/30 font-extrabold text-xs px-6 py-4 mt-2 rounded-xl shadow-[0_0_18px_rgba(192,132,252,0.2)] transition-all active:scale-95"
           >
             重置所有篩選
           </Button>
