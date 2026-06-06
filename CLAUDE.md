@@ -77,19 +77,24 @@ src/app/
     └── saveAlignment.ts          # saveHeroAlignments（Supabase upsert）
 
 src/context/
-└── AuthContext.tsx                # 全域 AuthContext（getUser + onAuthStateChange 雙軌）
+├── AuthContext.tsx                # 全域 AuthContext（getUser + onAuthStateChange 雙軌）
+└── ThemeContext.tsx               # 主題 Context（目前鎖定 original-baseline 單主題）
 
 src/components/
-├── TopBar.tsx                    # 統一頂部導覽（Google 登入/登出，三頁共用）
+├── TopBar.tsx                    # 統一頂部導覽（Google 登入/登出，三頁共用；layout.tsx 全局掛載）
 ├── LoginModal.tsx                # 通用登入彈窗（closable/title/description props）
 ├── DevModeBanner.tsx             # 開發者模式橫幅（useAuth()，需在 AuthProvider 內）
 ├── OWCard.tsx                    # 名片元件（隱私遮蔽、onLoginRequired callback）
 ├── HeroCardBackground.tsx        # 英雄卡背景主題
 ├── InteractiveAvatar.tsx         # 互動頭像元件
+├── CosmicParticlesBackground.tsx # 全局固定星空粒子背景（layout.tsx 全局掛載）
+├── SiteFooter.tsx                # 全局頁腳元件
 ├── square/                       # 遊戲廣場子元件
-│   ├── OverwatchSquare.tsx       # 鬥陣特工廣場（server-side ilike 搜尋 + Load More）
+│   ├── OverwatchSquare.tsx       # 鬥陣特工廣場（effectiveSearchQuery + isMounted）
 │   ├── LoLSquare.tsx             # 英雄聯盟廣場（coming-soon 佔位）
 │   └── ValorantSquare.tsx        # 特戰英豪廣場（coming-soon 佔位）
+├── browse/overwatch/
+│   └── OverwatchDirectory.tsx   # browse 頁專用 OW 廣場包裝（by OverwatchSquare）
 ├── morning-sketch/               # 朝陽全息視覺元件群
 │   ├── FloatingDock.tsx          # 全局懸浮導覽
 │   ├── LotusWelcomeWidget.tsx    # 首頁公告展示元件（從 announcements 表讀取）
@@ -208,29 +213,35 @@ social_channels 讀取：需登入，透過 authenticated RLS policy 直接查 p
 | **HomeCaptureHud** | `src/components/morning-sketch/HomeCaptureHud.tsx` | 首頁縮小版據點佔領 HUD，整合至 FeaturedArtists |
 
 ## 下一步開發計畫
-1. 完成 串接 Supabase
-2. 完成 Google OAuth 登入
-3. 完成 登入/登出 UX（LoginModal、profile overlay）
-4. 完成 開發者身分組 + 後台（含英雄流行度、用戶管理）
-5. 完成 英雄對準儀改存 Supabase DB
-6. 完成 多遊戲廣場架構（OverwatchSquare / LoLSquare / ValorantSquare）
-7. 完成 玩家詳細頁面：/player/[id]（server-side ilike 搜尋 + 詳細頁）
-8. 完成 搜尋後端化：OverwatchSquare 改用 Supabase ilike + Load More
-9. 完成 名片分享連結 + og meta（/share/[id] Server Component）
-10. 完成 Git Outpost HUD 完整移植（/developer/capture-hud 4 Tab 面板）
-11. 完成 AuthContext userProfile（Google OAuth user_metadata 自動填入）
-12. 完成 英雄統計 DB 端聚合（get_hero_stats() RPC，migration 009）
-13. 待做 Vercel + GitHub Webhook 後端：讓 HomeCaptureHud 在生產環境顯示真實 commit 統計
-14. 待做 名片收藏 / Favorites
-15. 待做 多遊戲廣場資料接入：LoL / Valorant 接真實後端
-16. 待做 display_name 跨裝置持久化（upsert 到 Supabase user_metadata）
+
+### 已完成
+1. ✅ 串接 Supabase
+2. ✅ Google OAuth 登入
+3. ✅ 登入/登出 UX（LoginModal、profile overlay）
+4. ✅ 開發者身分組 + 後台（含英雄流行度、用戶管理）
+5. ✅ 英雄對準儀改存 Supabase DB
+6. ✅ 多遊戲廣場架構（OverwatchSquare / LoLSquare / ValorantSquare）
+7. ✅ 玩家詳細頁面：/player/[id]
+8. ✅ 搜尋後端化：OverwatchSquare Supabase ilike + Load More
+9. ✅ 名片分享連結 + og meta（/share/[id]）
+10. ✅ Git Outpost HUD（/developer/capture-hud）
+11. ✅ AuthContext userProfile（Google OAuth user_metadata 自動填入）
+12. ✅ 英雄統計 DB 端聚合（get_hero_stats() RPC）
+13. ✅ 視覺重設計 merge（CosmicParticlesBackground、星空主題、多遊戲名片架構）
+
+### 待做
+- ⬜ Vercel + GitHub Webhook：HomeCaptureHud 顯示真實 commit 統計
+- ⬜ 名片收藏 / Favorites
+- ⬜ 多遊戲廣場資料接入：LoL / Valorant 接真實後端
+- ⬜ display_name 跨裝置持久化（upsert Supabase user_metadata）
 
 ## 協作規範
 - Commit message 中文，動詞開頭（新增、修正、重構、更新）
-- 主要開發在 main branch；功能分支命名慣例：
-  - sleep（後端）：`feature/backend-任務名稱`
-  - Shadowmaster6g/MP6（前端視覺）：`visual/功能名稱`（如 `visual/browse-dual-style-lab`）
-- 朋友做完後開 PR 通知 sleep merge；PR 方向：`feature/*` 或 `visual/*` → `main`
+- **分支命名慣例**：
+  - sleep（後端功能）：`feature/backend-任務名稱` → PR → main
+  - Shadowmaster6g/MP6（前端視覺）：`visual/功能名稱` → PR → main
+  - 緊急小修正（1-2 檔、明顯無風險）：sleep 可直接推 main
+- PR 方向：`feature/*` 或 `visual/*` → `main`；sleep 作為 maintainer 在 GitHub 負責 review & merge
 - 溝通語言：繁體中文
 
 <!-- rsx:awareness:begin v=0.10.0 -->
