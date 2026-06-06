@@ -227,7 +227,10 @@ social_channels 讀取：需登入，透過 authenticated RLS policy 直接查 p
 
 ## 協作規範
 - Commit message 中文，動詞開頭（新增、修正、重構、更新）
-- 主要開發在 main branch，功能分支用 `feature/功能名稱`
+- 主要開發在 main branch；功能分支命名慣例：
+  - sleep（後端）：`feature/backend-任務名稱`
+  - Shadowmaster6g/MP6（前端視覺）：`visual/功能名稱`（如 `visual/browse-dual-style-lab`）
+- 朋友做完後開 PR 通知 sleep merge；PR 方向：`feature/*` 或 `visual/*` → `main`
 - 溝通語言：繁體中文
 
 <!-- rsx:awareness:begin v=0.10.0 -->
