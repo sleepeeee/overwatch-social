@@ -1,119 +1,82 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Moon, Sun, LogOut } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
-import { useAuth } from "@/context/AuthContext";
-import { useDevMode } from "@/hooks/useDevMode";
-import { useTheme } from "@/context/ThemeContext";
+import { usePathname } from "next/navigation";
+import { ElegantCrescentIcon } from "@/components/CosmicParticlesBackground";
 
+/**
+ * 🌌 曜石暗夜星河 - 極簡導航欄 (TopBar)
+ * 
+ * 移除了原本的登入/登出與開發者後台按鈕 (已備份至 AuthShelvedButtons.tsx)。
+ * 此 TopBar 僅包含品牌 Logo 與三個純導航連結，將登入控制交給頁面內嵌的 CTA 區塊。
+ */
 export default function TopBar() {
-  const router = useRouter();
-  const { user } = useAuth();
-  const { isDeveloper } = useDevMode();
-  const { isDark, setIsDark } = useTheme();
-  const [loginPending, setLoginPending] = useState(false);
+  const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const toggleDarkMode = () => {
-    setIsDark(!isDark);
-  };
-
-  const handleLogout = async () => {
-    const supabase = createClient();
-    await supabase.auth.signOut();
-    router.push("/");
-  };
-
-  const handleGoogleLogin = async () => {
-    if (loginPending) return;
-    setLoginPending(true);
-    const supabase = createClient();
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-      },
-    });
-    if (error) {
-      console.error("Google 登入失敗:", error.message);
-      setLoginPending(false);
-    }
-  };
+  if (!mounted) {
+    return (
+      <div className="w-full flex items-center justify-between gap-3 z-30 relative h-20 opacity-0" />
+    );
+  }
 
   return (
-    <div className="w-full min-w-0 flex items-center justify-between gap-3 mb-10 z-30 relative animate-[fadeIn_0.6s_ease-out]">
-      <div className="flex items-center gap-3 select-none shrink min-w-0">
-        {/* 明暗模式切換按鈕 */}
-        {mounted && (
-          <button
-            type="button"
-            onClick={toggleDarkMode}
-            title={isDark ? "切換為明亮版" : "切換為夜間版"}
-            className="relative w-9 h-9 flex items-center justify-center rounded-full bg-white/30 dark:bg-stone-900/60 border border-white/40 dark:border-stone-800 shadow-sm hover:shadow-[0_4px_15px_rgba(212,197,169,0.3)] dark:hover:shadow-[0_4px_20px_rgba(0,0,0,0.5)] hover:border-morandi-sand/50 transition-all duration-300 hover:-translate-y-0.5 cursor-pointer shrink-0"
-          >
-            {isDark ? (
-              <Sun className="w-4 h-4 text-amber-500 hover:text-amber-400 transition-colors duration-300" strokeWidth={1.8} />
-            ) : (
-              <Moon className="w-4 h-4 text-stone-700 hover:text-[#82b7cc] transition-colors duration-300" strokeWidth={1.8} />
-            )}
-          </button>
-        )}
-        
-        {/* Brand Text */}
-        <div className="flex flex-col text-left min-w-0">
-          <span className="text-xs font-light tracking-[0.25em] text-[#5d4037] dark:text-stone-300 transition-colors duration-300 truncate">
-            AFTER MIDNIGHT
-          </span>
-          <span className="text-[9px] text-[#8c7c6c] tracking-wider font-semibold transition-colors duration-300 truncate">
-            GAME ALLY HUB
-          </span>
-        </div>
-      </div>
+    <header className="sticky top-[var(--dev-banner-height,0px)] z-50 w-full border-b border-white/[0.05] bg-[rgba(5,4,9,0.78)] shadow-[0_10px_30px_rgba(0,0,0,0.16)] backdrop-blur-2xl h-20 flex items-center transition-all duration-300">
+      <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 flex items-center justify-between gap-3 min-w-0">
+        {/* 左側 Logo 區域 */}
+        <Link href="/" className="flex items-center gap-3 select-none hover:opacity-90 transition-opacity group">
+          <div className="relative transform group-hover:rotate-[15deg] transition-transform duration-[800ms] ease-out">
+            <ElegantCrescentIcon className="w-8 h-8 filter drop-shadow-[0_0_8px_rgba(192,132,252,0.3)] shrink-0" />
+          </div>
+          <div className="flex flex-col text-left min-w-0">
+            <span className="text-xs font-semibold tracking-[0.24em] text-white uppercase group-hover:text-auroraMint transition-colors duration-500 font-mono truncate">
+              AFTER MIDNIGHT
+            </span>
+            <span className="text-[8px] text-zinc-400 tracking-[0.3em] uppercase font-mono mt-1 truncate">
+              Slow Player Cosmos
+            </span>
+          </div>
+        </Link>
 
-      {user ? (
-        <div className="flex items-center gap-2 shrink-0">
-          {isDeveloper && (
-            <Link
-              href="/developer"
-              className="theme-btn flex items-center gap-2 px-4 py-2 rounded-2xl border border-amber-500/30 bg-amber-500/10 text-[9px] font-bold tracking-widest uppercase text-amber-800 hover:bg-amber-500/20 transition-all duration-300"
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
-              開發者後台
-            </Link>
-          )}
-          <button
-            onClick={handleLogout}
-            className="theme-btn flex items-center gap-1.5 px-3 py-2 rounded-2xl border border-[#8c7c6c]/20 bg-white/20 text-[9px] font-bold tracking-widest uppercase text-[#8c7c6c]/70 hover:bg-[#8c7c6c]/8 hover:text-[#5d4037] transition-all duration-300"
-            title="登出"
+        {/* 右側 乾淨導航連結 */}
+        <nav className="flex items-center space-x-1 sm:space-x-4 shrink-0">
+          <Link
+            href="/"
+            className={`px-4 py-2 rounded-full text-[11px] tracking-wider transition-all duration-500 font-mono ${
+              pathname === "/"
+                ? "text-auroraMint bg-white/[0.04] border border-white/10"
+                : "text-zinc-300 hover:text-white border border-transparent"
+            }`}
           >
-            <LogOut size={10} />
-            登出
-          </button>
-        </div>
-      ) : (
-        <button
-          onClick={handleGoogleLogin}
-          disabled={loginPending}
-          className="theme-btn group relative flex h-9 w-9 shrink-0 items-center justify-center gap-2.5 rounded-2xl border border-[#8c7c6c]/20 bg-white/40 p-0 text-[9px] font-bold tracking-widest uppercase text-[#5d4037] hover:text-[#3e2723] hover:bg-white hover:border-[#82b7cc]/40 shadow-sm transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed sm:h-auto sm:w-auto sm:px-4 sm:py-2"
-          aria-label={loginPending ? "Google 登入跳轉中" : "使用 Google 登入"}
-        >
-          <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24">
-            <path fill="#EA4335" d="M12.24 10.285V14.4h6.887c-.648 2.41-2.519 4.114-5.136 4.114-3.466 0-6.277-2.81-6.277-6.277 0-3.466 2.81-6.277 6.277-6.277 1.558 0 2.977.569 4.083 1.503l3.14-3.14C19.167 1.83 15.938 1 12.24 1 6.033 1 1 6.033 1 12.24s5.033 11.24 11.24 11.24c6.16 0 10.993-4.32 10.993-10.993 0-.616-.068-1.22-.178-1.78l-10.815-.422z" />
-            <path fill="#4285F4" d="M23.055 10.422H12.24v3.978h6.887c-.287 1.071-.856 1.954-1.751 2.519l3.076 3.076c2.313-2.138 3.52-5.176 3.52-8.583 0-.312-.016-.65-.055-.99z" />
-            <path fill="#34A853" d="M12.24 23.24c3.084 0 5.672-1.022 7.562-2.779l-3.076-3.076c-.856.574-1.954.915-3.076.915-2.519 0-4.662-1.704-5.413-4.114L5.033 17.26c1.879 3.543 5.568 5.98 9.878 5.98z" />
-            <path fill="#FBBC05" d="M6.827 14.191c-.198-.574-.312-1.19-.312-1.83s.114-1.256.312-1.83L3.727 7.42C2.96 8.98 2.52 10.56 2.52 12.36s.44 3.38 1.207 4.94l3.1-3.109z" />
-          </svg>
-          <span className="hidden sm:inline">{loginPending ? "跳轉中..." : "使用 Google 登入"}</span>
-        </button>
-      )}
-    </div>
+            INTRO // 前廳
+          </Link>
+          <Link
+            href="/browse"
+            className={`px-4 py-2 rounded-full text-[11px] tracking-wider transition-all duration-500 font-mono ${
+              pathname === "/browse"
+                ? "text-auroraMint bg-white/[0.04] border border-white/10"
+                : "text-zinc-300 hover:text-white border border-transparent"
+            }`}
+          >
+            LOBBY // 展示館
+          </Link>
+          <Link
+            href="/profile"
+            className={`px-4 py-2 rounded-full text-[11px] tracking-wider transition-all duration-500 font-mono ${
+              pathname === "/profile"
+                ? "text-auroraMint bg-white/[0.04] border border-white/10"
+                : "text-zinc-300 hover:text-white border border-transparent"
+            }`}
+          >
+            STUDIO // 工作室
+          </Link>
+        </nav>
+      </div>
+    </header>
   );
 }
-

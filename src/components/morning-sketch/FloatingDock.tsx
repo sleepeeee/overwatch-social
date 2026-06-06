@@ -20,7 +20,8 @@ export default function FloatingDock() {
     { id: "profile", path: "/profile", label: "個人檔案", icon: User }
   ];
 
-  let dockClass = "relative px-4 sm:px-6 py-1.5 sm:py-2.5 rounded-full flex items-center gap-4 sm:gap-6 bg-white/25 sm:bg-white/35 backdrop-blur-3xl border border-white/40 sm:border-white/50 shadow-[0_8px_32px_rgba(74,62,61,0.02),_0_20px_50px_-10px_rgba(74,62,61,0.05)] h-[48px] sm:h-[58px] transition-all duration-300";
+  // 採用曜石暗色磨砂玻璃的 Dock 容器
+  let dockClass = "relative px-4 sm:px-6 py-1.5 sm:py-2.5 rounded-full flex items-center gap-4 sm:gap-6 bg-black/60 backdrop-blur-3xl border border-white/5 shadow-[0_8px_32px_rgba(0,0,0,0.6)] h-[48px] sm:h-[58px] transition-all duration-300";
 
   return (
     <div className="fixed bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-50 transition-all duration-300">
@@ -35,15 +36,15 @@ export default function FloatingDock() {
           
           let itemClass = `w-8.5 h-8.5 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl flex items-center justify-center transition-all duration-500 ${
             isActive 
-              ? "bg-[#82b7cc] text-white scale-[1.05] shadow-[0_4px_12px_-2px_rgba(130,183,204,0.6)]" 
-              : "bg-white/10 sm:bg-white/20 border border-white/20 sm:border-white/30 text-[#8c7c6c] hover:bg-[#faf5eb] hover:text-[#3e2723] hover:scale-[1.02]"
+              ? "text-white scale-[1.05]" 
+              : "bg-white/5 border border-white/5 text-zinc-400 hover:bg-white/10 hover:text-white hover:scale-[1.02]"
           }`;
           
           let wrapperStyle: React.CSSProperties = {};
           if (isActive) {
             wrapperStyle = {
-              backgroundColor: "var(--theme-accent, #82b7cc)",
-              boxShadow: "0 4px 12px -2px rgba(var(--theme-accent-rgb, 130, 183, 204), 0.6)"
+              backgroundColor: "#8b5cf6", // auroraTeal
+              boxShadow: "0 0 15px rgba(139, 92, 246, 0.45)"
             };
           }
 
@@ -61,8 +62,8 @@ export default function FloatingDock() {
                 <Icon size={15} className={`transition-transform duration-300 ${isHovered ? "rotate-2 scale-105" : ""}`} />
               </div>
 
-              {/* 溫順氣泡提示 */}
-              <span className={`absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-0.5 text-[8px] font-bold text-white bg-[#4a3e3d]/80 rounded-md backdrop-blur-sm pointer-events-none transition-all duration-300 origin-bottom whitespace-nowrap ${
+              {/* 溫順氣泡提示 - 暗黑風格 */}
+              <span className={`absolute -top-8 left-1/2 -translate-x-1/2 px-2.5 py-1 text-[8px] font-bold text-zinc-200 bg-obsidian border border-white/5 rounded-md backdrop-blur-sm pointer-events-none transition-all duration-300 origin-bottom whitespace-nowrap shadow-xl ${
                 isHovered ? "scale-100 opacity-100 translate-y-0 -translate-x-1/2" : "scale-75 opacity-0 translate-y-2 -translate-x-1/2"
               }`}>
                 {item.label}

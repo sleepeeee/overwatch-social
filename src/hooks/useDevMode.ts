@@ -12,11 +12,12 @@ interface DevModeState {
 // re-validate the role via RLS policy (auth.jwt()->'app_metadata'->>'role').
 export function useDevMode(): DevModeState {
   const isDev = process.env.NODE_ENV === "development";
+  const devMockEnabled = process.env.NEXT_PUBLIC_ENABLE_DEV_AUTH_MOCK === "true";
   const { user, authLoading } = useAuth();
 
   // Dev bypass: allow testing without a Supabase session locally.
   // If a real session exists, respect the actual role even in dev.
-  if (isDev && !user) return { isDeveloper: true, loading: false };
+  if (isDev && devMockEnabled && !user) return { isDeveloper: true, loading: false };
 
   return {
     isDeveloper: user?.app_metadata?.role === "developer",

@@ -1,126 +1,27 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import Image from "next/image";
+import React from "react";
 import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { 
-  Sparkles, Compass, Users, Moon, Heart, Shield, Layers, 
-  Calendar, RefreshCw, X, BookOpen, Terminal, Activity, Info
-} from "lucide-react";
-import TopBar from "@/components/TopBar";
-import { useTheme } from "@/context/ThemeContext";
 
-// 匯入 Morning Sketch 風格組件
-import FluidClipPath from "@/components/morning-sketch/FluidClipPath";
-import LotusWelcomeWidget from "@/components/morning-sketch/LotusWelcomeWidget";
-import FeaturedArtists from "@/components/morning-sketch/FeaturedArtists";
-import LuckyAlly from "@/components/morning-sketch/LuckyAlly";
-
-interface PlayerCard {
-  id: string;
-  name: string;
-  game: string;
-  rank: string;
-  hero: string;
-  tags: string[];
-  message: string;
-  avatarUrl: string;
-}
-
-// 靜態粒子資料，避免在 render 期間呼叫 Math.random 違反 purity 規範
-const STARRY_PARTICLES = Array.from({ length: 12 }, (_, i) => ({
-  id: i,
-  size: Math.random() * 2 + 1,
-  top: Math.random() * 100,
-  left: Math.random() * 100,
-  delay: Math.random() * 5,
-  duration: Math.random() * 4 + 4,
-}));
-
-const ZEN_PARTICLES = Array.from({ length: 12 }, (_, i) => ({
-  id: i,
-  size: Math.random() * 2.5 + 1,
-  top: Math.random() * 100,
-  left: Math.random() * 100,
-  delay: Math.random() * 5,
-  duration: Math.random() * 5 + 5,
-}));
-
-// 預設三個核心玩家資料
-const initialProfiles: PlayerCard[] = [
-  { id: "p-1", name: "星辰", game: "Overwatch", rank: "鑽石", hero: "安娜", tags: ["認真組排", "不開麥OK"], message: "熟練睡針與禁療瓶，專注後排抬血，找心態成熟的輸出雙排！", avatarUrl: "/images/avatars/avatar_male_calm_square.png" },
-  { id: "p-2", name: "Jett醬 (小夏)", game: "VALORANT", rank: "超凡入聖", hero: "Jett", tags: ["歡迎開麥", "拒絕暴躁"], message: "希望找個脾氣溫和的煙位搭檔，今晚衝神話！有麥克風，心態極好。", avatarUrl: "/images/avatars/avatar_female_cheerful_square.png" },
-  { id: "p-3", name: "狂暴補師星奈", game: "LoL", rank: "鑽石", hero: "露璐", tags: ["團隊至上", "彈性積分"], message: "保人流輔助尋找主力射手雙排。AD敢衝我就敢保，絕不丟下你！", avatarUrl: "/images/avatars/avatar_female_elegant_square.png" },
-];
-
-// 用於動態生成模擬新加入玩家的池子
-const gamePool = ["Overwatch", "VALORANT", "LoL", "Apex"];
-const rankPool = ["黃金", "白金", "鑽石", "超凡入聖", "大師"];
-const namesPool = ["星野小櫻", "瓦羅大師", "疾風之劍", "雷電將軍", "不服來戰", "快樂輔助星", "卡西迪傳奇", "夜露本露", "萌新求帶"];
-const heroesPool: Record<string, string[]> = {
-  Overwatch: ["安娜", "萊因哈特", "源氏", "慈悲", "半藏"],
-  VALORANT: ["Jett", "Sage", "Reyna", "Omen", "Sova"],
-  LoL: ["露璐", "阿里", "亞菲利歐", "犽宿", "李星"],
-  Apex: ["惡靈", "尋血犬", "直布羅陀", "辛烷", "探路者"]
-};
-const messagesPool = [
-  "今晚有缺人的車隊嗎？主玩輔助/煙位，語音暢通心態好！",
-  "下班找休閒雙排夥伴，RK或NG都可以，歡樂為主不暴躁。",
-  "來個實力相當的輸出搭檔，專精主坦，保人拉滿，盾牌極厚！",
-  "尋找能一起進步的長久固定隊友，有麥克風，今晚直接開衝！",
-  "只打歡樂休閒，輸贏無所謂，尋求能一邊聊天一邊玩的老司機~"
-];
-const tagsPool = ["快樂排位", "語音交流", "拒絕暴躁", "下班上線", "歡迎新手", "團隊至上"];
+// 匯入 Cosmic 向量元件與星空 Canvas 粒子
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
+import { CosmicFullLogo } from "@/components/CosmicParticlesBackground";
 
 export default function Home() {
-  // Theme switcher removed, only baseline active
-  const [profiles, setProfiles] = useState<PlayerCard[]>(initialProfiles);
-  
-  // Lounge 主題 (樣式2) 的專用 Modal 狀態
-  const [isJillModalOpen, setIsJillModalOpen] = useState(false);
-  const [isLuckyAllyModalOpen, setIsLuckyAllyModalOpen] = useState(false);
-  const [isEventsModalOpen, setIsEventsModalOpen] = useState(false);
+  const router = useRouter();
+  const { user, authLoading } = useAuth();
 
-  // 實作「有新卡片加入就替換掉最舊的卡片 (維持3張)」的動態模擬器
-  useEffect(() => {
-    const avatarPool = [
-      "/images/avatars/avatar_female_elegant_square.png",
-      "/images/avatars/avatar_female_cheerful_square.png",
-      "/images/avatars/avatar_male_calm_square.png",
-      "/images/avatars/avatar_male_sunny_square.png",
-    ];
-
-    const interval = setInterval(() => {
-      const randomGame = gamePool[Math.floor(Math.random() * gamePool.length)];
-      const gameHeroes = heroesPool[randomGame];
-      const randomHero = gameHeroes[Math.floor(Math.random() * gameHeroes.length)];
-      const randomName = namesPool[Math.floor(Math.random() * namesPool.length)];
-      const randomRank = rankPool[Math.floor(Math.random() * rankPool.length)];
-      const randomMessage = messagesPool[Math.floor(Math.random() * messagesPool.length)];
-      const randomAvatar = avatarPool[Math.floor(Math.random() * avatarPool.length)];
-      
-      const shuffledTags = [...tagsPool].sort(() => 0.5 - Math.random());
-      const randomTags = shuffledTags.slice(0, 2);
-
-      const newPlayer: PlayerCard = {
-        id: `p-${Date.now()}`,
-        name: randomName,
-        game: randomGame,
-        rank: randomRank,
-        hero: randomHero,
-        tags: randomTags,
-        message: randomMessage,
-        avatarUrl: randomAvatar
-      };
-
-      // 新卡插最前，保留前兩張的 key，讓 React 只 remount 真正新的那張
-      setProfiles(prev => [newPlayer, ...prev.slice(0, 2)]);
-    }, 7000); // 每 7 秒模擬一次玩家新上線
-
-    return () => clearInterval(interval);
-  }, []);
+  const handleGoogleLogin = async () => {
+    const { createClient } = await import("@/lib/supabase/client");
+    const supabase = createClient();
+    await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
+    });
+  };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const card = e.currentTarget;
@@ -146,192 +47,140 @@ export default function Home() {
   };
 
   return (
-    <div className="atmosphere-shell v1-nebula min-h-screen relative pb-32 transition-colors duration-500">
-      <div className="v1-nebula-container">
-        <div className="v1-nebula-dust" />
-        <div className="v1-nebula-cloud-1" />
-        <div className="v1-nebula-cloud-2" />
-      </div>
-      <FluidClipPath />
+    <div className="relative min-h-screen flex flex-col justify-between z-10 selection:bg-auroraMint/30 text-zinc-100">
+      {/* 全螢幕無縫大氣漸層 */}
+      <div className="fixed inset-0 ambient-space-glows pointer-events-none z-0"></div>
 
-      <main className="brand-portal-shell atmosphere-content transition-all duration-500 ease-out p-6 md:p-8 min-h-screen w-full max-w-7xl mx-auto px-4 md:px-8 pt-6">
-        <aside className="brand-composition-rail absolute -left-20 top-28 hidden xl:flex flex-col items-center gap-4 z-20" aria-hidden="true">
-          <span className="brand-rail-mark" />
-          <span className="brand-rail-title" data-label="AFTER MIDNIGHT" />
-          <span className="brand-rail-subtitle" data-label="PLAYER IDENTITY HUB" />
-        </aside>
-        
-        <TopBar />
+      <main className="brand-portal-shell atmosphere-content flex-grow max-w-7xl mx-auto px-4 sm:px-6 py-8 w-full z-10 relative">
+        {/* 曜石星夜前廳主骨架 */}
+        <div className="space-y-12 max-w-7xl mx-auto z-10 relative">
 
-        {/* 根據不同主題，渲染完全不同的首頁骨架，徹底解決 UI 堆疊擁擠、缺乏主題性的問題 */}
-          <div className="space-y-8 max-w-7xl mx-auto z-10 relative">
+          <div className="py-6 flex flex-col items-center justify-center text-center max-w-4xl mx-auto space-y-12 animate-fade-in">
+            <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full border border-white/10 bg-white/[0.02] text-[10px] text-zinc-300 font-mono uppercase tracking-widest mx-auto w-fit">
+              <span className="w-1.5 h-1.5 rounded-full bg-auroraMint inline-block animate-pulse"></span>
+              <span>慢速玩家展示館 運作中</span>
+            </div>
 
-            {/* 🔴 [Hero Area] */}
-            <div
-              className="midnight-hero-stage monitor-glow-artifacts relative overflow-hidden p-6 sm:p-8 md:p-12 glass-panel organic-corners animate-[fadeInUp_0.8s_ease-out] w-full flex flex-col md:flex-row items-center justify-between gap-8 md:gap-12 min-h-[300px]"
-            >
-              <div className="midnight-hero-copy space-y-4.5 min-w-0 text-center md:text-left relative z-10">
-                <Badge className="bg-accent/15 text-foreground border border-accent/35 px-3 py-1 text-[10.5px] font-bold tracking-widest uppercase rounded-full flex items-center gap-1.5 shadow-[0_1px_8px_rgba(130,183,204,0.05)] w-fit mx-auto md:mx-0">
-                  <Moon size={11} className="shrink-0 text-foreground fill-foreground/10" />
-                  所有遊戲玩家的靈魂避風港
-                </Badge>
-                
-                <h2 className="text-3xl sm:text-4xl font-bold tracking-wider leading-tight text-foreground break-words text-balance text-left">
-                  尋找心靈契合的 <span className="text-accent">最佳遊戲搭檔</span>
-                </h2>
-                
-                <p className="text-muted-foreground text-xs md:text-sm leading-relaxed font-normal text-left">
-                  不僅僅是戰友，更是心靈相通的夥伴。在這裡，建立專屬的磨砂玻璃遊戲名片，展示你的遊戲靈魂，秒速遇到懂你的排位與日常搭檔！
-                </p>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:flex md:flex-wrap gap-3 pt-2 justify-center md:justify-start">
-                  <Link href="/profile">
-                    <Button className="w-full calm-btn-primary font-bold text-xs tracking-widest uppercase px-5 py-4.5 rounded-2xl cursor-pointer hover:scale-102 transition-transform shadow-md">
-                      建立遊戲名片
-                    </Button>
-                  </Link>
-                  
-                  <Link href="/browse">
-                    <Button variant="outline" className="w-full border-border text-muted-foreground hover:text-foreground bg-card/40 hover:bg-card/70 font-bold text-[10px] tracking-widest uppercase px-5 py-4.5 rounded-2xl shadow-sm transition-all duration-300 cursor-pointer hover:scale-102">
-                      漫步玩家廣場
-                    </Button>
-                  </Link>
-                </div>
+            <div className="flex justify-center py-2 relative w-full">
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 rounded-full bg-auroraMint/5 filter blur-3xl opacity-60"></div>
+              <div className="relative w-full max-w-md bg-transparent rounded-full border border-white/[0.02] shadow-[0_0_50px_rgba(139,92,246,0.05)]">
+                <CosmicFullLogo className="w-full h-auto" />
               </div>
+            </div>
 
-              {/* 右側遊戲名片預覽 */}
-              <div className="hidden md:flex relative z-10 pr-2 lg:pr-8">
-                <div className="midnight-hero-pass midnight-player-artifact relative w-72 rounded-[28px] border border-border bg-card/35 p-5 shadow-card backdrop-blur-xl rotate-2 hover:rotate-0 transition-transform duration-500">
-                  <div className="flex items-center gap-3">
-                    <div className="relative w-14 h-14 rounded-2xl overflow-hidden border border-accent/25 bg-card/60 shrink-0">
-                      <Image
-                        src="/images/avatars/avatar_female_cheerful_square.png"
-                        alt="玩家名片預覽頭像"
-                        fill
-                        sizes="56px"
-                        className="object-cover"
-                      />
+            <p className="text-sm sm:text-base text-zinc-300 leading-relaxed max-w-2xl mx-auto font-sans font-light mt-4 text-center">
+              這不是一個喧鬧的交友大廳，而是一處深夜運作的玩家展示館。
+              不急躁、無配對壓力、不強迫社交。
+              請在此安靜地陳列您的遊戲美學，慢速瀏覽，與契合的遊戲氣質擦肩而過。
+            </p>
+
+            {/* 雙 CTA 入口卡片 */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl">
+              {/* 展示館入口 - Primary */}
+              <Link href="/browse" className="block text-left">
+                <div 
+                  onMouseMove={handleMouseMove}
+                  onMouseLeave={handleMouseLeave}
+                  className="primary-glowing-card p-8 rounded-2xl h-full group cursor-pointer relative overflow-hidden transition-all duration-300"
+                >
+                  <div className="absolute -right-10 -bottom-10 w-32 h-32 rounded-full bg-auroraTeal/10 filter blur-xl group-hover:bg-auroraTeal/20 transition-all duration-700"></div>
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center space-x-2">
+                      <span className="text-xs font-mono text-auroraMint uppercase tracking-wider font-semibold">Lobby Directory</span>
+                      <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-auroraMint/20 text-[8px] text-auroraMint border border-auroraMint/30 font-mono tracking-wider animate-pulse">ACTIVE</span>
                     </div>
-                    <div className="min-w-0">
-                      <p className="text-[10px] font-black tracking-widest uppercase text-accent">ALLY CARD</p>
-                      <p className="text-sm font-black text-foreground truncate">深夜補位夥伴</p>
-                      <p className="text-[10px] font-bold text-muted-foreground truncate">Overwatch · 安娜</p>
+                    <span className="text-auroraMint font-mono text-xs group-hover:translate-x-1 transition-transform duration-500">→</span>
+                  </div>
+                  <h3 className="font-playfair text-xl text-white font-semibold mb-2 flex items-center gap-1.5">
+                    名片廣場與展示館
+                    <span className="text-xs text-auroraMint font-light">✦</span>
+                  </h3>
+                  <p className="text-xs text-zinc-300 leading-relaxed font-light">
+                    慢速瀏覽各平行宇宙的召喚師、特工與守望者檔案。翻閱 those 精美的立繪遊戲名片，尋找頻率相通的無言默契。
+                  </p>
+                </div>
+              </Link>
+
+              {/* 工作室入口 - Secondary - 整合低調 Continue with Google 登入 */}
+              <div 
+                onClick={() => router.push("/profile")}
+                onMouseMove={handleMouseMove}
+                onMouseLeave={handleMouseLeave}
+                className="glass-card p-8 rounded-2xl group cursor-pointer relative overflow-hidden border border-white/[0.03] hover:border-white/20 flex flex-col justify-between h-full transition-all duration-300 text-left"
+              >
+                <div className="relative">
+                  <div className="absolute -right-10 -bottom-10 w-32 h-32 rounded-full bg-white/[0.01] filter blur-xl group-hover:bg-white/[0.03] transition-all duration-700"></div>
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-xs font-mono text-zinc-400 uppercase tracking-wider">Identity Studio</span>
+                    <span className="text-zinc-500 font-mono text-xs group-hover:translate-x-1 transition-transform duration-500">→</span>
+                  </div>
+                  <h3 className="font-playfair text-xl text-white font-semibold mb-2 flex items-center gap-1.5">
+                    全域身份工作室
+                  </h3>
+                  <p className="text-xs text-zinc-400 leading-relaxed font-light">
+                    在此撰寫您的深夜星語。您可以客製守望者、特工或是召喚師名片。配備您喜愛的英雄立繪，拼貼出專屬的電競氣質。
+                  </p>
+                </div>
+
+                {/* 低調且不可形變的 Google 登入狀態 / Continue 鍵 */}
+                <div className="mt-6 pt-3 border-t border-white/[0.02] relative z-20">
+                  {!authLoading && !user ? (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation(); // 阻止立即跳轉，先執行登入
+                        handleGoogleLogin();
+                      }}
+                      className="inline-flex items-center space-x-2.5 h-8 px-3 rounded-full text-[9px] sm:text-[10px] tracking-wide transition-all duration-300 font-sans text-zinc-400 hover:text-zinc-200 border border-white/[0.05] hover:border-white/[0.15] bg-white/[0.005] hover:bg-white/[0.02] cursor-pointer"
+                    >
+                      <svg className="w-3 h-3 flex-shrink-0" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/>
+                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/>
+                      </svg>
+                      <span>Continue with Google</span>
+                    </button>
+                  ) : user ? (
+                    <div className="inline-flex items-center space-x-1.5 text-[9px] text-emerald-400 font-mono tracking-wider bg-emerald-500/5 border border-emerald-500/10 px-2.5 py-1 rounded-full w-fit">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                      <span>已同步 GOOGLE 雲端資料</span>
                     </div>
-                  </div>
-                  <div className="mt-4 rounded-2xl border border-border bg-card/35 p-3">
-                    <p className="line-clamp-2 text-[11px] leading-relaxed text-foreground">
-                      “今晚找溫和雙排，會補位、有麥、心態穩。”
-                    </p>
-                  </div>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    <span className="pastel-tag-blue rounded-full px-2 py-0.5 text-[9px] font-black">#語音交流</span>
-                    <span className="pastel-tag-sand rounded-full px-2 py-0.5 text-[9px] font-black">#拒絕暴躁</span>
-                  </div>
+                  ) : (
+                    <div className="h-8 flex items-center justify-start">
+                      <span className="w-3 h-3 rounded-full border border-zinc-500 border-t-transparent animate-spin inline-block"></span>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
 
-            {/* Widget 展示區 */}
-            <div className="space-y-8">
-              
-              {/* 三欄等高 Widget Row */}
-              <div className="quiet-lounge-surfaces rounded-[28px] p-1 grid grid-cols-1 md:grid-cols-3 gap-8 animate-[fadeInUp_0.9s_ease-out]">
-                
-                {/* 🔵 LUCKY ALLY */}
-                <div className="flex">
-                  <LuckyAlly />
+            {/* 寂靜宣言 */}
+            <div className="pt-10 border-t border-white/[0.04] w-full max-w-3xl fluid-gap-manifesto text-left">
+              <p className="text-zinc-400 font-mono text-xs uppercase tracking-[0.2em] mb-8 text-center">AFTER MIDNIGHT 寂靜宣言</p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                <div className="space-y-2">
+                  <h4 className="text-xs text-zinc-300 font-bold tracking-wider font-mono">01 // 低侵入式社交</h4>
+                  <p className="text-[11px] text-zinc-400 leading-relaxed font-light">
+                    我們相信真正的默契不需要在線焦慮。這裡沒有即時私訊，唯有在對方發光的名片上複製 UID，在遊戲內靜靜相遇。
+                  </p>
                 </div>
-
-                {/* 🟣 站長隨筆手札 */}
-                <div className="flex">
-                  <LotusWelcomeWidget />
+                <div className="space-y-2">
+                  <h4 className="text-xs text-zinc-300 font-bold tracking-wider font-mono">02 // 玩家風格圖鑑</h4>
+                  <p className="text-[11px] text-zinc-400 leading-relaxed font-light">
+                    展示您擅長的角色立繪、星軌定位、是否開麥等基礎遊戲美學，讓您的卡牌成為一件精緻的深夜藏品。
+                  </p>
                 </div>
-
-                {/* 🟢 LOBBY EVENTS */}
-                <div className="flex animate-[fadeInUp_1s_ease-out]">
-                  <FeaturedArtists styleMode="B" />
+                <div className="space-y-2">
+                  <h4 className="text-xs text-zinc-300 font-bold tracking-wider font-mono">03 // 深夜無壓探索</h4>
+                  <p className="text-[11px] text-zinc-400 leading-relaxed font-light">
+                    去除令人焦慮的愛心按讚數、綠點與快餐配對。給予足夠的空氣，放慢尋找同行者的腳步。
+                  </p>
                 </div>
-
               </div>
-
-              {/* 最新在大廳啟航的玩家 */}
-              <section className="artifact-gallery space-y-5 w-full">
-                  <div className="flex justify-between items-center px-1">
-                    <h3 className="artifact-section-heading text-sm font-bold text-[#3e2723] tracking-widest uppercase flex items-center gap-1.5 text-left">
-                      <Users size={16} className="text-[#82b7cc]" style={{ color: "rgba(var(--theme-accent-rgb), 0.85)" }} />
-                      🎉 最新在大廳啟航的玩家
-                    </h3>
-                    <span className="text-xs font-bold text-[#8c7c6c]/60 uppercase tracking-widest flex items-center gap-1.5">
-                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping inline-block" />
-                      即時連線更新中
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-7 overflow-hidden py-1 px-0.5 w-full">
-                    {profiles.map((p, idx) => {
-                      const isNew = idx === 0;
-
-                      return (
-                        <div 
-                          key={p.id} 
-                          className={`midnight-player-artifact glass-panel p-5 border border-white/40 flex flex-col justify-between h-[232px] transition-all duration-500 hover:border-accent/40 hover:shadow-md ${
-                            isNew ? "animate-card-slide" : ""
-                          }`}
-                        >
-                          <div className="flex justify-between items-start gap-2 w-full">
-                            <div className="flex items-center gap-2.5 min-w-0 flex-grow">
-                              <div className="w-8.5 h-8.5 rounded-xl overflow-hidden border border-[#8c7c6c]/15 shadow-sm shrink-0">
-                                <Image
-                                  src={p.avatarUrl} 
-                                  alt={p.name} 
-                                  width={34}
-                                  height={34}
-                                  sizes="34px"
-                                  className="w-full h-full object-cover"
-                                  draggable={false}
-                                />
-                              </div>
-                              <div className="min-w-0 flex-grow text-left">
-                                <h4 className="font-bold text-[#3e2723] text-sm truncate">{p.name}</h4>
-                                <p className="text-[10px] font-semibold text-[#8c7c6c]/80 truncate">尋找今日固定隊友</p>
-                              </div>
-                            </div>
-                            <div className="shrink-0 ml-1">
-                              <Badge className="bg-[#ebdcd8]/50 border-none text-[#735954] text-xs font-bold px-2.5 py-0.5 rounded-lg shadow-sm whitespace-nowrap">
-                                {p.rank}
-                              </Badge>
-                            </div>
-                          </div>
-
-                          <div className="flex items-center gap-1.5 w-full min-w-0">
-                            <span className="soft-home-badge soft-home-badge-compact bg-accent/85 text-white border-accent/40 shrink-0">
-                              {p.game}
-                            </span>
-                            <span className="soft-home-badge soft-home-badge-compact soft-home-badge-muted min-w-0 truncate justify-start">
-                              {p.hero}
-                            </span>
-                          </div>
-
-                          <div className="bg-white/30 border border-white/60 rounded-2xl p-3 min-h-[58px] flex items-center shadow-[inset_0_1px_2px_rgba(74,62,61,0.01)] text-left w-full overflow-hidden shrink-0 my-1">
-                            <p className="text-[#3e2723] text-[12.5px] font-normal leading-relaxed italic opacity-95 line-clamp-2">
-                              &ldquo;{p.message}&rdquo;
-                            </p>
-                          </div>
-
-                          <div className="flex flex-wrap gap-1.5 pt-2 border-t border-[#8c7c6c]/10 mt-1 shrink-0 w-full">
-                            {p.tags.map((tag) => (
-                              <span key={tag} className="soft-home-badge soft-home-badge-compact">
-                                #{tag}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-              </section>
             </div>
           </div>
+        </div>
       </main>
     </div>
   );

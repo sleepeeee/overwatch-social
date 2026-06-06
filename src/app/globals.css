@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@300;400;600&family=Noto+Serif+TC:wght@200;400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@300;400;600&family=Inter:wght@300;400;500;600;700&family=Noto+Serif+TC:wght@200;300;400;500;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
@@ -11,9 +11,17 @@
   --color-foreground: var(--foreground);
   --color-morandi-blue: #93A2B5;
   --color-morandi-sand: #D4C5A9;
+  --color-obsidian: #030206;
+  --color-midnightSlate: #0B0914;
+  --color-auroraTeal: #8b5cf6;
+  --color-auroraMint: #c084fc;
+  --color-starryIndigo: #6366F1;
+  --color-mutedZinc: #94a3b8;
   --font-sans: var(--font-noto-sans-tc);
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-sans);
+  --font-cinzel: "Cinzel", serif;
+  --font-playfair: "Playfair Display", Georgia, "Noto Serif TC", serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -55,100 +63,104 @@
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --background: #030206;
+  --foreground: #f4f4f5;
+  --card: rgba(255, 255, 255, 0.012);
+  --card-foreground: #f4f4f5;
+  --popover: #0B0914;
+  --popover-foreground: #f4f4f5;
+  --primary: #8b5cf6;
+  --primary-foreground: #ffffff;
+  --secondary: #181524;
+  --secondary-foreground: #f4f4f5;
+  --muted: #181524;
+  --muted-foreground: #94a3b8;
+  --accent: #c084fc;
+  --accent-foreground: #ffffff;
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --border: rgba(255, 255, 255, 0.05);
+  --input: rgba(255, 255, 255, 0.08);
+  --ring: #c084fc;
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
   --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar: #0B0914;
+  --sidebar-foreground: #f4f4f5;
+  --sidebar-primary: #8b5cf6;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #181524;
+  --sidebar-accent-foreground: #f4f4f5;
+  --sidebar-border: rgba(255, 255, 255, 0.05);
+  --sidebar-ring: #c084fc;
 
   /* 字體定義 */
   --font-noto-sans-tc: "Noto Sans TC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-geist-sans: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-geist-mono: "Geist Mono", monospace;
 
-  /* 動態主題預設變數 (藍莓優格) */
-  --theme-bg-gradient: radial-gradient(circle at 50% 0%, #FFFFFF 0%, #F5F6F3 100%);
-  --shadow-card-val: 0 8px 30px rgba(47, 58, 85, 0.06), 0 2px 8px rgba(47, 58, 85, 0.03);
-  --border-card-val: 1px solid rgba(47, 58, 85, 0.08);
+  /* 動態主題預設變數 (曜石暗夜星塵) */
+  --theme-bg-gradient: radial-gradient(circle 42vw at 85% 15%, rgba(192, 132, 252, 0.08) 0%, rgba(192, 132, 252, 0) 100%),
+    radial-gradient(circle 45vw at 15% 85%, rgba(99, 102, 241, 0.07) 0%, rgba(99, 102, 241, 0) 100%),
+    radial-gradient(circle 35vw at 50% 35%, rgba(139, 92, 246, 0.03) 0%, rgba(139, 92, 246, 0) 100%);
+  --shadow-card-val: 0 0 20px rgba(139, 92, 246, 0.03);
+  --border-card-val: 1px solid rgba(255, 255, 255, 0.03);
 
-  --glass-bg: rgba(255, 255, 255, 0.65);
+  --glass-bg: rgba(5, 4, 9, 0.88);
   --glass-blur: blur(20px);
-  --glass-border: 1px solid rgba(47, 58, 85, 0.12);
+  --glass-border: 1px solid rgba(255, 255, 255, 0.03);
   --glass-radius: 24px;
-  --glass-hover-bg: rgba(255, 255, 255, 0.75);
-  --glass-hover-border: 1px solid rgba(47, 58, 85, 0.2);
+  --glass-hover-bg: rgba(255, 255, 255, 0.025);
+  --glass-hover-border: 1px solid rgba(192, 132, 252, 0.25);
   --organic-radius: 24px;
-  --shadow-card-hover-val: 0 12px 35px rgba(47, 58, 85, 0.1);
-  --accent: #82b7cc;
-  --accent-foreground: #2F3A55;
+  --shadow-card-hover-val: 0 0 35px rgba(139, 92, 246, 0.12);
+  --accent: #c084fc;
+  --accent-foreground: #ffffff;
 }
 
 /* 原創基準 (theme-original-baseline) */
 .theme-original-baseline {
-  --background: #F5F6F3;
-  --foreground: #2F3A55;
-  --card: #FFFFFF;
-  --card-foreground: #2F3A55;
-  --muted-foreground: #5D6A85;
-  --border: rgba(47, 58, 85, 0.15);
-  --ring: #82b7cc;
-  --theme-bg-gradient: radial-gradient(circle at 50% 0%, #FFFFFF 0%, #F5F6F3 100%);
-  --shadow-card-val: 0 8px 30px rgba(47, 58, 85, 0.06), 0 2px 8px rgba(47, 58, 85, 0.03);
-  --border-card-val: 1px solid rgba(47, 58, 85, 0.08);
-  --accent: #82b7cc;
-  --accent-foreground: #2F3A55;
-  --glass-bg: rgba(255, 255, 255, 0.65);
+  --background: #030206;
+  --foreground: #f4f4f5;
+  --card: rgba(255, 255, 255, 0.012);
+  --card-foreground: #f4f4f5;
+  --muted-foreground: #94a3b8;
+  --border: rgba(255, 255, 255, 0.05);
+  --ring: #c084fc;
+  --theme-bg-gradient: radial-gradient(circle 42vw at 85% 15%, rgba(192, 132, 252, 0.08) 0%, rgba(192, 132, 252, 0) 100%),
+    radial-gradient(circle 45vw at 15% 85%, rgba(99, 102, 241, 0.07) 0%, rgba(99, 102, 241, 0) 100%),
+    radial-gradient(circle 35vw at 50% 35%, rgba(139, 92, 246, 0.03) 0%, rgba(139, 92, 246, 0) 100%);
+  --shadow-card-val: 0 0 20px rgba(139, 92, 246, 0.03);
+  --border-card-val: 1px solid rgba(255, 255, 255, 0.03);
+  --accent: #c084fc;
+  --accent-foreground: #ffffff;
+  --glass-bg: rgba(5, 4, 9, 0.88);
   --glass-blur: blur(20px);
-  --glass-border: 1px solid rgba(47, 58, 85, 0.12);
+  --glass-border: 1px solid rgba(255, 255, 255, 0.03);
   --glass-radius: 24px;
-  --glass-hover-bg: rgba(255, 255, 255, 0.75);
-  --glass-hover-border: 1px solid rgba(47, 58, 85, 0.2);
+  --glass-hover-bg: rgba(255, 255, 255, 0.025);
+  --glass-hover-border: 1px solid rgba(192, 132, 252, 0.25);
   --organic-radius: 24px;
-  --shadow-card-hover-val: 0 12px 35px rgba(47, 58, 85, 0.1);
+  --shadow-card-hover-val: 0 0 35px rgba(139, 92, 246, 0.12);
 
   /* Spacing and structural tokens */
   --theme-card-radius: 24px;
-  --theme-card-shadow: 0 8px 30px rgba(47, 58, 85, 0.06), 0 2px 8px rgba(47, 58, 85, 0.03);
-  --theme-card-shadow-hover: 0 12px 35px rgba(47, 58, 85, 0.1);
-  --theme-card-border: 1px solid rgba(47, 58, 85, 0.08);
-  --theme-card-border-hover: 1px solid rgba(47, 58, 85, 0.2);
+  --theme-card-shadow: 0 0 20px rgba(139, 92, 246, 0.03);
+  --theme-card-shadow-hover: 0 0 35px rgba(139, 92, 246, 0.12);
+  --theme-card-border: 1px solid rgba(255, 255, 255, 0.03);
+  --theme-card-border-hover: 1px solid rgba(192, 132, 252, 0.25);
   --theme-inner-radius: 16px;
-  --theme-inner-border: 1px solid rgba(47, 58, 85, 0.12);
-  --theme-inner-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.01);
+  --theme-inner-border: 1px solid rgba(255, 255, 255, 0.05);
+  --theme-inner-shadow: none;
   --theme-button-radius: 12px;
   --theme-input-radius: 12px;
-  --theme-input-border: 1px solid rgba(47, 58, 85, 0.15);
-  --theme-input-focus-border-color: #82b7cc;
-  --theme-input-focus-ring: 0 0 0 2px rgba(130, 183, 204, 0.5);
+  --theme-input-border: 1px solid rgba(255, 255, 255, 0.1);
+  --theme-input-focus-border-color: #c084fc;
+  --theme-input-focus-ring: 0 0 0 2px rgba(192, 132, 252, 0.25);
   --theme-tag-radius: 9999px;
-  --theme-tag-border: 1px dashed rgba(130, 183, 204, 0.3);
+  --theme-tag-border: 1px dashed rgba(192, 132, 252, 0.3);
   --theme-font-family: var(--font-sans);
   --theme-letter-spacing: normal;
   --theme-text-transform: none;
@@ -205,1132 +217,226 @@
   --muted-foreground: oklch(0.708 0 0) !important;
 }
 
-/* ═══════════════════════════════════════════════════════════════════
-   🎨 Morning Sketch SVG Asset Library (A 類：背景暈染 + 底紋)
-   由 GPT 生成，2026-06-02 整合入專案
-   ═══════════════════════════════════════════════════════════════════ */
-:root {
-  /* A1: 水彩暈染色斑 × 4 色 */
-  --ms-a1-blob-blue: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MDAgMzAwIiByb2xlPSJpbWciIGFyaWEtbGFiZWw9Ik1vcm5pbmcgU2tldGNoIHdhdGVyY29sb3IgbWlzdCBibG9iIGJsdWUiPgogIDxkZWZzPgogICAgPGZpbHRlciBpZD0ibXMtc29mdC1ibHVyIiB4PSItMjUlIiB5PSItMjUlIiB3aWR0aD0iMTUwJSIgaGVpZ2h0PSIxNTAlIj4KICAgICAgPGZlR2F1c3NpYW5CbHVyIHN0ZERldmlhdGlvbj0iMTIiLz4KICAgIDwvZmlsdGVyPgogICAgPGZpbHRlciBpZD0ibXMtZWRnZS13YXNoIiB4PSItMjAlIiB5PSItMjAlIiB3aWR0aD0iMTQwJSIgaGVpZ2h0PSIxNDAlIj4KICAgICAgPGZlVHVyYnVsZW5jZSB0eXBlPSJmcmFjdGFsTm9pc2UiIGJhc2VGcmVxdWVuY3k9IjAuMDE4IDAuMDQ1IiBudW1PY3RhdmVzPSIzIiBzZWVkPSIxMiIgcmVzdWx0PSJub2lzZSIvPgogICAgICA8ZmVEaXNwbGFjZW1lbnRNYXAgaW49IlNvdXJjZUdyYXBoaWMiIGluMj0ibm9pc2UiIHNjYWxlPSIxNCIgeENoYW5uZWxTZWxlY3Rvcj0iUiIgeUNoYW5uZWxTZWxlY3Rvcj0iRyIvPgogICAgICA8ZmVHYXVzc2lhbkJsdXIgc3RkRGV2aWF0aW9uPSI1Ii8+CiAgICA8L2ZpbHRlcj4KICAgIDxyYWRpYWxHcmFkaWVudCBpZD0ibXMtd2FzaCIgY3g9IjQ2JSIgY3k9IjQyJSIgcj0iNjIlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzgyYjdjYyIgc3RvcC1vcGFjaXR5PSIwLjM0Ii8+CiAgICAgIDxzdG9wIG9mZnNldD0iNTglIiBzdG9wLWNvbG9yPSIjODJiN2NjIiBzdG9wLW9wYWNpdHk9IjAuMjIiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjODJiN2NjIiBzdG9wLW9wYWNpdHk9IjAiLz4KICAgIDwvcmFkaWFsR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxwYXRoIGZpbHRlcj0idXJsKCNtcy1zb2Z0LWJsdXIpIiBmaWxsPSJ1cmwoI21zLXdhc2gpIiBkPSJNNjcgMTQxQzU0IDg5IDk5IDUwIDE1OCA1NGM0OCAzIDc0IDIyIDExMSAxOCA0Ny01IDgzIDIzIDg2IDY4IDQgNTUtMzYgOTItOTAgMTAxLTUxIDgtODEtMTQtMTIxLTEwLTUxIDUtNjgtMzgtNzctOTBaIi8+CiAgPHBhdGggZmlsdGVyPSJ1cmwoI21zLWVkZ2Utd2FzaCkiIGZpbGw9IiM4MmI3Y2MiIGZpbGwtb3BhY2l0eT0iMC4xNiIgZD0iTTg2IDEzOWMtOS00MSAyNi03MiA3OC03MSA0OSAyIDYzIDIxIDEwMyAxNyA0Mi00IDcxIDIzIDcyIDYxIDEgNDctMzUgNzUtODMgODMtNDQgOC03MS0xMS0xMTEtNy0zNyA0LTUxLTM4LTU5LTgzWiIvPgo8L3N2Zz4K');
-  --ms-a1-blob-sand: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MDAgMzAwIiByb2xlPSJpbWciIGFyaWEtbGFiZWw9Ik1vcm5pbmcgU2tldGNoIHdhdGVyY29sb3IgbWlzdCBibG9iIHNhbmQgYnJvd24iPgogIDxkZWZzPgogICAgPGZpbHRlciBpZD0ibXMtc29mdC1ibHVyIiB4PSItMjUlIiB5PSItMjUlIiB3aWR0aD0iMTUwJSIgaGVpZ2h0PSIxNTAlIj48ZmVHYXVzc2lhbkJsdXIgc3RkRGV2aWF0aW9uPSIxMyIvPjwvZmlsdGVyPgogICAgPGZpbHRlciBpZD0ibXMtZWRnZS13YXNoIiB4PSItMjAlIiB5PSItMjAlIiB3aWR0aD0iMTQwJSIgaGVpZ2h0PSIxNDAlIj4KICAgICAgPGZlVHVyYnVsZW5jZSB0eXBlPSJmcmFjdGFsTm9pc2UiIGJhc2VGcmVxdWVuY3k9IjAuMDIyIDAuMDM4IiBudW1PY3RhdmVzPSIzIiBzZWVkPSIyNCIgcmVzdWx0PSJub2lzZSIvPgogICAgICA8ZmVEaXNwbGFjZW1lbnRNYXAgaW49IlNvdXJjZUdyYXBoaWMiIGluMj0ibm9pc2UiIHNjYWxlPSIxNiIvPgogICAgICA8ZmVHYXVzc2lhbkJsdXIgc3RkRGV2aWF0aW9uPSI0LjUiLz4KICAgIDwvZmlsdGVyPgogICAgPHJhZGlhbEdyYWRpZW50IGlkPSJtcy13YXNoIiBjeD0iNTIlIiBjeT0iNDclIiByPSI2NCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjOGM3YzZjIiBzdG9wLW9wYWNpdHk9IjAuMjIiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSI2MiUiIHN0b3AtY29sb3I9IiM4YzdjNmMiIHN0b3Atb3BhY2l0eT0iMC4xMyIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiM4YzdjNmMiIHN0b3Atb3BhY2l0eT0iMCIvPgogICAgPC9yYWRpYWxHcmFkaWVudD4KICA8L2RlZnM+CiAgPHBhdGggZmlsdGVyPSJ1cmwoI21zLXNvZnQtYmx1cikiIGZpbGw9InVybCgjbXMtd2FzaCkiIGQ9Ik04MSAxMThDOTMgNzIgMTQ4IDQ5IDIwNSA2M2M0MiAxMCA2NCAzNSAxMDAgNDMgNDcgMTAgNzAgNTQgNTEgOTYtMjEgNDctNzMgNjQtMTI3IDUxLTQzLTEwLTY3LTM4LTEwNi0zOS00Ni0xLTU3LTQyLTQyLTk2WiIvPgogIDxwYXRoIGZpbHRlcj0idXJsKCNtcy1lZGdlLXdhc2gpIiBmaWxsPSIjOGM3YzZjIiBmaWxsLW9wYWNpdHk9IjAuMDkiIGQ9Ik0xMDIgMTI1YzEzLTM4IDU4LTU1IDEwMy00MyAzOSAxMCA1NSAzMSA4OCAzOSAzNyAxMCA1NiA0MyAzOSA3Ny0xOCAzNi02MSA1Mi0xMDUgNDAtMzYtMTAtNTUtMzQtOTEtMzYtMzUtMi00Ny0zOS0zNC03N1oiLz4KPC9zdmc+Cg==');
-  --ms-a1-blob-yellow: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MDAgMzAwIiByb2xlPSJpbWciIGFyaWEtbGFiZWw9Ik1vcm5pbmcgU2tldGNoIHdhdGVyY29sb3IgbWlzdCBibG9iIGdvb3NlIHllbGxvdyI+CiAgPGRlZnM+CiAgICA8ZmlsdGVyIGlkPSJtcy1zb2Z0LWJsdXIiIHg9Ii0yNSUiIHk9Ii0yNSUiIHdpZHRoPSIxNTAlIiBoZWlnaHQ9IjE1MCUiPjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjExIi8+PC9maWx0ZXI+CiAgICA8ZmlsdGVyIGlkPSJtcy1lZGdlLXdhc2giIHg9Ii0yMCUiIHk9Ii0yMCUiIHdpZHRoPSIxNDAlIiBoZWlnaHQ9IjE0MCUiPgogICAgICA8ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iMC4wMiAwLjA1IiBudW1PY3RhdmVzPSIyIiBzZWVkPSIzMyIgcmVzdWx0PSJub2lzZSIvPgogICAgICA8ZmVEaXNwbGFjZW1lbnRNYXAgaW49IlNvdXJjZUdyYXBoaWMiIGluMj0ibm9pc2UiIHNjYWxlPSIxMyIvPgogICAgICA8ZmVHYXVzc2lhbkJsdXIgc3RkRGV2aWF0aW9uPSI0Ii8+CiAgICA8L2ZpbHRlcj4KICAgIDxyYWRpYWxHcmFkaWVudCBpZD0ibXMtd2FzaCIgY3g9IjQ3JSIgY3k9IjQ1JSIgcj0iNjMlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2Y1ZDQ2YiIgc3RvcC1vcGFjaXR5PSIwLjMwIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iNjAlIiBzdG9wLWNvbG9yPSIjZjVkNDZiIiBzdG9wLW9wYWNpdHk9IjAuMTgiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZjVkNDZiIiBzdG9wLW9wYWNpdHk9IjAiLz4KICAgIDwvcmFkaWFsR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxwYXRoIGZpbHRlcj0idXJsKCNtcy1zb2Z0LWJsdXIpIiBmaWxsPSJ1cmwoI21zLXdhc2gpIiBkPSJNNjEgMTU5Yy04LTU1IDM4LTkyIDk2LTg4IDQ2IDMgNjYtMTkgMTEyLTcgNTYgMTQgNzggNjIgNTUgMTEwLTIzIDUwLTYzIDc0LTEyOCA2NS00Ni03LTcyIDYtMTA1LTE0LTI1LTE2LTI3LTQyLTMwLTY2WiIvPgogIDxwYXRoIGZpbHRlcj0idXJsKCNtcy1lZGdlLXdhc2gpIiBmaWxsPSIjZjVkNDZiIiBmaWxsLW9wYWNpdHk9IjAuMTIiIGQ9Ik04NSAxNTdjLTYtNDMgMzEtNzAgNzgtNjYgNDEgNCA1OC0xNiA5Ni01IDQzIDEzIDYyIDQ5IDQ0IDg3LTE5IDM5LTU0IDU1LTEwNiA0OS0zOS01LTYxIDgtODctMTAtMjAtMTMtMjMtMzUtMjUtNTVaIi8+Cjwvc3ZnPgo=');
-  --ms-a1-blob-rose: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MDAgMzAwIiByb2xlPSJpbWciIGFyaWEtbGFiZWw9Ik1vcm5pbmcgU2tldGNoIHdhdGVyY29sb3IgbWlzdCBibG9iIHBhbGUgcm9zZSI+CiAgPGRlZnM+CiAgICA8ZmlsdGVyIGlkPSJtcy1zb2Z0LWJsdXIiIHg9Ii0yNSUiIHk9Ii0yNSUiIHdpZHRoPSIxNTAlIiBoZWlnaHQ9IjE1MCUiPjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjEyIi8+PC9maWx0ZXI+CiAgICA8ZmlsdGVyIGlkPSJtcy1lZGdlLXdhc2giIHg9Ii0yMCUiIHk9Ii0yMCUiIHdpZHRoPSIxNDAlIiBoZWlnaHQ9IjE0MCUiPgogICAgICA8ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iMC4wMTkgMC4wNDMiIG51bU9jdGF2ZXM9IjMiIHNlZWQ9IjQxIiByZXN1bHQ9Im5vaXNlIi8+CiAgICAgIDxmZURpc3BsYWNlbWVudE1hcCBpbj0iU291cmNlR3JhcGhpYyIgaW4yPSJub2lzZSIgc2NhbGU9IjE1Ii8+CiAgICAgIDxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjQuOCIvPgogICAgPC9maWx0ZXI+CiAgICA8cmFkaWFsR3JhZGllbnQgaWQ9Im1zLXdhc2giIGN4PSI1MCUiIGN5PSI1MCUiIHI9IjY2JSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNlYmRjZDgiIHN0b3Atb3BhY2l0eT0iMC40MiIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjY0JSIgc3RvcC1jb2xvcj0iI2ViZGNkOCIgc3RvcC1vcGFjaXR5PSIwLjI2Ii8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2ViZGNkOCIgc3RvcC1vcGFjaXR5PSIwIi8+CiAgICA8L3JhZGlhbEdyYWRpZW50PgogIDwvZGVmcz4KICA8cGF0aCBmaWx0ZXI9InVybCgjbXMtc29mdC1ibHVyKSIgZmlsbD0idXJsKCNtcy13YXNoKSIgZD0iTTkyIDkxYzM1LTM4IDg5LTI4IDEyOC0xNiA0NyAxNCA4OS0xIDExNSA0MiAyNyA0NCA4IDk4LTQwIDEyMy00MiAyMy03NyAyLTEyNCA4LTU0IDgtMTAxLTE3LTExMC02Mi02LTMxIDYtNjggMzEtOTVaIi8+CiAgPHBhdGggZmlsdGVyPSJ1cmwoI21zLWVkZ2Utd2FzaCkiIGZpbGw9IiNlYmRjZDgiIGZpbGwtb3BhY2l0eT0iMC4xOCIgZD0iTTExMiAxMDJjMjgtMzEgNzItMjQgMTA3LTEzIDQxIDEyIDc1IDAgOTYgMzUgMjAgMzUgNCA3Ny0zNSA5Ny0zNCAxOC02NCAyLTEwNSA4LTQ0IDYtODMtMTQtOTAtNTEtNS0yNyA2LTU1IDI3LTc2WiIvPgo8L3N2Zz4K');
-
-  /* A2: 手繪點格底紋 */
-  --ms-a2-dot-grid: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiByb2xlPSJpbWciIGFyaWEtbGFiZWw9Ik1vcm5pbmcgU2tldGNoIHN1YnRsZSBkb3QgZ3JpZCB0ZXh0dXJlIj4KICA8ZGVmcz4KICAgIDxwYXR0ZXJuIGlkPSJtcy1kb3QtZ3JpZCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KICAgICAgPGNpcmNsZSBjeD0iMyIgY3k9IjMiIHI9IjAuNzUiIGZpbGw9IiM4YzdjNmMiIGZpbGwtb3BhY2l0eT0iMC4xMiIvPgogICAgPC9wYXR0ZXJuPgogIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIGZpbGw9InVybCgjbXMtZG90LWdyaWQpIi8+Cjwvc3ZnPgo=');
-
-  /* A3: 手繪橫線紋理 */
-  --ms-a3-sketch-line: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCIgd2lkdGg9IjQ4IiBoZWlnaHQ9IjQ4IiByb2xlPSJpbWciIGFyaWEtbGFiZWw9Ik1vcm5pbmcgU2tldGNoIGhhbmQgZHJhd24gaG9yaXpvbnRhbCBsaW5lIHRleHR1cmUiPgogIDxkZWZzPgogICAgPHBhdHRlcm4gaWQ9Im1zLXNrZXRjaC1saW5lcyIgd2lkdGg9IjQ4IiBoZWlnaHQ9IjQ4IiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KICAgICAgPHBhdGggZD0iTS0yIDggQyA3IDcuNCwgMTUgOC43LCAyNCA4LjEgUyAzOSA3LjcsIDUwIDguNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjOGM3YzZjIiBzdHJva2Utb3BhY2l0eT0iMC4wNiIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICAgICAgPHBhdGggZD0iTS0xIDI0IEMgOCAyNC44LCAxNCAyMy4yLCAyMyAyNC4xIFMgMzkgMjQuOSwgNDkgMjMuOCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjOGM3YzZjIiBzdHJva2Utb3BhY2l0eT0iMC4wNiIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICAgICAgPHBhdGggZD0iTS0yIDQwIEMgNiAzOS4xLCAxNyA0MC42LCAyNiAzOS44IFMgMzkgMzkuNCwgNTAgNDAuMyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjOGM3YzZjIiBzdHJva2Utb3BhY2l0eT0iMC4wNiIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICAgIDwvcGF0dGVybj4KICA8L2RlZnM+CiAgPHJlY3Qgd2lkdGg9IjQ4IiBoZWlnaHQ9IjQ4IiBmaWxsPSJ1cmwoI21zLXNrZXRjaC1saW5lcykiLz4KPC9zdmc+Cg==');
-
-  /* B1: 手繪波浪分隔線 (晨霧藍，三變體) */
-  --ms-b1-wave-blue: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 56' preserveAspectRatio='none'%3E%3Cpath d='M0 30 C 80 18, 160 42, 280 28 S 440 14, 580 32 S 720 44, 860 26 S 1020 12, 1160 30 S 1320 42, 1440 24' fill='none' stroke='%2382b7cc' stroke-opacity='0.32' stroke-width='1.8' stroke-linecap='round'/%3E%3Cpath d='M0 38 C 100 28, 200 48, 340 36 S 520 22, 680 40 S 860 50, 1020 34 S 1200 18, 1440 32' fill='none' stroke='%2382b7cc' stroke-opacity='0.14' stroke-width='1.2' stroke-linecap='round'/%3E%3C/svg%3E");
-  --ms-b1-wave-sand: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 56' preserveAspectRatio='none'%3E%3Cpath d='M0 28 C 90 16, 200 38, 320 26 S 500 12, 660 30 S 820 46, 980 28 S 1140 10, 1300 28 S 1380 38, 1440 26' fill='none' stroke='%238c7c6c' stroke-opacity='0.28' stroke-width='1.6' stroke-linecap='round'/%3E%3Cpath d='M0 40 C 120 32, 240 50, 400 38 S 600 24, 760 42 S 940 52, 1100 36 S 1280 20, 1440 36' fill='none' stroke='%238c7c6c' stroke-opacity='0.12' stroke-width='1' stroke-linecap='round'/%3E%3C/svg%3E");
-  --ms-b1-wave-yellow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 56' preserveAspectRatio='none'%3E%3Cpath d='M0 32 C 70 20, 180 44, 300 30 S 470 16, 630 34 S 800 48, 960 30 S 1130 14, 1290 32 S 1380 42, 1440 28' fill='none' stroke='%23f5d46b' stroke-opacity='0.36' stroke-width='1.8' stroke-linecap='round'/%3E%3Cpath d='M0 42 C 110 34, 230 52, 380 40 S 570 26, 730 44 S 920 54, 1080 38 S 1260 22, 1440 38' fill='none' stroke='%23f5d46b' stroke-opacity='0.18' stroke-width='1.2' stroke-linecap='round'/%3E%3C/svg%3E");
-}
-
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
   body {
-    @apply text-[#5d4037];
-    background: var(--theme-bg-gradient) !important;
-    background-attachment: fixed !important;
+    background: #030206;
+    color: #f4f4f5;
     position: relative;
     min-height: 100vh;
     font-family: var(--font-sans);
     overflow-x: hidden;
   }
-  body::before {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.015'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 999;
+  body::selection,
+  *::selection {
+    background-color: rgba(192, 132, 252, 0.3);
+    color: #ffffff;
   }
   html {
     @apply font-sans;
   }
 }
 
-/* 🛡️ [Aesthetics] 朝陽全息・莫蘭迪暖風毛玻璃面板 */
-.ow-glass-panel {
-  background: rgba(255, 255, 255, 0.65) !important;
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(140, 124, 108, 0.15) !important;
-  box-shadow: 0 15px 45px -10px rgba(140, 124, 108, 0.08), 
-              0 0 20px rgba(130, 183, 204, 0.04);
-  position: relative;
-  overflow: hidden;
-  border-radius: 1.5rem; /* 更圓潤的大圓角 */
-  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+/* 曜石星塵暗夜星河漸層與磨砂玻璃 */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: #030206;
+}
+::-webkit-scrollbar-thumb {
+    background: #181524;
+    border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(192, 132, 252, 0.4);
 }
 
-
-/* 🛡️ [Aesthetics] 溫潤微圓角與流體切邊裝飾 */
-.ow-tech-corner {
-  border-radius: 20px;
-}
-
-.ow-tech-corner-sm {
-  border-radius: 12px;
-}
-
-/* 🛡️ [Aesthetics] 全息莫蘭迪晴藍與金黃外發光 */
-.ow-glow-orange {
-  filter: drop-shadow(0 0 6px rgba(130, 183, 204, 0.35));
-}
-
-.ow-neon-border {
-  border-color: rgba(130, 183, 204, 0.35) !important;
-  box-shadow: 0 0 15px rgba(130, 183, 204, 0.15) !important;
-}
-
-/* 全息柔和漸層文字與背景 */
-.ow-text-holographic {
-  background: linear-gradient(135deg, #82b7cc 0%, #d8a070 50%, #f5d46b 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 2px 4px rgba(130, 183, 204, 0.1));
-}
-
-.ow-bg-holographic-glow {
-  background: radial-gradient(circle at center, rgba(130, 183, 204, 0.15) 0%, rgba(245, 212, 107, 0.08) 50%, transparent 100%);
-  filter: blur(40px);
-}
-
-/* 🛡️ [Aesthetics] 晴藍暖風微動態按鈕 */
-.ow-tech-btn {
-  position: relative;
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  overflow: hidden;
-}
-
-.ow-tech-btn::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
-  transform: translateX(-100%);
-  transition: transform 0.8s ease;
-}
-
-.ow-tech-btn:hover::after {
-  transform: translateX(100%);
-}
-
-/* 🌸 [Morning Sketch] 風格主題變數 (Data-Style Themes) */
-[data-style="A"] {
-  --theme-accent: #8c7c6c;
-  --theme-accent-rgb: 140, 124, 108;
-  --theme-highlight: #f5d46b;
-  --theme-highlight-rgb: 245, 212, 107;
-  --theme-bg-gradient: radial-gradient(circle at 50% 0%, #fcf9f2 0%, #f3ecd8 100%);
-}
-
-[data-style="B"] {
-  --theme-accent: #82b7cc;
-  --theme-accent-rgb: 130, 183, 204;
-  --theme-highlight: #f5d46b;
-  --theme-highlight-rgb: 245, 212, 107;
-  --theme-bg-gradient: radial-gradient(circle at 50% 0%, #f4f8fa 0%, #eef5f8 100%);
-}
-
-[data-style="AB"] {
-  --theme-accent: #82b7cc;
-  --theme-accent-rgb: 130, 183, 204;
-  --theme-highlight: #8c7c6c;
-  --theme-highlight-rgb: 140, 124, 108;
-  --theme-bg-gradient: radial-gradient(circle at 50% 0%, #f7f9fa 0%, #f0f4f6 100%);
-}
-
-/* 🌸 [Morning Sketch] .cyber-dots 網格底紋 */
-.cyber-dots {
-  background-image: radial-gradient(rgba(var(--theme-accent-rgb), 0.12) 1.5px, transparent 1.5px);
-  background-size: 24px 24px;
-}
-
-/* 🌸 [Morning Sketch] 有機溫潤玻璃擬態 (Organic Glassmorphism) */
 .glass-panel {
-  background: var(--glass-bg, rgba(255, 255, 255, 0.42)) !important;
-  backdrop-filter: var(--glass-blur, blur(32px)) saturate(110%);
-  -webkit-backdrop-filter: var(--glass-blur, blur(32px)) saturate(110%);
-  border: var(--glass-border, 1px solid rgba(255, 255, 255, 0.55)) !important;
-  border-radius: var(--glass-radius, 32px) !important;
-  box-shadow: var(--shadow-card-val) !important;
-  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    background: rgba(5, 4, 9, 0.88);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.03);
 }
 
-.glass-panel:hover {
-  background: var(--glass-hover-bg, rgba(255, 255, 255, 0.55)) !important;
-  border: var(--glass-hover-border, 1px solid rgba(255, 255, 255, 0.8)) !important;
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-card-hover-val) !important;
+.glass-card {
+    background: rgba(255, 255, 255, 0.012);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* 有機不對稱圓角 (手繪黏土溫潤感) */
-.organic-corners {
-  border-radius: var(--organic-radius, 38px 28px 42px 34px) !important;
+.glass-card:hover {
+    border-color: rgba(192, 132, 252, 0.25);
+    background: rgba(255, 255, 255, 0.025);
+    transform: translateY(-2px);
 }
 
-/* 🌸 背景雲霧斑塊慢漂浮動畫 */
-@keyframes float-mist-a {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(40px, 30px) scale(1.15); }
+.primary-glowing-card {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.03) 0%, rgba(192, 132, 252, 0.01) 100%);
+    border: 1px solid rgba(192, 132, 252, 0.15);
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.03);
+    transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
 }
-@keyframes float-mist-b {
-  0%, 100% { transform: translate(0, 0) scale(1.1); }
-  50% { transform: translate(-30px, -45px) scale(0.9); }
+.primary-glowing-card:hover {
+    border-color: rgba(192, 132, 252, 0.45);
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.06) 0%, rgba(192, 132, 252, 0.03) 100%);
+    box-shadow: 0 0 35px rgba(139, 92, 246, 0.12);
+    transform: translateY(-2px);
 }
-@keyframes float-mist-c {
-  0%, 100% { transform: translate(0, 0) scale(0.95); }
-  50% { transform: translate(25px, -30px) scale(1.05); }
-}
-
-.animate-mist-a {
-  animation: float-mist-a 22s infinite ease-in-out;
-}
-.animate-mist-b {
-  animation: float-mist-b 28s infinite ease-in-out;
-}
-.animate-mist-c {
-  animation: float-mist-c 25s infinite ease-in-out;
-}
-
-/* 🌸 溫順低飽和標籤貼紙 (Pastel Sticker Tag) */
-.pastel-tag-blue {
-  background-color: rgba(130, 183, 204, 0.18);
-  color: #4a5d66;
-  border: 1px dashed rgba(130, 183, 204, 0.3) !important;
-}
-.pastel-tag-rose {
-  background-color: rgba(235, 220, 216, 0.5);
-  color: #735954;
-  border: 1px dashed rgba(235, 220, 216, 0.7) !important;
-}
-.pastel-tag-sage {
-  background-color: rgba(213, 219, 214, 0.5);
-  color: #535c55;
-  border: 1px dashed rgba(213, 219, 214, 0.7) !important;
-}
-.pastel-tag-sand {
-  background-color: rgba(140, 124, 108, 0.15);
-  color: #635b4f;
-  border: 1px dashed rgba(140, 124, 108, 0.25) !important;
-}
-
-.soft-home-badge {
-  min-height: 24px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.25rem;
-  border-radius: 999px;
-  padding: 0.25rem 0.65rem;
-  line-height: 1.15;
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0;
-  white-space: nowrap;
-  border: 1px solid rgba(130, 183, 204, 0.26);
-  background: rgba(130, 183, 204, 0.15);
-  color: #4a5d66;
-}
-
-.soft-home-badge-muted {
-  border-color: rgba(140, 124, 108, 0.18);
-  background: rgba(255, 255, 255, 0.38);
-  color: #635b4f;
-}
-
-.soft-home-badge-sand {
-  border-color: rgba(140, 124, 108, 0.22);
-  background: rgba(140, 124, 108, 0.12);
-  color: #635b4f;
-}
-
-.soft-home-badge-compact {
-  min-height: 20px;
-  padding: 0.18rem 0.48rem;
-  font-size: 0.62rem;
-  font-weight: 700;
-  line-height: 1.1;
-}
-
-.browse-tab {
-  min-height: 62px;
-  display: inline-flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 0.2rem;
-  border-radius: 1.1rem;
-  border: 1px solid rgba(140, 124, 108, 0.16);
-  background: rgba(255, 255, 255, 0.48);
-  padding: 0.72rem 0.9rem;
-  color: #6e655b;
-  box-shadow: 0 10px 30px -18px rgba(140, 124, 108, 0.18);
-  transition: all 0.3s ease;
-  text-align: left;
-}
-
-.browse-tab:hover {
-  border-color: rgba(130, 183, 204, 0.28);
-  background: rgba(255, 255, 255, 0.62);
-  transform: translateY(-1px);
-}
-
-.browse-tab-active {
-  border-color: rgba(130, 183, 204, 0.42);
-  background: linear-gradient(135deg, rgba(130, 183, 204, 0.2), rgba(255, 255, 255, 0.74));
-  color: #3e2723;
-  box-shadow: 0 16px 38px -20px rgba(130, 183, 204, 0.42);
-}
-
-.browse-tab-status {
-  font-size: 0.62rem;
-  line-height: 1;
-  font-weight: 700;
-  opacity: 0.52;
-  letter-spacing: 0;
-}
-
-.browse-preview-card {
-  background: rgba(255, 255, 255, 0.56);
-  border: 1px solid rgba(140, 124, 108, 0.14);
-  border-radius: 1.4rem;
-  box-shadow: 0 16px 42px -26px rgba(140, 124, 108, 0.18);
-}
-
-/* 安靜的無邊框水彩質感按鈕 */
-.calm-btn-primary {
-  background-color: rgba(130, 183, 204, 0.25);
-  color: #384d54;
-  border: 1px solid rgba(130, 183, 204, 0.4);
-  border-radius: 18px;
-  box-shadow: 0 4px 15px -3px rgba(130, 183, 204, 0.2);
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.calm-btn-primary:hover {
-  background-color: rgba(130, 183, 204, 0.38);
-  transform: translateY(-1px) scale(1.02);
-  box-shadow: 0 8px 22px -4px rgba(130, 183, 204, 0.35);
-}
-
-/* 🛡️ [Content Protection] 全站 CSS 防選取與圖片防拖曳保護 */
-
-/* 1.1 全域防選取 */
-html, body {
-  max-width: 100%;
-  -webkit-user-select: none;  /* Safari, Chrome */
-  -moz-user-select: none;     /* Firefox */
-  -ms-user-select: none;      /* IE10+/Edge */
-  user-select: none;          /* Standard */
-}
-
-@media (max-width: 640px) {
-  body {
-    background-attachment: scroll !important;
-  }
-
-  body::before {
-    opacity: 0.5;
-  }
-
-  .glass-panel {
-    backdrop-filter: blur(18px) saturate(105%);
-    -webkit-backdrop-filter: blur(18px) saturate(105%);
-    border-radius: 26px;
-  }
-
-  .organic-corners {
-    border-radius: 28px !important;
-  }
-
-  .art-mist {
-    filter: blur(70px);
-    animation: none !important;
-    opacity: 0.18;
-  }
-}
-/* 1.2 表單輸入控制項與可編輯區域豁免，確保正常編輯 */
-input, 
-textarea, 
-[contenteditable="true"],
-.selectable {
-  -webkit-user-select: text;
-  -moz-user-select: text;
-  -ms-user-select: text;
-  user-select: text;
-}
-
-/* 🛡️ [Content Protection] 全站 CSS 防選取與圖片防拖曳保護 */
-
-/* 1.1 全域防選取 */
-html, body {
-  max-width: 100%;
-  -webkit-user-select: none;  /* Safari, Chrome */
-  -moz-user-select: none;     /* Firefox */
-  -ms-user-select: none;      /* IE10+/Edge */
-  user-select: none;          /* Standard */
-}
-
-@media (max-width: 640px) {
-  body {
-    background-attachment: scroll !important;
-  }
-
-  body::before {
-    opacity: 0.5;
-  }
-
-  .glass-panel {
-    backdrop-filter: blur(18px) saturate(105%);
-    -webkit-backdrop-filter: blur(18px) saturate(105%);
-    border-radius: 26px;
-  }
-
-  .organic-corners {
-    border-radius: 28px !important;
-  }
-
-  .art-mist {
-    filter: blur(70px);
-    animation: none !important;
-    opacity: 0.18;
-  }
-}
-
-[data-theme-expert="true"] .ow-glass-panel {
-  background: #fefcf8 !important;
-  border: 1px solid rgba(140, 124, 108, 0.12) !important;
-  box-shadow: 
-    0 20px 50px rgba(140, 124, 108, 0.04), 
-    0 2px 8px rgba(140, 124, 108, 0.015),
-    inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
-  border-radius: 24px !important;
-}
- 
-[data-theme-expert="true"] .group\/search:focus-within input {
-  border-color: rgba(130, 183, 204, 0.4) !important;
-  box-shadow: 
-    0 12px 30px -10px rgba(130, 183, 204, 0.15) !important;
-}
- 
-[data-theme-expert="true"] .browse-tab-active {
-  background: #fefcf8 !important;
-  border-color: rgba(130, 183, 204, 0.45) !important;
-  color: #3e2723 !important;
-  box-shadow: 
-    0 12px 30px -10px rgba(130, 183, 204, 0.22),
-    inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
-  border-bottom: 2px solid rgba(130, 183, 204, 0.5) !important;
-}
- 
-[data-theme-expert="true"] .browse-tab {
-  border-radius: 16px !important;
-  background: rgba(254, 252, 248, 0.7) !important;
-  border: 1px solid rgba(140, 124, 108, 0.12) !important;
-  box-shadow: 0 10px 30px -18px rgba(140, 124, 108, 0.18) !important;
-  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1) !important;
-}
- 
-[data-theme-expert="true"] .browse-tab:hover {
-  transform: translateY(-2px) !important;
-  border-color: rgba(130, 183, 204, 0.3) !important;
-  background: #fefcf8 !important;
-  box-shadow: 0 12px 28px -14px rgba(140, 124, 108, 0.22) !important;
-}
- 
-[data-theme-expert="true"] .browse-preview-card {
-  background: #fefcf8 !important;
-  border: 1px solid rgba(140, 124, 108, 0.12) !important;
-  border-radius: 24px !important;
-  box-shadow: 0 15px 45px rgba(140, 124, 108, 0.03) !important;
-  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1) !important;
-}
- 
-[data-theme-expert="true"] .browse-preview-card:hover {
-  transform: translateY(-3px) !important;
-  border-color: rgba(130, 183, 204, 0.25) !important;
-  box-shadow: 0 25px 55px rgba(130, 183, 204, 0.08) !important;
-}
- 
-[data-theme-expert="true"] .browse-preview-card .bg-\[\#faf8f5\]\/95 {
-  background: #faf8f5 !important;
-  border-color: rgba(140, 124, 108, 0.08) !important;
-}
- 
-[data-theme-expert="true"] .browse-preview-card .bg-\[\#fdfaf3\]\/20 {
-  background: rgba(254, 252, 248, 0.3) !important;
-  border-color: rgba(130, 183, 204, 0.15) !important;
-}
-
-/* 🎨 Morning Sketch - 藝術家手稿畫框與晶圓對準 L 型裁切線樣式 */
-.morning-sketch-card {
-  border-radius: 36px 24px 40px 28px !important;
-  background: #fefcf8 !important;
-  border: 1px solid rgba(140, 124, 108, 0.12) !important;
-  box-shadow: 
-    0 20px 50px rgba(140, 124, 108, 0.04),
-    0 4px 12px rgba(140, 124, 108, 0.015),
-    inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
-  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
-}
-
-.morning-sketch-card:hover {
-  transform: translateY(-5px) scale(1.005) !important;
-  border-color: rgba(130, 183, 204, 0.28) !important;
-  box-shadow: 
-    0 30px 65px rgba(130, 183, 204, 0.08),
-    0 6px 20px rgba(140, 124, 108, 0.025),
-    inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
-}
-
-/* 首頁 HUD 位置與縮放控制 */
-.home-hud-layout {
-  transform: translate3d(var(--hud-home-x, 0px), var(--hud-home-y, 0px), 0) scale(var(--hud-home-scale, 1));
-  transform-origin: top left;
-  will-change: transform;
-}
-/* 防止 .glass-panel:hover 的 translateY 覆蓋 scale */
-.home-hud-layout:hover {
-  transform: translate3d(var(--hud-home-x, 0px), calc(var(--hud-home-y, 0px) - 2px), 0) scale(var(--hud-home-scale, 1));
-}
-
-.watercolor-avatar-bg {
-  background: radial-gradient(circle at 65% 35%, rgba(130, 183, 204, 0.18) 0%, rgba(245, 212, 107, 0.12) 40%, transparent 80%) !important;
-}
-
-.wafer-mark-tl {
-  position: absolute; top: 6px; left: 6px; width: 6px; height: 6px;
-  border-top: 1px solid rgba(140, 124, 108, 0.3) !important;
-  border-left: 1px solid rgba(140, 124, 108, 0.3) !important;
-}
-.wafer-mark-tr {
-  position: absolute; top: 6px; right: 6px; width: 6px; height: 6px;
-  border-top: 1px solid rgba(140, 124, 108, 0.3) !important;
-  border-right: 1px solid rgba(140, 124, 108, 0.3) !important;
-}
-.wafer-mark-bl {
-  position: absolute; bottom: 6px; left: 6px; width: 6px; height: 6px;
-  border-bottom: 1px solid rgba(140, 124, 108, 0.3) !important;
-  border-left: 1px solid rgba(140, 124, 108, 0.3) !important;
-}
-.wafer-mark-br {
-  position: absolute; bottom: 6px; right: 6px; width: 6px; height: 6px;
-  border-bottom: 1px solid rgba(140, 124, 108, 0.3) !important;
-  border-right: 1px solid rgba(140, 124, 108, 0.3) !important;
-}
-
-/* 🎨 Morning Sketch - 水彩雙色流體背景 */
-.watercolor-mist-bg {
-  position: absolute;
-  width: 600px;
-  height: 600px;
-  border-radius: 53% 47% 70% 30% / 40% 60% 40% 60%;
-  background: radial-gradient(circle at 30% 30%, rgba(130, 183, 204, 0.08) 0%, transparent 65%),
-              radial-gradient(circle at 70% 70%, rgba(245, 212, 107, 0.05) 0%, transparent 70%);
-  filter: blur(60px);
-  pointer-events: none;
-  z-index: 0;
-  transform-gpu: translate3d(0, 0, 0);
-  will-change: transform;
-}
-
-@keyframes mistFloatA {
-  0% { transform: translate(0, 0) scale(1) rotate(0deg); }
-  100% { transform: translate(30px, -20px) scale(1.1) rotate(4deg); }
-}
-
-@keyframes mistFloatB {
-  0% { transform: translate(0, 0) scale(1.2) rotate(0deg); }
-  100% { transform: translate(-20px, 30px) scale(1.05) rotate(-4deg); }
-}
-
-/* 🎨 Morning Sketch - 雙折射微光氣泡 */
-.glass-bubble-dot {
-  position: absolute;
-  border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.88) 0%, rgba(255, 255, 255, 0.15) 60%, transparent 100%);
-  border: 0.8px solid rgba(255, 255, 255, 0.55) !important;
-  box-shadow: 
-    inset -1px -1px 3px rgba(130, 183, 204, 0.2),
-    0 6px 15px -4px rgba(140, 124, 108, 0.1);
-  pointer-events: none;
-  z-index: 5;
-}
-
-/* 📰 Editorial - 微風紙質感細線 */
-.editorial-breeze-line {
-  height: 1px;
-  background: linear-gradient(90deg, 
-    transparent 0%, 
-    rgba(140, 124, 108, 0.15) 15%, 
-    rgba(140, 124, 108, 0.15) 85%, 
-    transparent 100%
-  );
-  position: relative;
-}
-
-.editorial-double-line::after {
-  content: "";
-  display: block;
-  height: 1px;
-  width: 60%;
-  margin-top: 3px;
-  margin-left: 20%;
-  background: linear-gradient(90deg, transparent, rgba(140, 124, 108, 0.1), transparent);
-}
-
-:root {
-  /* A1: 水彩暈染 Blob（GPT 精緻版 - feGaussianBlur + feTurbulence 濾鏡） */
-  --ms-a1-blob-blue: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MDAgMzAwIiByb2xlPSJpbWciIGFyaWEtbGFiZWw9Ik1vcm5pbmcgU2tldGNoIHdhdGVyY29sb3IgbWlzdCBibG9iIGJsdWUiPgogIDxkZWZzPgogICAgPGZpbHRlciBpZD0ibXMtc29mdC1ibHVyIiB4PSItMjUlIiB5PSItMjUlIiB3aWR0aD0iMTUwJSIgaGVpZ2h0PSIxNTAlIj4KICAgICAgPGZlR2F1c3NpYW5CbHVyIHN0ZERldmlhdGlvbj0iMTIiLz4KICAgIDwvZmlsdGVyPgogICAgPGZpbHRlciBpZD0ibXMtZWRnZS13YXNoIiB4PSItMjAlIiB5PSItMjAlIiB3aWR0aD0iMTQwJSIgaGVpZ2h0PSIxNDAlIj4KICAgICAgPGZlVHVyYnVsZW5jZSB0eXBlPSJmcmFjdGFsTm9pc2UiIGJhc2VGcmVxdWVuY3k9IjAuMDE4IDAuMDQ1IiBudW1PY3RhdmVzPSIzIiBzZWVkPSIxMiIgcmVzdWx0PSJub2lzZSIvPgogICAgICA8ZmVEaXNwbGFjZW1lbnRNYXAgaW49IlNvdXJjZUdyYXBoaWMiIGluMj0ibm9pc2UiIHNjYWxlPSIxNCIgeENoYW5uZWxTZWxlY3Rvcj0iUiIgeUNoYW5uZWxTZWxlY3Rvcj0iRyIvPgogICAgICA8ZmVHYXVzc2lhbkJsdXIgc3RkRGV2aWF0aW9uPSI1Ii8+CiAgICA8L2ZpbHRlcj4KICAgIDxyYWRpYWxHcmFkaWVudCBpZD0ibXMtd2FzaCIgY3g9IjQ2JSIgY3k9IjQyJSIgcj0iNjIlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzgyYjdjYyIgc3RvcC1vcGFjaXR5PSIwLjM0Ii8+CiAgICAgIDxzdG9wIG9mZnNldD0iNTglIiBzdG9wLWNvbG9yPSIjODJiN2NjIiBzdG9wLW9wYWNpdHk9IjAuMjIiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjODJiN2NjIiBzdG9wLW9wYWNpdHk9IjAiLz4KICAgIDwvcmFkaWFsR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxwYXRoIGZpbHRlcj0idXJsKCNtcy1zb2Z0LWJsdXIpIiBmaWxsPSJ1cmwoI21zLXdhc2gpIiBkPSJNNjcgMTQxQzU0IDg5IDk5IDUwIDE1OCA1NGM0OCAzIDc0IDIyIDExMSAxOCA0Ny01IDgzIDIzIDg2IDY4IDQgNTUtMzYgOTItOTAgMTAxLTUxIDgtODEtMTQtMTIxLTEwLTUxIDUtNjgtMzgtNzctOTBaIi8+CiAgPHBhdGggZmlsdGVyPSJ1cmwoI21zLWVkZ2Utd2FzaCkiIGZpbGw9IiM4MmI3Y2MiIGZpbGwtb3BhY2l0eT0iMC4xNiIgZD0iTTg2IDEzOWMtOS00MSAyNi03MiA3OC03MSA0OSAyIDYzIDIxIDEwMyAxNyA0Mi00IDcxIDIzIDcyIDYxIDEgNDctMzUgNzUtODMgODMtNDQgOC03MS0xMS0xMTEtNy0zNyA0LTUxLTM4LTU5LTgzWiIvPgo8L3N2Zz4K');
-  --ms-a1-blob-sand: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MDAgMzAwIiByb2xlPSJpbWciIGFyaWEtbGFiZWw9Ik1vcm5pbmcgU2tldGNoIHdhdGVyY29sb3IgbWlzdCBibG9iIHNhbmQgYnJvd24iPgogIDxkZWZzPgogICAgPGZpbHRlciBpZD0ibXMtc29mdC1ibHVyIiB4PSItMjUlIiB5PSItMjUlIiB3aWR0aD0iMTUwJSIgaGVpZ2h0PSIxNTAlIj48ZmVHYXVzc2lhbkJsdXIgc3RkRGV2aWF0aW9uPSIxMyIvPjwvZmlsdGVyPgogICAgPGZpbHRlciBpZD0ibXMtZWRnZS13YXNoIiB4PSItMjAlIiB5PSItMjAlIiB3aWR0aD0iMTQwJSIgaGVpZ2h0PSIxNDAlIj4KICAgICAgPGZlVHVyYnVsZW5jZSB0eXBlPSJmcmFjdGFsTm9pc2UiIGJhc2VGcmVxdWVuY3k9IjAuMDIyIDAuMDM4IiBudW1PY3RhdmVzPSIzIiBzZWVkPSIyNCIgcmVzdWx0PSJub2lzZSIvPgogICAgICA8ZmVEaXNwbGFjZW1lbnRNYXAgaW49IlNvdXJjZUdyYXBoaWMiIGluMj0ibm9pc2UiIHNjYWxlPSIxNiIvPgogICAgICA8ZmVHYXVzc2lhbkJsdXIgc3RkRGV2aWF0aW9uPSI0LjUiLz4KICAgIDwvZmlsdGVyPgogICAgPHJhZGlhbEdyYWRpZW50IGlkPSJtcy13YXNoIiBjeD0iNTIlIiBjeT0iNDclIiByPSI2NCUiPgogICAgICA8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjOGM3YzZjIiBzdG9wLW9wYWNpdHk9IjAuMjIiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSI2MiUiIHN0b3AtY29sb3I9IiM4YzdjNmMiIHN0b3Atb3BhY2l0eT0iMC4xMyIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiM4YzdjNmMiIHN0b3Atb3BhY2l0eT0iMCIvPgogICAgPC9yYWRpYWxHcmFkaWVudD4KICA8L2RlZnM+CiAgPHBhdGggZmlsdGVyPSJ1cmwoI21zLXNvZnQtYmx1cikiIGZpbGw9InVybCgjbXMtd2FzaCkiIGQ9Ik04MSAxMThDOTMgNzIgMTQ4IDQ5IDIwNSA2M2M0MiAxMCA2NCAzNSAxMDAgNDMgNDcgMTAgNzAgNTQgNTEgOTYtMjEgNDctNzMgNjQtMTI3IDUxLTQzLTEwLTY3LTM4LTEwNi0zOS00Ni0xLTU3LTQyLTQyLTk2WiIvPgogIDxwYXRoIGZpbHRlcj0idXJsKCNtcy1lZGdlLXdhc2gpIiBmaWxsPSIjOGM3YzZjIiBmaWxsLW9wYWNpdHk9IjAuMDkiIGQ9Ik0xMDIgMTI1YzEzLTM4IDU4LTU1IDEwMy00MyAzOSAxMCA1NSAzMSA4OCAzOSAzNyAxMCA1NiA0MyAzOSA3Ny0xOCAzNi02MSA1Mi0xMDUgNDAtMzYtMTAtNTUtMzQtOTEtMzYtMzUtMi00Ny0zOS0zNC03N1oiLz4KPC9zdmc+Cg==');
-  --ms-a1-blob-yellow: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MDAgMzAwIiByb2xlPSJpbWciIGFyaWEtbGFiZWw9Ik1vcm5pbmcgU2tldGNoIHdhdGVyY29sb3IgbWlzdCBibG9iIGdvb3NlIHllbGxvdyI+CiAgPGRlZnM+CiAgICA8ZmlsdGVyIGlkPSJtcy1zb2Z0LWJsdXIiIHg9Ii0yNSUiIHk9Ii0yNSUiIHdpZHRoPSIxNTAlIiBoZWlnaHQ9IjE1MCUiPjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjExIi8+PC9maWx0ZXI+CiAgICA8ZmlsdGVyIGlkPSJtcy1lZGdlLXdhc2giIHg9Ii0yMCUiIHk9Ii0yMCUiIHdpZHRoPSIxNDAlIiBoZWlnaHQ9IjE0MCUiPgogICAgICA8ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iMC4wMiAwLjA1IiBudW1PY3RhdmVzPSIyIiBzZWVkPSIzMyIgcmVzdWx0PSJub2lzZSIvPgogICAgICA8ZmVEaXNwbGFjZW1lbnRNYXAgaW49IlNvdXJjZUdyYXBoaWMiIGluMj0ibm9pc2UiIHNjYWxlPSIxMyIvPgogICAgICA8ZmVHYXVzc2lhbkJsdXIgc3RkRGV2aWF0aW9uPSI0Ii8+CiAgICA8L2ZpbHRlcj4KICAgIDxyYWRpYWxHcmFkaWVudCBpZD0ibXMtd2FzaCIgY3g9IjQ3JSIgY3k9IjQ1JSIgcj0iNjMlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2Y1ZDQ2YiIgc3RvcC1vcGFjaXR5PSIwLjMwIi8+CiAgICAgIDxzdG9wIG9mZnNldD0iNjAlIiBzdG9wLWNvbG9yPSIjZjVkNDZiIiBzdG9wLW9wYWNpdHk9IjAuMTgiLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZjVkNDZiIiBzdG9wLW9wYWNpdHk9IjAiLz4KICAgIDwvcmFkaWFsR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxwYXRoIGZpbHRlcj0idXJsKCNtcy1zb2Z0LWJsdXIpIiBmaWxsPSJ1cmwoI21zLXdhc2gpIiBkPSJNNjEgMTU5Yy04LTU1IDM4LTkyIDk2LTg4IDQ2IDMgNjYtMTkgMTEyLTcgNTYgMTQgNzggNjIgNTUgMTEwLTIzIDUwLTYzIDc0LTEyOCA2NS00Ni03LTcyIDYtMTA1LTE0LTI1LTE2LTI3LTQyLTMwLTY2WiIvPgogIDxwYXRoIGZpbHRlcj0idXJsKCNtcy1lZGdlLXdhc2gpIiBmaWxsPSIjZjVkNDZiIiBmaWxsLW9wYWNpdHk9IjAuMTIiIGQ9Ik04NSAxNTdjLTYtNDMgMzEtNzAgNzgtNjYgNDEgNCA1OC0xNiA5Ni01IDQzIDEzIDYyIDQ5IDQ0IDg3LTE5IDM5LTU0IDU1LTEwNiA0OS0zOS01LTYxIDgtODctMTAtMjAtMTMtMjMtMzUtMjUtNTVaIi8+Cjwvc3ZnPgo=');
-  --ms-a1-blob-rose: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MDAgMzAwIiByb2xlPSJpbWciIGFyaWEtbGFiZWw9Ik1vcm5pbmcgU2tldGNoIHdhdGVyY29sb3IgbWlzdCBibG9iIHBhbGUgcm9zZSI+CiAgPGRlZnM+CiAgICA8ZmlsdGVyIGlkPSJtcy1zb2Z0LWJsdXIiIHg9Ii0yNSUiIHk9Ii0yNSUiIHdpZHRoPSIxNTAlIiBoZWlnaHQ9IjE1MCUiPjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjEyIi8+PC9maWx0ZXI+CiAgICA8ZmlsdGVyIGlkPSJtcy1lZGdlLXdhc2giIHg9Ii0yMCUiIHk9Ii0yMCUiIHdpZHRoPSIxNDAlIiBoZWlnaHQ9IjE0MCUiPgogICAgICA8ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iMC4wMTkgMC4wNDMiIG51bU9jdGF2ZXM9IjMiIHNlZWQ9IjQxIiByZXN1bHQ9Im5vaXNlIi8+CiAgICAgIDxmZURpc3BsYWNlbWVudE1hcCBpbj0iU291cmNlR3JhcGhpYyIgaW4yPSJub2lzZSIgc2NhbGU9IjE1Ii8+CiAgICAgIDxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjQuOCIvPgogICAgPC9maWx0ZXI+CiAgICA8cmFkaWFsR3JhZGllbnQgaWQ9Im1zLXdhc2giIGN4PSI1MCUiIGN5PSI1MCUiIHI9IjY2JSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNlYmRjZDgiIHN0b3Atb3BhY2l0eT0iMC40MiIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjY0JSIgc3RvcC1jb2xvcj0iI2ViZGNkOCIgc3RvcC1vcGFjaXR5PSIwLjI2Ii8+CiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2ViZGNkOCIgc3RvcC1vcGFjaXR5PSIwIi8+CiAgICA8L3JhZGlhbEdyYWRpZW50PgogIDwvZGVmcz4KICA8cGF0aCBmaWx0ZXI9InVybCgjbXMtc29mdC1ibHVyKSIgZmlsbD0idXJsKCNtcy13YXNoKSIgZD0iTTkyIDkxYzM1LTM4IDg5LTI4IDEyOC0xNiA0NyAxNCA4OS0xIDExNSA0MiAyNyA0NCA4IDk4LTQwIDEyMy00MiAyMy03NyAyLTEyNCA4LTU0IDgtMTAxLTE3LTExMC02Mi02LTMxIDYtNjggMzEtOTVaIi8+CiAgPHBhdGggZmlsdGVyPSJ1cmwoI21zLWVkZ2Utd2FzaCkiIGZpbGw9IiNlYmRjZDgiIGZpbGwtb3BhY2l0eT0iMC4xOCIgZD0iTTExMiAxMDJjMjgtMzEgNzItMjQgMTA3LTEzIDQxIDEyIDc1IDAgOTYgMzUgMjAgMzUgNCA3Ny0zNSA5Ny0zNCAxOC02NCAyLTEwNSA4LTQ0IDYtODMtMTQtOTAtNTEtNS0yNyA2LTU1IDI3LTc2WiIvPgo8L3N2Zz4K');
-
-  /* A2: Dot Grid（精緻 SVG pattern 版） */
-  --ms-a2-dot-grid: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiByb2xlPSJpbWciIGFyaWEtbGFiZWw9Ik1vcm5pbmcgU2tldGNoIHN1YnRsZSBkb3QgZ3JpZCB0ZXh0dXJlIj4KICA8ZGVmcz4KICAgIDxwYXR0ZXJuIGlkPSJtcy1kb3QtZ3JpZCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KICAgICAgPGNpcmNsZSBjeD0iMyIgY3k9IjMiIHI9IjAuNzUiIGZpbGw9IiM4YzdjNmMiIGZpbGwtb3BhY2l0eT0iMC4xMiIvPgogICAgPC9wYXR0ZXJuPgogIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIGZpbGw9InVybCgjbXMtZG90LWdyaWQpIi8+Cjwvc3ZnPgo=');
-
-  /* A3: Sketch Line（精緻手繪橫線紋理 SVG 版） */
-  --ms-a3-sketch-line: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0OCA0OCIgd2lkdGg9IjQ4IiBoZWlnaHQ9IjQ4IiByb2xlPSJpbWciIGFyaWEtbGFiZWw9Ik1vcm5pbmcgU2tldGNoIGhhbmQgZHJhd24gaG9yaXpvbnRhbCBsaW5lIHRleHR1cmUiPgogIDxkZWZzPgogICAgPHBhdHRlcm4gaWQ9Im1zLXNrZXRjaC1saW5lcyIgd2lkdGg9IjQ4IiBoZWlnaHQ9IjQ4IiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KICAgICAgPHBhdGggZD0iTS0yIDggQyA3IDcuNCwgMTUgOC43LCAyNCA4LjEgUyAzOSA3LjcsIDUwIDguNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjOGM3YzZjIiBzdHJva2Utb3BhY2l0eT0iMC4wNiIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICAgICAgPHBhdGggZD0iTS0xIDI0IEMgOCAyNC44LCAxNCAyMy4yLCAyMyAyNC4xIFMgMzkgMjQuOSwgNDkgMjMuOCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjOGM3YzZjIiBzdHJva2Utb3BhY2l0eT0iMC4wNiIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICAgICAgPHBhdGggZD0iTS0yIDQwIEMgNiAzOS4xLCAxNyA0MC42LCAyNiAzOS44IFMgMzkgMzkuNCwgNTAgNDAuMyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjOGM3YzZjIiBzdHJva2Utb3BhY2l0eT0iMC4wNiIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICAgIDwvcGF0dGVybj4KICA8L2RlZnM+CiAgPHJlY3Qgd2lkdGg9IjQ4IiBoZWlnaHQ9IjQ4IiBmaWxsPSJ1cmwoI21zLXNrZXRjaC1saW5lcykiLz4KPC9zdmc+Cg==');
-
-  /* B1: 手繪波浪分隔線（保留現有品質版） */
-  --ms-b1-wave-blue: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 100' preserveAspectRatio='none'><path d='M0,50 C150,0 350,100 500,50 C650,0 850,100 1000,50 V100 H0 Z' fill='rgba(130, 183, 204, 0.2)'/></svg>");
-  --ms-b1-wave-sand: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 100' preserveAspectRatio='none'><path d='M0,50 C150,0 350,100 500,50 C650,0 850,100 1000,50 V100 H0 Z' fill='rgba(140, 124, 108, 0.15)'/></svg>");
-  --ms-b1-wave-yellow: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 100' preserveAspectRatio='none'><path d='M0,50 C150,0 350,100 500,50 C650,0 850,100 1000,50 V100 H0 Z' fill='rgba(245, 212, 107, 0.2)'/></svg>");
-}
-
-/* ═══════════════════════════════════════════════════════════════════
-   🎨 Morning Sketch SVG - Utility Classes
-   ═══════════════════════════════════════════════════════════════════ */
-
-/* B1: 手繪波浪分隔線 */
-.ms-wave-divider {
-  width: 100%;
-  height: 56px;
-  background-image: var(--ms-b1-wave-blue);
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  pointer-events: none;
-  opacity: 0.85;
-}
-
-.ms-wave-divider-sand {
-  background-image: var(--ms-b1-wave-sand);
-}
-
-.ms-wave-divider-yellow {
-  background-image: var(--ms-b1-wave-yellow);
-}
-
-/* A2: 點格底紋覆蓋層 */
-.ms-dot-texture {
-  background-image: var(--ms-a2-dot-grid);
-  background-size: 24px 24px;
-  background-repeat: repeat;
-}
-
-/* A3: 手繪橫線紙感紋理 */
-.ms-sketch-lines {
-  background-image: var(--ms-a3-sketch-line);
-  background-size: 48px 48px;
-  background-repeat: repeat;
-}
-
-/* A1: 水彩暈染 SVG Blob（正確尺寸絕對定位裝飾用） */
-.ms-blob {
-  position: absolute;
-  pointer-events: none;
-  z-index: 0;
-  background-repeat: no-repeat;
-  background-size: contain;
-  will-change: transform;
-}
-
-.ms-blob-blue   { background-image: var(--ms-a1-blob-blue); }
-.ms-blob-sand   { background-image: var(--ms-a1-blob-sand); }
-.ms-blob-yellow { background-image: var(--ms-a1-blob-yellow); }
-.ms-blob-rose   { background-image: var(--ms-a1-blob-rose); }
-
-/* ═══════════════════════════════════════════════════════════════════
-   🎨 Morning Sketch SVG - C 類：有機幾何裝飾素材（GPT 精緻版）
-   ═══════════════════════════════════════════════════════════════════ */
-
-/* C1: 有機流體圓形（手繪輪廓線 + 半透明填色） */
-.ms-c1-organic-circle-blue {
-  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMjAgMTIwIj4KICA8cGF0aCBkPSJNNjAuMCAxMgogICAgICAgICAgIEM5My42IDEwLDExMC4wIDM2LjAsMTAyLjAgNjYuMAogICAgICAgICAgIEM5NS4wIDk4LjQsODQuMCAxMTIuMCw1Mi44IDEwNi4wCiAgICAgICAgICAgQzIxLjYgMTAwLjAsMTAgODYuNCwxNSA1NC4wCiAgICAgICAgICAgQzIwIDI0LjAsMzIuNCAxNCw2MC4wIDEyWiIKICAgICAgICBmaWxsPSIjODJiN2NjIiBmaWxsLW9wYWNpdHk9IjAuMjIiIHN0cm9rZT0iIzVmOWViNyIgc3Ryb2tlLW9wYWNpdHk9IjAuMzgiCiAgICAgICAgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CiAgPHBhdGggZD0iTTMzLjYgMzYuMCBDNTAuNCAyNC4wLDc1LjYgMjQuMCw5MC4wIDQzLjIiCiAgICAgICAgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNWY5ZWI3IiBzdHJva2Utb3BhY2l0eT0iMC4xNCIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPC9zdmc+Cg==");
-  background-repeat: no-repeat;
-  background-size: contain;
-}
-
-.ms-c1-organic-circle-sand {
-  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNTIgMTUyIj4KICA8cGF0aCBkPSJNNzYuMCAxMgogICAgICAgICAgIEMxMTguNiAxMCwxNDIuMCA0NS42LDEzNC4wIDgzLjYKICAgICAgICAgICBDMTI3LjAgMTI0LjYsMTA2LjQgMTQ0LjAsNjYuOSAxMzguMAogICAgICAgICAgIEMyNy40IDEzMi4wLDEwIDEwOS40LDE1IDY4LjQKICAgICAgICAgICBDMjAgMzAuNCw0MS4wIDE0LDc2LjAgMTJaIgogICAgICAgIGZpbGw9IiM4YzdjNmMiIGZpbGwtb3BhY2l0eT0iMC4xNiIgc3Ryb2tlPSIjNzQ2NTU1IiBzdHJva2Utb3BhY2l0eT0iMC4zOCIKICAgICAgICBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KICA8cGF0aCBkPSJNNDIuNiA0NS42IEM2My44IDMwLjQsOTUuOCAzMC40LDExNC4wIDU0LjciCiAgICAgICAgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNzQ2NTU1IiBzdHJva2Utb3BhY2l0eT0iMC4xNCIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPC9zdmc+Cg==");
-  background-repeat: no-repeat;
-  background-size: contain;
-}
 
-.ms-c1-organic-circle-yellow {
-  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxODQgMTg0Ij4KICA8cGF0aCBkPSJNOTIuMCAxMgogICAgICAgICAgIEMxNDMuNSAxMCwxNzQuMCA1NS4yLDE2Ni4wIDEwMS4yCiAgICAgICAgICAgQzE1OS4wIDE1MC45LDEyOC44IDE3Ni4wLDgxLjAgMTcwLjAKICAgICAgICAgICBDMzMuMSAxNjQuMCwxMCAxMzIuNSwxNSA4Mi44CiAgICAgICAgICAgQzIwIDM2LjgsNDkuNyAxNCw5Mi4wIDEyWiIKICAgICAgICBmaWxsPSIjZjVkNDZiIiBmaWxsLW9wYWNpdHk9IjAuMjYiIHN0cm9rZT0iI2Q2YjY0ZiIgc3Ryb2tlLW9wYWNpdHk9IjAuMzgiCiAgICAgICAgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CiAgPHBhdGggZD0iTTUxLjUgNTUuMiBDNzcuMyAzNi44LDExNS45IDM2LjgsMTM4LjAgNjYuMiIKICAgICAgICBmaWxsPSJub25lIiBzdHJva2U9IiNkNmI2NGYiIHN0cm9rZS1vcGFjaXR5PSIwLjE0IiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8L3N2Zz4K");
-  background-repeat: no-repeat;
-  background-size: contain;
+/* 多色相非對稱星河漸層 */
+.ambient-space-glows {
+    background: 
+        radial-gradient(circle 42vw at 85% 15%, rgba(192, 132, 252, 0.08) 0%, rgba(192, 132, 252, 0) 100%),
+        radial-gradient(circle 45vw at 15% 85%, rgba(99, 102, 241, 0.07) 0%, rgba(99, 102, 241, 0) 100%),
+        radial-gradient(circle 35vw at 50% 35%, rgba(139, 92, 246, 0.03) 0%, rgba(139, 92, 246, 0) 100%);
 }
 
-.ms-c1-organic-circle-rose {
-  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMzYgMTM2Ij4KICA8cGF0aCBkPSJNNjguMCAxMgogICAgICAgICAgIEMxMDYuMSAxMCwxMjYuMCA0MC44LDExOC4wIDc0LjgKICAgICAgICAgICBDMTExLjAgMTExLjUsOTUuMiAxMjguMCw1OS44IDEyMi4wCiAgICAgICAgICAgQzI0LjUgMTE2LjAsMTAgOTcuOSwxNSA2MS4yCiAgICAgICAgICAgQzIwIDI3LjIsMzYuNyAxNCw2OC4wIDEyWiIKICAgICAgICBmaWxsPSIjZWJkY2Q4IiBmaWxsLW9wYWNpdHk9IjAuMzYiIHN0cm9rZT0iI2M5YWFhMiIgc3Ryb2tlLW9wYWNpdHk9IjAuMzgiCiAgICAgICAgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CiAgPHBhdGggZD0iTTM4LjEgNDAuOCBDNTcuMSAyNy4yLDg1LjcgMjcuMiwxMDIuMCA0OS4wIgogICAgICAgIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2M5YWFhMiIgc3Ryb2tlLW9wYWNpdHk9IjAuMTQiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+Cjwvc3ZnPgo=");
-  background-repeat: no-repeat;
-  background-size: contain;
+.fluid-gap-manifesto {
+    padding-bottom: clamp(2rem, 5vw, 4rem);
 }
-
-/* C2: 手繪幾何裝飾小件（菱形、星火、小星形） */
-.ms-c2-accent-diamond-sand {
-  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CiAgPGcgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjOGM3YzZjIiBzdHJva2Utb3BhY2l0eT0iMC43MiIgc3Ryb2tlLXdpZHRoPSIyIgogICAgIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+CiAgICA8cGF0aCBkPSJNMzIgOCBMNTUgMzEgTDMyIDU2IEw5IDMxIFogTTMyIDEzIEw1MCAzMSBMMzIgNTAgTDE0IDMxIFoiLz4KICA8L2c+CiAgPHBhdGggZD0iTTEyIDUyIEMxOCA1NSwyMyA1NiwyOSA1NCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjOGM3YzZjIiBzdHJva2Utb3BhY2l0eT0iMC4xOCIgc3Ryb2tlLXdpZHRoPSIxIi8+Cjwvc3ZnPgo=");
-  background-repeat: no-repeat;
-  background-size: contain;
-}
-
-.ms-c2-accent-diamond-blue {
-  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CiAgPGcgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjODJiN2NjIiBzdHJva2Utb3BhY2l0eT0iMC43MiIgc3Ryb2tlLXdpZHRoPSIyIgogICAgIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+CiAgICA8cGF0aCBkPSJNMzEgNyBMNTYgMzEgTDMzIDU3IEw4IDMzIFogTTMxIDE1IEw0OCAzMSBMMzMgNDkgTDE2IDMzIFoiLz4KICA8L2c+CiAgPHBhdGggZD0iTTEyIDUyIEMxOCA1NSwyMyA1NiwyOSA1NCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjODJiN2NjIiBzdHJva2Utb3BhY2l0eT0iMC4xOCIgc3Ryb2tlLXdpZHRoPSIxIi8+Cjwvc3ZnPgo=");
-  background-repeat: no-repeat;
-  background-size: contain;
-}
-
-.ms-c2-accent-spark-sand {
-  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CiAgPGcgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjOGM3YzZjIiBzdHJva2Utb3BhY2l0eT0iMC43MiIgc3Ryb2tlLXdpZHRoPSIyIgogICAgIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+CiAgICA8cGF0aCBkPSJNMzIgNiBDMzUgMjIsNDIgMjksNTggMzIgQzQyIDM1LDM1IDQyLDMyIDU4IEMyOSA0MiwyMiAzNSw2IDMyIEMyMiAyOSwyOSAyMiwzMiA2WiIvPgogIDwvZz4KICA8cGF0aCBkPSJNMTIgNTIgQzE4IDU1LDIzIDU2LDI5IDU0IiBmaWxsPSJub25lIiBzdHJva2U9IiM4YzdjNmMiIHN0cm9rZS1vcGFjaXR5PSIwLjE4IiBzdHJva2Utd2lkdGg9IjEiLz4KPC9zdmc+Cg==");
-  background-repeat: no-repeat;
-  background-size: contain;
-}
-
-.ms-c2-accent-spark-blue {
-  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CiAgPGcgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjODJiN2NjIiBzdHJva2Utb3BhY2l0eT0iMC43MiIgc3Ryb2tlLXdpZHRoPSIyIgogICAgIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+CiAgICA8cGF0aCBkPSJNMzIgOCBDMzYgMjMsNDMgMjcsNTcgMzIgQzQyIDM2LDM2IDQzLDMyIDU3IEMyOCA0MywyMSAzNyw3IDMyIEMyMiAyNywyOCAyMywzMiA4WiIvPgogIDwvZz4KICA8cGF0aCBkPSJNMTIgNTIgQzE4IDU1LDIzIDU2LDI5IDU0IiBmaWxsPSJub25lIiBzdHJva2U9IiM4MmI3Y2MiIHN0cm9rZS1vcGFjaXR5PSIwLjE4IiBzdHJva2Utd2lkdGg9IjEiLz4KPC9zdmc+Cg==");
-  background-repeat: no-repeat;
-  background-size: contain;
-}
-
-.ms-c2-accent-tiny-star-sand {
-  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CiAgPGcgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjOGM3YzZjIiBzdHJva2Utb3BhY2l0eT0iMC43MiIgc3Ryb2tlLXdpZHRoPSIyIgogICAgIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+CiAgICA8cGF0aCBkPSJNMzIgMTAgTDM4IDI2IEw1NSAyOCBMNDIgMzkgTDQ1IDU2IEwzMiA0NyBMMTggNTYgTDIyIDM5IEw5IDI4IEwyNiAyNiBaIi8+CiAgPC9nPgogIDxwYXRoIGQ9Ik0xMiA1MiBDMTggNTUsMjMgNTYsMjkgNTQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzhjN2M2YyIgc3Ryb2tlLW9wYWNpdHk9IjAuMTgiIHN0cm9rZS13aWR0aD0iMSIvPgo8L3N2Zz4K");
-  background-repeat: no-repeat;
-  background-size: contain;
-}
-
-.ms-c2-accent-tiny-star-blue {
-  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CiAgPGcgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjODJiN2NjIiBzdHJva2Utb3BhY2l0eT0iMC43MiIgc3Ryb2tlLXdpZHRoPSIyIgogICAgIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+CiAgICA8cGF0aCBkPSJNMzIgOSBMMzcgMjUgTDU0IDI0IEw0MSAzNiBMNDggNTIgTDMyIDQ0IEwxNyA1MyBMMjMgMzYgTDEwIDI1IEwyNyAyNSBaIi8+CiAgPC9nPgogIDxwYXRoIGQ9Ik0xMiA1MiBDMTggNTUsMjMgNTYsMjkgNTQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzgyYjdjYyIgc3Ryb2tlLW9wYWNpdHk9IjAuMTgiIHN0cm9rZS13aWR0aD0iMSIvPgo8L3N2Zz4K");
-  background-repeat: no-repeat;
-  background-size: contain;
-}
-
-/* C3: 不規則六邊形框（手稿質感） */
-.ms-c3-organic-hexagon-frame-soft {
-  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNDAgMjQwIj4KICA8ZGVmcz4KICAgIDxjbGlwUGF0aCBpZD0ibXNIZXhDbGlwIj4KICAgICAgPHBhdGggZD0iTTEyMSAxOCBMMjA3IDU4IEwyMjEgMTQ1IEwxNjYgMjE5IEw3NCAyMTMgTDIwIDEzOCBMMzcgNTMgWiIvPgogICAgPC9jbGlwUGF0aD4KICA8L2RlZnM+CiAgPHBhdGggZD0iTTEyMSAxOCBMMjA3IDU4IEwyMjEgMTQ1IEwxNjYgMjE5IEw3NCAyMTMgTDIwIDEzOCBMMzcgNTMgWiIKICAgICAgICBmaWxsPSJub25lIiBzdHJva2U9IiM4YzdjNmMiIHN0cm9rZS1vcGFjaXR5PSIwLjQyIiBzdHJva2Utd2lkdGg9IjMiCiAgICAgICAgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogIDxwYXRoIGQ9Ik0xMjIgMjUgTDE5OSA2MSBMMjE0IDE0MSBMMTYzIDIxMCBMNzggMjA1IEwyOSAxMzYgTDQzIDU5IFoiCiAgICAgICAgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjOGM3YzZjIiBzdHJva2Utb3BhY2l0eT0iMC4xOCIgc3Ryb2tlLXdpZHRoPSIxLjQiCiAgICAgICAgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogIDxyZWN0IHg9IjM2IiB5PSIzNiIgd2lkdGg9IjE2OCIgaGVpZ2h0PSIxNjgiIGNsaXAtcGF0aD0idXJsKCNtc0hleENsaXApIgogICAgICAgIGZpbGw9IiNmY2Y5ZjIiIGZpbGwtb3BhY2l0eT0iMC4xOCIvPgo8L3N2Zz4K");
-  background-repeat: no-repeat;
-  background-size: contain;
-}
-
-.ms-c3-organic-hexagon-frame-blue {
-  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNDAgMjQwIj4KICA8ZGVmcz4KICAgIDxjbGlwUGF0aCBpZD0ibXNIZXhDbGlwIj4KICAgICAgPHBhdGggZD0iTTEyMSAxOCBMMjA3IDU4IEwyMjEgMTQ1IEwxNjYgMjE5IEw3NCAyMTMgTDIwIDEzOCBMMzcgNTMgWiIvPgogICAgPC9jbGlwUGF0aD4KICA8L2RlZnM+CiAgPHBhdGggZD0iTTEyMSAxOCBMMjA3IDU4IEwyMjEgMTQ1IEwxNjYgMjE5IEw3NCAyMTMgTDIwIDEzOCBMMzcgNTMgWiIKICAgICAgICBmaWxsPSJub25lIiBzdHJva2U9IiM4MmI3Y2MiIHN0cm9rZS1vcGFjaXR5PSIwLjQ4IiBzdHJva2Utd2lkdGg9IjMiCiAgICAgICAgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogIDxwYXRoIGQ9Ik0xMjIgMjUgTDE5OSA2MSBMMjE0IDE0MSBMMTYzIDIxMCBMNzggMjA1IEwyOSAxMzYgTDQzIDU5IFoiCiAgICAgICAgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjODJiN2NjIiBzdHJva2Utb3BhY2l0eT0iMC4xOCIgc3Ryb2tlLXdpZHRoPSIxLjQiCiAgICAgICAgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgogIDxyZWN0IHg9IjM2IiB5PSIzNiIgd2lkdGg9IjE2OCIgaGVpZ2h0PSIxNjgiIGNsaXAtcGF0aD0idXJsKCNtc0hleENsaXApIgogICAgICAgIGZpbGw9IiNmY2Y5ZjIiIGZpbGwtb3BhY2l0eT0iMC4xOCIvPgo8L3N2Zz4K");
-  background-repeat: no-repeat;
-  background-size: contain;
-}
-
-/* 📰 Dreamy Morning Editorial Lobby Override */
-.editorial-paper-shadow {
-  box-shadow: 
-    0 25px 55px rgba(140, 124, 108, 0.05),
-    0 4px 15px rgba(140, 124, 108, 0.02),
-    inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
-}
-
-.browse-tab-active {
-  border-bottom: 2px solid rgba(130, 183, 204, 0.5) !important;
-  background: #fefcf8 !important;
-  color: #3e2723 !important;
-  box-shadow: 0 12px 30px -10px rgba(130, 183, 204, 0.22) !important;
+.fluid-gap-footer {
+    margin-top: clamp(1rem, 2vw, 2.2rem);
 }
 
-/* 📰 Dreamy Morning Editorial Lobby Override */
-.editorial-tab-active-override {
-  border-bottom: 2px solid rgba(130, 183, 204, 0.5) !important;
-  position: relative;
+/* 漸變動畫 */
+@keyframes fadeInUI {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
 }
-
-/* 📰 Dreamy Morning Editorial Lobby Additional Classes */
-.editorial-blob {
-  position: absolute;
-  pointer-events: none;
-  z-index: 0;
-  background-repeat: no-repeat;
-  background-size: contain;
-  filter: blur(80px);
-  will-change: transform;
-  opacity: 0.65;
+.animate-fade-in {
+    animation: fadeInUI 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.editorial-blob-a {
-  width: 800px;
-  height: 800px;
-  border-radius: 65% 35% 45% 55% / 55% 45% 65% 35%;
-  background: radial-gradient(circle at 45% 45%, rgba(245, 212, 107, 0.16) 0%, rgba(235, 220, 216, 0.06) 50%, transparent 80%);
+/* SVG Logo 相關樣式與動畫 */
+.brand-title {
+    font-family: 'Cinzel', serif;
+    font-weight: 300;
+    fill: #c084fc;
+    letter-spacing: 0.16em;
+    font-size: 40px;
+    filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.45));
+    animation: titleReveal 6s ease-out forwards;
 }
 
-.editorial-blob-b {
-  width: 900px;
-  height: 900px;
-  border-radius: 45% 55% 65% 35% / 60% 40% 60% 40%;
-  background: radial-gradient(circle at 50% 50%, rgba(235, 220, 216, 0.18) 0%, rgba(254, 252, 248, 0.08) 60%, transparent 100%);
+.brand-slogan {
+    font-family: 'Noto Serif TC', serif;
+    font-weight: 200;
+    fill: #a78bfa;
+    letter-spacing: 0.32em;
+    font-size: 16px;
+    opacity: 0.8;
+    animation: fadeInSlogan 8s ease-out forwards;
 }
 
-.editorial-blob-c {
-  width: 700px;
-  height: 700px;
-  border-radius: 55% 45% 35% 65% / 40% 60% 50% 50%;
-  background: radial-gradient(circle at 35% 55%, rgba(130, 183, 204, 0.08) 0%, transparent 70%);
+.divider-line {
+    stroke: #c084fc;
+    stroke-dasharray: 200;
+    stroke-dashoffset: 200;
+    animation: drawLine 4s ease-out forwards;
 }
 
-.editorial-wave-divider {
-  width: 100%;
-  height: 48px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 60' preserveAspectRatio='none'%3E%3Cpath d='M0,30 Q360,60 720,30 T1440,30 L1440,60 L0,60 Z' fill='none' stroke='%238c7c6c' stroke-opacity='0.08' stroke-width='1.2'/%3E%3C/svg%3E");
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  pointer-events: none;
-  opacity: 0.8;
+.main-star {
+    transform-origin: 400px 330px;
+    animation: rotateStar 45s linear infinite, glowPulse 4s ease-in-out infinite;
 }
 
-.organic-paper-panel {
-  background: #fefcf8 !important;
-  border: 1px solid rgba(140, 124, 108, 0.15) !important;
-  border-radius: 9999px !important; /* 精緻成熟 capsule 造型 */
-  box-shadow: 
-    0 20px 50px rgba(140, 124, 108, 0.04), 
-    inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+.orbiting-ring {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    animation: drawRing 5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
-.cloud-paper-panel {
-  background: #fefcf8 !important;
-  border: 1px solid rgba(140, 124, 108, 0.12) !important;
-  border-radius: 28px !important; /* 精緻成熟 28px 圓角面板 */
-  box-shadow: 
-    0 20px 50px rgba(140, 124, 108, 0.04), 
-    0 2px 10px rgba(140, 124, 108, 0.015),
-    inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+.cosmic-crescent {
+    filter: drop-shadow(0 0 15px rgba(139, 92, 246, 0.45));
+    transform-origin: 400px 330px;
+    animation: moonEntrance 3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
-.floating-paper-card {
-  border-radius: 28px !important; /* 精緻 28px 圓角 */
-  background: #fefcf8 !important;
-  border: 1px solid rgba(140, 124, 108, 0.11) !important;
-  box-shadow: 
-    0 15px 45px rgba(140, 124, 108, 0.03), 
-    0 2px 8px rgba(140, 124, 108, 0.01),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
-  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
+.twinkling-star {
+    animation: twinkle 3.8s ease-in-out infinite alternate;
 }
 
-.floating-paper-card:hover {
-  transform: translateY(-6px) scale(1.004) !important; /* 成熟精緻微幅漂浮 */
-  border-color: rgba(130, 183, 204, 0.25) !important;
-  box-shadow: 
-    0 28px 60px rgba(130, 183, 204, 0.07), 
-    0 6px 18px rgba(140, 124, 108, 0.02),
-    inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+.planetary-orbit-1 {
+    animation: orbitRotation 36s linear infinite;
+    transform-origin: 400px 330px;
 }
 
-/* 首頁玩家卡片滑入動畫 */
-@keyframes slideInLeft {
-  from { transform: translateX(-40px) scale(0.92); opacity: 0; }
-  to   { transform: translateX(0) scale(1); opacity: 1; }
+.planetary-orbit-2 {
+    animation: orbitRotation 60s linear infinite reverse;
+    transform-origin: 400px 330px;
 }
-.animate-card-slide {
-  animation: slideInLeft 0.65s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-}
 
-/* ── GIT OUTPOST HUD ──────────────────────────────────────── */
-.hud-scanlines {
-  background: linear-gradient(rgba(18,24,38,0) 50%, rgba(0,0,0,0.25) 50%),
-              linear-gradient(90deg, rgba(255,0,0,0.03), rgba(0,255,0,0.01), rgba(0,255,0,0.03));
-  background-size: 100% 4px, 6px 100%;
-  pointer-events: none;
-}
-.cyber-corner-tl { position:absolute; top:-1px; left:-1px; width:8px; height:8px; border-top:2px solid currentColor; border-left:2px solid currentColor; }
-.cyber-corner-tr { position:absolute; top:-1px; right:-1px; width:8px; height:8px; border-top:2px solid currentColor; border-right:2px solid currentColor; }
-.cyber-corner-bl { position:absolute; bottom:-1px; left:-1px; width:8px; height:8px; border-bottom:2px solid currentColor; border-left:2px solid currentColor; }
-.cyber-corner-br { position:absolute; bottom:-1px; right:-1px; width:8px; height:8px; border-bottom:2px solid currentColor; border-right:2px solid currentColor; }
-.bg-tech-grid {
-  background-size: 20px 20px;
-  background-image: linear-gradient(to right, rgba(31,41,55,0.3) 1px, transparent 1px),
-                    linear-gradient(to bottom, rgba(31,41,55,0.3) 1px, transparent 1px);
+.fluffy-cloud {
+    fill: #06050b;
+    stroke: url(#themeGrad);
+    stroke-width: 1.2;
+    opacity: 0.85;
+    filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));
+    animation: driftCloud 13.2s ease-in-out infinite alternate;
 }
-@keyframes hudPulse {
-  0%,100% { opacity:0.8; transform:scale(1); }
-  50%     { opacity:1;   transform:scale(1.05); }
-}
-.animate-hud-pulse { animation: hudPulse 2s infinite ease-in-out; }
-.scrollbar-none::-webkit-scrollbar { display:none; }
-.scrollbar-none { -ms-overflow-style:none; scrollbar-width:none; }
 
-/* 🔮 全息極光大面積立體偏光玻璃球 */
-.macro-glass-sphere {
-  border-radius: 50%;
-  position: fixed;
-  background: radial-gradient(circle at 30% 30%, 
-    rgba(255, 255, 255, 0.92) 0%, 
-    rgba(255, 255, 255, 0.15) 45%, 
-    rgba(139, 92, 246, 0.05) 75%, 
-    rgba(139, 92, 246, 0.18) 100%
-  );
-  border: 1.2px solid rgba(255, 255, 255, 0.7) !important;
-  box-shadow: 
-    inset -6px -6px 14px rgba(139, 92, 246, 0.15),
-    inset 6px 6px 10px rgba(255, 255, 255, 0.95),
-    0 25px 55px -15px rgba(139, 92, 246, 0.1) !important;
-  backdrop-filter: blur(14px) saturate(110%);
-  -webkit-backdrop-filter: blur(14px) saturate(110%);
-  pointer-events: none;
-  z-index: 5;
-  transition: transform 0.8s ease-out;
+@keyframes moonEntrance {
+    0% { transform: scale(0.6) rotate(-20deg); opacity: 0; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
 }
-
-/* ===================================================================
-   🎨 MULTI-THEME STRUCTURAL PRESENTATION HELPERS
-   =================================================================== */
-
-/* 1. Theme Card Container */
-.theme-card {
-  border-radius: var(--theme-card-radius) !important;
-  box-shadow: var(--theme-card-shadow) !important;
-  border: var(--theme-card-border) !important;
-  font-family: var(--theme-font-family) !important;
-  transition: all var(--theme-transition-duration) var(--theme-transition-timing) !important;
-  transform: rotate(var(--theme-card-rotate, 0deg)) !important;
+@keyframes titleReveal {
+    0% { letter-spacing: 0.05em; opacity: 0; filter: blur(5px); }
+    100% { letter-spacing: 0.16em; opacity: 1; filter: blur(0); }
 }
-
-@media (max-width: 768px) {
-  .theme-card {
-    transform: rotate(var(--theme-card-rotate-mobile, 0deg)) !important;
-  }
+@keyframes fadeInSlogan {
+    0% { opacity: 0; }
+    60% { opacity: 0; }
+    100% { opacity: 0.85; }
 }
-
-.theme-card:hover {
-  box-shadow: var(--theme-card-shadow-hover) !important;
-  border: var(--theme-card-border-hover) !important;
-  transform: translateY(var(--theme-card-hover-translate-y, -2px)) rotate(var(--theme-card-rotate, 0deg)) !important;
+@keyframes drawLine {
+    0% { stroke-dashoffset: 200; opacity: 0; }
+    100% { stroke-dashoffset: 0; opacity: 0.6; }
 }
-
-@media (max-width: 768px) {
-  .theme-card:hover {
-    transform: translateY(var(--theme-card-hover-translate-y-mobile, -1px)) rotate(var(--theme-card-rotate-mobile, 0deg)) !important;
-  }
+@keyframes drawRing {
+    0% { stroke-dashoffset: 1000; opacity: 0; }
+    100% { stroke-dashoffset: 0; opacity: 0.45; }
 }
-
-/* 2. Theme Inner Panel (Comments, Hero grid placeholder, event sections) */
-.theme-inner-panel {
-  border-radius: var(--theme-inner-radius) !important;
-  border: var(--theme-inner-border) !important;
-  box-shadow: var(--theme-inner-shadow) !important;
-  transition: all var(--theme-transition-duration) var(--theme-transition-timing) !important;
+@keyframes rotateStar {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
-
-/* 3. Theme Button */
-.theme-btn {
-  border-radius: var(--theme-button-radius) !important;
-  font-family: var(--theme-font-family) !important;
-  letter-spacing: var(--theme-letter-spacing) !important;
-  text-transform: var(--theme-text-transform) !important;
-  transition: all var(--theme-transition-duration) var(--theme-transition-timing) !important;
+@keyframes glowPulse {
+    0%, 100% { filter: drop-shadow(0 0 5px #c084fc); opacity: 0.8; }
+    50% { filter: drop-shadow(0 0 22px #c084fc); opacity: 1; }
 }
-
-/* 4. Theme Input / Textarea fields */
-.theme-input {
-  border-radius: var(--theme-input-radius) !important;
-  border: var(--theme-input-border) !important;
-  box-shadow: none !important;
-  font-family: var(--theme-font-family) !important;
-  transition: all var(--theme-transition-duration) var(--theme-transition-timing) !important;
-  outline: none !important;
+@keyframes twinkle {
+    0%, 100% { opacity: 0.2; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.1); }
 }
-
-.theme-input:focus {
-  border-color: var(--theme-input-focus-border-color) !important;
-  box-shadow: var(--theme-input-focus-ring) !important;
+@keyframes orbitRotation {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
-
-
-
-/* 5. Theme Tag / Badge */
-.theme-tag {
-  border-radius: var(--theme-tag-radius) !important;
-  border: var(--theme-tag-border) !important;
-  font-family: var(--theme-font-family) !important;
-  transition: all var(--theme-transition-duration) var(--theme-transition-timing) !important;
+@keyframes driftCloud {
+    0% { transform: translate(-8px, 5px); opacity: 0.6; }
+    100% { transform: translate(12px, -3px); opacity: 0.85; }
 }
-
-/* 6. Theme Specific Navigation Overrides */
-
 
-/* 7. Animation / Motion accessibility reduced-motion guardrail */
 @media (prefers-reduced-motion: reduce) {
-  * {
-    transition-duration: 0s !important;
-    animation-duration: 0s !important;
-    animation-iteration-count: 1 !important;
-    transform: none !important;
-    filter: none !important;
-  }
+    * {
+        animation: none !important;
+        transition: none !important;
+        transform: none !important;
+        box-shadow: none !important;
+        filter: none !important;
+    }
+    .glass-card:hover, .primary-glowing-card:hover {
+        transform: none !important;
+        border-color: rgba(255, 255, 255, 0.1) !important;
+        box-shadow: none !important;
+    }
+    #dynamic-particles circle {
+        animation: none !important;
+    }
 }
-
-/* 8. Typography and Typeset overrides per theme */
-
-
-
-/* ===================================================================
-   🎨 MULTI-THEME STATE-SPECIFIC POLISH OVERRIDES
-   =================================================================== */
-
-
-/* 2. Paper Buttons Polish */
-
-/* 4. Universal Disabled States Polish */
-.theme-btn:disabled,
-.theme-input:disabled {
-  opacity: 0.45 !important;
-  cursor: not-allowed !important;
-  pointer-events: none !important;
-}
-
-
-
-/* 5. Toast / Modal Styling Polish Override */
-
-
-@keyframes scan-animation {
-  0% {
-    top: 0%;
-  }
-  50% {
-    top: 100%;
-  }
-  100% {
-    top: 0%;
-  }
-}
-
-/* ===================================================================
-   🛡️ PHASE 3 GOVERNED DESIGN SYSTEM RULES & MOBILE OPTIMIZATIONS
-   =================================================================== */
-
-/* 1. 行動端優先可用性 (Mobile Touch Targets Protection) */
-@media (max-width: 768px) {
-  /* 讓 theme-btn 在手機端擁有更大的隱形觸控點擊熱區，防止誤觸或點不到 */
-  .theme-btn,
-  button.theme-btn,
-  .theme-card button {
-    position: relative;
-  }
-  .theme-btn::before,
-  button.theme-btn::before,
-  .theme-card button::before {
-    content: "";
-    position: absolute;
-    top: -6px;
-    bottom: -6px;
-    left: -4px;
-    right: -4px;
-    pointer-events: auto;
-    z-index: 10;
-  }
-
-  /* 擴展 FloatingDock 底座選項的觸控點擊熱區 */
-  .fixed.bottom-4 a,
-  .fixed.bottom-6 a {
-    position: relative;
-  }
-  .fixed.bottom-4 a::before,
-  .fixed.bottom-6 a::before {
-    content: "";
-    position: absolute;
-    top: -8px;
-    bottom: -8px;
-    left: -6px;
-    right: -6px;
-    pointer-events: auto;
-    z-index: 10;
-  }
-
-  /* 提升行動端滾動穩定度，關閉所有 card 和 button 的 hover 位移與縮放，避免誤觸或視覺震顫 */
-  .theme-card:hover,
-  .glass-panel:hover,
-  .browse-tab:hover,
-  .browse-preview-card:hover,
-  .theme-btn:hover {
-    transform: none !important;
-    transition: none !important;
-  }
-}
-
-/* 2. WCAG-aware 焦點可見性與無障礙強化 (WCAG AA Compliance) */
-:focus-visible {
-  outline: 2px solid var(--theme-input-focus-border-color, var(--ring)) !important;
-  outline-offset: 2px !important;
-}
-
-/* 禁用狀態的灰階無障礙區分度 */
-.theme-btn:disabled,
-button:disabled,
-input:disabled,
-textarea:disabled,
-select:disabled {
-  filter: grayscale(1) opacity(0.5) !important;
-  cursor: not-allowed !important;
-  pointer-events: none !important;
-}
-
-/* 3. 限制與收斂系統中的 overdesign behavior (Restraint & Anti-noise) */
-.theme-card,
-.glass-panel,
-.theme-btn {
-  /* 確保互動不產生多重物理動效疊加 (例如 scale 與 rotate 同時觸發) */
-  will-change: transform, opacity;
-}
-
-/* ===================================================================
-   🌌 樣式 5：星空漫步專屬動畫與極光發光樣式
-   =================================================================== */
-
-
-/* =========================================================================
-   🌌 主題視覺升級懸浮粒子動畫與樣式 (去霓虹)
-   ========================================================================= */
-
-
-/* 4. 處理 reduced-motion */
-@media (prefers-reduced-motion: reduce) {
-  .starry-dust-particle,
-  .lounge-dust-particle,
-  .zen-gold-particle {
-    animation: none !important;
-    transform: none !important;
-  }
-}
-
-/* =========================================================================
-   🌌 深色星雲漂移背景 (Nebula Drift Background)
-   ========================================================================= */
-
-/* =========================================================================
-   🌌 深色底部欄樣式 (Deep Atmospheric Footer)
-   ========================================================================= */
-
-.site-footer {
-  background-color: #030305 !important;
-  border-top: 1px solid rgba(255, 255, 255, 0.0075);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.0025);
-}
-
-
-
-
