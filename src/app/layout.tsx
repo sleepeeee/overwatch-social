@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Geist, Noto_Sans_TC } from "next/font/google";
 import "./globals.css";
 import ArtOrnament from "@/components/morning-sketch/ArtOrnament";
 import DevModeBanner from "@/components/DevModeBanner";
@@ -10,8 +11,16 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { CosmicParticlesBackground } from "@/components/CosmicParticlesBackground";
 
-const geistSans = { variable: "--font-geist-sans" };
-const notoSansTC = { variable: "--font-noto-sans-tc" };
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const notoSansTC = Noto_Sans_TC({
+  variable: "--font-noto-sans-tc",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800", "900"],
+});
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "";
 
