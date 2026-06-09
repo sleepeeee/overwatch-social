@@ -257,7 +257,7 @@ export default function AdjusterPage() {
     message: `「黃光曝光對準標記監控中」正在微調 ${currentHero.name} 的胸像幾何補償...`,
     languages: ["繁體中文", "English"],
     mic_status: "mic-on",
-    social_channels: { discord: "Developer#8888", steam: "12345678" },
+    social_channels: { discord: "Developer#8888", game_voice: "Developer#8888" },
     mbti: "INTJ"
   };
 

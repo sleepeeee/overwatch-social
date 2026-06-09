@@ -26,6 +26,7 @@ import { getMyUserProfile, saveNickname } from "@/app/actions/userProfile";
 import { getGameSpecialTags } from "@/app/actions/tags";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
+import { SocialIcon } from "@/components/ui/SocialIcons";
 
 const DEFAULT_CARD: OWPlayerCard = {
   card_id: "card-current-user",
@@ -290,11 +291,8 @@ function CosmicLivePreviewCard({
                 key={platform}
                 className="w-7 h-7 rounded-full flex items-center justify-center shadow-sm border border-white/5 bg-white/[0.03] text-zinc-300"
               >
-                <span className="text-[10px]">
-                  {platform === "discord" && "👾"}
-                  {platform === "steam" && "🎮"}
-                  {platform === "x" && "𝕏"}
-                  {platform === "line" && "💬"}
+                <span className="text-[10px] text-zinc-400">
+                  <SocialIcon platform={platform} className="w-3.5 h-3.5" />
                 </span>
               </div>
             );
@@ -1355,11 +1353,8 @@ export default function ProfilePage() {
                       }`}
                     >
                       <div className="flex items-center space-x-3">
-                        <span className="text-base text-purple-400">
-                          {platform.id === "discord" && "👾"}
-                          {platform.id === "steam" && "🎮"}
-                          {platform.id === "x" && "𝕏"}
-                          {platform.id === "line" && "💬"}
+                        <span className="text-base text-purple-400 drop-shadow-[0_0_4px_rgba(168,85,247,0.4)]">
+                          <SocialIcon platform={platform.id} className="w-5 h-5" />
                         </span>
                         <span className="text-xs text-zinc-100 font-bold font-mono">{platform.label}</span>
                       </div>

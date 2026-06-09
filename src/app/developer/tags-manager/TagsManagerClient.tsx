@@ -108,6 +108,66 @@ export default function TagsManagerClient({
     }
   };
 
+  // 批次新增 12 個通用標籤
+  const handleBatchAdd = async () => {
+    if (loading) return;
+    setLoading(true);
+    setErrorMsg("");
+    setSuccessMsg("");
+
+    const batchTags = [
+      { name: "#積分玩家", style: "rose" },
+      { name: "#歡樂一般", style: "sage" },
+      { name: "#只打遊樂場", style: "blue" },
+      { name: "#歡迎開麥", style: "rose" },
+      { name: "#拒絕暴躁", style: "sage" },
+      { name: "#安靜推車", style: "blue" },
+      { name: "#尋找長期隊友", style: "clay" },
+      { name: "#深夜開打", style: "blue" },
+      { name: "#下班休閒", style: "clay" },
+      { name: "#認真組排", style: "rose" },
+      { name: "#不計輸贏", style: "sage" },
+      { name: "#專職補位", style: "blue" }
+    ];
+
+    const stylesMap = {
+      sage: "bg-[#8fa8a2]/15 text-[#59756f] border-[#8fa8a2]/30",
+      rose: "bg-[#bfa1a1]/15 text-[#8c6c6c] border-[#bfa1a1]/30",
+      blue: "bg-[#8ca9b3]/15 text-[#5c7c88] border-[#8ca9b3]/30",
+      clay: "bg-[#b4a091]/15 text-[#8c6c5c] border-[#b4a091]/30"
+    };
+
+    let successCount = 0;
+    let skipCount = 0;
+    let failCount = 0;
+
+    try {
+      for (const t of batchTags) {
+        // 檢查是否已存在同名標籤，避免重複新增
+        const exist = tags.some(existingTag => existingTag.tag_name === t.name);
+        if (exist) {
+          skipCount++;
+          continue;
+        }
+
+        const styleClass = stylesMap[t.style as "sage" | "rose" | "blue" | "clay"];
+        const res = await addGameSpecialTag(selectedGame, t.name, styleClass);
+        if (res.success) {
+          successCount++;
+        } else {
+          failCount++;
+        }
+      }
+      
+      triggerToast(`批次新增完成！成功新增 ${successCount} 個，已存在跳過 ${skipCount} 個${failCount > 0 ? `，失敗 ${failCount} 個` : ""}`);
+      await loadTags();
+    } catch {
+      triggerToast("執行批次新增發生未知錯誤", true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // 刪除特色標籤
   const handleDeleteTag = async (tagId: string, name: string) => {
     if (!confirm(`確定要物理刪除特色標籤「${name}」嗎？\n已套用此標籤的玩家資料將不再顯示此標籤。`)) {
@@ -254,7 +314,7 @@ export default function TagsManagerClient({
                 </div>
               </div>
 
-              <div className="pt-2">
+              <div className="pt-2 space-y-2">
                 <button
                   type="submit"
                   disabled={loading || !newTagName.trim()}
@@ -262,6 +322,15 @@ export default function TagsManagerClient({
                 >
                   {loading ? <Loader2 size={14} className="animate-spin" /> : <Plus size={14} />}
                   <span>{loading ? "正在新增標籤..." : "新增特色標籤"}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleBatchAdd}
+                  disabled={loading}
+                  className="w-full bg-gradient-to-r from-[#82b7cc] to-[#8ca9b3] hover:from-[#72a7bc] hover:to-[#7c99a3] text-white py-2.5 rounded-xl text-xs font-black tracking-widest uppercase transition-all hover:scale-[1.02] shadow-[0_4px_12px_rgba(130,183,204,0.3)] disabled:opacity-50 disabled:pointer-events-none cursor-pointer flex items-center justify-center gap-2"
+                >
+                  <span>✨ 一鍵新增 12 個通用標籤</span>
                 </button>
               </div>
 

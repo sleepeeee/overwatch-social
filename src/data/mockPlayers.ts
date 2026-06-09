@@ -425,7 +425,7 @@ export const MOCK_PLAYERS: OWPlayerCard[] = [
     mic_status: 'mic-on',
     social_channels: {
       discord: 'solange#8888',
-      x: '@solange_riddle'
+      threads: '@solange_riddle'
     },
     mbti: 'ENFP'
   },
@@ -474,7 +474,7 @@ export const MOCK_PLAYERS: OWPlayerCard[] = [
     mic_status: 'mic-on',
     social_channels: {
       discord: 'chronos#7761',
-      steam: '24681357'
+      game_voice: '時空特工#7761'
     },
     mbti: 'ESFP'
   },
@@ -491,8 +491,8 @@ export const MOCK_PLAYERS: OWPlayerCard[] = [
     mic_status: 'mic-on',
     social_channels: {
       discord: 'akira#1234',
-      steam: '98765432',
-      x: '@akira_ow'
+      threads: '@akira_ow',
+      game_voice: '愛喝奶茶#3342'
     },
     mbti: 'INFJ'
   },
@@ -509,7 +509,7 @@ export const MOCK_PLAYERS: OWPlayerCard[] = [
     mic_status: 'listen-only',
     social_channels: {
       discord: 'lily_ow',
-      line: 'lilyline'
+      threads: '@lily_ow'
     },
     mbti: 'ENFP'
   },
@@ -542,7 +542,7 @@ export const MOCK_PLAYERS: OWPlayerCard[] = [
     mic_status: 'mic-on',
     social_channels: {
       discord: 'fish_support',
-      steam: '12345678'
+      game_voice: '只想當鹹魚#2222'
     },
     mbti: 'INFJ'
   },
@@ -559,7 +559,7 @@ export const MOCK_PLAYERS: OWPlayerCard[] = [
     mic_status: 'mic-on',
     social_channels: {
       discord: 'hardt_main',
-      line: 'hardtline'
+      rc_voice: '12345'
     },
     mbti: 'ESFJ'
   },
@@ -596,8 +596,8 @@ export const MIC_OPTIONS = [
 ];
 export const SOCIAL_PLATFORMS = [
   { id: 'discord', label: 'Discord', placeholder: 'Discord 帳號 (如: user#1234)' },
-  { id: 'steam', label: 'Steam', placeholder: 'Steam 好友代碼 (如: 12345678)' },
-  { id: 'x', label: 'X (Twitter)', placeholder: '𝕏 帳號 (如: @username)' },
-  { id: 'line', label: 'Line', placeholder: 'Line ID' }
+  { id: 'threads', label: 'Threads', placeholder: 'Threads 帳號 (如: @username)' },
+  { id: 'rc_voice', label: 'RC語音', placeholder: 'RC 語音帳號/群組 ID (如: 12345)' },
+  { id: 'game_voice', label: '遊戲語音', placeholder: '遊戲內語音 Battle.net Tag (如: 玩家#1234)' }
 ];
 export const OVERWATCH_RANKS = ['青銅', '白銀', '黃金', '白金', '鑽石', '大師', '宗師', '五百強'];

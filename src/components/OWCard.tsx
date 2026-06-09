@@ -121,16 +121,22 @@ export default function OWCard({
   const getSocialIconStyle = (platform: string) => {
     switch (platform) {
       case 'discord':
-        return 'bg-[#5865F2] hover:bg-[#4752c4] text-white';
-      case 'steam': return 'bg-[#171a21] hover:bg-[#0c0e11] text-white';
-      case 'x': return 'bg-[#0f1419] hover:bg-[#000000] text-white';
-      case 'line': return 'bg-[#06C755] hover:bg-[#05b04b] text-white';
-      default: return 'bg-gray-200 hover:bg-gray-300 text-gray-700';
+        return 'bg-[#5865F2] hover:bg-[#4752c4] text-white hover:shadow-[0_0_15px_rgba(88,101,242,0.4)]';
+      case 'threads': 
+        return 'bg-zinc-900 hover:bg-black text-white hover:shadow-[0_0_15px_rgba(255,255,255,0.2)] border border-white/10';
+      case 'rc_voice': 
+        return 'bg-[#24b61b] hover:bg-[#1d9a15] text-white hover:shadow-[0_0_15px_rgba(36,182,27,0.4)]';
+      case 'game_voice': 
+        return 'bg-[#f99e1a] hover:bg-[#e0890f] text-white hover:shadow-[0_0_15px_rgba(249,158,26,0.4)]';
+      default: 
+        return 'bg-zinc-800 hover:bg-zinc-700 text-zinc-300';
     }
   };
 
   const getPlatformLabel = (platform: string) => {
-    if (platform === 'x') return '𝕏';
+    if (platform === 'threads') return 'Threads';
+    if (platform === 'rc_voice') return 'RC語音';
+    if (platform === 'game_voice') return '遊戲語音';
     return platform.charAt(0).toUpperCase() + platform.slice(1);
   };
 
