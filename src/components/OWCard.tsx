@@ -101,7 +101,30 @@ export default function OWCard({
   };
 
   const getTagType = (tagText: string) => {
-    const preset = PRESET_TAGS.find((t) => t.text === tagText);
+    // 移除開頭的 # 號，確保不管有無 # 都能正確比對
+    const cleanTag = tagText.startsWith('#') ? tagText.slice(1) : tagText;
+
+    // 1. 定義這 12 個通用標籤以及初始特色標籤的配色對照 (莫蘭迪色系)
+    const roseTags = ['積分玩家', '歡迎開麥', '認真組排', '刺客身手', '慈悲專車', '奈米刀源氏'];
+    const sageTags = ['歡樂一般', '拒絕暴躁', '不計輸贏', '槍神', '全能補位', '超能 DJ 盧西奧', '無情推車機器'];
+    const blueTags = ['只打遊樂場', '安靜推車', '深夜開打', '專職補位', '輔助天花板', '音波大師', '飛天正義法拉', '重力噴湧吸星'];
+    const clayTags = ['尋找長期隊友', '下班休閒', '重裝守護者', '神射手', '精準奪命勾', '碎地猛擊先鋒', '絕活倉鼠滾滾', '聖光降臨慈悲'];
+
+    if (roseTags.includes(cleanTag)) {
+      return 'bg-[#bfa1a1]/15 text-[#8c6c6c] border-[#bfa1a1]/30';
+    }
+    if (sageTags.includes(cleanTag)) {
+      return 'bg-[#8fa8a2]/15 text-[#59756f] border-[#8fa8a2]/30';
+    }
+    if (blueTags.includes(cleanTag)) {
+      return 'bg-[#8ca9b3]/15 text-[#5c7c88] border-[#8ca9b3]/30';
+    }
+    if (clayTags.includes(cleanTag)) {
+      return 'bg-[#b4a091]/15 text-[#8c6c5c] border-[#b4a091]/30';
+    }
+
+    // 2. 原本的 mock/preset 比對
+    const preset = PRESET_TAGS.find((t) => t.text === cleanTag || t.text === tagText);
     const type = preset?.type || 'default';
     
     switch (type) {
@@ -254,7 +277,7 @@ export default function OWCard({
           tags.map((tagText) => (
             <span
               key={tagText}
-              className={`text-[9px] font-medium bg-zinc-800/40 border border-white/[0.04] text-zinc-200 rounded-full px-2.5 py-1 transition-all duration-300 hover:scale-[1.03]`}
+              className={`text-[9px] font-medium rounded-full px-2.5 py-1 border transition-all duration-300 hover:scale-[1.03] ${getTagType(tagText)}`}
               style={{ fontFamily: "var(--theme-font-family), sans-serif" }}
             >
               {tagText.startsWith('#') ? tagText : `#${tagText}`}
