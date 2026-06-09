@@ -7,7 +7,8 @@ import {
   SERVER_OPTIONS,
   MBTI_OPTIONS,
   MIC_OPTIONS,
-  SOCIAL_PLATFORMS
+  SOCIAL_PLATFORMS,
+  LANGUAGE_OPTIONS
 } from "@/data/mockPlayers";
 import OWCard from "@/components/OWCard";
 import InteractiveAvatar from "@/components/InteractiveAvatar";
@@ -591,6 +592,28 @@ export default function ProfilePage() {
         ...prev,
         social_channels: currentChannels
       };
+    });
+  };
+
+  const handleToggleLanguage = (lang: string) => {
+    setErrorMsg(null);
+    setCard((prev) => {
+      const current = prev.languages || [];
+      if (current.includes(lang)) {
+        return {
+          ...prev,
+          languages: current.filter((l) => l !== lang)
+        };
+      } else {
+        if (current.length >= 3) {
+          setErrorMsg("溝通語言最多只能選擇三個喔，以維護卡片完美視覺！");
+          return prev;
+        }
+        return {
+          ...prev,
+          languages: [...current, lang]
+        };
+      }
     });
   };
 
@@ -1186,6 +1209,34 @@ export default function ProfilePage() {
                       </option>
                     ))}
                   </select>
+                </div>
+
+                <div>
+                  <div className="flex justify-between items-center mb-1.5">
+                    <label className="text-[10px] font-bold text-zinc-400 block font-mono">溝通語言 (最多 3 個)</label>
+                    <span className="text-[9px] text-zinc-500 font-normal font-mono">
+                      已選 {(currentCard.languages || []).length} / 3
+                    </span>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {LANGUAGE_OPTIONS.map((lang) => {
+                      const isSelected = (currentCard.languages || []).includes(lang);
+                      return (
+                        <button
+                          key={lang}
+                          type="button"
+                          onClick={() => handleToggleLanguage(lang)}
+                          className={`text-[10px] font-bold px-2.5 py-1.5 rounded-xl border transition-all duration-300 cursor-pointer shadow-sm font-mono ${
+                            isSelected
+                              ? `${colorClasses.bg} ${colorClasses.border} text-white font-semibold`
+                              : "bg-black/30 border-white/[0.04] text-zinc-400 hover:text-white"
+                          }`}
+                        >
+                          {lang}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
             </div>
