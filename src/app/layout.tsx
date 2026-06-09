@@ -25,15 +25,40 @@ const notoSansTC = Noto_Sans_TC({
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "";
 
 export const metadata: Metadata = {
-  title: "aftermidnight-gg",
-  description: "慢速、低侵入、可收藏的玩家名片宇宙",
+  title: {
+    default: "After Midnight | 深夜玩家名片展示館",
+    template: "%s | After Midnight",
+  },
+  description: "低侵入、可收藏的玩家名片宇宙。建立你的名片，遇見深夜還在線上的靈魂隊友。",
+  icons: {
+    icon: "/icon.png",
+    apple: "/icon.png",
+  },
   openGraph: {
-    siteName: "OW Social",
+    siteName: "After Midnight",
     locale: "zh_TW",
     type: "website",
-    ...(siteUrl ? { images: [{ url: `${siteUrl}/images/heroes/avatars/ana.png` }] } : {}),
+    title: "After Midnight | 深夜玩家名片展示館",
+    description: "低侵入、可收藏的玩家名片宇宙。建立你的名片，遇見深夜還在線上的靈魂隊友。",
+    ...(siteUrl
+      ? {
+          images: [
+            {
+              url: `${siteUrl}/images/og-default.png`,
+              width: 1512,
+              height: 756,
+              alt: "After Midnight — 深夜玩家名片展示館",
+            },
+          ],
+        }
+      : {}),
   },
-  twitter: { card: "summary" },
+  twitter: {
+    card: "summary_large_image",
+    title: "After Midnight | 深夜玩家名片展示館",
+    description: "低侵入、可收藏的玩家名片宇宙。建立你的名片，遇見深夜還在線上的靈魂隊友。",
+    ...(siteUrl ? { images: [`${siteUrl}/images/og-default.png`] } : {}),
+  },
 };
 
 export default function RootLayout({
@@ -68,7 +93,7 @@ export default function RootLayout({
         </ThemeProvider>
         <Analytics />
         <SpeedInsights />
-</body>
+      </body>
     </html>
   );
 }
