@@ -303,6 +303,15 @@
         radial-gradient(circle 35vw at 50% 35%, rgba(139, 92, 246, 0.03) 0%, rgba(139, 92, 246, 0) 100%);
 }
 
+.share-card-export-surface {
+    background-color: #05030a;
+    background-image:
+        radial-gradient(circle at 50% 0%, rgba(249, 158, 26, 0.16) 0%, rgba(249, 158, 26, 0) 38%),
+        radial-gradient(circle at 12% 82%, rgba(34, 211, 238, 0.12) 0%, rgba(34, 211, 238, 0) 34%),
+        radial-gradient(circle at 88% 24%, rgba(192, 132, 252, 0.14) 0%, rgba(192, 132, 252, 0) 36%),
+        linear-gradient(180deg, #090715 0%, #030206 100%);
+}
+
 .fluid-gap-manifesto {
     padding-bottom: clamp(2rem, 5vw, 4rem);
 }

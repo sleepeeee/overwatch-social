@@ -13,6 +13,7 @@ interface OWCardProps {
   cardData: OWPlayerCard;
   isLoggedIn?: boolean;
   isEditable?: boolean;
+  renderMode?: "interactive" | "export";
   customAlignments?: Record<string, { scale: number; translateX: number; translateY: number }>;
   onLoginRequired?: () => void;
 }
@@ -21,12 +22,14 @@ export default function OWCard({
   cardData,
   isLoggedIn = true,
   isEditable = false,
+  renderMode = "interactive",
   customAlignments,
   onLoginRequired,
 }: OWCardProps) {
   const [copiedTag, setCopiedTag] = useState(false);
   const [activeSocial, setActiveSocial] = useState<string | null>(null);
   const [copiedSocial, setCopiedSocial] = useState<string | null>(null);
+  const isExportMode = renderMode === "export";
 
   // 🛡️ [Mitigation] 強固解構，全面配置預設值，徹底阻斷型別缺失與空指針崩潰
   const {
@@ -196,7 +199,7 @@ export default function OWCard({
           <span className="text-xs text-zinc-100 font-mono font-semibold select-all mt-0.5">{getDisplayBattleTag()}</span>
         </div>
         <div className="flex items-center gap-2">
-          {(isEditable || is_tag_visible) && battle_tag !== "已隱藏#xxxx" && (
+          {!isExportMode && (isEditable || is_tag_visible) && battle_tag !== "已隱藏#xxxx" && (
             <button
               onClick={handleCopyTag}
               className="p-1.5 rounded bg-white/[0.03] hover:bg-white/[0.08] text-zinc-300 hover:text-white transition-all border border-white/5 active:scale-95 flex items-center justify-center cursor-pointer relative"
@@ -210,7 +213,7 @@ export default function OWCard({
               )}
             </button>
           )}
-          {isEditable && (
+          {!isExportMode && isEditable && (
             <div className="flex items-center text-[10px] text-zinc-400 gap-1 bg-white/5 px-2 py-0.5 rounded-full border border-white/10">
               {is_tag_visible ? <Eye size={10} className="text-amber-400" /> : <EyeOff size={10} />}
               <span className="font-extrabold">{is_tag_visible ? "公開" : "隱藏"}</span>
@@ -328,7 +331,7 @@ export default function OWCard({
               <div 
                 key={platform} 
                 className={`w-7 h-7 rounded-full flex items-center justify-center shadow-sm border border-white/5 transition-all duration-300 hover:scale-110 select-none ${getSocialIconStyle(platform)}`}
-                title={`我經常使用 ${getPlatformLabel(platform)} 交流！`}
+                title={isExportMode ? undefined : `我經常使用 ${getPlatformLabel(platform)} 交流！`}
               >
                 <SocialIcon platform={platform} className="w-3.5 h-3.5" />
               </div>
