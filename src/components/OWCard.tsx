@@ -13,6 +13,7 @@ interface OWCardProps {
   cardData: OWPlayerCard;
   isLoggedIn?: boolean;
   isEditable?: boolean;
+  renderMode?: "interactive" | "export";
   customAlignments?: Record<string, { scale: number; translateX: number; translateY: number }>;
   onLoginRequired?: () => void;
 }
@@ -21,12 +22,14 @@ export default function OWCard({
   cardData,
   isLoggedIn = true,
   isEditable = false,
+  renderMode = "interactive",
   customAlignments,
   onLoginRequired,
 }: OWCardProps) {
   const [copiedTag, setCopiedTag] = useState(false);
   const [activeSocial, setActiveSocial] = useState<string | null>(null);
   const [copiedSocial, setCopiedSocial] = useState<string | null>(null);
+  const isExportMode = renderMode === "export";
 
   // 🛡️ [Mitigation] 強固解構，全面配置預設值，徹底阻斷型別缺失與空指針崩潰
   const {
@@ -101,7 +104,30 @@ export default function OWCard({
   };
 
   const getTagType = (tagText: string) => {
-    const preset = PRESET_TAGS.find((t) => t.text === tagText);
+    // 移除開頭的 # 號，確保不管有無 # 都能正確比對
+    const cleanTag = tagText.startsWith('#') ? tagText.slice(1) : tagText;
+
+    // 1. 定義這 12 個通用標籤以及初始特色標籤的配色對照 (莫蘭迪色系)
+    const roseTags = ['積分玩家', '歡迎開麥', '認真組排', '刺客身手', '慈悲專車', '奈米刀源氏'];
+    const sageTags = ['歡樂一般', '拒絕暴躁', '不計輸贏', '槍神', '全能補位', '超能 DJ 盧西奧', '無情推車機器'];
+    const blueTags = ['只打遊樂場', '安靜推車', '深夜開打', '專職補位', '輔助天花板', '音波大師', '飛天正義法拉', '重力噴湧吸星'];
+    const clayTags = ['尋找長期隊友', '下班休閒', '重裝守護者', '神射手', '精準奪命勾', '碎地猛擊先鋒', '絕活倉鼠滾滾', '聖光降臨慈悲'];
+
+    if (roseTags.includes(cleanTag)) {
+      return 'bg-[#bfa1a1]/15 text-[#8c6c6c] border-[#bfa1a1]/30';
+    }
+    if (sageTags.includes(cleanTag)) {
+      return 'bg-[#8fa8a2]/15 text-[#59756f] border-[#8fa8a2]/30';
+    }
+    if (blueTags.includes(cleanTag)) {
+      return 'bg-[#8ca9b3]/15 text-[#5c7c88] border-[#8ca9b3]/30';
+    }
+    if (clayTags.includes(cleanTag)) {
+      return 'bg-[#b4a091]/15 text-[#8c6c5c] border-[#b4a091]/30';
+    }
+
+    // 2. 原本的 mock/preset 比對
+    const preset = PRESET_TAGS.find((t) => t.text === cleanTag || t.text === tagText);
     const type = preset?.type || 'default';
     
     switch (type) {
@@ -121,16 +147,22 @@ export default function OWCard({
   const getSocialIconStyle = (platform: string) => {
     switch (platform) {
       case 'discord':
-        return 'bg-[#5865F2] hover:bg-[#4752c4] text-white';
-      case 'steam': return 'bg-[#171a21] hover:bg-[#0c0e11] text-white';
-      case 'x': return 'bg-[#0f1419] hover:bg-[#000000] text-white';
-      case 'line': return 'bg-[#06C755] hover:bg-[#05b04b] text-white';
-      default: return 'bg-gray-200 hover:bg-gray-300 text-gray-700';
+        return 'bg-[#5865F2] hover:bg-[#4752c4] text-white hover:shadow-[0_0_15px_rgba(88,101,242,0.4)]';
+      case 'threads': 
+        return 'bg-zinc-900 hover:bg-black text-white hover:shadow-[0_0_15px_rgba(255,255,255,0.2)] border border-white/10';
+      case 'rc_voice': 
+        return 'bg-[#24b61b] hover:bg-[#1d9a15] text-white hover:shadow-[0_0_15px_rgba(36,182,27,0.4)]';
+      case 'game_voice': 
+        return 'bg-[#f99e1a] hover:bg-[#e0890f] text-white hover:shadow-[0_0_15px_rgba(249,158,26,0.4)]';
+      default: 
+        return 'bg-zinc-800 hover:bg-zinc-700 text-zinc-300';
     }
   };
 
   const getPlatformLabel = (platform: string) => {
-    if (platform === 'x') return '𝕏';
+    if (platform === 'threads') return 'Threads';
+    if (platform === 'rc_voice') return 'RC語音';
+    if (platform === 'game_voice') return '遊戲語音';
     return platform.charAt(0).toUpperCase() + platform.slice(1);
   };
 
@@ -167,7 +199,7 @@ export default function OWCard({
           <span className="text-xs text-zinc-100 font-mono font-semibold select-all mt-0.5">{getDisplayBattleTag()}</span>
         </div>
         <div className="flex items-center gap-2">
-          {(isEditable || is_tag_visible) && battle_tag !== "已隱藏#xxxx" && (
+          {!isExportMode && (isEditable || is_tag_visible) && battle_tag !== "已隱藏#xxxx" && (
             <button
               onClick={handleCopyTag}
               className="p-1.5 rounded bg-white/[0.03] hover:bg-white/[0.08] text-zinc-300 hover:text-white transition-all border border-white/5 active:scale-95 flex items-center justify-center cursor-pointer relative"
@@ -181,7 +213,7 @@ export default function OWCard({
               )}
             </button>
           )}
-          {isEditable && (
+          {!isExportMode && isEditable && (
             <div className="flex items-center text-[10px] text-zinc-400 gap-1 bg-white/5 px-2 py-0.5 rounded-full border border-white/10">
               {is_tag_visible ? <Eye size={10} className="text-amber-400" /> : <EyeOff size={10} />}
               <span className="font-extrabold">{is_tag_visible ? "公開" : "隱藏"}</span>
@@ -248,7 +280,7 @@ export default function OWCard({
           tags.map((tagText) => (
             <span
               key={tagText}
-              className={`text-[9px] font-medium bg-zinc-800/40 border border-white/[0.04] text-zinc-200 rounded-full px-2.5 py-1 transition-all duration-300 hover:scale-[1.03]`}
+              className={`text-[9px] font-medium rounded-full px-2.5 py-1 border transition-all duration-300 hover:scale-[1.03] ${getTagType(tagText)}`}
               style={{ fontFamily: "var(--theme-font-family), sans-serif" }}
             >
               {tagText.startsWith('#') ? tagText : `#${tagText}`}
@@ -299,7 +331,7 @@ export default function OWCard({
               <div 
                 key={platform} 
                 className={`w-7 h-7 rounded-full flex items-center justify-center shadow-sm border border-white/5 transition-all duration-300 hover:scale-110 select-none ${getSocialIconStyle(platform)}`}
-                title={`我經常使用 ${getPlatformLabel(platform)} 交流！`}
+                title={isExportMode ? undefined : `我經常使用 ${getPlatformLabel(platform)} 交流！`}
               >
                 <SocialIcon platform={platform} className="w-3.5 h-3.5" />
               </div>

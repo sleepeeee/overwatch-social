@@ -7,7 +7,8 @@ import {
   SERVER_OPTIONS,
   MBTI_OPTIONS,
   MIC_OPTIONS,
-  SOCIAL_PLATFORMS
+  SOCIAL_PLATFORMS,
+  LANGUAGE_OPTIONS
 } from "@/data/mockPlayers";
 import OWCard from "@/components/OWCard";
 import InteractiveAvatar from "@/components/InteractiveAvatar";
@@ -25,6 +26,7 @@ import { getMyUserProfile, saveNickname } from "@/app/actions/userProfile";
 import { getGameSpecialTags } from "@/app/actions/tags";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
+import { SocialIcon } from "@/components/ui/SocialIcons";
 
 const DEFAULT_CARD: OWPlayerCard = {
   card_id: "card-current-user",
@@ -289,11 +291,8 @@ function CosmicLivePreviewCard({
                 key={platform}
                 className="w-7 h-7 rounded-full flex items-center justify-center shadow-sm border border-white/5 bg-white/[0.03] text-zinc-300"
               >
-                <span className="text-[10px]">
-                  {platform === "discord" && "👾"}
-                  {platform === "steam" && "🎮"}
-                  {platform === "x" && "𝕏"}
-                  {platform === "line" && "💬"}
+                <span className="text-[10px] text-zinc-400">
+                  <SocialIcon platform={platform} className="w-3.5 h-3.5" />
                 </span>
               </div>
             );
@@ -303,6 +302,19 @@ function CosmicLivePreviewCard({
     </div>
   );
 }
+
+const waitForCardExport = async (node: HTMLElement) => {
+  await document.fonts?.ready;
+  const images = Array.from(node.querySelectorAll("img"));
+  await Promise.all(
+    images.map((image) => {
+      if (image.complete) return Promise.resolve();
+      return image.decode().catch(() => undefined);
+    })
+  );
+  await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+  await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+};
 
 export default function ProfilePage() {
   const { user, authLoading, userProfile: authUserProfile } = useAuth();
@@ -377,6 +389,7 @@ export default function ProfilePage() {
     setExportingImage(true);
     setErrorMsg(null);
     try {
+      await waitForCardExport(cardRef.current);
       const dataUrl = await toPng(cardRef.current, {
         cacheBust: true,
         backgroundColor: "transparent",
@@ -591,6 +604,28 @@ export default function ProfilePage() {
         ...prev,
         social_channels: currentChannels
       };
+    });
+  };
+
+  const handleToggleLanguage = (lang: string) => {
+    setErrorMsg(null);
+    setCard((prev) => {
+      const current = prev.languages || [];
+      if (current.includes(lang)) {
+        return {
+          ...prev,
+          languages: current.filter((l) => l !== lang)
+        };
+      } else {
+        if (current.length >= 3) {
+          setErrorMsg("溝通語言最多只能選擇三個喔，以維護卡片完美視覺！");
+          return prev;
+        }
+        return {
+          ...prev,
+          languages: [...current, lang]
+        };
+      }
     });
   };
 
@@ -1016,15 +1051,21 @@ export default function ProfilePage() {
           <div className="lg:col-span-4 flex flex-col items-center gap-4 lg:sticky lg:top-24">
             <h2 className="text-[10px] font-bold tracking-widest text-zinc-400 uppercase font-mono">即時名片預覽 // Live Preview</h2>
             
-            <div ref={cardRef} className="rounded-[28px] overflow-hidden relative">
+            <div ref={cardRef} className="share-card-export-surface rounded-[28px] overflow-hidden relative">
               {editingGame === "ow" ? (
-                <OWCard cardData={cardData} isLoggedIn={true} isEditable={true} customAlignments={heroAlignments} />
+                <OWCard
+                  cardData={cardData}
+                  isLoggedIn={true}
+                  isEditable={true}
+                  renderMode={exportingImage ? "export" : "interactive"}
+                  customAlignments={heroAlignments}
+                />
               ) : (
                 <CosmicLivePreviewCard cardData={currentCard} gameType={editingGame} colorClasses={colorClasses} />
               )}
               
               {/* 點擊清空英雄立繪插槽按鈕 Overlay (專門對接 3 格常用立繪的✕清空) */}
-              <div className="absolute top-[175px] left-1/2 -translate-x-1/2 w-[340px] grid grid-cols-3 gap-2 px-3 h-32 pointer-events-none">
+              {!exportingImage && <div className="absolute top-[175px] left-1/2 -translate-x-1/2 w-[340px] grid grid-cols-3 gap-2 px-3 h-32 pointer-events-none">
                 {[0, 1, 2].map((idx) => {
                   const heroId = currentCard.selected_heroes[idx];
                   if (!heroId) return <div key={idx} />;
@@ -1041,7 +1082,7 @@ export default function ProfilePage() {
                     </div>
                   );
                 })}
-              </div>
+              </div>}
             </div>
 
             {/* 💾 匯出圖片與複製連結按鈕區 */}
@@ -1187,6 +1228,34 @@ export default function ProfilePage() {
                     ))}
                   </select>
                 </div>
+
+                <div>
+                  <div className="flex justify-between items-center mb-1.5">
+                    <label className="text-[10px] font-bold text-zinc-400 block font-mono">溝通語言 (最多 3 個)</label>
+                    <span className="text-[9px] text-zinc-500 font-normal font-mono">
+                      已選 {(currentCard.languages || []).length} / 3
+                    </span>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {LANGUAGE_OPTIONS.map((lang) => {
+                      const isSelected = (currentCard.languages || []).includes(lang);
+                      return (
+                        <button
+                          key={lang}
+                          type="button"
+                          onClick={() => handleToggleLanguage(lang)}
+                          className={`text-[10px] font-bold px-2.5 py-1.5 rounded-xl border transition-all duration-300 cursor-pointer shadow-sm font-mono ${
+                            isSelected
+                              ? `${colorClasses.bg} ${colorClasses.border} text-white font-semibold`
+                              : "bg-black/30 border-white/[0.04] text-zinc-400 hover:text-white"
+                          }`}
+                        >
+                          {lang}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -1304,11 +1373,8 @@ export default function ProfilePage() {
                       }`}
                     >
                       <div className="flex items-center space-x-3">
-                        <span className="text-base text-purple-400">
-                          {platform.id === "discord" && "👾"}
-                          {platform.id === "steam" && "🎮"}
-                          {platform.id === "x" && "𝕏"}
-                          {platform.id === "line" && "💬"}
+                        <span className="text-base text-purple-400 drop-shadow-[0_0_4px_rgba(168,85,247,0.4)]">
+                          <SocialIcon platform={platform.id} className="w-5 h-5" />
                         </span>
                         <span className="text-xs text-zinc-100 font-bold font-mono">{platform.label}</span>
                       </div>

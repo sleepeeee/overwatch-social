@@ -21,9 +21,9 @@ export interface OWPlayerCard {
   // 常用通訊軟體 (最少 1 個，最多 3 個)
   social_channels: {
     discord?: string;        // Discord 帳號
-    steam?: string;          // Steam 好友代碼
-    x?: string;              // X (Twitter) 帳號
-    line?: string;           // Line ID
+    threads?: string;        // Threads 帳號
+    rc_voice?: string;       // RC語音 ID/群組
+    game_voice?: string;     // 遊戲內語音 BattleTag
   };
   
   mbti?: string;             // MBTI 人格特質 (可選)
