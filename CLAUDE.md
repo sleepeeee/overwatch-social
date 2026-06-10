@@ -38,7 +38,7 @@
 
 ## 環境啟動
 ```bash
-cd "D:/Overwatch專案/overwatch-social"
+cd "D:/Overwatch專案"
 npm run dev      # 開發伺服器 → http://localhost:3000
 npm run build    # 正式打包
 ```
