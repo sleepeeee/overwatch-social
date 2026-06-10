@@ -17,7 +17,9 @@
 
 ## 進行中的 Changes（未 archive）
 
-（無）
+| Change | 階段 | 備註 |
+|---|---|---|
+| adopt-supabase-generated-types | PROPOSE 完成（待 Codex §6.5）| 生成型別取代 44 個 as 斷言；分支 feature/backend-generated-types；REF-024/025/026；Stage 6 Codex prompt 備於 design.md（orchestrator 無法 spawn Agent，待 team lead 並行發起）|
 
 ## 待 Propose Changes（依優先度）
 
@@ -49,6 +51,16 @@
 ---
 
 ## Zone B — 工作日誌（追加，由新到舊）
+
+### 2026-06-11 adopt-supabase-generated-types — PROPOSE 完成（orchestrator sub-agent）
+
+- **背景**：C2，消除 44 個跨資料邊界手動 `as` 斷言（grep 實測：browse 14/profile 14/homepage 6/developer 5/userProfile 3/alignment 2），改用 Supabase 生成型別 + `createClient<Database>` 泛型
+- **已完成**：4 artifacts（proposal/design/spec/tasks）+ REF-024（Database generic）/REF-025（social_channels view vs table 型別分歧）/REF-026（getSystemStats 魔術字串審計）；`openspec validate --strict` PASS
+- **核心設計決策**：保留 OWPlayerCard 作 anti-corruption layer（不被生成型別取代）；social_channels 型別分歧收斂於單一 helper；魔術字串抽 PLACEHOLDER_BATTLE_TAG 常數（方案 A，行為不變）；無 DB schema 變更
+- **最大風險（已標記）**：social_channels view（C1 遮罩布林）vs base table（帳號字串）生成型別皆為 Json，tsc 無法防隱私回歸 → 需 runtime smoke，不能只靠 build；生產 DB vs repo migration drift（C1 遮罩 migration 未落地 repo，015/017 仍未遮罩版）
+- **跳過項目**：Stage 1 explorer 委派（F-039 sub-agent 無法 spawn Agent，改主代理直接 inline 探索）；Stage 6 Codex §6.5（同因，prompt 備於 design.md，待 team lead 並行發起，**未捏造評分**）；型別生成指令（無 Supabase MCP，待 team lead 跑 mcp__supabase__generate_typescript_types）
+- **卡關**：無（artifacts 完整；待 team lead 執行型別生成 + Codex review + APPLY）
+- **下次優先**：team lead 並行發起 design.md 內 Codex prompt；通過後 APPLY（tasks.md task 0→8）
 
 ### 2026-06-11 環境健診 + normalize-profiles-and-server-canonical 補記
 
