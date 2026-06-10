@@ -140,7 +140,7 @@ export default async function PlayerDetailPage({ params }: Props) {
               )}
               <span className="px-2.5 py-1 rounded-full bg-white/50 border border-[#8c7c6c]/15 text-[#8c7c6c] font-bold flex items-center gap-1">
                 {micIcon}
-                {micLabel[player.mic_status] ?? player.mic_status}
+                {micLabel[player.mic_status ?? ""] ?? player.mic_status}
               </span>
             </div>
           </div>

@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
+import { PLACEHOLDER_BATTLE_TAG } from "@/types/card";
 
 /**
  * 🛡️ [Security Helper] 確保只有開發者才能執行後台 Server Actions
@@ -140,11 +141,11 @@ export async function getAllProfilesForDeveloper(search?: string): Promise<{
     return {
       success: true,
       data: (data || []).map(row => ({
-        user_id: row.user_id as string,
-        battle_tag: (row.battle_tag as string) || "",
-        is_tag_visible: row.is_tag_visible as boolean,
-        selected_heroes: (row.selected_heroes as string[]) ?? [],
-        updated_at: row.updated_at as string,
+        user_id: row.user_id,
+        battle_tag: row.battle_tag || "",
+        is_tag_visible: row.is_tag_visible,
+        selected_heroes: row.selected_heroes ?? [],
+        updated_at: row.updated_at,
       })),
     };
   } catch (err) {
@@ -166,7 +167,7 @@ export async function getHeroStats(): Promise<Array<{ heroId: string; count: num
       return [];
     }
 
-    return (data as Array<{ hero_id: string; hero_count: number | string }>).map(row => ({
+    return data.map(row => ({
       heroId: row.hero_id,
       count: Number(row.hero_count),
     }));
@@ -188,7 +189,7 @@ export async function getSystemStats() {
       supabase.from("profiles").select("*", { count: "exact", head: true }),
       supabase.from("profiles").select("*", { count: "exact", head: true })
         .not("battle_tag", "is", null)
-        .neq("battle_tag", "愛喝奶茶#3342") // 排除預設佔位值，只計算真正填寫的名片
+        .neq("battle_tag", PLACEHOLDER_BATTLE_TAG) // 排除預設佔位值，只計算真正填寫的名片
     ]);
 
     if (userResult.error) {

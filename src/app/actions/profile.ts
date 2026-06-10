@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { normalizeGameId, normalizeOverwatchServer } from "@/lib/gameCatalog";
 import { ensureUserProfileForCurrentUser } from "@/lib/userProfileIdentity";
+import { toSocialChannels } from "@/lib/socialChannels";
 import { OWPlayerCard } from "@/types/card";
 import { revalidateTag } from "next/cache";
 
@@ -32,10 +33,10 @@ export async function getMyProfile(game = 'overwatch'): Promise<OWPlayerCard | n
     message: data.message ?? "",
     languages: data.languages ?? [],
     mic_status: data.mic_status as OWPlayerCard["mic_status"],
-    social_channels: data.social_channels ?? {},
+    social_channels: toSocialChannels(data.social_channels),
     mbti: data.mbti ?? undefined,
-    display_name: (data.display_name as string) ?? undefined,
-    game: normalizeGameId(data.game as string),
+    display_name: data.display_name ?? undefined,
+    game: normalizeGameId(data.game),
   };
 }
 
@@ -48,20 +49,21 @@ export async function getPublicProfile(userId: string): Promise<OWPlayerCard | n
     .single();
   if (!data) return null;
   return {
-    card_id: `card-${data.user_id}`,
-    user_id: data.user_id as string,
-    server: normalizeOverwatchServer(data.server as string),
-    battle_tag: data.battle_tag as string,
-    is_tag_visible: data.is_tag_visible as boolean,
-    selected_heroes: (data.selected_heroes as string[]) ?? [],
-    tags: (data.tags as string[]) ?? [],
-    message: (data.message as string) ?? "",
-    languages: (data.languages as string[]) ?? [],
-    mic_status: data.mic_status as OWPlayerCard["mic_status"],
+    card_id: `card-${data.user_id ?? ""}`,
+    user_id: data.user_id ?? "",
+    server: normalizeOverwatchServer(data.server),
+    battle_tag: data.battle_tag ?? "",
+    is_tag_visible: data.is_tag_visible ?? false,
+    selected_heroes: data.selected_heroes ?? [],
+    tags: data.tags ?? [],
+    message: data.message ?? "",
+    languages: data.languages ?? [],
+    // DB mic_status 為 string；OWPlayerCard 為 union，合理 domain narrowing
+    mic_status: (data.mic_status ?? "mic-off") as OWPlayerCard["mic_status"],
     social_channels: {},
-    mbti: (data.mbti as string) ?? undefined,
-    display_name: (data.display_name as string) ?? undefined,
-    game: normalizeGameId(data.game as string),
+    mbti: data.mbti ?? undefined,
+    display_name: data.display_name ?? undefined,
+    game: normalizeGameId(data.game),
   };
 }
 
@@ -96,7 +98,7 @@ export async function getMyDisplayName(): Promise<string | null> {
     .eq("user_id", user.id)
     .single();
 
-  return (data?.display_name as string | null) ?? null;
+  return data?.display_name ?? null;
 }
 
 export async function saveProfile(card: OWPlayerCard): Promise<{ error?: string }> {

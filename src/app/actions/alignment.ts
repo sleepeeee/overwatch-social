@@ -27,8 +27,8 @@ export async function getHeroAlignments(): Promise<Record<string, AlignmentConfi
     data.forEach(row => {
       result[row.hero_id] = {
         scale: parseFloat(String(row.scale)),
-        translateX: row.translate_x as number,
-        translateY: row.translate_y as number,
+        translateX: row.translate_x,
+        translateY: row.translate_y,
       };
     });
 
