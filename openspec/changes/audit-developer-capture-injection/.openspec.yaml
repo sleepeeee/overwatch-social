@@ -1,0 +1,10 @@
+schema: spec-driven
+created: 2026-06-11
+note: >
+  PROPOSE 階段產物（C3）。這不是「修漏洞」change，而是「確認既有 git 子系統安全 + 用 regression
+  測試固化安全屬性」。team lead 已手動審計確認 developer-capture git 子系統不存在 command
+  injection / 路徑遍歷（execFile + 參數陣列 + env-sourced 絕對路徑），sub-agent 已實際讀檔
+  + 跑經驗探針 (empirical probe) 雙重驗證屬實。核心交付為新增 regression 測試，並建 ADR
+  固化「子程序呼叫一律 execFile + 參數陣列」專案準則。不改動 git.ts / developerCapture.ts
+  既有安全邏輯（karpathy 外科手術原則）。Stage 6 Codex review prompt 備於 design.md 待
+  team lead 並行發起（sub-agent 無法 spawn Agent，F-039）。
