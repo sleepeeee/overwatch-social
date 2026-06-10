@@ -8,7 +8,7 @@ version: "Supabase Auth 2026"
 last_updated: 2026-06-01
 official: true
 references_to: [REF-002, REF-004]
-referenced_by: [REF-006, ADR-02, REF-011]
+referenced_by: [REF-006, ADR-02, REF-011, ADR-24, F-024]
 ---
 
 ## 摘要

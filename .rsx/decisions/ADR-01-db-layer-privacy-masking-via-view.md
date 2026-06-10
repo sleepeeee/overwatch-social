@@ -5,7 +5,7 @@ status: Accepted
 change: google-oauth-supabase-auth
 date: 2026-06-01
 references_to: [REF-004]
-referenced_by: [F-001]
+referenced_by: [F-001, ADR-24, F-025]
 ---
 
 ## 決策

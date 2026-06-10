@@ -5,7 +5,7 @@ title: Supabase public view 納入私人欄位 = 隱私洩漏；正確做法是 
 status: confirmed
 confidence: high
 references_to: [REF-016, REF-017, ADR-14]
-referenced_by: [ADR-14]
+referenced_by: [ADR-14, ADR-24, F-025]
 supporting_refs: [REF-017]
 ---
 

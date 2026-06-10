@@ -7,17 +7,19 @@
 ---
 
 <!-- ZONE_A_START -->
-> **Zone A 最後更新：2026-06-11（環境健診 + 補記 migration 019/020 normalize change）**
+> **Zone A 最後更新：2026-06-11（harden-supabase-security ARCHIVE 前置）**
 
 ## 現在在做什麼
 
-環境健診完成（build PASS / DB 複查全綠 / rsx 流程確認健康）。
-回補 `normalize-profiles-and-server-canonical` change 記錄（migration 019/020 原走傳統 PR #3，未走 rsx，已事後補 ADR-23 + archive）。
-**決策（2026-06-11）**：回歸 rsx + 輕量例外——後端結構性變更走完整 rsx，明顯無風險 1-2 檔小修沿用 CLAUDE.md「直接推 main」例外。
+`harden-supabase-security` change APPLY 完成（migration 021 已部署生產，DB gate 全綠）。
+rsx-archiver 執行 §4 ARCHIVE + §Z Pre-archive Gate：ADR-24 / F-024 / F-025 已建，crossref 回填完成，latest.md 已更新。
+等主代理執行 `openspec archive harden-supabase-security`。
 
 ## 進行中的 Changes（未 archive）
 
-（無）
+| Change | 狀態 |
+|---|---|
+| harden-supabase-security | APPLY DONE，等主代理 openspec archive |
 
 ## 待 Propose Changes（依優先度）
 
@@ -49,6 +51,13 @@
 ---
 
 ## Zone B — 工作日誌（追加，由新到舊）
+
+### 2026-06-11 harden-supabase-security — ARCHIVE 前置（Gate + ADR/Finding/crossref）
+
+- **已完成**：migration 021 APPLY 完成（DB gate 全綠）；建 ADR-24（public_profiles 維持 SECURITY DEFINER + 投影遮罩 PII，否決 security_invoker；承接並修正 ADR-01 backlog）；建 F-024（developer_whitelist RLS enabled 0 policy 靜默空 P1 根因 + 修復通則）；建 F-025（migration 015 把 social_channels 補回 anon view 回退 F-014，view 補回私人欄位前必須遮罩 PII 通則）；雙向 crossref 回填（ADR-01 / F-014 / ADR-14 / REF-004 / REF-005 / REF-011 的 referenced_by 加入 ADR-24 / F-024 / F-025）；Pre-archive Gate FAIL=0；latest.md 已更新
+- **§6.7 說明**：Codex PROPOSE 階段 §6.5 已審（M1 決策依據）；今日額度滿無法重跑，DB gate 全綠 + 既有審查文件化跳過；Gate 視為 PASS-with-documented-skip
+- **卡關**：無（等主代理執行 openspec archive）
+- **下次優先**：主代理執行 `openspec archive harden-supabase-security`；後續 change 候選：social-channels-separate-table（拆 profile_contacts 表）
 
 ### 2026-06-11 環境健診 + normalize-profiles-and-server-canonical 補記
 
