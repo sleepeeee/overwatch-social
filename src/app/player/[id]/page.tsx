@@ -21,15 +21,15 @@ async function getPlayer(id: string) {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const player = await getPlayer(id);
-  if (!player) return { title: "玩家不存在 | OW Social" };
+  if (!player) return { title: "玩家不存在 | After Midnight" };
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "";
   const firstHero = (player.selected_heroes as string[])?.[0] ?? "ana";
   const ogImage = siteUrl ? `${siteUrl}/images/heroes/avatars/${firstHero}.png` : undefined;
 
   return {
-    title: `${player.battle_tag} | OW Social`,
-    description: player.message || "查看這位特工的遊戲名片",
+    title: `${player.battle_tag} | After Midnight`,
+    description: player.message || "查看這位深夜玩家的遊戲名片",
     openGraph: {
       ...(ogImage ? { images: [{ url: ogImage }] } : {}),
     },
