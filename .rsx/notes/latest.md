@@ -7,19 +7,20 @@
 ---
 
 <!-- ZONE_A_START -->
-> **Zone A 最後更新：2026-06-11（環境健診 + 補記 migration 019/020 normalize change）**
+> **Zone A 最後更新：2026-06-11（團隊模式三 change 序列推進，C2 進行中）**
 
 ## 現在在做什麼
 
-環境健診完成（build PASS / DB 複查全綠 / rsx 流程確認健康）。
-回補 `normalize-profiles-and-server-canonical` change 記錄（migration 019/020 原走傳統 PR #3，未走 rsx，已事後補 ADR-23 + archive）。
-**決策（2026-06-11）**：回歸 rsx + 輕量例外——後端結構性變更走完整 rsx，明顯無風險 1-2 檔小修沿用 CLAUDE.md「直接推 main」例外。
+團隊模式（Agent 多代理協作）按 rsx 流程推進三個 DB/安全 change：
+- **C1 `harden-supabase-security`** ✅ 全流程完成並 archive（migration 021 部署生產、ADR-24/F-024/F-025、commit、merge main）。
+- **C2 `adopt-supabase-generated-types`** 🔄 PROPOSE 完成、validate PASS；待 team lead 型別生成 + Codex §6.5 + APPLY。
+- **C3 `audit-developer-capture-injection`** ⏳ 待 propose。
 
 ## 進行中的 Changes（未 archive）
 
 | Change | 階段 | 備註 |
 |---|---|---|
-| adopt-supabase-generated-types | PROPOSE 完成（待 Codex §6.5）| 生成型別取代 44 個 as 斷言；分支 feature/backend-generated-types；REF-024/025/026；Stage 6 Codex prompt 備於 design.md（orchestrator 無法 spawn Agent，待 team lead 並行發起）|
+| adopt-supabase-generated-types | PROPOSE 完成（待 Codex §6.5 + 型別生成）| 生成型別取代 44 個 as 斷言；分支 feature/backend-generated-types；REF-024/025/026 |
 
 ## 待 Propose Changes（依優先度）
 
@@ -32,6 +33,7 @@
 
 | Change | 時間 | 備註 |
 |---|---|---|
+| harden-supabase-security | 2026-06-11 | Supabase 安全邊界硬化 migration 021；遮罩 social_channels PII（修 migration 015 回退 F-014）；developer_whitelist RLS 修復（P1）；function search_path + bucket listing；ADR-24/F-024/F-025 |
 | normalize-profiles-and-server-canonical | 2026-06-11 | OW server canonical 雙層防線 + user_profiles 補齊 + 孤兒卡軟下架；ADR-23；migration 019/020；**事後補記**（原走 PR #3 未走 rsx）|
 | seo-improvements | 2026-06-10 | 全站 canonical + 各頁 Metadata + 首頁 JSON-LD |
 | user-identity-global-nickname | 2026-06-10 | 全站暱稱層 + Dev Console 用戶視圖；F-023/ADR-22/REF-022/REF-023；migration 016/017 |
@@ -61,6 +63,12 @@
 - **跳過項目**：Stage 1 explorer 委派（F-039 sub-agent 無法 spawn Agent，改主代理直接 inline 探索）；Stage 6 Codex §6.5（同因，prompt 備於 design.md，待 team lead 並行發起，**未捏造評分**）；型別生成指令（無 Supabase MCP，待 team lead 跑 mcp__supabase__generate_typescript_types）
 - **卡關**：無（artifacts 完整；待 team lead 執行型別生成 + Codex review + APPLY）
 - **下次優先**：team lead 並行發起 design.md 內 Codex prompt；通過後 APPLY（tasks.md task 0→8）
+### 2026-06-11 harden-supabase-security — APPLY + ARCHIVE 完成
+
+- **已完成**：migration 021 APPLY 完成（DB gate 全綠）；建 ADR-24（public_profiles 維持 SECURITY DEFINER + 投影遮罩 PII，否決 security_invoker；承接並修正 ADR-01 backlog）；建 F-024（developer_whitelist RLS enabled 0 policy 靜默空 P1 根因 + 修復通則）；建 F-025（migration 015 把 social_channels 補回 anon view 回退 F-014，view 補回私人欄位前必須遮罩 PII 通則）；雙向 crossref 回填（ADR-01 / F-014 / ADR-14 / REF-004 / REF-005 / REF-011 的 referenced_by 加入 ADR-24 / F-024 / F-025）；Pre-archive Gate FAIL=0；latest.md 已更新
+- **§6.7 說明**：Codex PROPOSE 階段 §6.5 已審（M1 決策依據）；今日額度滿無法重跑，DB gate 全綠 + 既有審查文件化跳過；Gate 視為 PASS-with-documented-skip
+- **卡關**：無（等主代理執行 openspec archive）
+- **已 archive**：`2026-06-10-harden-supabase-security`；commit + merge main 完成；後續 change 候選：social-channels-separate-table（拆 profile_contacts 表）
 
 ### 2026-06-11 環境健診 + normalize-profiles-and-server-canonical 補記
 

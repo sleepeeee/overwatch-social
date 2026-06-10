@@ -4,7 +4,7 @@ title: 玩家詳細頁 social_channels 透過 authenticated 直接查 profiles �
 status: Accepted
 date: 2026-06-02
 references_to: [REF-016, REF-017, F-012, F-014]
-referenced_by: [F-014]
+referenced_by: [F-014, ADR-24, F-025]
 ---
 
 ## 背景

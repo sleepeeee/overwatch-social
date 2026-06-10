@@ -8,7 +8,7 @@ version: "Supabase 2026"
 last_updated: 2026-06-03
 official: true
 references_to: [REF-004, REF-005]
-referenced_by: [REF-012, F-005, ADR-05]
+referenced_by: [REF-012, F-005, ADR-05, ADR-24]
 ---
 
 ## 摘要
