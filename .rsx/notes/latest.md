@@ -7,19 +7,18 @@
 ---
 
 <!-- ZONE_A_START -->
-> **Zone A 最後更新：2026-06-11（harden-supabase-security ARCHIVE 前置）**
+> **Zone A 最後更新：2026-06-11（C2 ARCHIVE 完成，待主代理執行 openspec archive；C3 待 propose）**
 
 ## 現在在做什麼
 
-`harden-supabase-security` change APPLY 完成（migration 021 已部署生產，DB gate 全綠）。
-rsx-archiver 執行 §4 ARCHIVE + §Z Pre-archive Gate：ADR-24 / F-024 / F-025 已建，crossref 回填完成，latest.md 已更新。
-等主代理執行 `openspec archive harden-supabase-security`。
+團隊模式（Agent 多代理協作）按 rsx 流程推進三個 DB/安全 change：
+- **C1 `harden-supabase-security`** ✅ 全流程完成並 archive（migration 021 部署生產、ADR-24/F-024/F-025、commit、merge main）。
+- **C2 `adopt-supabase-generated-types`** ✅ APPLY + ARCHIVE 完成（tasks 全勾、ADR-25/F-026 建立、crossref 回填、Gate PASS）；待主代理執行 `openspec archive adopt-supabase-generated-types`。
+- **C3 `audit-developer-capture-injection`** ⏳ 待 propose。
 
 ## 進行中的 Changes（未 archive）
 
-| Change | 狀態 |
-|---|---|
-| harden-supabase-security | APPLY DONE，等主代理 openspec archive |
+（無。C2 Pre-archive Gate PASS，等待主代理 openspec archive 指令後即完成）
 
 ## 待 Propose Changes（依優先度）
 
@@ -32,6 +31,8 @@ rsx-archiver 執行 §4 ARCHIVE + §Z Pre-archive Gate：ADR-24 / F-024 / F-025 
 
 | Change | 時間 | 備註 |
 |---|---|---|
+| adopt-supabase-generated-types | 2026-06-11 | Supabase 生成型別 + createClient<Database> 泛型注入；toSocialChannels helper 收斂；移除約 20 個多餘 as 斷言；PLACEHOLDER_BATTLE_TAG 常數化；tsc 0 errors + 16/16 build；ADR-25/F-026；分支 feature/backend-generated-types |
+| harden-supabase-security | 2026-06-11 | Supabase 安全邊界硬化 migration 021；遮罩 social_channels PII（修 migration 015 回退 F-014）；developer_whitelist RLS 修復（P1）；function search_path + bucket listing；ADR-24/F-024/F-025 |
 | normalize-profiles-and-server-canonical | 2026-06-11 | OW server canonical 雙層防線 + user_profiles 補齊 + 孤兒卡軟下架；ADR-23；migration 019/020；**事後補記**（原走 PR #3 未走 rsx）|
 | seo-improvements | 2026-06-10 | 全站 canonical + 各頁 Metadata + 首頁 JSON-LD |
 | user-identity-global-nickname | 2026-06-10 | 全站暱稱層 + Dev Console 用戶視圖；F-023/ADR-22/REF-022/REF-023；migration 016/017 |
@@ -52,12 +53,28 @@ rsx-archiver 執行 §4 ARCHIVE + §Z Pre-archive Gate：ADR-24 / F-024 / F-025 
 
 ## Zone B — 工作日誌（追加，由新到舊）
 
-### 2026-06-11 harden-supabase-security — ARCHIVE 前置（Gate + ADR/Finding/crossref）
+### 2026-06-11 adopt-supabase-generated-types — ARCHIVE 準備完成（rsx-archiver sub-agent）
+
+- **已完成**：tasks.md task 0→8 全部勾選；建 ADR-25（生成型別 + OWPlayerCard anti-corruption layer 邊界決策）；建 F-026（social_channels Json 型別分歧 + toSocialChannels helper 收斂通則）；雙向 crossref 回填（REF-024/025/026 referenced_by 加 ADR-25/F-026；F-025 referenced_by 加 F-026；ADR-24/ADR-01 referenced_by 加 ADR-25）；Pre-archive Gate FAIL=0 WARN=0；latest.md Zone A 覆寫 + Zone B 追加
+- **§6.7 說明**：§6.5 第二意見由 Gemini 完成（PASS），Codex 今日額度滿依雙臂規範降級；tsc 0 errors + build 全綠 + Gemini PASS，文件化跳過 Codex §6.7 重跑；lean archiving 規則適用（Task 7.5 驗收整合為補勾選，未執行新實質工作）
+- **卡關**：無
+- **下次優先**：主代理執行 `openspec archive adopt-supabase-generated-types`；之後 C3 `audit-developer-capture-injection` propose
+
+### 2026-06-11 adopt-supabase-generated-types — PROPOSE 完成（orchestrator sub-agent）
+
+- **背景**：C2，消除 44 個跨資料邊界手動 `as` 斷言（grep 實測：browse 14/profile 14/homepage 6/developer 5/userProfile 3/alignment 2），改用 Supabase 生成型別 + `createClient<Database>` 泛型
+- **已完成**：4 artifacts（proposal/design/spec/tasks）+ REF-024（Database generic）/REF-025（social_channels view vs table 型別分歧）/REF-026（getSystemStats 魔術字串審計）；`openspec validate --strict` PASS
+- **核心設計決策**：保留 OWPlayerCard 作 anti-corruption layer（不被生成型別取代）；social_channels 型別分歧收斂於單一 helper；魔術字串抽 PLACEHOLDER_BATTLE_TAG 常數（方案 A，行為不變）；無 DB schema 變更
+- **最大風險（已標記）**：social_channels view（C1 遮罩布林）vs base table（帳號字串）生成型別皆為 Json，tsc 無法防隱私回歸 → 需 runtime smoke，不能只靠 build；生產 DB vs repo migration drift（C1 遮罩 migration 未落地 repo，015/017 仍未遮罩版）
+- **跳過項目**：Stage 1 explorer 委派（F-039 sub-agent 無法 spawn Agent，改主代理直接 inline 探索）；Stage 6 Codex §6.5（同因，prompt 備於 design.md，待 team lead 並行發起，**未捏造評分**）；型別生成指令（無 Supabase MCP，待 team lead 跑 mcp__supabase__generate_typescript_types）
+- **卡關**：無（artifacts 完整；待 team lead 執行型別生成 + Codex review + APPLY）
+- **下次優先**：team lead 並行發起 design.md 內 Codex prompt；通過後 APPLY（tasks.md task 0→8）
+### 2026-06-11 harden-supabase-security — APPLY + ARCHIVE 完成
 
 - **已完成**：migration 021 APPLY 完成（DB gate 全綠）；建 ADR-24（public_profiles 維持 SECURITY DEFINER + 投影遮罩 PII，否決 security_invoker；承接並修正 ADR-01 backlog）；建 F-024（developer_whitelist RLS enabled 0 policy 靜默空 P1 根因 + 修復通則）；建 F-025（migration 015 把 social_channels 補回 anon view 回退 F-014，view 補回私人欄位前必須遮罩 PII 通則）；雙向 crossref 回填（ADR-01 / F-014 / ADR-14 / REF-004 / REF-005 / REF-011 的 referenced_by 加入 ADR-24 / F-024 / F-025）；Pre-archive Gate FAIL=0；latest.md 已更新
 - **§6.7 說明**：Codex PROPOSE 階段 §6.5 已審（M1 決策依據）；今日額度滿無法重跑，DB gate 全綠 + 既有審查文件化跳過；Gate 視為 PASS-with-documented-skip
 - **卡關**：無（等主代理執行 openspec archive）
-- **下次優先**：主代理執行 `openspec archive harden-supabase-security`；後續 change 候選：social-channels-separate-table（拆 profile_contacts 表）
+- **已 archive**：`2026-06-10-harden-supabase-security`；commit + merge main 完成；後續 change 候選：social-channels-separate-table（拆 profile_contacts 表）
 
 ### 2026-06-11 環境健診 + normalize-profiles-and-server-canonical 補記
 

@@ -1,5 +1,8 @@
 export type { UserProfile } from "@/types/auth";
 
+/** 預設佔位 BattleTag（mock 預設值）；後台統計用於排除「未實際填寫」的名片。 */
+export const PLACEHOLDER_BATTLE_TAG = "愛喝奶茶#3342";
+
 export interface OWPlayerCard {
   card_id: string;           // 名片唯一 ID
   user_id: string;           // 關聯至 UserProfile.id 的外鍵

@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import DeveloperConsoleClient from "./DeveloperConsoleClient";
+import { PLACEHOLDER_BATTLE_TAG } from "@/types/card";
 
 export const metadata = {
   title: "開發者主控台 | Overwatch Social",
@@ -29,8 +30,8 @@ export default async function Page() {
 
   // 格式化白名單資料
   const whitelist = (whitelistData || []).map(item => ({
-    email: item.email as string,
-    created_at: item.created_at as string,
+    email: item.email,
+    created_at: item.created_at,
   }));
 
   // 讀取統計 + 英雄流行度（共享 supabase client，消除重複 getUser() auth round-trip）
@@ -39,7 +40,7 @@ export default async function Page() {
     supabase.from("profiles").select("user_id", { count: "exact", head: true }),
     supabase.from("profiles").select("user_id", { count: "exact", head: true })
       .not("battle_tag", "is", null)
-      .neq("battle_tag", "愛喝奶茶#3342"),
+      .neq("battle_tag", PLACEHOLDER_BATTLE_TAG),
     supabase.rpc("get_hero_stats"),
   ]);
 
