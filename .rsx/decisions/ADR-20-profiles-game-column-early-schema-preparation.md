@@ -4,7 +4,7 @@ title: 趁早在 profiles 表加 game 欄位（early schema preparation），避
 status: Accepted
 date: 2026-06-04
 references_to: []
-referenced_by: []
+referenced_by: [ADR-23]
 ---
 
 ## 背景

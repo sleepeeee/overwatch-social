@@ -7,12 +7,13 @@
 ---
 
 <!-- ZONE_A_START -->
-> **Zone A 最後更新：2026-06-04（user-identity-global-nickname APPLY + ARCHIVE 完成）**
+> **Zone A 最後更新：2026-06-11（環境健診 + 補記 migration 019/020 normalize change）**
 
 ## 現在在做什麼
 
-`user-identity-global-nickname` 全部完成（PROPOSE → APPLY → ARCHIVE）。
-**待辦：在 Supabase Dashboard 手動執行 migration 016 + 017**（SQL 已建立）。
+環境健診完成（build PASS / DB 複查全綠 / rsx 流程確認健康）。
+回補 `normalize-profiles-and-server-canonical` change 記錄（migration 019/020 原走傳統 PR #3，未走 rsx，已事後補 ADR-23 + archive）。
+**決策（2026-06-11）**：回歸 rsx + 輕量例外——後端結構性變更走完整 rsx，明顯無風險 1-2 檔小修沿用 CLAUDE.md「直接推 main」例外。
 
 ## 進行中的 Changes（未 archive）
 
@@ -29,25 +30,36 @@
 
 | Change | 時間 | 備註 |
 |---|---|---|
-| backend-infra-improvements | 2026-06-04 | display_name/game 進 view + browse cache + alignment cache；F-020/F-021/ADR-18/ADR-19/ADR-20；WARN=2（skip 記錄）|
-| homepage-hud-removal-3col-layout | 2026-06-03 | 移除 HUD + 三欄等高；F-019/ADR-17；WARN=1（Zone B 補寫） |
-| display-name-persistent-sync | 2026-06-03 | display_name DB 持久化；F-016/ADR-16；WARN=1（Task 4.3 skip，理由文件化）|
-| mock-data-disclosure | 2026-06-03 | VAL/LoL 假卡片 banner；F-017；WARN=0 |
-| og-image-env-guard | 2026-06-03 | og:image fallback 修補；F-018；WARN=0 |
-| 後台效能三連 | 2026-06-03 | DB 索引 + 伺服器過濾下推 + 廣場快取 |
-| capture-hud-full-reimplementation | 2026-06-03 | Git Outpost HUD 完整移植；F-008/F-009/ADR-08/ADR-09 |
-| share-page-completion | 2026-06-03 | 名片分享頁 OG meta；F-007/ADR-07 |
-| userprofile-auth-metadata-sync | 2026-06-03 | AuthContext.userProfile；F-006/ADR-06 |
-| hero-stats-db-aggregation | 2026-06-03 | LIMIT 500 缺陷修復；F-005/ADR-05 |
-| developer-console-backend | 2026-06-02 | 對準儀改存 Supabase DB；F-004/ADR-04 |
-| auth-ux-login-gate | 2026-06-01 | 登出按鈕+LoginModal+Profile overlay；F-003/ADR-03 |
-| auth-fix-and-developer-role | 2026-06-01 | 登入修復+developer mode；F-002/ADR-02 |
-| google-oauth-supabase-auth | 2026-06-01 | OAuth 基礎建設；ADR-01/F-001 |
+| normalize-profiles-and-server-canonical | 2026-06-11 | OW server canonical 雙層防線 + user_profiles 補齊 + 孤兒卡軟下架；ADR-23；migration 019/020；**事後補記**（原走 PR #3 未走 rsx）|
+| seo-improvements | 2026-06-10 | 全站 canonical + 各頁 Metadata + 首頁 JSON-LD |
+| user-identity-global-nickname | 2026-06-10 | 全站暱稱層 + Dev Console 用戶視圖；F-023/ADR-22/REF-022/REF-023；migration 016/017 |
+| brand-logo-upgrade | 2026-06-10 | AFTER MIDNIGHT 品牌 Logo 升級 + 明暗切換 |
+| restore-profile-languages | 2026-06-10 | 個人檔案語言設定還原 |
+| add-generic-tags | 2026-06-10 | 通用標籤系統 |
+| theme-share-page-refresh | 2026-06-10 | 分享頁星空主題刷新 |
+| restore-final-html-visual-parity | 2026-06-06 | 還原最終 HTML 視覺一致性 |
+| modularize-browse-game-directories | 2026-06-06 | 廣場多遊戲目錄模組化 |
+| fix-adversarial-audit-issues | 2026-06-06 | 對抗式審查問題修復 |
+| backend-infra-improvements | 2026-06-04 | view + browse cache + alignment cache；F-020/F-021/ADR-18/19/20 |
+| one-card-per-game-constraint | 2026-06-04 | profiles 代理鍵 PK + UNIQUE(user_id,game)；F-022/ADR-21 |
+
+> 完整歸檔史見 `openspec/changes/archive/`（截至 2026-06-11 共 48 個 change）。
 <!-- ZONE_A_END -->
 
 ---
 
 ## Zone B — 工作日誌（追加，由新到舊）
+
+### 2026-06-11 環境健診 + normalize-profiles-and-server-canonical 補記
+
+- **背景**：上個 session 因工具輸出串流污染（注入假內容）結束，本 session 重新驗證環境並回補脫軌的 rsx 記錄
+- **環境健診**：sentinel 包夾驗證乾淨；git 與 origin/main 同步；Supabase MCP 正常；`npm run build` exit 0（Compiled 52s + TypeScript 0 errors + 16/16 static pages，推翻上個 session 的 0/1 矛盾——確認為污染造成）
+- **DB 複查**：profiles=5 / user_profiles=6；5/5 overwatch 名片 server 全為 `asia`（canonical）；CHECK 約束 `profiles_overwatch_server_valid` 已生效；migration 019/020 已套正式 DB
+- **rsx 健檢**：推翻交接疑點——rsx 流程非常健康（22 ADR / 23 REF / 23 finding / 48 archive）。抽查 ADR-21 vs 實際 DB schema 一字不差（代理鍵 PK + composite unique 都在）。唯一真實斷檔：latest.md Zone A 停在 6/04 + PR #3 normalize（migration 019）+ migration 020 未走 rsx
+- **決策**：使用者選「回歸 rsx + 輕量例外」
+- **已完成補記**：建 ADR-23（OW server 雙層防線 + 條件式 CHECK + 孤兒卡軟下架）；建 change archive `2026-06-11-normalize-profiles-and-server-canonical`（proposal/design/tasks/spec）；latest.md Zone A 覆寫 + Zone B 追加
+- **卡關**：無
+- **下次優先**：§A task 5（eslint --fix）、task 6（npm audit）、task 7（建新功能分支，先問分支類型與功能名）；§B task 8（建 project-medic 跨專案維護 skill，先給設計草案）
 
 ### 2026-06-04 user-identity-global-nickname — APPLY + ARCHIVE
 
