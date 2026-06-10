@@ -111,7 +111,7 @@ export default async function PlayerDetailPage({ params }: Props) {
               <div key={hero.id} className="w-16 h-16 rounded-2xl overflow-hidden border border-[#8c7c6c]/15 bg-white/60 shadow-sm">
                 <img
                   src={`/images/heroes/avatars/${hero.id}.png`}
-                  alt={hero.name}
+                  alt={`鬥陣特攻英雄 ${hero.name} 常用英雄縮圖`}
                   className="w-full h-full object-cover"
                   onError={(e) => {
                     (e.target as HTMLImageElement).src = "/images/heroes/silhouette.png";

@@ -57,7 +57,7 @@ export default function InteractiveAvatar({
           <div className="w-full h-full rounded-full overflow-hidden border border-white bg-white/40 backdrop-blur-md relative">
             <img
               src={currentAvatarUrl}
-              alt={displayName}
+              alt={`玩家頭像：${displayName}`}
               className="w-full h-full object-cover select-none transition-transform duration-500 group-hover/avatar:scale-110"
               draggable="false"
             />
@@ -112,7 +112,7 @@ export default function InteractiveAvatar({
                   <div className="relative w-18 h-18 rounded-full overflow-hidden border border-white bg-white/50 mb-2">
                     <img
                       src={avatar.url}
-                      alt={avatar.name}
+                      alt={`玩家頭像選項：${avatar.name}`}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                       draggable="false"
                     />

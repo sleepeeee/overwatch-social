@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { OWPlayerCard } from "@/types/card";
 import { HEROES_CONFIG, PRESET_TAGS } from "@/data/mockPlayers";
-import { Copy, Eye, EyeOff, Mic, MicOff, Globe, Sparkles } from "lucide-react";
+import { Copy, Eye, EyeOff, Globe } from "lucide-react";
 import { SocialIcon } from "@/components/ui/SocialIcons";
 import { HERO_ALIGNMENTS, DEFAULT_ALIGNMENT } from "@/data/heroAlignments";
 import { HeroCardBackground } from "./HeroCardBackground";
@@ -28,8 +28,6 @@ export default function OWCard({
   onLoginRequired,
 }: OWCardProps) {
   const [copiedTag, setCopiedTag] = useState(false);
-  const [activeSocial, setActiveSocial] = useState<string | null>(null);
-  const [copiedSocial, setCopiedSocial] = useState<string | null>(null);
   const isExportMode = renderMode === "export";
 
   // 🛡️ [Mitigation] 強固解構，全面配置預設值，徹底阻斷型別缺失與空指針崩潰
@@ -67,14 +65,6 @@ export default function OWCard({
     navigator.clipboard.writeText(battle_tag);
     setCopiedTag(true);
     setTimeout(() => setCopiedTag(false), 2000);
-  };
-
-  // 🛡️ [Mitigation] 複製社群帳號強固保護
-  const handleCopySocial = (platform: string, account: string) => {
-    if (!account) return;
-    navigator.clipboard.writeText(account);
-    setCopiedSocial(platform);
-    setTimeout(() => setCopiedSocial(null), 2000);
   };
 
   // 🛡️ [Mitigation] 取得展示的 BattleTag (未登入遮罩 #****)
@@ -171,14 +161,14 @@ export default function OWCard({
 
   return (
     <div 
-      className="glass-card relative w-full max-w-[420px] mx-auto p-5 overflow-hidden flex flex-col justify-between group/card rounded-2xl border border-white/[0.05] hover:shadow-[0_0_30px_rgba(192,132,252,0.15)] transition-all duration-700" 
+      className="glass-card relative w-full max-w-[420px] mx-auto p-4 sm:p-5 overflow-hidden flex flex-col justify-between group/card rounded-2xl border border-white/[0.05] hover:shadow-[0_0_30px_rgba(192,132,252,0.15)] transition-all duration-700" 
       style={{ fontFamily: "var(--theme-font-family), sans-serif" }}
     >
       {/* 頂部極光橘發光邊 */}
       <div className="absolute top-0 left-0 right-0 h-[2.5px] opacity-40 transition-opacity duration-700 group-hover/card:opacity-100 bg-amber-500"></div>
 
       {/* 浮水印 */}
-      <div className="absolute right-[-20px] bottom-[-20px] w-[180px] h-[180px] text-white/[0.02] pointer-events-none select-none z-0">
+      <div className="absolute right-[-20px] bottom-[-20px] w-[140px] h-[140px] sm:w-[180px] sm:h-[180px] text-white/[0.02] pointer-events-none select-none z-0">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" className="w-full h-full">
           <path d="M12 2a10 10 0 0 1 7.54 16.59l-3.23-3.23A5.5 5.5 0 0 0 12 7.5a5.5 5.5 0 0 0-4.31 7.86L4.46 18.59A10 10 0 0 1 12 2z" />
           <path d="M7.78 19.34a7.5 7.5 0 0 0 8.44 0L12 15.12z" />
@@ -186,7 +176,7 @@ export default function OWCard({
       </div>
 
       {/* Header: Game Info */}
-      <div className="flex justify-between items-center border-b border-white/[0.04] pb-3 mb-4 gap-2">
+      <div className="flex justify-between items-center border-b border-white/[0.04] pb-2.5 sm:pb-3 mb-3 sm:mb-4 gap-2">
         <span className="text-zinc-400 font-bold text-[11px] sm:text-xs tracking-widest uppercase whitespace-nowrap shrink-0">Overwatch | 鬥陣特工</span>
         <span className="bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-black tracking-widest whitespace-nowrap shrink-0 uppercase">
           {getOverwatchServerLabel(server)}
@@ -194,7 +184,7 @@ export default function OWCard({
       </div>
 
       {/* Standalone UID Clipboard Box */}
-      <div className="bg-black/40 border border-white/[0.03] rounded-xl p-3 flex items-center justify-between mb-4 relative z-10">
+      <div className="bg-black/40 border border-white/[0.03] rounded-xl p-2.5 sm:p-3 flex items-center justify-between mb-3 sm:mb-4 relative z-10">
         <div className="flex flex-col">
           <span className="text-[9px] text-zinc-400 font-mono">UID</span>
           <span className="text-xs text-zinc-100 font-mono font-semibold select-all mt-0.5">{getDisplayBattleTag()}</span>
@@ -224,7 +214,7 @@ export default function OWCard({
       </div>
 
       {/* Hero Showcase Window */}
-      <div className="relative w-full h-[180px] overflow-hidden mb-4 flex border border-white/[0.05] rounded-xl bg-black/20">
+      <div className="relative w-full h-[142px] sm:h-[180px] overflow-hidden mb-3 sm:mb-4 flex border border-white/[0.05] rounded-xl bg-black/20">
         {[0, 1, 2].map((index) => {
           const heroId = selected_heroes[index];
           const heroInfo = heroId ? getHeroInfo(heroId) : null;
@@ -254,7 +244,7 @@ export default function OWCard({
                   <div className="relative w-full h-[90%] flex justify-center items-start select-none transition-transform duration-500 group-hover/hero:scale-[1.03] z-10">
                     <img
                       src={`/images/heroes/full/${heroInfo.id}.png`}
-                      alt={heroInfo.name}
+                      alt={`鬥陣特攻英雄 ${heroInfo.name} 名片立繪`}
                       loading="lazy"
                       referrerPolicy="no-referrer"
                       style={imgStyle}
@@ -276,7 +266,7 @@ export default function OWCard({
       </div>
 
       {/* Tags Section */}
-      <div className="flex flex-wrap justify-center gap-1.5 mb-4 px-1 min-h-[34px] items-center">
+      <div className="flex flex-wrap justify-center gap-1.5 mb-3 sm:mb-4 px-1 min-h-[30px] sm:min-h-[34px] items-center">
         {tags.length > 0 ? (
           tags.map((tagText) => (
             <span
@@ -293,20 +283,20 @@ export default function OWCard({
       </div>
 
       {/* Whisper quote box */}
-      <div className="bg-white/[0.015] border-l-2 border-auroraMint/40 p-3 rounded-r-lg mb-4 flex-grow flex flex-col justify-between">
+      <div className="bg-white/[0.015] border-l-2 border-auroraMint/40 p-2.5 sm:p-3 rounded-r-lg mb-3 sm:mb-4 flex-grow flex flex-col justify-between">
         <div className="text-zinc-400 text-xs font-bold flex gap-1 items-start mb-1">
           <span className="text-[9px] uppercase tracking-widest text-zinc-500 font-mono">留言 // Whisper</span>
         </div>
         <p className="text-zinc-200 text-[11px] leading-relaxed font-light font-sans italic px-1 break-words line-clamp-3">
-          "{message || "這個玩家很慢速，什麼都沒有留下..."}"
+          &ldquo;{message || "這個玩家很慢速，什麼都沒有留下..."}&rdquo;
         </p>
       </div>
 
       {/* Card Footer */}
-      <div className="flex flex-col gap-3 pt-3 border-t border-white/[0.04] mt-auto">
+      <div className="flex flex-col gap-2.5 sm:gap-3 pt-2.5 sm:pt-3 border-t border-white/[0.04] mt-auto">
         <div className="flex justify-between items-center gap-2">
           <div className="flex items-center gap-1.5 text-[10px] text-zinc-300 font-mono min-w-0">
-            <span>🌐</span>
+            <Globe size={12} className="shrink-0 text-zinc-500" aria-hidden="true" />
             <span className="inline-block truncate max-w-[140px] sm:max-w-[170px] align-middle text-zinc-400" title={languages.join('、')}>{languages.length > 0 ? languages.join('、') : "未設定"}</span>
           </div>
           <div className="flex items-center gap-1.5 shrink-0">

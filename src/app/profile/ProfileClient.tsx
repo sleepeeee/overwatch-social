@@ -69,6 +69,26 @@ const LOL_HEROES = [
   { id: "thresh", name: "瑟雷西 (Thresh)", role: "support" },
 ];
 
+type EditableGame = "ow" | "val" | "lol";
+type HeroRoleFilter = "All" | "Tank" | "Dps" | "Support";
+
+const HERO_ROLE_FILTERS: HeroRoleFilter[] = ["All", "Tank", "Dps", "Support"];
+
+const getGameDisplayName = (game: EditableGame) => {
+  if (game === "ow") return "鬥陣特攻";
+  if (game === "val") return "特戰英豪";
+  return "英雄聯盟";
+};
+
+const getHeroDisplayNameById = (game: EditableGame, heroId: string) => {
+  const heroList = game === "ow" ? HEROES_CONFIG : game === "val" ? VAL_HEROES : LOL_HEROES;
+  return heroList.find((hero) => hero.id === heroId)?.name ?? heroId;
+};
+
+const getCharacterImageAlt = (game: EditableGame, heroName: string, purpose: string) => {
+  return `${getGameDisplayName(game)}角色 ${heroName} ${purpose}`;
+};
+
 const getColorClasses = (game: "ow" | "val" | "lol" | null) => {
   switch (game) {
     case "val":
@@ -145,7 +165,7 @@ function CosmicLivePreviewCard({
 }: {
   cardData: OWPlayerCard;
   gameType: "val" | "lol";
-  colorClasses: any;
+  colorClasses: ReturnType<typeof getColorClasses>;
 }) {
   const {
     server = "",
@@ -214,7 +234,7 @@ function CosmicLivePreviewCard({
                   <div className="relative w-full h-[90%] flex justify-center items-start select-none transition-transform duration-500 group-hover/hero:scale-[1.03] z-10 mt-2">
                     <img
                       src={`/images/heroes/full/${gameType}_${heroInfo.id}.png`}
-                      alt={heroInfo.name}
+                      alt={getCharacterImageAlt(gameType, heroInfo.name, "名片立繪")}
                       className="max-w-[150%] max-h-[120%] object-contain select-none filter drop-shadow-[0_6px_12px_rgba(0,0,0,0.5)]"
                       draggable="false"
                       onError={(e) => {
@@ -256,7 +276,7 @@ function CosmicLivePreviewCard({
           <span className="text-[9px] uppercase tracking-widest text-zinc-500 font-mono">留言 // Whisper</span>
         </div>
         <p className="text-zinc-200 text-[11px] leading-relaxed font-light font-sans italic px-1 break-words line-clamp-3">
-          "{message || "這個玩家很慢速，什麼都沒有留下..."}"
+          &ldquo;{message || "這個玩家很慢速，什麼都沒有留下..."}&rdquo;
         </p>
       </div>
 
@@ -878,7 +898,7 @@ export default function ProfilePage() {
                         <div key={heroId} className="w-6 h-6 rounded-full overflow-hidden border border-white/10 bg-black/40 flex items-center justify-center shrink-0">
                           <img
                             src={`/images/heroes/avatars/${heroId}.png`}
-                            alt={heroId}
+                            alt={getCharacterImageAlt("ow", getHeroDisplayNameById("ow", heroId), "常用英雄縮圖")}
                             className="w-full h-full object-cover"
                             onError={(e) => {
                               (e.target as HTMLImageElement).src = '/images/heroes/silhouette.png';
@@ -925,7 +945,7 @@ export default function ProfilePage() {
                         <div key={heroId} className="w-6 h-6 rounded-full overflow-hidden border border-white/10 bg-black/40 flex items-center justify-center shrink-0">
                           <img
                             src={`/images/heroes/avatars/val_${heroId}.png`}
-                            alt={heroId}
+                            alt={getCharacterImageAlt("val", getHeroDisplayNameById("val", heroId), "常用角色縮圖")}
                             className="w-full h-full object-cover"
                             onError={(e) => {
                               (e.target as HTMLImageElement).src = '/images/heroes/silhouette.png';
@@ -972,7 +992,7 @@ export default function ProfilePage() {
                         <div key={heroId} className="w-6 h-6 rounded-full overflow-hidden border border-white/10 bg-black/40 flex items-center justify-center shrink-0">
                           <img
                             src={`/images/heroes/avatars/lol_${heroId}.png`}
-                            alt={heroId}
+                            alt={getCharacterImageAlt("lol", getHeroDisplayNameById("lol", heroId), "常用英雄縮圖")}
                             className="w-full h-full object-cover"
                             onError={(e) => {
                               (e.target as HTMLImageElement).src = '/images/heroes/silhouette.png';
@@ -1278,11 +1298,11 @@ export default function ProfilePage() {
                 {/* 篩選標籤 */}
                 {editingGame === "ow" && (
                   <div className="flex space-x-1 bg-black/40 p-0.5 rounded border border-white/5 text-[9px] font-mono">
-                    {["All", "Tank", "Dps", "Support"].map((role) => (
+                    {HERO_ROLE_FILTERS.map((role) => (
                       <button
                         key={role}
                         type="button"
-                        onClick={() => setHeroRoleFilter(role as any)}
+                        onClick={() => setHeroRoleFilter(role)}
                         className={`px-2 py-1 rounded transition-colors cursor-pointer ${
                           heroRoleFilter === role ? "bg-white/10 text-white font-bold" : "text-zinc-400 hover:text-white"
                         }`}
@@ -1318,7 +1338,7 @@ export default function ProfilePage() {
                       <div className="w-8 h-8 rounded-full overflow-hidden border border-white/10 bg-black/40 flex justify-center items-center shadow-sm">
                         <img 
                           src={editingGame === "ow" ? `/images/heroes/avatars/${hero.id}.png` : `/images/heroes/avatars/${editingGame}_${hero.id}.png`} 
-                          alt={hero.name} 
+                          alt={getCharacterImageAlt(editingGame, hero.name, "選擇縮圖")} 
                           className="w-full h-full object-cover"
                           onError={(e) => {
                             (e.target as HTMLImageElement).src = '/images/heroes/silhouette.png';
