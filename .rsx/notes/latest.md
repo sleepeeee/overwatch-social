@@ -7,18 +7,18 @@
 ---
 
 <!-- ZONE_A_START -->
-> **Zone A 最後更新：2026-06-11（C2 ARCHIVE 完成，待主代理執行 openspec archive；C3 待 propose）**
+> **Zone A 最後更新：2026-06-11（C2 + C3 ARCHIVE 準備完成，待主代理分別執行 openspec archive）**
 
 ## 現在在做什麼
 
-團隊模式（Agent 多代理協作）按 rsx 流程推進三個 DB/安全 change：
+團隊模式（Agent 多代理協作）按 rsx 流程推進三個 DB/安全 change，全部完成：
 - **C1 `harden-supabase-security`** ✅ 全流程完成並 archive（migration 021 部署生產、ADR-24/F-024/F-025、commit、merge main）。
 - **C2 `adopt-supabase-generated-types`** ✅ APPLY + ARCHIVE 完成（tasks 全勾、ADR-25/F-026 建立、crossref 回填、Gate PASS）；待主代理執行 `openspec archive adopt-supabase-generated-types`。
-- **C3 `audit-developer-capture-injection`** ⏳ 待 propose。
+- **C3 `audit-developer-capture-injection`** ✅ APPLY + ARCHIVE 完成（tasks 全勾、ADR-26/F-027/REF-027 建立、crossref 回填、Gate PASS）；待主代理執行 `openspec archive audit-developer-capture-injection`。
 
 ## 進行中的 Changes（未 archive）
 
-（無。C2 Pre-archive Gate PASS，等待主代理 openspec archive 指令後即完成）
+（無。C2 + C3 Pre-archive Gate 均 PASS，等待主代理 openspec archive 指令後即完成）
 
 ## 待 Propose Changes（依優先度）
 
@@ -52,6 +52,13 @@
 ---
 
 ## Zone B — 工作日誌（追加，由新到舊）
+
+### 2026-06-11 audit-developer-capture-injection (C3) — ARCHIVE 準備完成（rsx-archiver sub-agent）
+
+- **已完成**：tasks.md Task 1-5 全部勾選（測試新增、runner 擴充、全綠驗收、Gemini §6.5 審查、ARCHIVE 前置）；建 ADR-26（execFile + 參數陣列 + env 絕對路徑 shell 執行安全準則，含 Gemini 3 個 footnote N1/N2/N3）；建 F-027（audit-confirms-safe → characterization test 固化 pattern + 跨平台注入分隔符教訓 + 無測試覆蓋的安全寫法等同未受保護原則）；建 REF-027（Node.js child_process execFile vs exec shell 解析機制）；三路雙向 crossref 回填（ADR-26 ↔ F-027 ↔ REF-027）；Pre-archive Gate FAIL=0；latest.md Zone A 覆寫 + Zone B 追加
+- **§6.7 說明**：§6.5 第二意見由 Gemini 完成（PASS，M1/M2 已修補）；Codex 今日額度滿依雙臂規範降級記錄；12/12 test pass + build 全綠 + Gemini PASS，文件化跳過 Codex §6.7 重跑；lean archiving 適用（Task 5 為純 ARCHIVE 補勾選，Task 1-4 為實質工作）
+- **卡關**：無
+- **下次優先**：主代理依序執行 `openspec archive adopt-supabase-generated-types`（C2）、`openspec archive audit-developer-capture-injection`（C3）；之後 `favorites-collections` propose
 
 ### 2026-06-11 adopt-supabase-generated-types — ARCHIVE 準備完成（rsx-archiver sub-agent）
 

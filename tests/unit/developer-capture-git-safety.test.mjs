@@ -111,10 +111,10 @@ describe("developer-capture git 子系統 shell 執行安全（regression 固化
       () => callGitLikeProd(malicious),
       (err) => {
         const msg = String(err.stderr || err.message || "");
-        // git 用 "cannot change to '<path>'" 回報 -C 失敗 → 整串為單一目錄名
+        // git -C 失敗訊息含惡意路徑前段即證明整串被當單一目錄參數（部分匹配跨 git 版本穩定）
         assert.ok(
-          msg.includes(malicious),
-          `git stderr 應含完整惡意字串（證明被當字面參數），實得: ${msg.slice(0, 200)}`
+          msg.includes("/nonexistent_repo; touch X") || msg.includes(malicious),
+          `git stderr 應含惡意路徑字串（證明被當字面參數），實得: ${msg.slice(0, 200)}`
         );
         return true;
       }
