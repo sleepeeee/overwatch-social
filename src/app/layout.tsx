@@ -30,6 +30,9 @@ export const metadata: Metadata = {
     template: "%s | After Midnight",
   },
   description: "低侵入、可收藏的玩家名片宇宙。建立你的名片，遇見深夜還在線上的靈魂隊友。",
+  alternates: {
+    canonical: siteUrl || "https://aftermidnight-gg.vercel.app",
+  },
   icons: {
     icon: "/icon.png",
     apple: "/icon.png",

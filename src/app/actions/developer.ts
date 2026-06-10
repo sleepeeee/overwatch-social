@@ -177,36 +177,41 @@ export async function getHeroStats(): Promise<Array<{ heroId: string; count: num
 }
 
 /**
- * 讀取系統真實統計（需要 developer 角色才能查全部 profiles）
- * 注意：使用 developer-specific SELECT policy（004 migration 已加入）
+ * 讀取系統真實統計：玩家帳號與遊戲名片分開計算。
  */
 export async function getSystemStats() {
   try {
-    const { supabase, user: currentUser } = await ensureDeveloper();
+    const { supabase } = await ensureDeveloper();
 
-    const [totalResult, completedResult] = await Promise.all([
+    const [userResult, totalResult, completedResult] = await Promise.all([
+      supabase.from("user_profiles").select("*", { count: "exact", head: true }),
       supabase.from("profiles").select("*", { count: "exact", head: true }),
       supabase.from("profiles").select("*", { count: "exact", head: true })
         .not("battle_tag", "is", null)
         .neq("battle_tag", "愛喝奶茶#3342") // 排除預設佔位值，只計算真正填寫的名片
     ]);
 
+    if (userResult.error) {
+      console.error("getSystemStats user query failed:", userResult.error.message);
+      return { success: false, totalUsers: 0, totalProfiles: 0, completedProfiles: 0, error: userResult.error.message };
+    }
     if (totalResult.error) {
       console.error("getSystemStats total query failed:", totalResult.error.message);
-      return { success: false, totalProfiles: 0, completedProfiles: 0, error: totalResult.error.message };
+      return { success: false, totalUsers: 0, totalProfiles: 0, completedProfiles: 0, error: totalResult.error.message };
     }
     if (completedResult.error) {
       console.error("getSystemStats completed query failed:", completedResult.error.message);
-      return { success: false, totalProfiles: 0, completedProfiles: 0, error: completedResult.error.message };
+      return { success: false, totalUsers: 0, totalProfiles: 0, completedProfiles: 0, error: completedResult.error.message };
     }
 
     return {
       success: true,
+      totalUsers: userResult.count ?? 0,
       totalProfiles: totalResult.count ?? 0,
       completedProfiles: completedResult.count ?? 0,
     };
   } catch (err) {
     console.error("Failed to get system stats:", err);
-    return { success: false, totalProfiles: 0, completedProfiles: 0 };
+    return { success: false, totalUsers: 0, totalProfiles: 0, completedProfiles: 0 };
   }
 }

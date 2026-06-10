@@ -34,7 +34,8 @@ export default async function Page() {
   }));
 
   // 讀取統計 + 英雄流行度（共享 supabase client，消除重複 getUser() auth round-trip）
-  const [totalResult, completedResult, heroStatsResult] = await Promise.all([
+  const [totalUsersResult, totalCardsResult, completedResult, heroStatsResult] = await Promise.all([
+    supabase.from("user_profiles").select("user_id", { count: "exact", head: true }),
     supabase.from("profiles").select("user_id", { count: "exact", head: true }),
     supabase.from("profiles").select("user_id", { count: "exact", head: true })
       .not("battle_tag", "is", null)
@@ -42,7 +43,8 @@ export default async function Page() {
     supabase.rpc("get_hero_stats"),
   ]);
 
-  const totalProfiles = totalResult.count ?? 0;
+  const totalUsers = totalUsersResult.count ?? 0;
+  const totalProfiles = totalCardsResult.count ?? 0;
   const completedProfiles = completedResult.count ?? 0;
 
   // 🛡️ 容錯與型別安全轉換，若 RPC 失敗（如開發環境下未登入）降級為空陣列，防止頁面崩潰
@@ -57,6 +59,7 @@ export default async function Page() {
     <DeveloperConsoleClient
       initialWhitelist={whitelist}
       currentUserEmail={user?.email || "unknown@developer.com"}
+      totalUsers={totalUsers}
       totalProfiles={totalProfiles}
       completedProfiles={completedProfiles}
       heroStats={heroStats}

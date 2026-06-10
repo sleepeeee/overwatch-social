@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { ensureUserProfileForCurrentUser } from "@/lib/userProfileIdentity";
 
 function safeRedirectPath(next: string | null, origin: string): string {
   if (!next) return "/profile";
@@ -34,6 +35,11 @@ export async function GET(request: Request) {
 
   if (error) {
     return NextResponse.redirect(`${origin}/auth/error?reason=exchange_failed`);
+  }
+
+  const ensured = await ensureUserProfileForCurrentUser(supabase);
+  if (ensured.error) {
+    return NextResponse.redirect(`${origin}/auth/error?reason=user_profile_failed`);
   }
 
   const redirectPath = safeRedirectPath(next, origin);

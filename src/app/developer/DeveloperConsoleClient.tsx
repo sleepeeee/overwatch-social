@@ -40,6 +40,7 @@ interface ProfileRow {
 interface DeveloperConsoleClientProps {
   initialWhitelist: Array<{ email: string; created_at: string }>;
   currentUserEmail: string;
+  totalUsers?: number;
   totalProfiles?: number;
   completedProfiles?: number;
   heroStats?: Array<{ heroId: string; count: number }>;
@@ -93,6 +94,7 @@ const themeSchemes = {
 export default function DeveloperConsoleClient({
   initialWhitelist,
   currentUserEmail,
+  totalUsers = 0,
   totalProfiles = 0,
   completedProfiles = 0,
   heroStats = [],
@@ -554,19 +556,19 @@ export default function DeveloperConsoleClient({
                   <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">目前開發環境的連結指標與核心設定狀態</p>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   
                   {/* Card 1 */}
                   <div className="bg-white dark:bg-[#202428] rounded-xl p-5 border border-slate-200 dark:border-slate-800/80 shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden group">
                     <div className="absolute -right-4 -bottom-4 text-slate-100 dark:text-slate-800/30 text-7xl font-bold select-none font-mono pointer-events-none group-hover:scale-110 transition-transform">
-                      {totalProfiles}
+                      {totalUsers}
                     </div>
                     <div className="flex justify-between items-start">
                       <div>
-                        <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider block">已建立名片的特工</span>
+                        <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider block">玩家帳號資料</span>
                         <div className="flex items-baseline gap-2 mt-1">
-                          <span className="text-3xl font-bold tracking-tight text-slate-800 dark:text-slate-100">{totalProfiles}</span>
-                          <span className="text-xs text-slate-400">位特工</span>
+                          <span className="text-3xl font-bold tracking-tight text-slate-800 dark:text-slate-100">{totalUsers}</span>
+                          <span className="text-xs text-slate-400">位玩家</span>
                         </div>
                       </div>
                       <div className="p-2.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400">
@@ -574,12 +576,35 @@ export default function DeveloperConsoleClient({
                       </div>
                     </div>
                     <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/50 flex items-center justify-between">
-                      <span className="text-[10px] text-slate-400">{completedProfiles} 完整名片</span>
+                      <span className="text-[10px] text-slate-400">來源：user_profiles</span>
                       <span className="text-[10px] bg-slate-100 dark:bg-slate-800/80 text-slate-500 px-2 py-0.5 rounded-full font-mono">NORMAL</span>
                     </div>
                   </div>
 
                   {/* Card 2 */}
+                  <div className="bg-white dark:bg-[#202428] rounded-xl p-5 border border-slate-200 dark:border-slate-800/80 shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden group">
+                    <div className="absolute -right-4 -bottom-4 text-slate-100 dark:text-slate-800/30 text-7xl font-bold select-none font-mono pointer-events-none group-hover:scale-110 transition-transform">
+                      {totalProfiles}
+                    </div>
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider block">遊戲名片資料</span>
+                        <div className="flex items-baseline gap-2 mt-1">
+                          <span className="text-3xl font-bold tracking-tight text-slate-800 dark:text-slate-100">{totalProfiles}</span>
+                          <span className="text-xs text-slate-400">張名片</span>
+                        </div>
+                      </div>
+                      <div className="p-2.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400">
+                        <Cpu size={18} />
+                      </div>
+                    </div>
+                    <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/50 flex items-center justify-between">
+                      <span className="text-[10px] text-slate-400">{completedProfiles} 張完整名片，來源：profiles</span>
+                      <span className="text-[10px] bg-slate-100 dark:bg-slate-800/80 text-slate-500 px-2 py-0.5 rounded-full font-mono">CARDS</span>
+                    </div>
+                  </div>
+
+                  {/* Card 3 */}
                   <div className="bg-white dark:bg-[#202428] rounded-xl p-5 border border-slate-200 dark:border-slate-800/80 shadow-sm hover:shadow-md transition-all duration-300 relative overflow-hidden group">
                     <div className="absolute -right-4 -bottom-4 text-slate-100 dark:text-slate-800/30 text-7xl font-bold select-none font-mono pointer-events-none group-hover:scale-110 transition-transform">
                       {whitelist.length}

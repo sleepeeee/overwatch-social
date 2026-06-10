@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { OWPlayerCard } from "@/types/card";
 import { MOCK_PLAYERS, HEROES_CONFIG, SERVER_OPTIONS, MIC_OPTIONS } from "@/data/mockPlayers";
+import { normalizeOverwatchServer } from "@/lib/gameCatalog";
 import OWCard from "@/components/OWCard";
 import LoginModal from "@/components/LoginModal";
 import { Button } from "@/components/ui/button";
@@ -46,7 +47,7 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
   const toPlayerCard = (row: Record<string, unknown>): OWPlayerCard => ({
     card_id: (row.card_id as string) ?? (row.user_id as string),
     user_id: row.user_id as string,
-    server: row.server as string,
+    server: normalizeOverwatchServer(row.server as string),
     battle_tag: row.battle_tag as string,
     is_tag_visible: row.is_tag_visible as boolean,
     selected_heroes: (row.selected_heroes as string[]) ?? [],
@@ -57,7 +58,7 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
     social_channels: (row.social_channels as Record<string, string>) ?? {},
     mbti: (row.mbti as string) ?? undefined,
     display_name: (row.display_name as string) ?? undefined,
-    game: (row.game as string) ?? undefined,
+    game: "overwatch",
   });
 
   const loadPlayers = async (
@@ -93,7 +94,7 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
         .range(offset, offset + PAGE_SIZE - 1)
         .or(`battle_tag.ilike.%${searchQ}%,message.ilike.%${searchQ}%,mbti.ilike.%${searchQ}%`);
 
-      if (serverFilter !== "全部") query = query.eq("server", serverFilter);
+      if (serverFilter !== "全部") query = query.eq("server", normalizeOverwatchServer(serverFilter));
       if (micFilter !== "全部")   query = query.eq("mic_status", micFilter);
 
       const { data: rawData, error } = await query;
@@ -253,8 +254,8 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
               >
                 <option value="全部">全部伺服器</option>
                 {SERVER_OPTIONS.map((opt) => (
-                  <option key={opt} value={opt}>
-                    {opt}
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
                   </option>
                 ))}
               </select>

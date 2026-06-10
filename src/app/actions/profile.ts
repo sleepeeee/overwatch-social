@@ -1,6 +1,8 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { normalizeGameId, normalizeOverwatchServer } from "@/lib/gameCatalog";
+import { ensureUserProfileForCurrentUser } from "@/lib/userProfileIdentity";
 import { OWPlayerCard } from "@/types/card";
 import { revalidateTag } from "next/cache";
 
@@ -8,12 +10,13 @@ export async function getMyProfile(game = 'overwatch'): Promise<OWPlayerCard | n
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return null;
+  const gameId = normalizeGameId(game);
 
   const { data } = await supabase
     .from("profiles")
     .select("*")
     .eq("user_id", user.id)
-    .eq("game", game)
+    .eq("game", gameId)
     .single();
 
   if (!data) return null;
@@ -21,7 +24,7 @@ export async function getMyProfile(game = 'overwatch'): Promise<OWPlayerCard | n
   return {
     card_id: data.id ?? `card-${data.user_id}`,
     user_id: data.user_id,
-    server: data.server,
+    server: normalizeOverwatchServer(data.server),
     battle_tag: data.battle_tag,
     is_tag_visible: data.is_tag_visible,
     selected_heroes: data.selected_heroes ?? [],
@@ -32,7 +35,7 @@ export async function getMyProfile(game = 'overwatch'): Promise<OWPlayerCard | n
     social_channels: data.social_channels ?? {},
     mbti: data.mbti ?? undefined,
     display_name: (data.display_name as string) ?? undefined,
-    game: (data.game as string) ?? undefined,
+    game: normalizeGameId(data.game as string),
   };
 }
 
@@ -47,7 +50,7 @@ export async function getPublicProfile(userId: string): Promise<OWPlayerCard | n
   return {
     card_id: `card-${data.user_id}`,
     user_id: data.user_id as string,
-    server: data.server as string,
+    server: normalizeOverwatchServer(data.server as string),
     battle_tag: data.battle_tag as string,
     is_tag_visible: data.is_tag_visible as boolean,
     selected_heroes: (data.selected_heroes as string[]) ?? [],
@@ -58,7 +61,7 @@ export async function getPublicProfile(userId: string): Promise<OWPlayerCard | n
     social_channels: {},
     mbti: (data.mbti as string) ?? undefined,
     display_name: (data.display_name as string) ?? undefined,
-    game: (data.game as string) ?? undefined,
+    game: normalizeGameId(data.game as string),
   };
 }
 
@@ -67,13 +70,13 @@ export async function saveDisplayName(displayName: string): Promise<{ error?: st
   if (displayName.length > 30) return { error: "名稱長度超出限制（最多 30 字）" };
 
   const supabase = await createClient();
-  const { data: { user }, error: userError } = await supabase.auth.getUser();
-  if (userError || !user?.id) return { error: "未登入，無法儲存" };
+  const ensured = await ensureUserProfileForCurrentUser(supabase);
+  if (!ensured.user?.id || ensured.error) return { error: ensured.error ?? "未登入，無法儲存" };
 
   const { error } = await supabase
     .from("profiles")
     .upsert(
-      { user_id: user.id, game: 'overwatch', display_name: displayName.trim() },
+      { user_id: ensured.user.id, game: 'overwatch', display_name: displayName.trim() },
       { onConflict: "user_id,game" }
     );
 
@@ -106,21 +109,24 @@ export async function saveProfile(card: OWPlayerCard): Promise<{ error?: string 
   if ((card.languages ?? []).length > 3) return { error: "語言最多 3 個" };
 
   const supabase = await createClient();
-  const { data: { user }, error: userError } = await supabase.auth.getUser();
+  const ensured = await ensureUserProfileForCurrentUser(supabase);
 
-  if (userError || !user?.id) {
-    return { error: "未登入，無法儲存" };
+  if (!ensured.user?.id || ensured.error) {
+    return { error: ensured.error ?? "未登入，無法儲存" };
   }
 
-  const userId = user.id;
+  const userId = ensured.user.id;
+  const game = normalizeGameId(card.game);
+  const server = game === "overwatch" ? normalizeOverwatchServer(card.server) : card.server;
 
   const { error } = await supabase
     .from("profiles")
     .upsert(
       {
         user_id: userId,
-        game: card.game ?? 'overwatch',
-        server: card.server,
+        game,
+        // 防呆雷達：DB 只存 asia/america/europe，不存「亞洲伺服器」這種畫面文字。
+        server,
         battle_tag: card.battle_tag,
         is_tag_visible: card.is_tag_visible,
         selected_heroes: card.selected_heroes,

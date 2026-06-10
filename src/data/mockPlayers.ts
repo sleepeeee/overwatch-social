@@ -1,4 +1,5 @@
 import { OWPlayerCard, PresetTag, HeroConfig, UserProfile } from '../types/card';
+import { OVERWATCH_SERVER_OPTIONS } from "@/lib/gameCatalog";
 
 // 1. 後台預設標籤庫 (最多選3個)
 export const PRESET_TAGS: PresetTag[] = [
@@ -399,7 +400,7 @@ export const MOCK_PLAYERS: OWPlayerCard[] = [
   {
     card_id: 'card-hevelius',
     user_id: 'user-hevelius',
-    server: 'Asia Server',
+    server: 'asia',
     battle_tag: 'Hevelius#1777',
     is_tag_visible: true,
     selected_heroes: ['ana', 'zenyatta', 'kiriko'],
@@ -415,7 +416,7 @@ export const MOCK_PLAYERS: OWPlayerCard[] = [
   {
     card_id: 'card-solange',
     user_id: 'user-solange',
-    server: 'Asia Server',
+    server: 'asia',
     battle_tag: 'Solange#2888',
     is_tag_visible: true,
     selected_heroes: ['tracer', 'dva', 'mercy'],
@@ -432,7 +433,7 @@ export const MOCK_PLAYERS: OWPlayerCard[] = [
   {
     card_id: 'card-aurum',
     user_id: 'user-aurum',
-    server: 'Asia Server',
+    server: 'asia',
     battle_tag: 'Aurum#9999',
     is_tag_visible: true,
     selected_heroes: ['genji', 'hanzo', 'reaper'],
@@ -448,7 +449,7 @@ export const MOCK_PLAYERS: OWPlayerCard[] = [
   {
     card_id: 'card-meteor',
     user_id: 'user-meteor',
-    server: 'Asia Server',
+    server: 'asia',
     battle_tag: '流星#5542',
     is_tag_visible: true,
     selected_heroes: ['baptiste', 'kiriko', 'lucio'],
@@ -464,7 +465,7 @@ export const MOCK_PLAYERS: OWPlayerCard[] = [
   {
     card_id: 'card-chronos',
     user_id: 'user-chronos',
-    server: 'Asia Server',
+    server: 'asia',
     battle_tag: '時空特工#7761',
     is_tag_visible: true,
     selected_heroes: ['tracer', 'ashe', 'soldier-76'],
@@ -481,7 +482,7 @@ export const MOCK_PLAYERS: OWPlayerCard[] = [
   {
     card_id: 'card-akira',
     user_id: 'user-akira',
-    server: 'Asia Server',
+    server: 'asia',
     battle_tag: '愛喝奶茶#3342',
     is_tag_visible: true,
     selected_heroes: ['winston', 'tracer', 'genji'],
@@ -499,7 +500,7 @@ export const MOCK_PLAYERS: OWPlayerCard[] = [
   {
     card_id: 'card-lily',
     user_id: 'user-lily',
-    server: 'Asia Server',
+    server: 'asia',
     battle_tag: '機甲少女莉莉#4321',
     is_tag_visible: true,
     selected_heroes: ['dva', 'mercy', 'kiriko'],
@@ -516,7 +517,7 @@ export const MOCK_PLAYERS: OWPlayerCard[] = [
   {
     card_id: 'card-genjigod',
     user_id: 'user-genjigod',
-    server: 'America Server',
+    server: 'america',
     battle_tag: '有神快拜#1111',
     is_tag_visible: false,
     selected_heroes: ['genji', 'reaper', 'cassidy'],
@@ -532,7 +533,7 @@ export const MOCK_PLAYERS: OWPlayerCard[] = [
   {
     card_id: 'card-fish',
     user_id: 'user-fish',
-    server: 'Europe Server',
+    server: 'europe',
     battle_tag: '只想當鹹魚#2222',
     is_tag_visible: true,
     selected_heroes: ['ana', 'kiriko', 'mercy'],
@@ -549,7 +550,7 @@ export const MOCK_PLAYERS: OWPlayerCard[] = [
   {
     card_id: 'card-hardt',
     user_id: 'user-hardt',
-    server: 'Asia Server',
+    server: 'asia',
     battle_tag: '萊因哈特本哈#8888',
     is_tag_visible: true,
     selected_heroes: ['reinhardt', 'winston', 'dva'],
@@ -566,7 +567,7 @@ export const MOCK_PLAYERS: OWPlayerCard[] = [
   {
     card_id: 'card-reaper',
     user_id: 'user-reaper',
-    server: 'America Server',
+    server: 'america',
     battle_tag: '幽靈死神#6666',
     is_tag_visible: true,
     selected_heroes: ['reaper', 'genji', 'cassidy'],
@@ -581,7 +582,7 @@ export const MOCK_PLAYERS: OWPlayerCard[] = [
   }
 ];
 
-export const SERVER_OPTIONS = ['Asia Server', 'America Server', 'Europe Server'];
+export const SERVER_OPTIONS = OVERWATCH_SERVER_OPTIONS;
 export const MBTI_OPTIONS = [
   'INTJ', 'INTP', 'ENTJ', 'ENTP',
   'INFJ', 'INFP', 'ENFJ', 'ENFP',
