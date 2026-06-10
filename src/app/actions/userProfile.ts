@@ -1,6 +1,8 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { getOverwatchServerLabel } from "@/lib/gameCatalog";
+import { ensureUserProfileForCurrentUser } from "@/lib/userProfileIdentity";
 import { revalidateTag } from "next/cache";
 
 export interface UserProfileRow {
@@ -44,13 +46,13 @@ async function ensureDeveloper() {
 
 export async function getMyUserProfile(): Promise<UserProfileRow | null> {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user?.id) return null;
+  const ensured = await ensureUserProfileForCurrentUser(supabase);
+  if (!ensured.user?.id || ensured.error) return null;
 
   const { data } = await supabase
     .from("user_profiles")
     .select("*")
-    .eq("user_id", user.id)
+    .eq("user_id", ensured.user.id)
     .single();
 
   return data as UserProfileRow | null;
@@ -62,15 +64,15 @@ export async function saveNickname(nickname: string): Promise<{ error?: string }
   if (trimmed.length > 30) return { error: "暱稱長度不可超過 30 字元" };
 
   const supabase = await createClient();
-  const { data: { user }, error: userError } = await supabase.auth.getUser();
-  if (userError || !user?.id) return { error: "未登入，無法儲存" };
+  const ensured = await ensureUserProfileForCurrentUser(supabase);
+  if (!ensured.user?.id || ensured.error) return { error: ensured.error ?? "未登入，無法儲存" };
 
   const nicknameValue = trimmed.length > 0 ? trimmed : null;
 
   const { error } = await supabase
     .from("user_profiles")
     .upsert(
-      { user_id: user.id, nickname: nicknameValue },
+      { user_id: ensured.user.id, nickname: nicknameValue },
       { onConflict: "user_id" }
     );
 
@@ -149,7 +151,13 @@ export async function getAdminUserCards(userId: string): Promise<{
 
     if (error) return { success: false, error: error.message };
 
-    return { success: true, data: (data ?? []) as AdminUserCard[] };
+    return {
+      success: true,
+      data: (data ?? []).map((card) => ({
+        ...card,
+        server: getOverwatchServerLabel(card.server as string),
+      })) as AdminUserCard[],
+    };
   } catch (err) {
     return { success: false, error: String(err) };
   }

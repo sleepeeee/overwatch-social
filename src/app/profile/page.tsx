@@ -31,7 +31,7 @@ import { SocialIcon } from "@/components/ui/SocialIcons";
 const DEFAULT_CARD: OWPlayerCard = {
   card_id: "card-current-user",
   user_id: "user-current-user",
-  server: "亞洲 (Asia)",
+  server: "asia",
   battle_tag: "",
   is_tag_visible: true,
   selected_heroes: [],
@@ -1140,7 +1140,17 @@ export default function ProfilePage() {
                     value={currentCard.server}
                     onChange={(e) => setCard({ ...currentCard, server: e.target.value })}
                   >
-                    {(editingGame === "val" ? ["亞太 (APAC)", "北美 (NA)", "歐洲 (EU)"] : editingGame === "lol" ? ["台灣 (TW)", "韓國 (KR)", "北美 (NA)"] : SERVER_OPTIONS).map((opt) => (
+                    {(editingGame === "ow" ? SERVER_OPTIONS : []).map((opt) => (
+                      <option key={opt.value} value={opt.value} className="bg-obsidian text-zinc-200 font-semibold">
+                        {opt.label}
+                      </option>
+                    ))}
+                    {editingGame === "val" && ["亞太 (APAC)", "北美 (NA)", "歐洲 (EU)"].map((opt) => (
+                      <option key={opt} value={opt} className="bg-obsidian text-zinc-200 font-semibold">
+                        {opt}
+                      </option>
+                    ))}
+                    {editingGame === "lol" && ["台灣 (TW)", "韓國 (KR)", "北美 (NA)"].map((opt) => (
                       <option key={opt} value={opt} className="bg-obsidian text-zinc-200 font-semibold">
                         {opt}
                       </option>

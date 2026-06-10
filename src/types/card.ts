@@ -3,7 +3,7 @@ export type { UserProfile } from "@/types/auth";
 export interface OWPlayerCard {
   card_id: string;           // 名片唯一 ID
   user_id: string;           // 關聯至 UserProfile.id 的外鍵
-  server: string;            // 伺服器，例如: 'Asia' | 'America' | 'Europe'
+  server: string;            // 伺服器代號，例如: 'asia' | 'america' | 'europe'
   battle_tag: string;        // 玩家 BattleTag，例如: '愛喝奶茶#3342'
   is_tag_visible: boolean;   // BattleTag 隱私開關，若為 false 則在廣場顯示為 '已隱藏#xxxx'
   
