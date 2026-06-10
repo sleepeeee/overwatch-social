@@ -5,7 +5,7 @@ status: Accepted
 change: harden-supabase-security
 date: 2026-06-11
 references_to: [ADR-01, F-014, ADR-14, REF-004, REF-005, REF-011, F-024, F-025]
-referenced_by: [F-024, F-025]
+referenced_by: [F-024, F-025, ADR-25, F-026]
 ---
 
 ## 決策

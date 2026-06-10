@@ -5,7 +5,7 @@ title: getSystemStats 佔位名片魔術字串審計：'愛喝奶茶#3342' 排�
 url: n/a
 status: active
 references_to: [REF-019]
-referenced_by: []
+referenced_by: [ADR-25]
 ---
 
 > DERIV 性質（衍生自 developer.ts 程式碼審計）；無外部 URL，url 填 n/a。

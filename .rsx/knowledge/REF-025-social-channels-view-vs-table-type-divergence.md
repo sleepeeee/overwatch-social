@@ -5,7 +5,7 @@ title: social_channels 型別分歧：public_profiles view（遮罩布林）vs p
 url: n/a
 status: active
 references_to: [REF-024]
-referenced_by: []
+referenced_by: [ADR-25, F-026]
 ---
 
 > type=docs 但無單一外部 URL（衍生自本專案 migration + C1 變更分析）；url 填 n/a。

@@ -8,7 +8,7 @@ version: "supabase-js 2.106.2 / @supabase/ssr 0.10.3"
 last_updated: 2026-06-11
 official: true
 references_to: []
-referenced_by: []
+referenced_by: [ADR-25, F-026]
 ---
 
 ## 探索動機（Stage 1）

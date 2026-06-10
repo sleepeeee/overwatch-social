@@ -7,20 +7,18 @@
 ---
 
 <!-- ZONE_A_START -->
-> **Zone A 最後更新：2026-06-11（團隊模式三 change 序列推進，C2 進行中）**
+> **Zone A 最後更新：2026-06-11（C2 ARCHIVE 完成，待主代理執行 openspec archive；C3 待 propose）**
 
 ## 現在在做什麼
 
 團隊模式（Agent 多代理協作）按 rsx 流程推進三個 DB/安全 change：
 - **C1 `harden-supabase-security`** ✅ 全流程完成並 archive（migration 021 部署生產、ADR-24/F-024/F-025、commit、merge main）。
-- **C2 `adopt-supabase-generated-types`** 🔄 PROPOSE 完成、validate PASS；待 team lead 型別生成 + Codex §6.5 + APPLY。
+- **C2 `adopt-supabase-generated-types`** ✅ APPLY + ARCHIVE 完成（tasks 全勾、ADR-25/F-026 建立、crossref 回填、Gate PASS）；待主代理執行 `openspec archive adopt-supabase-generated-types`。
 - **C3 `audit-developer-capture-injection`** ⏳ 待 propose。
 
 ## 進行中的 Changes（未 archive）
 
-| Change | 階段 | 備註 |
-|---|---|---|
-| adopt-supabase-generated-types | PROPOSE 完成（待 Codex §6.5 + 型別生成）| 生成型別取代 44 個 as 斷言；分支 feature/backend-generated-types；REF-024/025/026 |
+（無。C2 Pre-archive Gate PASS，等待主代理 openspec archive 指令後即完成）
 
 ## 待 Propose Changes（依優先度）
 
@@ -33,6 +31,7 @@
 
 | Change | 時間 | 備註 |
 |---|---|---|
+| adopt-supabase-generated-types | 2026-06-11 | Supabase 生成型別 + createClient<Database> 泛型注入；toSocialChannels helper 收斂；移除約 20 個多餘 as 斷言；PLACEHOLDER_BATTLE_TAG 常數化；tsc 0 errors + 16/16 build；ADR-25/F-026；分支 feature/backend-generated-types |
 | harden-supabase-security | 2026-06-11 | Supabase 安全邊界硬化 migration 021；遮罩 social_channels PII（修 migration 015 回退 F-014）；developer_whitelist RLS 修復（P1）；function search_path + bucket listing；ADR-24/F-024/F-025 |
 | normalize-profiles-and-server-canonical | 2026-06-11 | OW server canonical 雙層防線 + user_profiles 補齊 + 孤兒卡軟下架；ADR-23；migration 019/020；**事後補記**（原走 PR #3 未走 rsx）|
 | seo-improvements | 2026-06-10 | 全站 canonical + 各頁 Metadata + 首頁 JSON-LD |
@@ -53,6 +52,13 @@
 ---
 
 ## Zone B — 工作日誌（追加，由新到舊）
+
+### 2026-06-11 adopt-supabase-generated-types — ARCHIVE 準備完成（rsx-archiver sub-agent）
+
+- **已完成**：tasks.md task 0→8 全部勾選；建 ADR-25（生成型別 + OWPlayerCard anti-corruption layer 邊界決策）；建 F-026（social_channels Json 型別分歧 + toSocialChannels helper 收斂通則）；雙向 crossref 回填（REF-024/025/026 referenced_by 加 ADR-25/F-026；F-025 referenced_by 加 F-026；ADR-24/ADR-01 referenced_by 加 ADR-25）；Pre-archive Gate FAIL=0 WARN=0；latest.md Zone A 覆寫 + Zone B 追加
+- **§6.7 說明**：§6.5 第二意見由 Gemini 完成（PASS），Codex 今日額度滿依雙臂規範降級；tsc 0 errors + build 全綠 + Gemini PASS，文件化跳過 Codex §6.7 重跑；lean archiving 規則適用（Task 7.5 驗收整合為補勾選，未執行新實質工作）
+- **卡關**：無
+- **下次優先**：主代理執行 `openspec archive adopt-supabase-generated-types`；之後 C3 `audit-developer-capture-injection` propose
 
 ### 2026-06-11 adopt-supabase-generated-types — PROPOSE 完成（orchestrator sub-agent）
 

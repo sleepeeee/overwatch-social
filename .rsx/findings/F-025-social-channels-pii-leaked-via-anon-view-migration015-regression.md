@@ -7,7 +7,7 @@ confidence: high
 change: harden-supabase-security
 date: 2026-06-11
 references_to: [F-014, ADR-24, ADR-01, ADR-14, REF-004]
-referenced_by: [F-014, ADR-24]
+referenced_by: [F-014, ADR-24, F-026]
 supporting_refs: [F-014]
 ---
 
