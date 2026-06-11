@@ -5,7 +5,7 @@ title: Tailwind CSS v4 @theme 多主題架構與 CSS variable 最佳實踐
 url: https://tailwindcss.com/docs/theme
 status: active
 references_to: [REF-030]
-referenced_by: [REF-028]
+referenced_by: [REF-028, REF-032, REF-033, REF-034, REF-035]
 version: "4.0"
 last_updated: 2025-01-01
 official: true

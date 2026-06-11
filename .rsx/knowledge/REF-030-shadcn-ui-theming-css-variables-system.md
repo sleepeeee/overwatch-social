@@ -5,7 +5,7 @@ title: shadcn/ui Theming — CSS Variables 語意 token 架構
 url: https://ui.shadcn.com/docs/theming
 status: active
 references_to: []
-referenced_by: [REF-028, REF-029]
+referenced_by: [REF-028, REF-029, REF-033]
 version: "latest"
 last_updated: 2026-03-26
 official: true
