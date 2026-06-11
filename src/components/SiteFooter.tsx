@@ -27,6 +27,7 @@ export default function SiteFooter() {
       <nav aria-label="支援連結" className="mt-6 flex flex-wrap items-center justify-center gap-2">
         {footerLinks.map((link) => {
           const isActive = pathname === link.href;
+
           return (
             <Link
               key={link.href}
