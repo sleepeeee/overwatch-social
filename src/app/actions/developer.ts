@@ -208,12 +208,17 @@ export async function setUserBanned(userId: string, banned: boolean) {
   }
 }
 
+export interface AdminAuthInfo {
+  banned: boolean;
+  google_name: string | null;
+}
+
 /**
- * 讀取全部用戶的停權狀態（developer-only，後台用戶列表用）
+ * 讀取全部用戶的 auth 層資訊：停權狀態 + Google 帳號名稱（developer-only，後台用戶列表用）
  */
-export async function getAdminBanStates(): Promise<{
+export async function getAdminAuthInfo(): Promise<{
   success: boolean;
-  data?: Record<string, boolean>;
+  data?: Record<string, AdminAuthInfo>;
   error?: string;
 }> {
   try {
@@ -225,11 +230,15 @@ export async function getAdminBanStates(): Promise<{
     const { data, error } = await admin.auth.admin.listUsers({ page: 1, perPage: 200 });
     if (error) return { success: false, error: error.message };
 
-    const states: Record<string, boolean> = {};
+    const states: Record<string, AdminAuthInfo> = {};
     for (const u of data.users) {
       // banned_until 未來時間 = 停權中；supabase-js User 型別未宣告此欄位，需窄化
       const bannedUntil = (u as { banned_until?: string | null }).banned_until;
-      states[u.id] = !!bannedUntil && new Date(bannedUntil) > new Date();
+      const meta = u.user_metadata as { full_name?: string; name?: string } | null;
+      states[u.id] = {
+        banned: !!bannedUntil && new Date(bannedUntil) > new Date(),
+        google_name: meta?.full_name ?? meta?.name ?? u.email?.split("@")[0] ?? null,
+      };
     }
 
     return { success: true, data: states };

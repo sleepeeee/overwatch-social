@@ -22,7 +22,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Save, ArrowLeft, Gamepad2, AlertTriangle, Eye, EyeOff, LockKeyhole } from "lucide-react";
 import { toPng } from "html-to-image";
-import { getMyProfile, saveProfile } from "@/app/actions/profile";
+import { getMyProfile, saveProfile, provisionDefaultCard } from "@/app/actions/profile";
 import { deleteMyAccount } from "@/app/actions/account";
 import { getMyUserProfile, saveNickname } from "@/app/actions/userProfile";
 import { getGameSpecialTags } from "@/app/actions/tags";
@@ -398,6 +398,19 @@ export default function ProfilePage() {
   const [toast, setToast] = useState({ show: false, message: "" });
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deletingAccount, setDeletingAccount] = useState(false);
+  const [owCardProvisioned, setOwCardProvisioned] = useState(false);
+
+  // 進入 OW 編輯器：尚無名片時先自動建檔（草稿，不上廣場），保留隨機預設名稱
+  const handleEnterOwEditor = () => {
+    setEditingGame("ow");
+    if (owCardProvisioned) return;
+    setOwCardProvisioned(true);
+    provisionDefaultCard("overwatch").then(card => {
+      if (card) {
+        setCardData({ ...card, social_channels: card.social_channels || {}, is_card_visible: true });
+      }
+    });
+  };
 
   const triggerToast = (message: string) => {
     setToast({ show: false, message: "" });
@@ -493,9 +506,13 @@ export default function ProfilePage() {
     getMyProfile("overwatch").then(profile => {
       if (profile) {
         const loadedCard = { ...DEFAULT_CARD, ...profile, social_channels: profile.social_channels || {} };
+        // 草稿卡：編輯表單預設「公開」，第一次儲存即轉正並上廣場（除非用戶儲存前自行隱藏）
+        if (loadedCard.is_draft) loadedCard.is_card_visible = true;
         setCardData(loadedCard);
+        setOwCardProvisioned(true);
       } else {
         setCardData(DEFAULT_CARD);
+        setOwCardProvisioned(false);
       }
     });
     getMyUserProfile().then(up => {
@@ -973,7 +990,7 @@ export default function ProfilePage() {
                 </div>
                 
                 <Button
-                  onClick={() => setEditingGame("ow")}
+                  onClick={handleEnterOwEditor}
                   className="w-full bg-auroraTeal/10 hover:bg-auroraTeal border border-auroraTeal/20 text-auroraTeal hover:text-white py-2.5 text-xs font-bold rounded-xl transition-all duration-300 shadow-sm cursor-pointer"
                 >
                   點擊編輯遊戲名片

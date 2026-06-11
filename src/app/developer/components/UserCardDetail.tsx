@@ -113,6 +113,11 @@ export default function UserCardDetail({ userId }: UserCardDetailProps) {
                 已下架
               </span>
             )}
+            {card.is_draft && (
+              <span className="text-[10px] font-black px-2 py-0.5 rounded bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-400">
+                草稿（未儲存過）
+              </span>
+            )}
             <button
               onClick={() => handleToggleHidden(card)}
               disabled={togglingId === card.id}
