@@ -7,14 +7,14 @@
 系統 SHALL 將全站元件的硬碼 Tailwind 顏色 class 遷移為 `--theme-*` CSS 變數引用，且 original-baseline 主題啟用時的視覺與遷移前一致。
 
 #### Scenario: original-baseline 視覺回歸
-- WHEN 完成 145 處硬碼顏色遷移並啟用 original-baseline 主題
+- WHEN 完成使用者面向範圍的硬碼顏色遷移（F-028 校準：~419 處 / 23 檔）並啟用 original-baseline 主題
 - THEN 首頁、廣場、個人檔案、玩家詳細頁在 desktop 與 mobile 視口的截圖
 - AND 與遷移前基準截圖比對為肉眼不可辨差異（允許抗鋸齒級誤差）
 
 #### Scenario: 遷移完備性掃描
 - WHEN 遷移完成後執行全域掃描（Tailwind 調色盤 class、inline style 色值、hex 字面值）
-- THEN 11 個目標檔案中不再存在表達主題視覺的硬碼顏色
-- AND 刻意保留的例外（如英雄職業徽章色等資料驅動顏色）逐項列入豁免清單並附理由
+- THEN 使用者面向目標檔案（F-028 清單，23 檔）中不再存在表達主題視覺的硬碼顏色
+- AND 刻意保留的例外（開發者後台頁全體、英雄職業徽章色等資料驅動顏色）逐項列入豁免清單並附理由
 
 ### Requirement: standalone-theme-presets — 三套並存新主題
 
