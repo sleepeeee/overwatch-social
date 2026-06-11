@@ -88,7 +88,7 @@ export default function InteractiveAvatar({
                 選擇一張最符合您目前心情與氛圍的預設頭貼
               </Dialog.Description>
             </div>
-            <Dialog.Close className="p-1.5 rounded-full bg-[#8c7c6c]/10 text-[#8c7c6c] hover:bg-red-50 hover:text-red-600 transition-colors border-none cursor-pointer focus:ring-1 focus:ring-red-300">
+            <Dialog.Close className="p-1.5 rounded-full bg-[#8c7c6c]/10 text-[#8c7c6c] hover:bg-theme-danger/10 hover:text-theme-danger transition-colors border-none cursor-pointer focus:ring-1 focus:ring-theme-danger-soft">
               <X size={16} />
             </Dialog.Close>
           </div>

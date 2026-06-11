@@ -46,21 +46,21 @@ export default function AuthShelvedButtons() {
 
   return (
     <div className="flex items-center gap-2 p-4 rounded-3xl bg-black/40 border border-white/5 w-fit">
-      <span className="text-[10px] font-mono text-zinc-500 mr-2">SHELVED AUTH:</span>
+      <span className="text-[10px] font-mono text-theme-text-faint mr-2">SHELVED AUTH:</span>
       {user ? (
         <div className="flex items-center gap-2">
           {isDeveloper && (
             <Link
               href="/developer"
-              className="flex items-center gap-2 px-4 py-2 rounded-2xl border border-amber-500/30 bg-amber-500/5 text-[9px] font-bold tracking-widest uppercase text-amber-400 hover:bg-amber-500/25 transition-all duration-300"
+              className="flex items-center gap-2 px-4 py-2 rounded-2xl border border-theme-warning/30 bg-theme-warning/5 text-[9px] font-bold tracking-widest uppercase text-theme-warning-soft hover:bg-theme-warning/25 transition-all duration-300"
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+              <span className="w-1.5 h-1.5 rounded-full bg-theme-warning animate-pulse" />
               開發者後台
             </Link>
           )}
           <button
             onClick={handleLogout}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-2xl border border-white/10 bg-white/5 text-[9px] font-bold tracking-widest uppercase text-zinc-300 hover:bg-white/10 hover:text-white transition-all duration-300"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-2xl border border-white/10 bg-white/5 text-[9px] font-bold tracking-widest uppercase text-theme-text-soft hover:bg-white/10 hover:text-white transition-all duration-300"
             title="登出"
           >
             <LogOut size={10} />
@@ -71,7 +71,7 @@ export default function AuthShelvedButtons() {
         <button
           onClick={handleGoogleLogin}
           disabled={loginPending}
-          className="group relative flex h-9 items-center justify-center gap-2.5 rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-[9px] font-bold tracking-widest uppercase text-zinc-300 hover:text-white hover:bg-white/10 hover:border-auroraTeal/40 shadow-sm transition-all duration-300 disabled:opacity-50"
+          className="group relative flex h-9 items-center justify-center gap-2.5 rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-[9px] font-bold tracking-widest uppercase text-theme-text-soft hover:text-white hover:bg-white/10 hover:border-auroraTeal/40 shadow-sm transition-all duration-300 disabled:opacity-50"
         >
           <span>{loginPending ? "跳轉中..." : "使用 Google 登入"}</span>
         </button>

@@ -127,9 +127,9 @@ export default function OWCard({
       case 'warning':
         return 'bg-[#d8a070]/12 text-[#d8a070] border-[#d8a070]/20';
       case 'success':
-        return 'bg-emerald-500/8 text-emerald-600 border-emerald-500/15';
+        return 'bg-theme-success/8 text-theme-success border-theme-success/15';
       case 'danger':
-        return 'bg-red-500/8 text-red-600 border-red-500/15';
+        return 'bg-theme-danger/8 text-theme-danger border-theme-danger/15';
       default:
         return 'bg-[#8c7c6c]/8 text-[#8c7c6c] border-[#8c7c6c]/15';
     }
@@ -140,13 +140,13 @@ export default function OWCard({
       case 'discord':
         return 'bg-[#5865F2] hover:bg-[#4752c4] text-white hover:shadow-[0_0_15px_rgba(88,101,242,0.4)]';
       case 'threads': 
-        return 'bg-zinc-900 hover:bg-black text-white hover:shadow-[0_0_15px_rgba(255,255,255,0.2)] border border-white/10';
+        return 'bg-theme-surface-deep hover:bg-black text-white hover:shadow-[0_0_15px_rgba(255,255,255,0.2)] border border-white/10';
       case 'rc_voice': 
         return 'bg-[#24b61b] hover:bg-[#1d9a15] text-white hover:shadow-[0_0_15px_rgba(36,182,27,0.4)]';
       case 'game_voice': 
         return 'bg-[#f99e1a] hover:bg-[#e0890f] text-white hover:shadow-[0_0_15px_rgba(249,158,26,0.4)]';
       default: 
-        return 'bg-zinc-800 hover:bg-zinc-700 text-zinc-300';
+        return 'bg-theme-surface-raised hover:bg-theme-surface-raised text-theme-text-soft';
     }
   };
 
@@ -165,7 +165,7 @@ export default function OWCard({
       style={{ fontFamily: "var(--theme-font-family), sans-serif" }}
     >
       {/* 頂部極光橘發光邊 */}
-      <div className="absolute top-0 left-0 right-0 h-[2.5px] opacity-40 transition-opacity duration-700 group-hover/card:opacity-100 bg-amber-500"></div>
+      <div className="absolute top-0 left-0 right-0 h-[2.5px] opacity-40 transition-opacity duration-700 group-hover/card:opacity-100 bg-theme-warning"></div>
 
       {/* 浮水印 */}
       <div className="absolute right-[-20px] bottom-[-20px] w-[140px] h-[140px] sm:w-[180px] sm:h-[180px] text-white/[0.02] pointer-events-none select-none z-0">
@@ -177,8 +177,8 @@ export default function OWCard({
 
       {/* Header: Game Info */}
       <div className="flex justify-between items-center border-b border-white/[0.04] pb-2.5 sm:pb-3 mb-3 sm:mb-4 gap-2">
-        <span className="text-zinc-400 font-bold text-[11px] sm:text-xs tracking-widest uppercase whitespace-nowrap shrink-0">Overwatch | 鬥陣特工</span>
-        <span className="bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-black tracking-widest whitespace-nowrap shrink-0 uppercase">
+        <span className="text-theme-text-muted font-bold text-[11px] sm:text-xs tracking-widest uppercase whitespace-nowrap shrink-0">Overwatch | 鬥陣特工</span>
+        <span className="bg-theme-warning/10 text-theme-warning-soft border border-theme-warning/20 px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-black tracking-widest whitespace-nowrap shrink-0 uppercase">
           {getOverwatchServerLabelEn(server)}
         </span>
       </div>
@@ -186,27 +186,27 @@ export default function OWCard({
       {/* Standalone UID Clipboard Box */}
       <div className="bg-black/40 border border-white/[0.03] rounded-xl p-2.5 sm:p-3 flex items-center justify-between mb-3 sm:mb-4 relative z-10">
         <div className="flex flex-col">
-          <span className="text-[9px] text-zinc-400 font-mono">UID</span>
-          <span className="text-xs text-zinc-100 font-mono font-semibold select-all mt-0.5">{getDisplayBattleTag()}</span>
+          <span className="text-[9px] text-theme-text-muted font-mono">UID</span>
+          <span className="text-xs text-theme-text-strong font-mono font-semibold select-all mt-0.5">{getDisplayBattleTag()}</span>
         </div>
         <div className="flex items-center gap-2">
           {!isExportMode && (isEditable || is_tag_visible) && battle_tag !== "已隱藏#xxxx" && (
             <button
               onClick={handleCopyTag}
-              className="p-1.5 rounded bg-white/[0.03] hover:bg-white/[0.08] text-zinc-300 hover:text-white transition-all border border-white/5 active:scale-95 flex items-center justify-center cursor-pointer relative"
+              className="p-1.5 rounded bg-white/[0.03] hover:bg-white/[0.08] text-theme-text-soft hover:text-white transition-all border border-white/5 active:scale-95 flex items-center justify-center cursor-pointer relative"
               title="複製 BattleTag"
             >
               <Copy size={14} />
               {copiedTag && (
-                <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-[10px] py-1 px-2 rounded shadow-md whitespace-nowrap z-50">
+                <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-theme-surface-deep text-white text-[10px] py-1 px-2 rounded shadow-md whitespace-nowrap z-50">
                   複製成功！
                 </span>
               )}
             </button>
           )}
           {!isExportMode && isEditable && (
-            <div className="flex items-center text-[10px] text-zinc-400 gap-1 bg-white/5 px-2 py-0.5 rounded-full border border-white/10">
-              {is_tag_visible ? <Eye size={10} className="text-amber-400" /> : <EyeOff size={10} />}
+            <div className="flex items-center text-[10px] text-theme-text-muted gap-1 bg-white/5 px-2 py-0.5 rounded-full border border-white/10">
+              {is_tag_visible ? <Eye size={10} className="text-theme-warning-soft" /> : <EyeOff size={10} />}
               <span className="font-extrabold">{is_tag_visible ? "公開" : "隱藏"}</span>
             </div>
           )}
@@ -235,7 +235,7 @@ export default function OWCard({
                         {/* 底部字幕層，融入圖片而不是貼一顆標籤 */}
                         <div className="absolute inset-x-0 bottom-0 z-20 h-11 bg-gradient-to-t from-[#05030a]/95 via-[#05030a]/58 to-transparent pointer-events-none sm:h-12"></div>
                         <div className="absolute inset-x-1.5 bottom-2 z-30 text-center pointer-events-none">
-                          <span className="block truncate font-sans text-[10px] font-bold leading-none tracking-[0.04em] text-zinc-50/95 [text-shadow:0_1px_2px_rgba(0,0,0,0.95),0_0_10px_rgba(5,3,10,0.9)] sm:text-[10.5px]">
+                          <span className="block truncate font-sans text-[10px] font-bold leading-none tracking-[0.04em] text-theme-text-strong/95 [text-shadow:0_1px_2px_rgba(0,0,0,0.95),0_0_10px_rgba(5,3,10,0.9)] sm:text-[10.5px]">
                             {heroInfo.name}
                           </span>
                         </div>
@@ -256,9 +256,9 @@ export default function OWCard({
                   </div>
                 </>
               ) : (
-                <div className="w-full h-full flex flex-col justify-center items-center text-zinc-600 p-2 text-center bg-white/[0.005] opacity-60 hover:opacity-100 transition-opacity">
-                  <span className="text-zinc-600 text-sm">✦</span>
-                  <span className="text-[8px] font-mono text-zinc-400 tracking-wider mt-1">空欄位</span>
+                <div className="w-full h-full flex flex-col justify-center items-center text-theme-text-faint p-2 text-center bg-white/[0.005] opacity-60 hover:opacity-100 transition-opacity">
+                  <span className="text-theme-text-faint text-sm">✦</span>
+                  <span className="text-[8px] font-mono text-theme-text-muted tracking-wider mt-1">空欄位</span>
                 </div>
               )}
             </div>
@@ -279,16 +279,16 @@ export default function OWCard({
             </span>
           ))
         ) : (
-          <span className="text-[10px] text-zinc-500 italic font-bold">尚未設定標籤</span>
+          <span className="text-[10px] text-theme-text-faint italic font-bold">尚未設定標籤</span>
         )}
       </div>
 
       {/* Whisper quote box */}
       <div className="bg-white/[0.015] border-l-2 border-auroraMint/40 p-2.5 sm:p-3 rounded-r-lg mb-3 sm:mb-4 flex-grow flex flex-col justify-between">
-        <div className="text-zinc-400 text-xs font-bold flex gap-1 items-start mb-1">
-          <span className="text-[9px] uppercase tracking-widest text-zinc-500 font-mono">留言 // Whisper</span>
+        <div className="text-theme-text-muted text-xs font-bold flex gap-1 items-start mb-1">
+          <span className="text-[9px] uppercase tracking-widest text-theme-text-faint font-mono">留言 // Whisper</span>
         </div>
-        <p className="text-zinc-200 text-[11px] leading-relaxed font-light font-sans italic px-1 break-words line-clamp-3">
+        <p className="text-theme-text-body text-[11px] leading-relaxed font-light font-sans italic px-1 break-words line-clamp-3">
           &ldquo;{message || "這個玩家很慢速，什麼都沒有留下..."}&rdquo;
         </p>
       </div>
@@ -296,13 +296,13 @@ export default function OWCard({
       {/* Card Footer */}
       <div className="flex flex-col gap-2.5 sm:gap-3 pt-2.5 sm:pt-3 border-t border-white/[0.04] mt-auto">
         <div className="flex justify-between items-center gap-2">
-          <div className="flex items-center gap-1.5 text-[10px] text-zinc-300 font-mono min-w-0">
-            <Globe size={12} className="shrink-0 text-zinc-500" aria-hidden="true" />
-            <span className="inline-block truncate max-w-[140px] sm:max-w-[170px] align-middle text-zinc-400" title={languages.join('、')}>{languages.length > 0 ? languages.join('、') : "未設定"}</span>
+          <div className="flex items-center gap-1.5 text-[10px] text-theme-text-soft font-mono min-w-0">
+            <Globe size={12} className="shrink-0 text-theme-text-faint" aria-hidden="true" />
+            <span className="inline-block truncate max-w-[140px] sm:max-w-[170px] align-middle text-theme-text-muted" title={languages.join('、')}>{languages.length > 0 ? languages.join('、') : "未設定"}</span>
           </div>
           <div className="flex items-center gap-1.5 shrink-0">
-            <div className="flex items-center px-1.5 py-0.5 rounded bg-green-500/10 text-green-400 border border-green-500/20 text-[8px] tracking-wide gap-1 select-none">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+            <div className="flex items-center px-1.5 py-0.5 rounded bg-theme-success/10 text-theme-success-soft border border-theme-success/20 text-[8px] tracking-wide gap-1 select-none">
+              <span className="w-1.5 h-1.5 rounded-full bg-theme-success animate-pulse"></span>
               <span>
                 {mic_status === 'mic-on' ? "可開麥" : mic_status === 'listen-only' ? "僅聽麥" : "不用麥"}
               </span>

@@ -49,7 +49,7 @@ export default function FeaturedArtists({ styleMode }: FeaturedArtistsProps) {
       currentCount: 7, 
       maxCount: 8, 
       joined: false, 
-      color: "from-rose-400/10 to-transparent" 
+      color: "from-theme-danger-soft/10 to-transparent" 
     }
   ]);
 
@@ -111,7 +111,7 @@ export default function FeaturedArtists({ styleMode }: FeaturedArtistsProps) {
               event.joined 
                 ? "bg-[#82b7cc]/20 border-[#82b7cc]/40 text-[#2a454d] font-bold" 
                 : isFull 
-                  ? "bg-gray-100/50 border-gray-200 text-gray-400 cursor-not-allowed" 
+                  ? "bg-theme-surface-light/50 border-theme-border-light text-theme-text-muted cursor-not-allowed" 
                   : "bg-white/40 border-[#8c7c6c]/15 text-[#8c7c6c] hover:border-[#8c7c6c]/40 hover:bg-white"
             }`;
 

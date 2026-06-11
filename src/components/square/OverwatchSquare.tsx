@@ -206,7 +206,7 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
     <div className="space-y-6 w-full animate-[fadeIn_0.4s_ease-out] relative pb-8">
       {/* 示範資料提示條（真實資料出現後自動消失）*/}
       {isShowingMockData && (
-        <div className="glass-card flex items-center gap-2 px-4 py-2.5 rounded-xl border border-auroraMint/20 bg-auroraMint/5 text-[11px] font-bold text-zinc-300 relative z-10">
+        <div className="glass-card flex items-center gap-2 px-4 py-2.5 rounded-xl border border-auroraMint/20 bg-auroraMint/5 text-[11px] font-bold text-theme-text-soft relative z-10">
           <span className="w-1.5 h-1.5 rounded-full bg-auroraMint shrink-0 animate-pulse" />
           目前顯示的是示範資料，廣場尚無真實玩家名片。成為第一個建立名片的特工吧！
         </div>
@@ -214,7 +214,7 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
 
       <div className="glass-card w-full p-4 sm:p-5 md:p-6 space-y-4 sm:space-y-5 relative z-10 rounded-xl border border-white/[0.06]">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-          <p className="text-[10px] text-zinc-400 uppercase tracking-[0.18em] font-mono font-medium">
+          <p className="text-[10px] text-theme-text-muted uppercase tracking-[0.18em] font-mono font-medium">
             調整探索頻率 // Overwatch Search & Filter
           </p>
           <span className="text-[9px] text-auroraMint lowercase font-mono tracking-[0.12em]">({filteredPlayers.length} active)</span>
@@ -222,20 +222,20 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
 
         <div className="grid grid-cols-1 lg:grid-cols-[1.35fr_0.9fr_1.45fr_0.9fr] gap-3 sm:gap-4 items-end">
           <div className="space-y-1.5">
-            <label className="text-[10px] font-mono font-medium uppercase tracking-[0.16em] text-zinc-400">搜尋名片</label>
+            <label className="text-[10px] font-mono font-medium uppercase tracking-[0.16em] text-theme-text-muted">搜尋名片</label>
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" size={14} />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-theme-text-faint" size={14} />
               <input
                 type="text"
                 placeholder="搜尋名稱、常用角色、深夜標籤..."
                 value={localSearchQuery}
                 onChange={(e) => setLocalSearchQuery(e.target.value)}
-                className="h-11 w-full rounded-lg border border-white/[0.08] bg-black/40 pl-9 pr-9 text-xs text-zinc-200 placeholder-zinc-500 transition-all duration-300 focus:border-auroraMint/50 focus:outline-none"
+                className="h-11 w-full rounded-lg border border-white/[0.08] bg-black/40 pl-9 pr-9 text-xs text-theme-text-body placeholder-zinc-500 transition-all duration-300 focus:border-auroraMint/50 focus:outline-none"
               />
               {localSearchQuery && (
                 <button
                   onClick={() => setLocalSearchQuery("")}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-zinc-500 transition-colors hover:text-zinc-200"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-theme-text-faint transition-colors hover:text-theme-text-body"
                   title="清空搜尋"
                 >
                   x
@@ -245,10 +245,10 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-[10px] font-mono font-medium uppercase tracking-[0.16em] text-zinc-400">遊玩伺服器</label>
+            <label className="text-[10px] font-mono font-medium uppercase tracking-[0.16em] text-theme-text-muted">遊玩伺服器</label>
             <div className="relative">
               <select
-                className="h-11 w-full appearance-none rounded-lg border border-white/[0.08] bg-black/40 pl-3 pr-10 text-xs font-semibold text-zinc-200 transition-all duration-300 focus:border-auroraMint/50 focus:outline-none"
+                className="h-11 w-full appearance-none rounded-lg border border-white/[0.08] bg-black/40 pl-3 pr-10 text-xs font-semibold text-theme-text-body transition-all duration-300 focus:border-auroraMint/50 focus:outline-none"
                 value={selectedServer}
                 onChange={(e) => setSelectedServer(e.target.value)}
               >
@@ -259,12 +259,12 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
                   </option>
                 ))}
               </select>
-              <ChevronDown className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-500" size={14} />
+              <ChevronDown className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-theme-text-faint" size={14} />
             </div>
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-[10px] font-mono font-medium uppercase tracking-[0.16em] text-zinc-400">
+            <label className="text-[10px] font-mono font-medium uppercase tracking-[0.16em] text-theme-text-muted">
               <span>常用定位</span>
             </label>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -277,7 +277,7 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
                     className={`h-11 rounded-lg border px-2 text-[10px] font-semibold tracking-[0.04em] transition-all duration-300 active:scale-[0.96] outline-none cursor-pointer text-center flex items-center justify-center gap-1 ${
                       isSelected
                         ? "border-auroraMint/70 bg-auroraMint/15 text-white shadow-[0_0_18px_rgba(192,132,252,0.38)]"
-                        : "border-white/[0.08] bg-black/30 text-zinc-400 hover:border-white/15 hover:bg-white/[0.04] hover:text-zinc-200"
+                        : "border-white/[0.08] bg-black/30 text-theme-text-muted hover:border-white/15 hover:bg-white/[0.04] hover:text-theme-text-body"
                     }`}
                   >
                     <span>{role === "坦克" ? "🛡️" : role === "輸出" ? "⚔️" : role === "支援" ? "✚" : ""}</span>
@@ -289,11 +289,11 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-[10px] font-mono font-medium uppercase tracking-[0.16em] text-zinc-400">語音溝通習慣</label>
+            <label className="text-[10px] font-mono font-medium uppercase tracking-[0.16em] text-theme-text-muted">語音溝通習慣</label>
             <div className="flex gap-2">
               <div className="relative flex-1">
                 <select
-                  className="h-11 w-full appearance-none rounded-lg border border-white/[0.08] bg-black/40 pl-3 pr-10 text-xs font-semibold text-zinc-200 transition-all duration-300 focus:border-auroraMint/50 focus:outline-none"
+                  className="h-11 w-full appearance-none rounded-lg border border-white/[0.08] bg-black/40 pl-3 pr-10 text-xs font-semibold text-theme-text-body transition-all duration-300 focus:border-auroraMint/50 focus:outline-none"
                   value={selectedMic}
                   onChange={(e) => setSelectedMic(e.target.value)}
                 >
@@ -304,12 +304,12 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
                     </option>
                   ))}
                 </select>
-                <ChevronDown className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-500" size={14} />
+                <ChevronDown className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-theme-text-faint" size={14} />
               </div>
               {(selectedRole !== "全部" || selectedServer !== "全部" || selectedMic !== "全部" || localSearchQuery) && (
                 <button
                   onClick={handleResetFilters}
-                  className="flex h-11 w-11 items-center justify-center rounded-lg border border-white/[0.08] bg-black/30 text-zinc-400 transition-all hover:border-auroraMint/40 hover:bg-auroraMint/10 hover:text-white shrink-0 cursor-pointer"
+                  className="flex h-11 w-11 items-center justify-center rounded-lg border border-white/[0.08] bg-black/30 text-theme-text-muted transition-all hover:border-auroraMint/40 hover:bg-auroraMint/10 hover:text-white shrink-0 cursor-pointer"
                   title="重置篩選"
                 >
                   <RotateCcw size={14} />
@@ -353,7 +353,7 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
               <Button
                 onClick={handleLoadMore}
                 disabled={isLoadingMore}
-                className="border border-auroraMint/20 bg-auroraMint/10 hover:bg-auroraMint/20 text-zinc-100 font-bold text-xs px-8 py-4 rounded-xl transition-all active:scale-95 disabled:opacity-50"
+                className="border border-auroraMint/20 bg-auroraMint/10 hover:bg-auroraMint/20 text-theme-text-strong font-bold text-xs px-8 py-4 rounded-xl transition-all active:scale-95 disabled:opacity-50"
               >
                 {isLoadingMore ? "載入中..." : "載入更多特工"}
               </Button>
@@ -366,8 +366,8 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
             <AlertCircle size={28} />
           </div>
           <div className="space-y-1">
-            <h3 className="text-zinc-100 font-extrabold text-lg">沒有找到符合條件的名片</h3>
-            <p className="text-zinc-400 text-xs max-w-sm mx-auto">
+            <h3 className="text-theme-text-strong font-extrabold text-lg">沒有找到符合條件的名片</h3>
+            <p className="text-theme-text-muted text-xs max-w-sm mx-auto">
               試著調整您的篩選選項，或在右側重置所有條件，以瀏覽廣場上更多的鬥陣特工特工！
             </p>
           </div>

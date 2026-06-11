@@ -99,42 +99,42 @@ const getColorClasses = (game: "ow" | "val" | "lol" | null) => {
         name: "特戰英豪",
         englishName: "Valorant | 特戰英豪",
         primary: "rose",
-        bg: "bg-rose-500/20",
-        text: "text-rose-400",
-        border: "border-rose-500/40",
-        focusBorder: "focus:border-rose-500 focus:ring-rose-500/30",
-        accentBtn: "bg-rose-500/10 hover:bg-rose-500 border-rose-500/20 text-rose-400 hover:text-white",
-        saveBtn: "bg-rose-600 hover:bg-rose-500 text-white shadow-[0_6px_20px_rgba(244,63,94,0.3)] border-rose-500/30",
+        bg: "bg-theme-danger/20",
+        text: "text-theme-danger-soft",
+        border: "border-theme-danger/40",
+        focusBorder: "focus:border-theme-danger focus:ring-theme-danger/30",
+        accentBtn: "bg-theme-danger/10 hover:bg-theme-danger border-theme-danger/20 text-theme-danger-soft hover:text-white",
+        saveBtn: "bg-theme-danger hover:bg-theme-danger text-white shadow-[0_6px_20px_rgba(244,63,94,0.3)] border-theme-danger/30",
         glow: "shadow-[0_0_10px_rgba(244,63,94,0.2)]",
         tagGlow: "shadow-[0_0_8px_rgba(244,63,94,0.15)]",
-        headerGlow: "bg-rose-500",
-        badge: "bg-rose-500/10 border border-rose-500/20 text-rose-400",
-        borderFocus: "focus:border-rose-500 focus:ring-rose-500/30",
-        textLight: "text-rose-300",
-        tagBtnSelected: "bg-rose-500/20 text-rose-400 border-rose-500/40",
-        micBtnSelected: "bg-rose-500/20 border-rose-500/60 text-white",
-        sidebarGlow: "from-rose-950/20 via-black/40 to-rose-950/10"
+        headerGlow: "bg-theme-danger",
+        badge: "bg-theme-danger/10 border border-theme-danger/20 text-theme-danger-soft",
+        borderFocus: "focus:border-theme-danger focus:ring-theme-danger/30",
+        textLight: "text-theme-danger-soft",
+        tagBtnSelected: "bg-theme-danger/20 text-theme-danger-soft border-theme-danger/40",
+        micBtnSelected: "bg-theme-danger/20 border-theme-danger/60 text-white",
+        sidebarGlow: "from-theme-danger-deep/20 via-black/40 to-theme-danger-deep/10"
       };
     case "lol":
       return {
         name: "英雄聯盟",
         englishName: "League of Legends | 英雄聯盟",
         primary: "blue",
-        bg: "bg-blue-500/20",
-        text: "text-blue-400",
-        border: "border-blue-500/40",
-        focusBorder: "focus:border-blue-500 focus:ring-blue-500/30",
-        accentBtn: "bg-blue-500/10 hover:bg-blue-500 border-blue-500/20 text-blue-400 hover:text-white",
-        saveBtn: "bg-blue-600 hover:bg-blue-500 text-white shadow-[0_6px_20px_rgba(59,130,246,0.3)] border-blue-500/30",
+        bg: "bg-theme-info/20",
+        text: "text-theme-info-soft",
+        border: "border-theme-info/40",
+        focusBorder: "focus:border-theme-info focus:ring-theme-info/30",
+        accentBtn: "bg-theme-info/10 hover:bg-theme-info border-theme-info/20 text-theme-info-soft hover:text-white",
+        saveBtn: "bg-theme-info hover:bg-theme-info text-white shadow-[0_6px_20px_rgba(59,130,246,0.3)] border-theme-info/30",
         glow: "shadow-[0_0_10px_rgba(59,130,246,0.2)]",
         tagGlow: "shadow-[0_0_8px_rgba(59,130,246,0.15)]",
-        headerGlow: "bg-blue-500",
-        badge: "bg-blue-500/10 border border-blue-500/20 text-blue-400",
-        borderFocus: "focus:border-blue-500 focus:ring-blue-500/30",
-        textLight: "text-blue-300",
-        tagBtnSelected: "bg-blue-500/20 text-blue-400 border-blue-500/40",
-        micBtnSelected: "bg-blue-500/20 border-blue-500/60 text-white",
-        sidebarGlow: "from-blue-950/20 via-black/40 to-blue-950/10"
+        headerGlow: "bg-theme-info",
+        badge: "bg-theme-info/10 border border-theme-info/20 text-theme-info-soft",
+        borderFocus: "focus:border-theme-info focus:ring-theme-info/30",
+        textLight: "text-theme-info-soft",
+        tagBtnSelected: "bg-theme-info/20 text-theme-info-soft border-theme-info/40",
+        micBtnSelected: "bg-theme-info/20 border-theme-info/60 text-white",
+        sidebarGlow: "from-theme-info-deep/20 via-black/40 to-theme-info-deep/10"
       };
     case "ow":
     default:
@@ -142,21 +142,21 @@ const getColorClasses = (game: "ow" | "val" | "lol" | null) => {
         name: "鬥陣特攻",
         englishName: "Overwatch | 鬥陣特攻",
         primary: "amber",
-        bg: "bg-amber-500/20",
-        text: "text-amber-400",
-        border: "border-amber-500/40",
-        focusBorder: "focus:border-amber-500 focus:ring-amber-500/30",
-        accentBtn: "bg-amber-500/10 hover:bg-amber-500 border-amber-500/20 text-amber-400 hover:text-white",
-        saveBtn: "bg-amber-500 hover:bg-amber-500/90 text-white shadow-[0_6px_20px_rgba(245,158,11,0.3)] border-amber-500/30",
+        bg: "bg-theme-warning/20",
+        text: "text-theme-warning-soft",
+        border: "border-theme-warning/40",
+        focusBorder: "focus:border-theme-warning focus:ring-theme-warning/30",
+        accentBtn: "bg-theme-warning/10 hover:bg-theme-warning border-theme-warning/20 text-theme-warning-soft hover:text-white",
+        saveBtn: "bg-theme-warning hover:bg-theme-warning/90 text-white shadow-[0_6px_20px_rgba(245,158,11,0.3)] border-theme-warning/30",
         glow: "shadow-[0_0_10px_rgba(245,158,11,0.2)]",
         tagGlow: "shadow-[0_0_8px_rgba(245,158,11,0.15)]",
-        headerGlow: "bg-amber-500",
-        badge: "bg-amber-500/10 border border-amber-500/20 text-amber-400",
-        borderFocus: "focus:border-amber-500 focus:ring-amber-500/30",
-        textLight: "text-amber-300",
-        tagBtnSelected: "bg-amber-500/20 text-amber-400 border-amber-500/40",
-        micBtnSelected: "bg-amber-500/20 border-amber-500/60 text-white",
-        sidebarGlow: "from-amber-950/20 via-black/40 to-amber-950/10"
+        headerGlow: "bg-theme-warning",
+        badge: "bg-theme-warning/10 border border-theme-warning/20 text-theme-warning-soft",
+        borderFocus: "focus:border-theme-warning focus:ring-theme-warning/30",
+        textLight: "text-theme-warning-soft",
+        tagBtnSelected: "bg-theme-warning/20 text-theme-warning-soft border-theme-warning/40",
+        micBtnSelected: "bg-theme-warning/20 border-theme-warning/60 text-white",
+        sidebarGlow: "from-theme-warning-deep/20 via-black/40 to-theme-warning-deep/10"
       };
   }
 };
@@ -202,7 +202,7 @@ function CosmicLivePreviewCard({
 
       {/* Header */}
       <div className="flex justify-between items-center border-b border-white/[0.04] pb-3 mb-4 gap-2">
-        <span className="text-zinc-400 font-bold text-[11px] sm:text-xs tracking-widest uppercase whitespace-nowrap shrink-0">
+        <span className="text-theme-text-muted font-bold text-[11px] sm:text-xs tracking-widest uppercase whitespace-nowrap shrink-0">
           {gameType === "val" ? "Valorant | 特戰英豪" : "League of Legends | 英雄聯盟"}
         </span>
         <span className={`${colorClasses.bg} ${colorClasses.text} border ${colorClasses.border} px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-black tracking-widest whitespace-nowrap shrink-0 uppercase`}>
@@ -213,8 +213,8 @@ function CosmicLivePreviewCard({
       {/* UID */}
       <div className="bg-black/40 border border-white/[0.03] rounded-xl p-3 flex items-center justify-between mb-4 relative z-10">
         <div className="flex flex-col">
-          <span className="text-[9px] text-zinc-400 font-mono">UID</span>
-          <span className="text-xs text-zinc-100 font-mono font-semibold mt-0.5">{displayTag}</span>
+          <span className="text-[9px] text-theme-text-muted font-mono">UID</span>
+          <span className="text-xs text-theme-text-strong font-mono font-semibold mt-0.5">{displayTag}</span>
         </div>
       </div>
 
@@ -232,7 +232,7 @@ function CosmicLivePreviewCard({
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent z-10 pointer-events-none"></div>
                   {/* 懸浮角色名稱標籤 */}
                   <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-sm border border-white/10 px-2 py-0.5 rounded-full text-center whitespace-nowrap z-20">
-                    <span className="text-[8px] font-sans font-medium text-zinc-100 tracking-wide">{heroInfo.name.split(" ")[0]}</span>
+                    <span className="text-[8px] font-sans font-medium text-theme-text-strong tracking-wide">{heroInfo.name.split(" ")[0]}</span>
                   </div>
                   <div className="relative w-full h-[90%] flex justify-center items-start select-none transition-transform duration-500 group-hover/hero:scale-[1.03] z-10 mt-2">
                     <img
@@ -247,9 +247,9 @@ function CosmicLivePreviewCard({
                   </div>
                 </>
               ) : (
-                <div className="w-full h-full flex flex-col justify-center items-center text-zinc-600 p-2 text-center bg-white/[0.005] opacity-60 hover:opacity-100 transition-opacity">
-                  <span className="text-zinc-650 text-sm">✦</span>
-                  <span className="text-[8px] font-mono text-zinc-500 tracking-wider mt-1">空欄位</span>
+                <div className="w-full h-full flex flex-col justify-center items-center text-theme-text-faint p-2 text-center bg-white/[0.005] opacity-60 hover:opacity-100 transition-opacity">
+                  <span className="text-theme-text-faint text-sm">✦</span>
+                  <span className="text-[8px] font-mono text-theme-text-faint tracking-wider mt-1">空欄位</span>
                 </div>
               )}
             </div>
@@ -263,22 +263,22 @@ function CosmicLivePreviewCard({
           tags.map((tagText: string) => (
             <span
               key={tagText}
-              className={`text-[9px] font-medium bg-zinc-800/40 border border-white/[0.04] text-zinc-200 rounded-full px-2.5 py-1 transition-all duration-300 hover:scale-[1.03]`}
+              className={`text-[9px] font-medium bg-theme-surface-raised/40 border border-white/[0.04] text-theme-text-body rounded-full px-2.5 py-1 transition-all duration-300 hover:scale-[1.03]`}
             >
               #{tagText}
             </span>
           ))
         ) : (
-          <span className="text-[10px] text-zinc-500 italic font-bold">尚未設定標籤</span>
+          <span className="text-[10px] text-theme-text-faint italic font-bold">尚未設定標籤</span>
         )}
       </div>
 
       {/* Whisper quote box */}
       <div className={`bg-white/[0.015] border-l-2 ${colorClasses.border} p-3 rounded-r-lg mb-4 flex-grow flex flex-col justify-between`}>
-        <div className="text-zinc-400 text-xs font-bold flex gap-1 items-start mb-1">
-          <span className="text-[9px] uppercase tracking-widest text-zinc-500 font-mono">留言 // Whisper</span>
+        <div className="text-theme-text-muted text-xs font-bold flex gap-1 items-start mb-1">
+          <span className="text-[9px] uppercase tracking-widest text-theme-text-faint font-mono">留言 // Whisper</span>
         </div>
-        <p className="text-zinc-200 text-[11px] leading-relaxed font-light font-sans italic px-1 break-words line-clamp-3">
+        <p className="text-theme-text-body text-[11px] leading-relaxed font-light font-sans italic px-1 break-words line-clamp-3">
           &ldquo;{message || "這個玩家很慢速，什麼都沒有留下..."}&rdquo;
         </p>
       </div>
@@ -286,19 +286,19 @@ function CosmicLivePreviewCard({
       {/* Card Footer */}
       <div className="flex flex-col gap-3 pt-3 border-t border-white/[0.04] mt-auto">
         <div className="flex justify-between items-center gap-2">
-          <div className="flex items-center gap-1.5 text-[10px] text-zinc-300 font-mono min-w-0">
+          <div className="flex items-center gap-1.5 text-[10px] text-theme-text-soft font-mono min-w-0">
             <span>🌐</span>
-            <span className="inline-block truncate max-w-[140px] sm:max-w-[170px] align-middle text-zinc-400">繁體中文</span>
+            <span className="inline-block truncate max-w-[140px] sm:max-w-[170px] align-middle text-theme-text-muted">繁體中文</span>
           </div>
           <div className="flex items-center gap-1.5 shrink-0">
             <div className={`flex items-center px-1.5 py-0.5 rounded ${colorClasses.bg} ${colorClasses.text} border ${colorClasses.border} text-[8px] tracking-wide gap-1 select-none`}>
-              <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+              <span className="w-1.5 h-1.5 rounded-full bg-theme-success animate-pulse"></span>
               <span>
                 {mic_status === 'mic-on' ? "可開麥" : mic_status === 'listen-only' ? "僅聽麥" : "不用麥"}
               </span>
             </div>
             {mbti && (
-              <span className={`bg-white/5 text-zinc-300 border border-white/10 rounded px-1.5 py-0.5 text-[8px] font-bold font-mono`}>
+              <span className={`bg-white/5 text-theme-text-soft border border-white/10 rounded px-1.5 py-0.5 text-[8px] font-bold font-mono`}>
                 {mbti}
               </span>
             )}
@@ -312,9 +312,9 @@ function CosmicLivePreviewCard({
             return (
               <div
                 key={platform}
-                className="w-7 h-7 rounded-full flex items-center justify-center shadow-sm border border-white/5 bg-white/[0.03] text-zinc-300"
+                className="w-7 h-7 rounded-full flex items-center justify-center shadow-sm border border-white/5 bg-white/[0.03] text-theme-text-soft"
               >
-                <span className="text-[10px] text-zinc-400">
+                <span className="text-[10px] text-theme-text-muted">
                   <SocialIcon platform={platform} className="w-3.5 h-3.5" />
                 </span>
               </div>
@@ -754,9 +754,9 @@ export default function ProfilePage() {
   // ================= 0. 避免 SSR 水合不一致 =================
   if (!mounted) {
     return (
-      <div className="relative min-h-screen flex flex-col justify-between z-10 selection:bg-auroraMint/30 text-zinc-100 max-w-4xl mx-auto px-4 py-8 space-y-12">
+      <div className="relative min-h-screen flex flex-col justify-between z-10 selection:bg-auroraMint/30 text-theme-text-strong max-w-4xl mx-auto px-4 py-8 space-y-12">
         <div className="flex items-center justify-center py-20 relative z-10">
-          <div className="w-8 h-8 rounded-full border border-zinc-500 border-t-transparent animate-spin"></div>
+          <div className="w-8 h-8 rounded-full border border-theme-text-faint border-t-transparent animate-spin"></div>
         </div>
       </div>
     );
@@ -765,7 +765,7 @@ export default function ProfilePage() {
   // ================= 1. 未登入守門狀態：顯示優雅的 Continue with Google 🔒 面板 =================
   if (!user && !authLoading) {
     return (
-      <div className="relative min-h-screen flex flex-col justify-between z-10 selection:bg-auroraMint/30 text-zinc-100">
+      <div className="relative min-h-screen flex flex-col justify-between z-10 selection:bg-auroraMint/30 text-theme-text-strong">
         <div className="fixed inset-0 ambient-space-glows pointer-events-none z-0"></div>
         
         <main className="atmosphere-content p-6 md:p-8 min-h-screen w-full max-w-7xl mx-auto px-4 md:px-8 pt-6 relative z-10">
@@ -779,7 +779,7 @@ export default function ProfilePage() {
             
             <div className="space-y-2 text-center">
               <h2 className="font-sans font-bold text-2xl text-white tracking-wide">進入全域身份工作室</h2>
-              <p className="text-xs text-zinc-400 font-light leading-relaxed max-w-sm mx-auto">
+              <p className="text-xs text-theme-text-muted font-light leading-relaxed max-w-sm mx-auto">
                 工作室為私人名片創作空間。為了安全歸檔您的慢速玩家名片、頭像與常用英雄立繪，請先對接您的 Google 帳戶星軌。
               </p>
             </div>
@@ -799,7 +799,7 @@ export default function ProfilePage() {
               </button>
             </div>
 
-            <div className="pt-4 text-center text-[10px] text-zinc-500 font-mono tracking-widest">
+            <div className="pt-4 text-center text-[10px] text-theme-text-faint font-mono tracking-widest">
               SECURE SESSION • PRIVATE WORKSPACE
             </div>
           </div>
@@ -811,7 +811,7 @@ export default function ProfilePage() {
   // ================= 2. 已登入的主入口狀態：特工帳戶主控台 (editingGame === null) =================
   if (editingGame === null) {
     return (
-      <div className="relative min-h-screen z-10 selection:bg-auroraMint/30 text-zinc-100 max-w-4xl mx-auto px-4 py-8 space-y-12">
+      <div className="relative min-h-screen z-10 selection:bg-auroraMint/30 text-theme-text-strong max-w-4xl mx-auto px-4 py-8 space-y-12">
         <div className="fixed inset-0 ambient-space-glows pointer-events-none z-0"></div>
 
         <div className="relative z-10 space-y-12 w-full">
@@ -821,7 +821,7 @@ export default function ProfilePage() {
               <div className="glass-panel border-auroraMint/30 p-4 rounded-xl shadow-[0_10px_30px_rgba(139,92,246,0.15)] flex items-start space-x-3 bg-[#050409]/95">
                 <div className="w-5 h-5 rounded-full bg-auroraTeal/20 border border-auroraMint/50 flex items-center justify-center text-auroraMint mt-0.5 text-xs">✓</div>
                 <div className="flex-1">
-                  <p className="text-[10px] text-zinc-400 font-mono tracking-widest">COSMIC SIGNAL</p>
+                  <p className="text-[10px] text-theme-text-muted font-mono tracking-widest">COSMIC SIGNAL</p>
                   <p className="text-xs text-white mt-1 font-sans leading-relaxed">{toast.message}</p>
                 </div>
               </div>
@@ -834,7 +834,7 @@ export default function ProfilePage() {
               <h1 className="text-2xl font-black tracking-wider text-white flex items-center justify-center sm:justify-start gap-2.5">
                 <Gamepad2 className="text-auroraMint animate-pulse" /> 特工帳戶主控台
               </h1>
-              <p className="text-zinc-400 mt-1 text-xs font-mono tracking-wide uppercase">
+              <p className="text-theme-text-muted mt-1 text-xs font-mono tracking-wide uppercase">
                 PLAYER IDENTITY STUDIO
               </p>
             </div>
@@ -855,7 +855,7 @@ export default function ProfilePage() {
                   onAvatarChange={handleAvatarChange}
                   displayName={userProfile.display_name}
                 />
-                <p className="text-[10px] text-zinc-400 mt-2 font-bold tracking-wider">
+                <p className="text-[10px] text-theme-text-muted mt-2 font-bold tracking-wider">
                   💡 點選頭像更換
                 </p>
               </div>
@@ -863,10 +863,10 @@ export default function ProfilePage() {
               {/* 暱稱與簡介編輯表單 */}
               <div className="flex-1 w-full space-y-4">
                 <div>
-                  <label className="text-[10px] font-bold text-zinc-400 mb-1.5 block font-mono">通用帳戶暱稱</label>
+                  <label className="text-[10px] font-bold text-theme-text-muted mb-1.5 block font-mono">通用帳戶暱稱</label>
                   <Input
                     placeholder="請輸入平台暱稱..."
-                    className="bg-black/40 border-white/10 focus:border-auroraMint text-zinc-200 font-semibold text-sm rounded-xl focus:ring-1 focus:ring-auroraMint/30 h-10"
+                    className="bg-black/40 border-white/10 focus:border-auroraMint text-theme-text-body font-semibold text-sm rounded-xl focus:ring-1 focus:ring-auroraMint/30 h-10"
                     value={userProfile.display_name}
                     onChange={(e) => {
                       setUserProfile({ ...userProfile, display_name: e.target.value });
@@ -875,10 +875,10 @@ export default function ProfilePage() {
                 </div>
 
                 <div>
-                  <label className="text-[10px] font-bold text-zinc-400 mb-1.5 block font-mono">全域個人簡介</label>
+                  <label className="text-[10px] font-bold text-theme-text-muted mb-1.5 block font-mono">全域個人簡介</label>
                   <Textarea
                     placeholder="輸入一句話自我介紹，這將展現在所有關聯的名片上..."
-                    className="bg-black/40 border-white/10 focus:border-auroraMint text-zinc-200 resize-none text-sm rounded-xl"
+                    className="bg-black/40 border-white/10 focus:border-auroraMint text-theme-text-body resize-none text-sm rounded-xl"
                     rows={2}
                     value={userProfile.bio || ""}
                     onChange={(e) => {
@@ -892,7 +892,7 @@ export default function ProfilePage() {
                     {/* Google 登出按鈕 */}
                     <button
                       onClick={handleGoogleLogout}
-                      className="px-4 py-2 rounded-xl border border-white/5 bg-white/[0.02] hover:bg-rose-950/20 hover:border-rose-500/20 text-rose-400 transition-all text-xs font-mono flex items-center gap-1.5 cursor-pointer"
+                      className="px-4 py-2 rounded-xl border border-white/5 bg-white/[0.02] hover:bg-theme-danger-deep/20 hover:border-theme-danger/20 text-theme-danger-soft transition-all text-xs font-mono flex items-center gap-1.5 cursor-pointer"
                     >
                       LOGOUT / 登出
                     </button>
@@ -900,7 +900,7 @@ export default function ProfilePage() {
                     {/* 刪除帳號入口 */}
                     <button
                       onClick={() => setShowDeleteConfirm(true)}
-                      className="px-3 py-2 rounded-xl text-zinc-500 hover:text-rose-400 hover:bg-rose-950/10 transition-all text-[10px] font-mono cursor-pointer"
+                      className="px-3 py-2 rounded-xl text-theme-text-faint hover:text-theme-danger-soft hover:bg-theme-danger-deep/10 transition-all text-[10px] font-mono cursor-pointer"
                     >
                       刪除帳號
                     </button>
@@ -916,23 +916,23 @@ export default function ProfilePage() {
 
                 {/* 刪除帳號二次確認面板 */}
                 {showDeleteConfirm && (
-                  <div className="mt-3 rounded-xl border border-rose-500/25 bg-rose-950/15 p-4 space-y-3">
-                    <p className="text-xs text-rose-300 font-bold">確定要刪除帳號嗎？</p>
-                    <p className="text-[11px] text-zinc-400 leading-relaxed">
+                  <div className="mt-3 rounded-xl border border-theme-danger/25 bg-theme-danger-deep/15 p-4 space-y-3">
+                    <p className="text-xs text-theme-danger-soft font-bold">確定要刪除帳號嗎？</p>
+                    <p className="text-[11px] text-theme-text-muted leading-relaxed">
                       這會永久刪除你的所有名片、暱稱與 Google 帳號連結，無法復原。
                     </p>
                     <div className="flex items-center gap-2">
                       <button
                         onClick={handleDeleteAccount}
                         disabled={deletingAccount}
-                        className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs font-bold transition-all cursor-pointer"
+                        className="px-4 py-2 rounded-xl bg-theme-danger hover:bg-theme-danger disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs font-bold transition-all cursor-pointer"
                       >
                         {deletingAccount ? "刪除中..." : "確認永久刪除"}
                       </button>
                       <button
                         onClick={() => setShowDeleteConfirm(false)}
                         disabled={deletingAccount}
-                        className="px-4 py-2 rounded-xl border border-white/10 text-zinc-300 hover:bg-white/5 text-xs font-mono transition-all cursor-pointer"
+                        className="px-4 py-2 rounded-xl border border-white/10 text-theme-text-soft hover:bg-white/5 text-xs font-mono transition-all cursor-pointer"
                       >
                         取消
                       </button>
@@ -945,7 +945,7 @@ export default function ProfilePage() {
 
           {/* 下半部：我的遊戲檔案庫 */}
           <div className="space-y-4">
-            <h2 className="font-sans font-bold text-sm tracking-widest text-zinc-300 uppercase px-1 font-mono">
+            <h2 className="font-sans font-bold text-sm tracking-widest text-theme-text-soft uppercase px-1 font-mono">
               🗂️ 我的遊戲檔案庫 // Games Library
             </h2>
             
@@ -955,18 +955,18 @@ export default function ProfilePage() {
                 <div>
                   <div className="flex justify-between items-start mb-4">
                     <span className="text-[20px] filter saturate-100 group-hover:scale-110 transition-transform">🥞</span>
-                    <span className="bg-green-500/10 border border-green-500/25 text-green-400 px-2.5 py-0.5 rounded-full text-[9px] font-black tracking-wider flex items-center gap-1 shadow-sm font-mono">
-                      <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                    <span className="bg-theme-success/10 border border-theme-success/25 text-theme-success-soft px-2.5 py-0.5 rounded-full text-[9px] font-black tracking-wider flex items-center gap-1 shadow-sm font-mono">
+                      <span className="w-1.5 h-1.5 rounded-full bg-theme-success animate-pulse" />
                       ACTIVE
                     </span>
                   </div>
                   
-                  <h3 className="text-sm font-black text-zinc-100">鬥陣特工名片</h3>
-                  <p className="text-[10px] text-zinc-400 font-semibold mt-0.5 font-mono">Overwatch Identity</p>
+                  <h3 className="text-sm font-black text-theme-text-strong">鬥陣特工名片</h3>
+                  <p className="text-[10px] text-theme-text-muted font-semibold mt-0.5 font-mono">Overwatch Identity</p>
                   
                   <div className="my-5 bg-black/40 border border-white/5 rounded-xl p-3 space-y-1 shadow-sm">
-                    <div className="text-[9px] font-bold text-zinc-400 uppercase font-mono">當前綁定玩家 // UID</div>
-                    <div className="text-xs font-semibold text-zinc-200 truncate">{cardData.battle_tag || "未設定 (請點擊編輯)"}</div>
+                    <div className="text-[9px] font-bold text-theme-text-muted uppercase font-mono">當前綁定玩家 // UID</div>
+                    <div className="text-xs font-semibold text-theme-text-body truncate">{cardData.battle_tag || "未設定 (請點擊編輯)"}</div>
                     
                     {/* 英雄頭像預覽 */}
                     <div className="flex gap-1.5 mt-3">
@@ -983,7 +983,7 @@ export default function ProfilePage() {
                         </div>
                       ))}
                       {cardData.selected_heroes.filter(Boolean).length === 0 && (
-                        <span className="text-[9px] text-zinc-500 italic font-mono">No heroes configured</span>
+                        <span className="text-[9px] text-theme-text-faint italic font-mono">No heroes configured</span>
                       )}
                     </div>
                   </div>
@@ -998,30 +998,30 @@ export default function ProfilePage() {
               </div>
 
               {/* 2. 🎯 特戰英豪名片 - 尚未開放（GAME_AVAILABILITY.valorant） */}
-              <div className="glass-card border border-white/5 hover:border-rose-500/30 rounded-[24px] p-5 shadow-sm hover:shadow-[0_0_20px_rgba(244,63,94,0.15)] hover:-translate-y-1 transition-all duration-500 flex flex-col justify-between group cursor-default">
+              <div className="glass-card border border-white/5 hover:border-theme-danger/30 rounded-[24px] p-5 shadow-sm hover:shadow-[0_0_20px_rgba(244,63,94,0.15)] hover:-translate-y-1 transition-all duration-500 flex flex-col justify-between group cursor-default">
                 <div>
                   <div className="flex justify-between items-start mb-4">
                     <span className="text-[20px] filter saturate-100 group-hover:scale-110 transition-transform">🎯</span>
                     {GAME_AVAILABILITY.valorant ? (
-                      <span className="bg-rose-500/10 border border-rose-500/25 text-rose-400 px-2.5 py-0.5 rounded-full text-[9px] font-black tracking-wider flex items-center gap-1 shadow-sm font-mono">
-                        <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
+                      <span className="bg-theme-danger/10 border border-theme-danger/25 text-theme-danger-soft px-2.5 py-0.5 rounded-full text-[9px] font-black tracking-wider flex items-center gap-1 shadow-sm font-mono">
+                        <span className="w-1.5 h-1.5 rounded-full bg-theme-danger animate-pulse" />
                         ACTIVE
                       </span>
                     ) : (
-                      <span className="bg-white/5 border border-white/10 text-zinc-500 px-2.5 py-0.5 rounded-full text-[9px] font-black tracking-wider flex items-center gap-1 shadow-sm font-mono">
-                        <span className="w-1.5 h-1.5 rounded-full bg-zinc-600" />
+                      <span className="bg-white/5 border border-white/10 text-theme-text-faint px-2.5 py-0.5 rounded-full text-[9px] font-black tracking-wider flex items-center gap-1 shadow-sm font-mono">
+                        <span className="w-1.5 h-1.5 rounded-full bg-theme-text-faint" />
                         COMING SOON
                       </span>
                     )}
                   </div>
                   
-                  <h3 className="text-sm font-black text-zinc-100">特戰英豪名片</h3>
-                  <p className="text-[10px] text-zinc-400 font-semibold mt-0.5 font-mono">Valorant Identity</p>
+                  <h3 className="text-sm font-black text-theme-text-strong">特戰英豪名片</h3>
+                  <p className="text-[10px] text-theme-text-muted font-semibold mt-0.5 font-mono">Valorant Identity</p>
 
                   {GAME_AVAILABILITY.valorant ? (
                     <div className="my-5 bg-black/40 border border-white/5 rounded-xl p-3 space-y-1 shadow-sm">
-                      <div className="text-[9px] font-bold text-zinc-400 uppercase font-mono">當前綁定玩家 // UID</div>
-                      <div className="text-xs font-semibold text-zinc-200 truncate">{valCardData.battle_tag || "未設定 (請點擊編輯)"}</div>
+                      <div className="text-[9px] font-bold text-theme-text-muted uppercase font-mono">當前綁定玩家 // UID</div>
+                      <div className="text-xs font-semibold text-theme-text-body truncate">{valCardData.battle_tag || "未設定 (請點擊編輯)"}</div>
 
                       {/* 英雄頭像預覽 */}
                       <div className="flex gap-1.5 mt-3">
@@ -1038,13 +1038,13 @@ export default function ProfilePage() {
                           </div>
                         ))}
                         {valCardData.selected_heroes.filter(Boolean).length === 0 && (
-                          <span className="text-[9px] text-zinc-550 italic font-mono">No agents configured</span>
+                          <span className="text-[9px] text-theme-text-faint italic font-mono">No agents configured</span>
                         )}
                       </div>
                     </div>
                   ) : (
                     <div className="my-5 bg-black/20 border border-white/5 rounded-xl p-3 shadow-sm">
-                      <p className="text-[10px] text-zinc-500 font-semibold leading-relaxed font-sans">
+                      <p className="text-[10px] text-theme-text-faint font-semibold leading-relaxed font-sans">
                         新遊戲陣地建設中，敬請期待後續開放。
                       </p>
                     </div>
@@ -1054,14 +1054,14 @@ export default function ProfilePage() {
                 {GAME_AVAILABILITY.valorant ? (
                   <Button
                     onClick={() => setEditingGame("val")}
-                    className="w-full bg-rose-500/10 hover:bg-rose-500 border border-rose-500/20 text-rose-400 hover:text-white py-2.5 text-xs font-bold rounded-xl transition-all duration-300 shadow-sm cursor-pointer"
+                    className="w-full bg-theme-danger/10 hover:bg-theme-danger border border-theme-danger/20 text-theme-danger-soft hover:text-white py-2.5 text-xs font-bold rounded-xl transition-all duration-300 shadow-sm cursor-pointer"
                   >
                     點擊編輯遊戲名片
                   </Button>
                 ) : (
                   <Button
                     disabled
-                    className="w-full bg-white/[0.03] border border-white/10 text-zinc-500 py-2.5 text-xs font-bold rounded-xl shadow-sm cursor-not-allowed"
+                    className="w-full bg-white/[0.03] border border-white/10 text-theme-text-faint py-2.5 text-xs font-bold rounded-xl shadow-sm cursor-not-allowed"
                   >
                     敬請期待 // COMING SOON
                   </Button>
@@ -1069,30 +1069,30 @@ export default function ProfilePage() {
               </div>
 
               {/* 3. 👑 英雄聯盟名片 - 尚未開放（GAME_AVAILABILITY.lol） */}
-              <div className="glass-card border border-white/5 hover:border-blue-500/30 rounded-[24px] p-5 shadow-sm hover:shadow-[0_0_20px_rgba(59,130,246,0.15)] hover:-translate-y-1 transition-all duration-500 flex flex-col justify-between group cursor-default">
+              <div className="glass-card border border-white/5 hover:border-theme-info/30 rounded-[24px] p-5 shadow-sm hover:shadow-[0_0_20px_rgba(59,130,246,0.15)] hover:-translate-y-1 transition-all duration-500 flex flex-col justify-between group cursor-default">
                 <div>
                   <div className="flex justify-between items-start mb-4">
                     <span className="text-[20px] filter saturate-100 group-hover:scale-110 transition-transform">👑</span>
                     {GAME_AVAILABILITY.lol ? (
-                      <span className="bg-blue-500/10 border border-blue-500/25 text-blue-400 px-2.5 py-0.5 rounded-full text-[9px] font-black tracking-wider flex items-center gap-1 shadow-sm font-mono">
-                        <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
+                      <span className="bg-theme-info/10 border border-theme-info/25 text-theme-info-soft px-2.5 py-0.5 rounded-full text-[9px] font-black tracking-wider flex items-center gap-1 shadow-sm font-mono">
+                        <span className="w-1.5 h-1.5 rounded-full bg-theme-info animate-pulse" />
                         ACTIVE
                       </span>
                     ) : (
-                      <span className="bg-white/5 border border-white/10 text-zinc-500 px-2.5 py-0.5 rounded-full text-[9px] font-black tracking-wider flex items-center gap-1 shadow-sm font-mono">
-                        <span className="w-1.5 h-1.5 rounded-full bg-zinc-600" />
+                      <span className="bg-white/5 border border-white/10 text-theme-text-faint px-2.5 py-0.5 rounded-full text-[9px] font-black tracking-wider flex items-center gap-1 shadow-sm font-mono">
+                        <span className="w-1.5 h-1.5 rounded-full bg-theme-text-faint" />
                         COMING SOON
                       </span>
                     )}
                   </div>
                   
-                  <h3 className="text-sm font-black text-zinc-100">英雄聯盟名片</h3>
-                  <p className="text-[10px] text-zinc-400 font-semibold mt-0.5 font-mono">League of Legends</p>
+                  <h3 className="text-sm font-black text-theme-text-strong">英雄聯盟名片</h3>
+                  <p className="text-[10px] text-theme-text-muted font-semibold mt-0.5 font-mono">League of Legends</p>
 
                   {GAME_AVAILABILITY.lol ? (
                     <div className="my-5 bg-black/40 border border-white/5 rounded-xl p-3 space-y-1 shadow-sm">
-                      <div className="text-[9px] font-bold text-zinc-400 uppercase font-mono">當前綁定玩家 // UID</div>
-                      <div className="text-xs font-semibold text-zinc-200 truncate">{lolCardData.battle_tag || "未設定 (請點擊編輯)"}</div>
+                      <div className="text-[9px] font-bold text-theme-text-muted uppercase font-mono">當前綁定玩家 // UID</div>
+                      <div className="text-xs font-semibold text-theme-text-body truncate">{lolCardData.battle_tag || "未設定 (請點擊編輯)"}</div>
 
                       {/* 英雄頭像預覽 */}
                       <div className="flex gap-1.5 mt-3">
@@ -1109,13 +1109,13 @@ export default function ProfilePage() {
                           </div>
                         ))}
                         {lolCardData.selected_heroes.filter(Boolean).length === 0 && (
-                          <span className="text-[9px] text-zinc-550 italic font-mono">No champions configured</span>
+                          <span className="text-[9px] text-theme-text-faint italic font-mono">No champions configured</span>
                         )}
                       </div>
                     </div>
                   ) : (
                     <div className="my-5 bg-black/20 border border-white/5 rounded-xl p-3 shadow-sm">
-                      <p className="text-[10px] text-zinc-500 font-semibold leading-relaxed font-sans">
+                      <p className="text-[10px] text-theme-text-faint font-semibold leading-relaxed font-sans">
                         新遊戲陣地建設中，敬請期待後續開放。
                       </p>
                     </div>
@@ -1125,14 +1125,14 @@ export default function ProfilePage() {
                 {GAME_AVAILABILITY.lol ? (
                   <Button
                     onClick={() => setEditingGame("lol")}
-                    className="w-full bg-blue-500/10 hover:bg-blue-500 border border-blue-500/20 text-blue-400 hover:text-white py-2.5 text-xs font-bold rounded-xl transition-all duration-300 shadow-sm cursor-pointer"
+                    className="w-full bg-theme-info/10 hover:bg-theme-info border border-theme-info/20 text-theme-info-soft hover:text-white py-2.5 text-xs font-bold rounded-xl transition-all duration-300 shadow-sm cursor-pointer"
                   >
                     點擊編輯遊戲名片
                   </Button>
                 ) : (
                   <Button
                     disabled
-                    className="w-full bg-white/[0.03] border border-white/10 text-zinc-500 py-2.5 text-xs font-bold rounded-xl shadow-sm cursor-not-allowed"
+                    className="w-full bg-white/[0.03] border border-white/10 text-theme-text-faint py-2.5 text-xs font-bold rounded-xl shadow-sm cursor-not-allowed"
                   >
                     敬請期待 // COMING SOON
                   </Button>
@@ -1147,7 +1147,7 @@ export default function ProfilePage() {
 
   // ================= 3. 進入特定名片編輯狀態 (editingGame !== null) =================
   return (
-    <div className="relative min-h-screen z-10 selection:bg-auroraMint/30 text-zinc-100 max-w-6xl mx-auto px-4 py-8 space-y-6">
+    <div className="relative min-h-screen z-10 selection:bg-auroraMint/30 text-theme-text-strong max-w-6xl mx-auto px-4 py-8 space-y-6">
       <div className="fixed inset-0 ambient-space-glows pointer-events-none z-0"></div>
 
       {/* Toast */}
@@ -1156,7 +1156,7 @@ export default function ProfilePage() {
           <div className="glass-panel border-auroraMint/30 p-4 rounded-xl shadow-[0_10px_30px_rgba(139,92,246,0.15)] flex items-start space-x-3 bg-[#050409]/95">
             <div className="w-5 h-5 rounded-full bg-auroraTeal/20 border border-auroraMint/50 flex items-center justify-center text-auroraMint mt-0.5 text-xs">✓</div>
             <div className="flex-1">
-              <p className="text-[10px] text-zinc-400 font-mono tracking-widest">COSMIC SIGNAL</p>
+              <p className="text-[10px] text-theme-text-muted font-mono tracking-widest">COSMIC SIGNAL</p>
               <p className="text-xs text-white mt-1 font-sans leading-relaxed">{toast.message}</p>
             </div>
           </div>
@@ -1171,7 +1171,7 @@ export default function ProfilePage() {
               setErrorMsg(null);
               setEditingGame(null);
             }}
-            className={`inline-flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-${colorClasses.primary}-500/50 text-zinc-300 hover:text-white px-4 py-2.5 rounded-xl text-xs font-bold tracking-widest uppercase transition-all shadow-sm active:scale-95 cursor-pointer font-mono`}
+            className={`inline-flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-${colorClasses.primary}-500/50 text-theme-text-soft hover:text-white px-4 py-2.5 rounded-xl text-xs font-bold tracking-widest uppercase transition-all shadow-sm active:scale-95 cursor-pointer font-mono`}
           >
             <ArrowLeft size={14} className="stroke-[3]" />
             <span>← 返回特工主控台</span>
@@ -1183,8 +1183,8 @@ export default function ProfilePage() {
         </div>
 
         {errorMsg && (
-          <div className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-2xl flex items-center gap-3 text-sm animate-shake">
-            <AlertTriangle className="text-red-500 shrink-0" size={18} />
+          <div className="bg-theme-danger/10 border border-theme-danger/20 text-theme-danger-soft px-4 py-3 rounded-2xl flex items-center gap-3 text-sm animate-shake">
+            <AlertTriangle className="text-theme-danger shrink-0" size={18} />
             <span>{errorMsg}</span>
           </div>
         )}
@@ -1193,7 +1193,7 @@ export default function ProfilePage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start w-full">
           {/* 左側：名片即時預覽 */}
           <div className="lg:col-span-4 flex flex-col items-center gap-4 lg:sticky lg:top-24">
-            <h2 className="text-[10px] font-bold tracking-widest text-zinc-400 uppercase font-mono">即時名片預覽 // Live Preview</h2>
+            <h2 className="text-[10px] font-bold tracking-widest text-theme-text-muted uppercase font-mono">即時名片預覽 // Live Preview</h2>
             
             <div ref={cardRef} className="share-card-export-surface rounded-[28px] overflow-hidden relative">
               {editingGame === "ow" ? (
@@ -1218,7 +1218,7 @@ export default function ProfilePage() {
                       <button
                         type="button"
                         onClick={() => handleClearHeroSlot(idx)}
-                        className="pointer-events-auto absolute top-1 right-1 w-4 h-4 bg-black/80 text-[8px] text-rose-450 hover:text-white rounded-full flex items-center justify-center border border-white/10 hover:border-rose-550 active:scale-90 transition-all font-sans cursor-pointer"
+                        className="pointer-events-auto absolute top-1 right-1 w-4 h-4 bg-black/80 text-[8px] text-theme-danger-soft hover:text-white rounded-full flex items-center justify-center border border-white/10 hover:border-theme-danger active:scale-90 transition-all font-sans cursor-pointer"
                         title="清空此位置"
                       >
                         ✕
@@ -1235,7 +1235,7 @@ export default function ProfilePage() {
                 type="button"
                 onClick={handleExportImage}
                 disabled={exportingImage}
-                className={`bg-white/5 hover:bg-white/10 border border-white/10 hover:border-${colorClasses.primary}-500/50 text-zinc-300 hover:text-white rounded-xl py-2.5 px-3 text-xs font-bold transition-all shadow-sm active:scale-95 cursor-pointer flex items-center justify-center gap-1.5 font-mono`}
+                className={`bg-white/5 hover:bg-white/10 border border-white/10 hover:border-${colorClasses.primary}-500/50 text-theme-text-soft hover:text-white rounded-xl py-2.5 px-3 text-xs font-bold transition-all shadow-sm active:scale-95 cursor-pointer flex items-center justify-center gap-1.5 font-mono`}
               >
                 <span>💾 保存圖片</span>
               </Button>
@@ -1243,13 +1243,13 @@ export default function ProfilePage() {
                 type="button"
                 onClick={handleShareLink}
                 disabled={sharing}
-                className={`bg-white/5 hover:bg-white/10 border border-white/10 hover:border-${colorClasses.primary}-500/50 text-zinc-300 hover:text-white rounded-xl py-2.5 px-3 text-xs font-bold transition-all shadow-sm active:scale-95 cursor-pointer flex items-center justify-center gap-1.5 font-mono`}
+                className={`bg-white/5 hover:bg-white/10 border border-white/10 hover:border-${colorClasses.primary}-500/50 text-theme-text-soft hover:text-white rounded-xl py-2.5 px-3 text-xs font-bold transition-all shadow-sm active:scale-95 cursor-pointer flex items-center justify-center gap-1.5 font-mono`}
               >
                 <span>🔗 {shareSuccess ? "已複製！" : "複製連結"}</span>
               </Button>
             </div>
 
-            <p className="text-[10px] text-zinc-500 italic text-center max-w-[320px] mt-1 font-semibold leading-relaxed">
+            <p className="text-[10px] text-theme-text-faint italic text-center max-w-[320px] mt-1 font-semibold leading-relaxed">
               ✨ 點擊預覽圖中英雄插槽右上角的「✕」可將其移去。
             </p>
           </div>
@@ -1259,16 +1259,16 @@ export default function ProfilePage() {
             
             {/* SECTION 1: 玩家基礎設定 */}
             <div className="glass-panel p-6 rounded-2xl space-y-4 text-left border border-white/[0.03]">
-              <h3 className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest border-b border-white/[0.04] pb-2 font-mono">
+              <h3 className="text-[10px] font-bold text-theme-text-muted uppercase tracking-widest border-b border-white/[0.04] pb-2 font-mono">
                 🦁 玩家基礎設定 // Base Configs
               </h3>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-[10px] font-bold text-zinc-400 mb-1.5 block font-mono">BattleTag (遊戲ID)</label>
+                  <label className="text-[10px] font-bold text-theme-text-muted mb-1.5 block font-mono">BattleTag (遊戲ID)</label>
                   <Input
                     placeholder="例如: 愛喝奶茶#3342"
-                    className={`bg-black/40 border-white/10 ${colorClasses.focusBorder} text-zinc-200 font-mono rounded-xl focus:ring-1 h-10`}
+                    className={`bg-black/40 border-white/10 ${colorClasses.focusBorder} text-theme-text-body font-mono rounded-xl focus:ring-1 h-10`}
                     value={currentCard.battle_tag}
                     onChange={(e) => {
                       setErrorMsg(null);
@@ -1278,24 +1278,24 @@ export default function ProfilePage() {
                 </div>
 
                 <div>
-                  <label className="text-[10px] font-bold text-zinc-400 mb-1.5 block font-mono">遊玩伺服器</label>
+                  <label className="text-[10px] font-bold text-theme-text-muted mb-1.5 block font-mono">遊玩伺服器</label>
                   <select
-                    className={`w-full bg-black/40 border border-white/10 rounded-xl py-2 px-3 text-xs ${colorClasses.focusBorder} text-zinc-200 font-semibold h-10 focus:outline-none`}
+                    className={`w-full bg-black/40 border border-white/10 rounded-xl py-2 px-3 text-xs ${colorClasses.focusBorder} text-theme-text-body font-semibold h-10 focus:outline-none`}
                     value={currentCard.server}
                     onChange={(e) => setCard({ ...currentCard, server: e.target.value })}
                   >
                     {(editingGame === "ow" ? SERVER_OPTIONS : []).map((opt) => (
-                      <option key={opt.value} value={opt.value} className="bg-obsidian text-zinc-200 font-semibold">
+                      <option key={opt.value} value={opt.value} className="bg-obsidian text-theme-text-body font-semibold">
                         {opt.label}
                       </option>
                     ))}
                     {editingGame === "val" && ["亞太 (APAC)", "北美 (NA)", "歐洲 (EU)"].map((opt) => (
-                      <option key={opt} value={opt} className="bg-obsidian text-zinc-200 font-semibold">
+                      <option key={opt} value={opt} className="bg-obsidian text-theme-text-body font-semibold">
                         {opt}
                       </option>
                     ))}
                     {editingGame === "lol" && ["台灣 (TW)", "韓國 (KR)", "北美 (NA)"].map((opt) => (
-                      <option key={opt} value={opt} className="bg-obsidian text-zinc-200 font-semibold">
+                      <option key={opt} value={opt} className="bg-obsidian text-theme-text-body font-semibold">
                         {opt}
                       </option>
                     ))}
@@ -1308,8 +1308,8 @@ export default function ProfilePage() {
               {/* 直接隱藏卡片（整張卡從廣場消失） */}
               <div className="bg-black/20 p-4.5 rounded-2xl border border-white/5 flex justify-between items-center shadow-[0_2px_8px_rgba(0,0,0,0.01)]">
                 <div className="space-y-0.5 max-w-[80%]">
-                  <span className="text-xs font-bold text-zinc-200 block font-sans">直接隱藏卡片 // Hidden Card</span>
-                  <span className="text-[9px] text-zinc-400 font-semibold block leading-relaxed font-sans">
+                  <span className="text-xs font-bold text-theme-text-body block font-sans">直接隱藏卡片 // Hidden Card</span>
+                  <span className="text-[9px] text-theme-text-muted font-semibold block leading-relaxed font-sans">
                     開啟後，您的特工名片將直接從交友廣場（河道）中消失，其他玩家將無法瀏覽到您的任何資訊。
                   </span>
                 </div>
@@ -1330,14 +1330,14 @@ export default function ProfilePage() {
 
               <div>
                 <div className="flex justify-between items-center mb-1.5">
-                  <label className="text-[10px] font-bold text-zinc-400 block font-mono">自我介紹留言 (限100字)</label>
-                  <span className={`text-[9px] font-bold font-mono ${currentCard.message.length > 100 ? "text-red-500" : "text-zinc-500"}`}>
+                  <label className="text-[10px] font-bold text-theme-text-muted block font-mono">自我介紹留言 (限100字)</label>
+                  <span className={`text-[9px] font-bold font-mono ${currentCard.message.length > 100 ? "text-theme-danger" : "text-theme-text-faint"}`}>
                     {currentCard.message.length} / 100
                   </span>
                 </div>
                 <Textarea
                   placeholder="GGWP！一起加油，推車到底啦 🚀"
-                  className={`bg-black/40 border-white/10 ${colorClasses.focusBorder} text-zinc-200 resize-none text-xs rounded-xl`}
+                  className={`bg-black/40 border-white/10 ${colorClasses.focusBorder} text-theme-text-body resize-none text-xs rounded-xl`}
                   rows={2}
                   value={currentCard.message}
                   onChange={(e) => {
@@ -1349,7 +1349,7 @@ export default function ProfilePage() {
               </div>
 
               <div>
-                <label className="text-[10px] font-bold text-zinc-400 mb-2 block font-mono">語音溝通狀態</label>
+                <label className="text-[10px] font-bold text-theme-text-muted mb-2 block font-mono">語音溝通狀態</label>
                 <div className="grid grid-cols-3 gap-2">
                   {MIC_OPTIONS.map((opt) => (
                     <button
@@ -1359,7 +1359,7 @@ export default function ProfilePage() {
                       className={`text-[10px] font-bold py-2 rounded-xl border transition-all duration-300 cursor-pointer shadow-sm font-mono ${
                         currentCard.mic_status === opt.value
                           ? `${colorClasses.bg} ${colorClasses.border} text-white font-semibold`
-                          : "bg-black/30 border-white/[0.04] text-zinc-400 hover:text-white"
+                          : "bg-black/30 border-white/[0.04] text-theme-text-muted hover:text-white"
                       }`}
                     >
                       {opt.label}
@@ -1370,15 +1370,15 @@ export default function ProfilePage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-[10px] font-bold text-zinc-400 mb-1.5 block font-mono">MBTI 人格特質 (可選)</label>
+                  <label className="text-[10px] font-bold text-theme-text-muted mb-1.5 block font-mono">MBTI 人格特質 (可選)</label>
                   <select
-                    className={`w-full bg-black/40 border border-white/10 rounded-xl py-2 px-3 text-xs ${colorClasses.focusBorder} text-zinc-200 font-semibold h-10 focus:outline-none`}
+                    className={`w-full bg-black/40 border border-white/10 rounded-xl py-2 px-3 text-xs ${colorClasses.focusBorder} text-theme-text-body font-semibold h-10 focus:outline-none`}
                     value={currentCard.mbti || ""}
                     onChange={(e) => setCard({ ...currentCard, mbti: e.target.value || undefined })}
                   >
-                    <option value="" className="bg-obsidian text-zinc-400 font-semibold">不公開 // Secret</option>
+                    <option value="" className="bg-obsidian text-theme-text-muted font-semibold">不公開 // Secret</option>
                     {MBTI_OPTIONS.map((opt) => (
-                      <option key={opt} value={opt} className="bg-obsidian text-zinc-200 font-semibold">
+                      <option key={opt} value={opt} className="bg-obsidian text-theme-text-body font-semibold">
                         {opt}
                       </option>
                     ))}
@@ -1387,8 +1387,8 @@ export default function ProfilePage() {
 
                 <div>
                   <div className="flex justify-between items-center mb-1.5">
-                    <label className="text-[10px] font-bold text-zinc-400 block font-mono">溝通語言 (最多 3 個)</label>
-                    <span className="text-[9px] text-zinc-500 font-normal font-mono">
+                    <label className="text-[10px] font-bold text-theme-text-muted block font-mono">溝通語言 (最多 3 個)</label>
+                    <span className="text-[9px] text-theme-text-faint font-normal font-mono">
                       已選 {(currentCard.languages || []).length} / 3
                     </span>
                   </div>
@@ -1403,7 +1403,7 @@ export default function ProfilePage() {
                           className={`text-[10px] font-bold px-2.5 py-1.5 rounded-xl border transition-all duration-300 cursor-pointer shadow-sm font-mono ${
                             isSelected
                               ? `${colorClasses.bg} ${colorClasses.border} text-white font-semibold`
-                              : "bg-black/30 border-white/[0.04] text-zinc-400 hover:text-white"
+                              : "bg-black/30 border-white/[0.04] text-theme-text-muted hover:text-white"
                           }`}
                         >
                           {lang}
@@ -1418,7 +1418,7 @@ export default function ProfilePage() {
             {/* SECTION 2: 常用英雄展示 (點擊填入插槽) */}
             <div className="glass-panel p-6 rounded-2xl space-y-4 text-left border border-white/[0.03]">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-white/[0.04] pb-2">
-                <h3 className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest flex items-center gap-1.5 font-mono">
+                <h3 className="text-[10px] font-bold text-theme-text-muted uppercase tracking-widest flex items-center gap-1.5 font-mono">
                   <span>🛡️ 常用英雄展示 (最多 3 個) // Favorite Heroes</span>
                 </h3>
                 {/* 篩選標籤 */}
@@ -1430,7 +1430,7 @@ export default function ProfilePage() {
                         type="button"
                         onClick={() => setHeroRoleFilter(role)}
                         className={`px-2 py-1 rounded transition-colors cursor-pointer ${
-                          heroRoleFilter === role ? "bg-white/10 text-white font-bold" : "text-zinc-400 hover:text-white"
+                          heroRoleFilter === role ? "bg-white/10 text-white font-bold" : "text-theme-text-muted hover:text-white"
                         }`}
                       >
                         {role === "All" ? "全部" : role === "Tank" ? "肉盾 🛡️" : role === "Dps" ? "攻擊 ⚔️" : "支援 ➕"}
@@ -1458,7 +1458,7 @@ export default function ProfilePage() {
                       className={`p-2 rounded-xl border flex flex-col items-center justify-center space-y-1.5 transition-all cursor-pointer ${
                         isSelected
                           ? `${colorClasses.bg} ${colorClasses.border} text-white ${colorClasses.glow}`
-                          : "bg-black/30 border-white/[0.03] text-zinc-400 hover:text-white hover:border-white/10"
+                          : "bg-black/30 border-white/[0.03] text-theme-text-muted hover:text-white hover:border-white/10"
                       }`}
                     >
                       <div className="w-8 h-8 rounded-full overflow-hidden border border-white/10 bg-black/40 flex justify-center items-center shadow-sm">
@@ -1480,9 +1480,9 @@ export default function ProfilePage() {
 
             {/* SECTION 3: 特色標籤選擇 */}
             <div className="glass-panel p-6 rounded-2xl space-y-3 text-left border border-white/[0.03]">
-              <div className="flex justify-between text-[10px] font-bold text-zinc-400 border-b border-white/[0.04] pb-2 font-mono">
+              <div className="flex justify-between text-[10px] font-bold text-theme-text-muted border-b border-white/[0.04] pb-2 font-mono">
                 <span className="uppercase tracking-widest">🏷️ 特色標籤選擇 (最多 3 個) // Styles Labels</span>
-                <span className="text-[9px] text-zinc-500 font-normal font-mono">已選 {currentCard.tags.length}/3</span>
+                <span className="text-[9px] text-theme-text-faint font-normal font-mono">已選 {currentCard.tags.length}/3</span>
               </div>
               <div className="flex flex-wrap gap-1.5">
                 {(editingGame === "ow" ? dbTags.map((tag) => tag.tag_name) : (editingGame === "val" ? ["慢節奏", "不計輸贏", "槍法流", "身法怪", "幽默特工", "深夜寂靜"] : ["孤寂流浪者", "浪漫主義", "歡樂ARAM", "峽谷隱士", "專精單線", "只玩大亂鬥"])).map((tagName) => {
@@ -1495,7 +1495,7 @@ export default function ProfilePage() {
                       className={`text-[10px] font-mono px-3 py-1.5 rounded-full border transition-all cursor-pointer ${
                         isSelected
                           ? `${colorClasses.bg} ${colorClasses.text} ${colorClasses.border} font-bold ${colorClasses.tagGlow}`
-                          : "bg-white/[0.01] border-white/[0.06] text-zinc-400 hover:text-white"
+                          : "bg-white/[0.01] border-white/[0.06] text-theme-text-muted hover:text-white"
                       }`}
                     >
                       #{tagName}
@@ -1507,11 +1507,11 @@ export default function ProfilePage() {
 
             {/* SECTION 4: 常用聯絡管道設定 */}
             <div className="glass-panel p-6 rounded-2xl space-y-3 text-left border border-white/[0.03]">
-              <div className="flex justify-between text-[10px] font-bold text-zinc-400 border-b border-white/[0.04] pb-2 font-mono">
+              <div className="flex justify-between text-[10px] font-bold text-theme-text-muted border-b border-white/[0.04] pb-2 font-mono">
                 <span className="uppercase tracking-widest">💬 常用聯絡管道設定 (1~3個) // Contact Platforms</span>
-                <span className="text-[9px] text-zinc-500 font-normal font-mono">已選 {Object.keys(currentCard.social_channels || {}).length}/3</span>
+                <span className="text-[9px] text-theme-text-faint font-normal font-mono">已選 {Object.keys(currentCard.social_channels || {}).length}/3</span>
               </div>
-              <p className="text-[9px] text-zinc-400 leading-relaxed">
+              <p className="text-[9px] text-theme-text-muted leading-relaxed">
                 為落實寂靜低侵入社交宣言，系統在名片上僅以「展示發光圖標」呈現，不公開聯絡 ID 文字，以保護您的通訊隱私。點選即可啟動對應聯絡管道展示。
               </p>
 
@@ -1524,17 +1524,17 @@ export default function ProfilePage() {
                       onClick={() => handleToggleSocial(platform.id)}
                       className={`p-3.5 rounded-xl border flex items-center justify-between cursor-pointer transition-all ${
                         isActive
-                          ? "bg-purple-950/20 border-purple-500/50 shadow-[0_0_10px_rgba(168,85,247,0.1)]"
+                          ? "bg-theme-accent-brand-deep/20 border-theme-accent-brand/50 shadow-[0_0_10px_rgba(168,85,247,0.1)]"
                           : "bg-black/30 border-white/[0.04] opacity-50 hover:opacity-80"
                       }`}
                     >
                       <div className="flex items-center space-x-3">
-                        <span className="text-base text-purple-400 drop-shadow-[0_0_4px_rgba(168,85,247,0.4)]">
+                        <span className="text-base text-theme-accent-brand drop-shadow-[0_0_4px_rgba(168,85,247,0.4)]">
                           <SocialIcon platform={platform.id} className="w-5 h-5" />
                         </span>
-                        <span className="text-xs text-zinc-100 font-bold font-mono">{platform.label}</span>
+                        <span className="text-xs text-theme-text-strong font-bold font-mono">{platform.label}</span>
                       </div>
-                      <span className="text-[8px] px-2 py-0.5 rounded bg-white/5 border border-white/10 text-zinc-400 font-mono">
+                      <span className="text-[8px] px-2 py-0.5 rounded bg-white/5 border border-white/10 text-theme-text-muted font-mono">
                         {isActive ? "ACTIVE / 展示中" : "INACTIVE"}
                       </span>
                     </div>

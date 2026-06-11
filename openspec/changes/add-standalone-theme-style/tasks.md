@@ -8,15 +8,15 @@
 
 ## Phase 1 — Token 地基（behavior-preserving）
 
-- [ ] 1.1 globals.css：依歸類表擴充 `--theme-*` token（original-baseline 區塊新增等值定義；既有變數行不動）
-- [ ] 1.2 `@theme inline` 補 token alias，使 utility class 可直接引用（如 `bg-theme-surface`）
-- [ ] 1.3 逐檔遷移 11 個檔案的硬碼顏色 → token utility/變數引用（小步提交，每檔一 commit）
-- [ ] 1.4 視覺回歸：original-baseline 下重拍 8 張截圖與基準比對，肉眼不可辨才過
-- [ ] 1.5 二次完備性掃描；豁免清單（資料驅動顏色等）逐項記錄理由
+- [x] 1.1 globals.css：依歸類表擴充 `--theme-*` token（original-baseline 區塊新增等值定義；既有變數行不動）
+- [x] 1.2 `@theme inline` 補 token alias，使 utility class 可直接引用（如 `bg-theme-surface`）
+- [x] 1.3 批次遷移 22 個使用者面向檔案（377 處；腳本化 regex + 特例表）的硬碼顏色 → token utility/變數引用（小步提交，每檔一 commit）
+- [x] 1.4 視覺回歸（8 張：6 張像素級相同、browse 2 張 ≤0.14% 動態噪音）：original-baseline 下重拍 8 張截圖與基準比對，肉眼不可辨才過
+- [x] 1.5 二次完備性掃描（範圍內殘留 0；豁免清單見 token-map.md）；豁免清單（資料驅動顏色等）逐項記錄理由
 
 ## Phase 2 — shadcn 橋接層
 
-- [ ] 2.1 盤點 shadcn 語意 token 現值，建立 original-baseline 對映基準表（寫入 globals.css 註解錨點）
+- [x] 2.1 盤點 shadcn（:root 即 original-baseline 對映基準；新主題依 token-map 同步兩層） 語意 token 現值，建立 original-baseline 對映基準表（寫入 globals.css 註解錨點）
 - [ ] 2.2 驗證：切換既有任一主題 class（手動加 html class）時 shadcn 元件區塊無配色撕裂
 
 ## Phase 3 — Developer 預覽通道
