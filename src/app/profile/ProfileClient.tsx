@@ -22,6 +22,7 @@ import { Badge } from "@/components/ui/badge";
 import { Save, ArrowLeft, Gamepad2, AlertTriangle, Eye, EyeOff, LockKeyhole } from "lucide-react";
 import { toPng } from "html-to-image";
 import { getMyProfile, saveProfile } from "@/app/actions/profile";
+import { deleteMyAccount } from "@/app/actions/account";
 import { getMyUserProfile, saveNickname } from "@/app/actions/userProfile";
 import { getGameSpecialTags } from "@/app/actions/tags";
 import Link from "next/link";
@@ -393,6 +394,8 @@ export default function ProfilePage() {
   const [shareSuccess, setShareSuccess] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [toast, setToast] = useState({ show: false, message: "" });
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deletingAccount, setDeletingAccount] = useState(false);
 
   const triggerToast = (message: string) => {
     setToast({ show: false, message: "" });
@@ -711,6 +714,24 @@ export default function ProfilePage() {
     window.location.href = "/";
   };
 
+  const handleDeleteAccount = async () => {
+    setDeletingAccount(true);
+    try {
+      const result = await deleteMyAccount();
+      if (result.error) {
+        setShowDeleteConfirm(false);
+        triggerToast(`⚠️ ${result.error}`);
+        return;
+      }
+      window.location.href = "/";
+    } catch {
+      setShowDeleteConfirm(false);
+      triggerToast("⚠️ 刪除失敗，請稍後再試");
+    } finally {
+      setDeletingAccount(false);
+    }
+  };
+
   // ================= 0. 避免 SSR 水合不一致 =================
   if (!mounted) {
     return (
@@ -848,13 +869,23 @@ export default function ProfilePage() {
                 </div>
 
                 <div className="flex justify-between items-center pt-1">
-                  {/* Google 登出按鈕 */}
-                  <button
-                    onClick={handleGoogleLogout}
-                    className="px-4 py-2 rounded-xl border border-white/5 bg-white/[0.02] hover:bg-rose-950/20 hover:border-rose-500/20 text-rose-400 transition-all text-xs font-mono flex items-center gap-1.5 cursor-pointer"
-                  >
-                    LOGOUT / 登出
-                  </button>
+                  <div className="flex items-center gap-2">
+                    {/* Google 登出按鈕 */}
+                    <button
+                      onClick={handleGoogleLogout}
+                      className="px-4 py-2 rounded-xl border border-white/5 bg-white/[0.02] hover:bg-rose-950/20 hover:border-rose-500/20 text-rose-400 transition-all text-xs font-mono flex items-center gap-1.5 cursor-pointer"
+                    >
+                      LOGOUT / 登出
+                    </button>
+
+                    {/* 刪除帳號入口 */}
+                    <button
+                      onClick={() => setShowDeleteConfirm(true)}
+                      className="px-3 py-2 rounded-xl text-zinc-500 hover:text-rose-400 hover:bg-rose-950/10 transition-all text-[10px] font-mono cursor-pointer"
+                    >
+                      刪除帳號
+                    </button>
+                  </div>
 
                   <Button
                     onClick={handleSaveHub}
@@ -863,6 +894,32 @@ export default function ProfilePage() {
                     {hubSaved ? "✓ 儲存成功" : "儲存帳戶設定"}
                   </Button>
                 </div>
+
+                {/* 刪除帳號二次確認面板 */}
+                {showDeleteConfirm && (
+                  <div className="mt-3 rounded-xl border border-rose-500/25 bg-rose-950/15 p-4 space-y-3">
+                    <p className="text-xs text-rose-300 font-bold">確定要刪除帳號嗎？</p>
+                    <p className="text-[11px] text-zinc-400 leading-relaxed">
+                      這會永久刪除你的所有名片、暱稱與 Google 帳號連結，無法復原。
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={handleDeleteAccount}
+                        disabled={deletingAccount}
+                        className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs font-bold transition-all cursor-pointer"
+                      >
+                        {deletingAccount ? "刪除中..." : "確認永久刪除"}
+                      </button>
+                      <button
+                        onClick={() => setShowDeleteConfirm(false)}
+                        disabled={deletingAccount}
+                        className="px-4 py-2 rounded-xl border border-white/10 text-zinc-300 hover:bg-white/5 text-xs font-mono transition-all cursor-pointer"
+                      >
+                        取消
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
