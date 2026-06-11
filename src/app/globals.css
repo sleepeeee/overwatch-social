@@ -11,12 +11,12 @@
   --color-foreground: var(--foreground);
   --color-morandi-blue: #93A2B5;
   --color-morandi-sand: #D4C5A9;
-  --color-obsidian: #030206;
-  --color-midnightSlate: #0B0914;
-  --color-auroraTeal: #8b5cf6;
-  --color-auroraMint: #c084fc;
-  --color-starryIndigo: #6366F1;
-  --color-mutedZinc: #94a3b8;
+  --color-obsidian: var(--background);
+  --color-midnightSlate: var(--popover);
+  --color-auroraTeal: var(--brand-aurora-1);
+  --color-auroraMint: var(--brand-aurora-2);
+  --color-starryIndigo: var(--brand-starry);
+  --color-mutedZinc: var(--muted-foreground);
   --font-sans: var(--font-noto-sans-tc);
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-sans);
@@ -148,6 +148,12 @@
   --accent-foreground: #ffffff;
 
   /* 語意色 token（add-standalone-theme-style）：original-baseline 等值 = 遷移前 Tailwind v4 調色盤精確值 */
+
+  /* 品牌光暈變數（add-standalone-theme-style）：themes 可覆寫 */
+  --brand-aurora-1: #8b5cf6;
+  --brand-aurora-2: #c084fc;
+  --brand-aurora-3: #a78bfa;
+  --brand-starry: #6366F1;
   --theme-text-strong: oklch(96.7% 0.001 286.375);   /* zinc-100 */
   --theme-text-body: oklch(92% 0.004 286.32);        /* zinc-200 */
   --theme-text-soft: oklch(87.1% 0.006 286.286);     /* zinc-300 */
@@ -227,6 +233,12 @@
   --theme-card-hover-translate-y-mobile: -1px;
 
   /* 語意色 token（add-standalone-theme-style）：original-baseline 等值 = 遷移前 Tailwind v4 調色盤精確值 */
+
+  /* 品牌光暈變數（add-standalone-theme-style）：themes 可覆寫 */
+  --brand-aurora-1: #8b5cf6;
+  --brand-aurora-2: #c084fc;
+  --brand-aurora-3: #a78bfa;
+  --brand-starry: #6366F1;
   --theme-text-strong: oklch(96.7% 0.001 286.375);   /* zinc-100 */
   --theme-text-body: oklch(92% 0.004 286.32);        /* zinc-200 */
   --theme-text-soft: oklch(87.1% 0.006 286.286);     /* zinc-300 */
@@ -258,6 +270,109 @@
 
 
 
+
+/* ============================================================
+   霓虹電競 (theme-neon-esports) — add-standalone-theme-style
+   方向：「Volt & Ice」— 深海軍藍底、電光青主色、熱品紅 accent、
+   銳利圓角、霓虹發光邊框。只新增、不修改既有主題。
+   ============================================================ */
+.theme-neon-esports {
+  /* shadcn 語意層 */
+  --background: oklch(16% 0.038 255);
+  --foreground: oklch(96% 0.012 215);
+  --card: oklch(85% 0.15 200 / 3%);
+  --card-foreground: oklch(96% 0.012 215);
+  --popover: oklch(20% 0.045 252);
+  --popover-foreground: oklch(96% 0.012 215);
+  --primary: oklch(80% 0.15 200);
+  --primary-foreground: oklch(16% 0.04 255);
+  --secondary: oklch(24% 0.05 250);
+  --secondary-foreground: oklch(96% 0.012 215);
+  --muted: oklch(24% 0.05 250);
+  --muted-foreground: oklch(70% 0.04 225);
+  --accent: oklch(70% 0.24 345);
+  --accent-foreground: oklch(98% 0.005 215);
+  --destructive: oklch(63% 0.26 18);
+  --border: oklch(80% 0.15 200 / 14%);
+  --input: oklch(80% 0.15 200 / 10%);
+  --ring: oklch(80% 0.15 200);
+
+  /* 氛圍層：雙霓虹輝光（青 × 品紅）壓在海軍藍上 */
+  --theme-bg-gradient: radial-gradient(circle 46vw at 88% 12%, oklch(80% 0.15 200 / 9%) 0%, transparent 100%),
+    radial-gradient(circle 42vw at 10% 88%, oklch(70% 0.24 345 / 7%) 0%, transparent 100%),
+    linear-gradient(168deg, oklch(19% 0.05 250 / 60%) 0%, transparent 45%);
+  --shadow-card-val: 0 0 24px oklch(80% 0.15 200 / 6%);
+  --border-card-val: 1px solid oklch(80% 0.15 200 / 12%);
+  --glass-bg: oklch(15% 0.04 255 / 90%);
+  --glass-blur: blur(18px);
+  --glass-border: 1px solid oklch(80% 0.15 200 / 12%);
+  --glass-radius: 10px;
+  --glass-hover-bg: oklch(80% 0.15 200 / 5%);
+  --glass-hover-border: 1px solid oklch(80% 0.15 200 / 45%);
+  --organic-radius: 10px;
+  --shadow-card-hover-val: 0 0 38px oklch(80% 0.15 200 / 16%), 0 0 12px oklch(70% 0.24 345 / 10%);
+  --theme-selection-bg: oklch(80% 0.15 200 / 35%);
+  --theme-scrollbar-hover: oklch(80% 0.15 200 / 50%);
+
+  /* 結構 token：銳利、緊湊、HUD 感 */
+  --theme-card-radius: 10px;
+  --theme-card-shadow: 0 0 24px oklch(80% 0.15 200 / 6%);
+  --theme-card-shadow-hover: 0 0 38px oklch(80% 0.15 200 / 16%);
+  --theme-card-border: 1px solid oklch(80% 0.15 200 / 12%);
+  --theme-card-border-hover: 1px solid oklch(80% 0.15 200 / 50%);
+  --theme-inner-radius: 6px;
+  --theme-inner-border: 1px solid oklch(80% 0.15 200 / 10%);
+  --theme-inner-shadow: inset 0 0 12px oklch(80% 0.15 200 / 4%);
+  --theme-button-radius: 6px;
+  --theme-input-radius: 6px;
+  --theme-input-border: 1px solid oklch(80% 0.15 200 / 18%);
+  --theme-input-focus-border-color: oklch(80% 0.15 200);
+  --theme-input-focus-ring: 0 0 0 2px oklch(80% 0.15 200 / 30%), 0 0 14px oklch(80% 0.15 200 / 25%);
+  --theme-tag-radius: 4px;
+  --theme-tag-border: 1px solid oklch(80% 0.15 200 / 35%);
+  --theme-font-family: var(--font-sans);
+  --theme-letter-spacing: 0.02em;
+  --theme-text-transform: none;
+  --theme-transition-duration: 200ms;
+  --theme-transition-timing: cubic-bezier(0.2, 0, 0, 1);
+  --theme-card-rotate: 0deg;
+  --theme-card-rotate-mobile: 0deg;
+  --theme-card-hover-translate-y: -3px;
+  --theme-card-hover-translate-y-mobile: -1px;
+
+  /* 品牌光暈覆寫：青 × 品紅 */
+  --brand-aurora-1: oklch(80% 0.15 200);
+  --brand-aurora-2: oklch(70% 0.24 345);
+  --brand-aurora-3: oklch(78% 0.12 215);
+  --brand-starry: oklch(66% 0.21 250);
+
+  /* 語意色 token：冰感文字 × 電光狀態色（飽和度較基準高 10-20%）*/
+  --theme-text-strong: oklch(97% 0.012 210);
+  --theme-text-body: oklch(91% 0.018 215);
+  --theme-text-soft: oklch(84% 0.024 220);
+  --theme-text-muted: oklch(69% 0.038 225);
+  --theme-text-faint: oklch(55% 0.042 230);
+  --theme-text-inverse: oklch(18% 0.04 255);
+  --theme-surface-deep: oklch(13% 0.035 256);
+  --theme-surface-raised: oklch(25% 0.05 250);
+  --theme-surface-light: oklch(93% 0.018 215);
+  --theme-border-subtle: oklch(33% 0.06 240);
+  --theme-border-light: oklch(46% 0.07 225);
+  --theme-danger: oklch(63% 0.26 18);
+  --theme-danger-soft: oklch(72% 0.21 14);
+  --theme-danger-deep: oklch(25% 0.11 12);
+  --theme-warning: oklch(76% 0.19 60);
+  --theme-warning-soft: oklch(84% 0.17 78);
+  --theme-warning-deep: oklch(28% 0.08 52);
+  --theme-info: oklch(66% 0.21 250);
+  --theme-info-soft: oklch(75% 0.16 238);
+  --theme-info-deep: oklch(28% 0.09 258);
+  --theme-success: oklch(77% 0.21 150);
+  --theme-success-soft: oklch(85% 0.19 152);
+  --theme-accent-cyan: oklch(82% 0.155 200);
+  --theme-accent-brand: oklch(70% 0.24 345);
+  --theme-accent-brand-deep: oklch(28% 0.12 345);
+}
 
 .dark {
   --background: oklch(0.145 0 0);
@@ -304,14 +419,15 @@
     @apply border-border outline-ring/50;
   }
   body {
-    background-color: #030206 !important;
+    /* 改吃主題變數（original-baseline 值 = 原寫死值，外觀不變）*/
+    background-color: var(--background, #030206) !important;
     background-image: var(
       --theme-bg-gradient,
       radial-gradient(circle 42vw at 85% 15%, rgba(192, 132, 252, 0.08) 0%, rgba(192, 132, 252, 0) 100%),
       radial-gradient(circle 45vw at 15% 85%, rgba(99, 102, 241, 0.07) 0%, rgba(99, 102, 241, 0) 100%),
       radial-gradient(circle 35vw at 50% 35%, rgba(139, 92, 246, 0.03) 0%, rgba(139, 92, 246, 0) 100%)
     ) !important;
-    color: #f4f4f5;
+    color: var(--foreground, #f4f4f5);
     position: relative;
     min-height: 100vh;
     font-family: var(--font-sans);
@@ -319,7 +435,7 @@
   }
   body::selection,
   *::selection {
-    background-color: rgba(192, 132, 252, 0.3);
+    background-color: var(--theme-selection-bg, rgba(192, 132, 252, 0.3));
     color: #ffffff;
   }
   html {
@@ -333,56 +449,53 @@
     height: 6px;
 }
 ::-webkit-scrollbar-track {
-    background: #030206;
+    background: var(--background, #030206);
 }
 ::-webkit-scrollbar-thumb {
-    background: #181524;
+    background: var(--secondary, #181524);
     border-radius: 999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-    background: rgba(192, 132, 252, 0.4);
+    background: var(--theme-scrollbar-hover, rgba(192, 132, 252, 0.4));
 }
 
 .glass-panel {
-    background: rgba(5, 4, 9, 0.88);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.03);
+    background: var(--glass-bg, rgba(5, 4, 9, 0.88));
+    backdrop-filter: var(--glass-blur, blur(20px));
+    -webkit-backdrop-filter: var(--glass-blur, blur(20px));
+    border: var(--glass-border, 1px solid rgba(255, 255, 255, 0.03));
 }
 
 .glass-card {
-    background: rgba(255, 255, 255, 0.012);
+    background: var(--card, rgba(255, 255, 255, 0.012));
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
-    border: 1px solid rgba(255, 255, 255, 0.03);
+    border: var(--border-card-val, 1px solid rgba(255, 255, 255, 0.03));
     transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .glass-card:hover {
-    border-color: rgba(192, 132, 252, 0.25);
-    background: rgba(255, 255, 255, 0.025);
-    transform: translateY(-2px);
+    border-color: color-mix(in oklab, var(--brand-aurora-2) 25%, transparent);
+    background: var(--glass-hover-bg, rgba(255, 255, 255, 0.025));
+    transform: translateY(var(--theme-card-hover-translate-y, -2px));
 }
 
 .primary-glowing-card {
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.03) 0%, rgba(192, 132, 252, 0.01) 100%);
-    border: 1px solid rgba(192, 132, 252, 0.15);
-    box-shadow: 0 0 20px rgba(139, 92, 246, 0.03);
+    background: linear-gradient(135deg, color-mix(in oklab, var(--brand-aurora-1) 3%, transparent) 0%, color-mix(in oklab, var(--brand-aurora-2) 1%, transparent) 100%);
+    border: 1px solid color-mix(in oklab, var(--brand-aurora-2) 15%, transparent);
+    box-shadow: var(--shadow-card-val, 0 0 20px rgba(139, 92, 246, 0.03));
     transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .primary-glowing-card:hover {
-    border-color: rgba(192, 132, 252, 0.45);
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.06) 0%, rgba(192, 132, 252, 0.03) 100%);
-    box-shadow: 0 0 35px rgba(139, 92, 246, 0.12);
-    transform: translateY(-2px);
+    border-color: color-mix(in oklab, var(--brand-aurora-2) 45%, transparent);
+    background: linear-gradient(135deg, color-mix(in oklab, var(--brand-aurora-1) 6%, transparent) 0%, color-mix(in oklab, var(--brand-aurora-2) 3%, transparent) 100%);
+    box-shadow: var(--shadow-card-hover-val, 0 0 35px rgba(139, 92, 246, 0.12));
+    transform: translateY(var(--theme-card-hover-translate-y, -2px));
 }
 
 /* 多色相非對稱星河漸層 */
 .ambient-space-glows {
-    background: 
-        radial-gradient(circle 42vw at 85% 15%, rgba(192, 132, 252, 0.08) 0%, rgba(192, 132, 252, 0) 100%),
-        radial-gradient(circle 45vw at 15% 85%, rgba(99, 102, 241, 0.07) 0%, rgba(99, 102, 241, 0) 100%),
-        radial-gradient(circle 35vw at 50% 35%, rgba(139, 92, 246, 0.03) 0%, rgba(139, 92, 246, 0) 100%);
+    background: var(--theme-bg-gradient);
 }
 
 .share-card-export-surface {
@@ -414,17 +527,17 @@
 .brand-title {
     font-family: 'Cinzel', serif;
     font-weight: 300;
-    fill: #c084fc;
+    fill: var(--brand-aurora-2);
     letter-spacing: 0.16em;
     font-size: 40px;
-    filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.45));
+    filter: drop-shadow(0 0 8px color-mix(in oklab, var(--brand-aurora-1) 45%, transparent));
     animation: titleReveal 6s ease-out forwards;
 }
 
 .brand-slogan {
     font-family: 'Noto Serif TC', serif;
     font-weight: 200;
-    fill: #a78bfa;
+    fill: var(--brand-aurora-3);
     letter-spacing: 0.32em;
     font-size: 16px;
     opacity: 0.8;
@@ -432,7 +545,7 @@
 }
 
 .divider-line {
-    stroke: #c084fc;
+    stroke: var(--brand-aurora-2);
     stroke-dasharray: 200;
     stroke-dashoffset: 200;
     animation: drawLine 4s ease-out forwards;
@@ -450,7 +563,7 @@
 }
 
 .cosmic-crescent {
-    filter: drop-shadow(0 0 15px rgba(139, 92, 246, 0.45));
+    filter: drop-shadow(0 0 15px color-mix(in oklab, var(--brand-aurora-1) 45%, transparent));
     transform-origin: 400px 330px;
     animation: moonEntrance 3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
@@ -504,8 +617,8 @@
     100% { transform: rotate(360deg); }
 }
 @keyframes glowPulse {
-    0%, 100% { filter: drop-shadow(0 0 5px #c084fc); opacity: 0.8; }
-    50% { filter: drop-shadow(0 0 22px #c084fc); opacity: 1; }
+    0%, 100% { filter: drop-shadow(0 0 5px var(--brand-aurora-2, #c084fc)); opacity: 0.8; }
+    50% { filter: drop-shadow(0 0 22px var(--brand-aurora-2, #c084fc)); opacity: 1; }
 }
 @keyframes twinkle {
     0%, 100% { opacity: 0.2; transform: scale(0.8); }

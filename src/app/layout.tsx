@@ -75,7 +75,7 @@ export default function RootLayout({
       <body
         className="min-h-screen flex flex-col text-foreground relative pt-[var(--dev-banner-height,0px)]"
         style={{
-          backgroundColor: "#030206",
+          backgroundColor: "var(--background, #030206)",
           backgroundImage: "var(--theme-bg-gradient)",
           fontFamily: "var(--font-noto-sans-tc), var(--font-geist-sans), sans-serif"
         }}
