@@ -16,7 +16,6 @@ import {
   LogOut,
   Lock,
   Unlock,
-  TrendingUp,
   Search,
   Loader2,
   Eye,
@@ -27,7 +26,6 @@ import {
 } from "lucide-react";
 import { addWhitelistEmail, removeWhitelistEmail, getAllProfilesForDeveloper } from "@/app/actions/developer";
 import UserListSection from "./components/UserListSection";
-import { HEROES_CONFIG } from "@/data/mockPlayers";
 
 interface ProfileRow {
   user_id: string;
@@ -43,11 +41,7 @@ interface DeveloperConsoleClientProps {
   totalUsers?: number;
   totalProfiles?: number;
   completedProfiles?: number;
-  heroStats?: Array<{ heroId: string; count: number }>;
 }
-
-// 英雄名稱查找表（module-level）
-const heroNameMap = new Map(HEROES_CONFIG.map(h => [h.id, h.name]));
 
 // 台灣時間格式器（module-level，避免每次 render 重新建立 Intl 物件）
 const taipeiFormatter = new Intl.DateTimeFormat("zh-TW", {
@@ -97,7 +91,6 @@ export default function DeveloperConsoleClient({
   totalUsers = 0,
   totalProfiles = 0,
   completedProfiles = 0,
-  heroStats = [],
 }: DeveloperConsoleClientProps) {
   const [whitelist, setWhitelist] = useState(initialWhitelist);
   const [newEmail, setNewEmail] = useState("");
@@ -628,39 +621,6 @@ export default function DeveloperConsoleClient({
                   </div>
 
                 </div>
-
-                {heroStats.length > 0 && (
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2">
-                      <TrendingUp size={14} className="text-[var(--theme-primary-text)]" />
-                      <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest">英雄流行度 Top 10</h3>
-                    </div>
-                    <div className="space-y-2">
-                      {heroStats.slice(0, 10).map((stat, idx) => {
-                        const heroName = heroNameMap.get(stat.heroId) || stat.heroId;
-                        const maxCount = heroStats[0]?.count || 1;
-                        const barWidth = Math.round((stat.count / maxCount) * 100);
-                        return (
-                          <div key={stat.heroId} className="flex items-center gap-3">
-                            <span className="text-[10px] font-black text-slate-500 w-4 text-right">{idx + 1}</span>
-                            <div className="flex-1">
-                              <div className="flex justify-between items-center mb-1">
-                                <span className="text-xs font-bold text-slate-700 dark:text-slate-300">{heroName}</span>
-                                <span className="text-[10px] font-black text-slate-500">{stat.count} 人</span>
-                              </div>
-                              <div className="h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
-                                <div
-                                  className="h-full bg-gradient-to-r from-[var(--theme-primary)] to-[var(--theme-primary-dark)] rounded-full transition-all"
-                                  style={{ width: `${barWidth}%` }}
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
 
                 {/* Warning Tip */}
                 <div className="bg-amber-50/50 dark:bg-amber-950/20 border-l-4 border-amber-500/80 rounded-r-xl p-5 shadow-sm flex items-start gap-4">
