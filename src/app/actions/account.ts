@@ -16,10 +16,11 @@ export async function deleteMyAccount(): Promise<{ error?: string }> {
 
   // SUPABASE_SECRET_KEY 為 server-only 金鑰（sb_secret_...），可繞過 RLS，嚴禁加 NEXT_PUBLIC_ 前綴
   const secretKey = process.env.SUPABASE_SECRET_KEY;
-  if (!secretKey) return { error: "伺服器尚未設定刪除權限，請聯絡管理員" };
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  if (!secretKey || !supabaseUrl) return { error: "伺服器尚未設定刪除權限，請聯絡管理員" };
 
   const admin = createAdminClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    supabaseUrl,
     secretKey,
     { auth: { autoRefreshToken: false, persistSession: false } }
   );

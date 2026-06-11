@@ -716,14 +716,20 @@ export default function ProfilePage() {
 
   const handleDeleteAccount = async () => {
     setDeletingAccount(true);
-    const result = await deleteMyAccount();
-    if (result.error) {
-      setDeletingAccount(false);
+    try {
+      const result = await deleteMyAccount();
+      if (result.error) {
+        setShowDeleteConfirm(false);
+        triggerToast(`⚠️ ${result.error}`);
+        return;
+      }
+      window.location.href = "/";
+    } catch {
       setShowDeleteConfirm(false);
-      triggerToast(`⚠️ ${result.error}`);
-      return;
+      triggerToast("⚠️ 刪除失敗，請稍後再試");
+    } finally {
+      setDeletingAccount(false);
     }
-    window.location.href = "/";
   };
 
   // ================= 0. 避免 SSR 水合不一致 =================
