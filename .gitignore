@@ -72,3 +72,7 @@ dev-server.*.log
 .vscode/
 
 .vercel
+
+# 視覺回歸截圖（本地產物）
+e2e/baseline/
+e2e/regression-*/

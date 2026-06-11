@@ -2,9 +2,9 @@
 
 ## Phase 0 — 校準（環境/時間實測）
 
-- [ ] 0.1 啟動 dev server，用 playwright 拍 4 頁 × 2 視口基準截圖存 `e2e/baseline/`（同時實測單輪截圖耗時，校準後續估算）
+- [x] 0.1 基準截圖完成（8 張：home/browse/profile/player × desktop/mobile；單輪 ~29s；腳本 e2e/capture-baseline.mjs）
 - [x] 0.2 重跑硬碼顏色全域掃描（F-028：實測全 src ~1,562 處/31 檔；使用者面向 ~419 處/23 檔、去重 127 種；開發者後台 ~1,100 處列豁免）（Tailwind 調色盤 class + inline style + hex 字面值），輸出歸類清單：每處標 {檔案, 行, class, 語意角色}；與 REF-034 的 145 處比對差異
-- [ ] 0.3 產出語意 token 歸類表（新 token 命名 × original-baseline 等值色），人工掃過確認無「同色不同義」誤併
+- [x] 0.3 產出語意 token 歸類表（token-map.md，17 token；使用者 2026-06-12 確認無意見）（新 token 命名 × original-baseline 等值色），人工掃過確認無「同色不同義」誤併
 
 ## Phase 1 — Token 地基（behavior-preserving）
 
