@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { getAdminUserList, AdminUserListItem } from "@/app/actions/userProfile";
-import { getAdminBanStates, setUserBanned } from "@/app/actions/developer";
+import { getAdminAuthInfo, setUserBanned, AdminAuthInfo } from "@/app/actions/developer";
 import UserCardDetail from "./UserCardDetail";
 import { Search, ChevronDown, ChevronUp, Loader2, AlertCircle, Ban, ShieldCheck } from "lucide-react";
 
@@ -18,7 +18,7 @@ export default function UserListSection() {
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
   const [expandedUsers, setExpandedUsers] = useState<Set<string>>(new Set());
-  const [banStates, setBanStates] = useState<Record<string, boolean>>({});
+  const [authInfo, setAuthInfo] = useState<Record<string, AdminAuthInfo>>({});
   const [banConfirmId, setBanConfirmId] = useState<string | null>(null);
   const [banningId, setBanningId] = useState<string | null>(null);
   const [banError, setBanError] = useState("");
@@ -28,18 +28,18 @@ export default function UserListSection() {
     setLoading(true);
     setError("");
     try {
-      const [res, banRes] = await Promise.all([
+      const [res, authRes] = await Promise.all([
         getAdminUserList({ query: query ?? "" }),
-        getAdminBanStates(),
+        getAdminAuthInfo(),
       ]);
       if (res.success && res.data) {
         setUsers(res.data);
       } else {
         setError(res.error ?? "載入失敗");
       }
-      // 停權狀態載入失敗不阻擋列表（金鑰未設定時按鈕仍會回報錯誤）
-      if (banRes.success && banRes.data) {
-        setBanStates(banRes.data);
+      // auth 資訊（Google 名稱/停權）載入失敗不阻擋列表（金鑰未設定時按鈕仍會回報錯誤）
+      if (authRes.success && authRes.data) {
+        setAuthInfo(authRes.data);
       }
     } catch {
       setError("網路或認證錯誤，請重新整理頁面");
@@ -49,7 +49,7 @@ export default function UserListSection() {
   }, []);
 
   const handleToggleBan = async (userId: string) => {
-    const banned = banStates[userId] ?? false;
+    const banned = authInfo[userId]?.banned ?? false;
     // 停權需要兩段式確認；解除停權直接執行
     if (!banned && banConfirmId !== userId) {
       setBanConfirmId(userId);
@@ -61,7 +61,10 @@ export default function UserListSection() {
     try {
       const res = await setUserBanned(userId, !banned);
       if (res.success) {
-        setBanStates(prev => ({ ...prev, [userId]: !banned }));
+        setAuthInfo(prev => ({
+          ...prev,
+          [userId]: { banned: !banned, google_name: prev[userId]?.google_name ?? null },
+        }));
       } else {
         setBanError(res.error ?? "操作失敗");
       }
@@ -147,7 +150,8 @@ export default function UserListSection() {
                 const isExpanded = expandedUsers.has(user.user_id);
                 const displayName = user.nickname ?? null;
                 const idShort = user.user_id.slice(0, 8);
-                const isBanned = banStates[user.user_id] ?? false;
+                const isBanned = authInfo[user.user_id]?.banned ?? false;
+                const googleName = authInfo[user.user_id]?.google_name ?? null;
                 const isBanConfirming = banConfirmId === user.user_id;
                 const isBanning = banningId === user.user_id;
 
@@ -155,16 +159,25 @@ export default function UserListSection() {
                   <div key={user.user_id}>
                     {/* 第一層：用戶 row */}
                     <div className="flex items-center gap-3 px-5 py-3.5 hover:bg-slate-50/60 dark:hover:bg-slate-900/20 transition-colors">
-                      {/* 暱稱 + ID */}
+                      {/* Google 名稱（主）+ 暱稱（輔）+ ID */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          {displayName ? (
+                          {googleName ? (
+                            <span className="text-sm font-black text-slate-800 dark:text-slate-100 truncate">
+                              {googleName}
+                            </span>
+                          ) : displayName ? (
                             <span className="text-sm font-black text-slate-800 dark:text-slate-100 truncate">
                               {displayName}
                             </span>
                           ) : (
                             <span className="text-xs font-semibold text-slate-400 italic">
-                              未設定暱稱
+                              未知帳號
+                            </span>
+                          )}
+                          {googleName && (
+                            <span className="text-[11px] font-semibold text-slate-400 truncate">
+                              {displayName ? `暱稱：${displayName}` : "未設定暱稱"}
                             </span>
                           )}
                           {isBanned && (
