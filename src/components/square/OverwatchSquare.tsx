@@ -212,7 +212,7 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
         </div>
       )}
 
-      <div className="glass-card w-full p-5 md:p-6 space-y-5 relative z-10 rounded-xl border border-white/[0.06]">
+      <div className="glass-card w-full p-4 sm:p-5 md:p-6 space-y-4 sm:space-y-5 relative z-10 rounded-xl border border-white/[0.06]">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <p className="text-[10px] text-zinc-400 uppercase tracking-[0.18em] font-mono font-medium">
             調整探索頻率 // Overwatch Search & Filter
@@ -220,7 +220,7 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
           <span className="text-[9px] text-auroraMint lowercase font-mono tracking-[0.12em]">({filteredPlayers.length} active)</span>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[1.35fr_0.9fr_1.45fr_0.9fr] gap-4 items-end">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.35fr_0.9fr_1.45fr_0.9fr] gap-3 sm:gap-4 items-end">
           <div className="space-y-1.5">
             <label className="text-[10px] font-mono font-medium uppercase tracking-[0.16em] text-zinc-400">搜尋名片</label>
             <div className="relative">
@@ -267,7 +267,7 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
             <label className="text-[10px] font-mono font-medium uppercase tracking-[0.16em] text-zinc-400">
               <span>常用定位</span>
             </label>
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {["全部", "坦克", "輸出", "支援"].map((role) => {
                 const isSelected = selectedRole === role;
                 return (

@@ -21,20 +21,20 @@ export default function BrowsePage() {
   const [activeGame, setActiveGame] = useState<GameId>("ow");
 
   return (
-    <div className="relative min-h-screen z-10 selection:bg-auroraMint/30 text-zinc-100 max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-8">
+    <div className="relative min-h-screen z-10 selection:bg-auroraMint/30 text-zinc-100 max-w-7xl mx-auto px-4 sm:px-6 py-5 sm:py-8 space-y-5 sm:space-y-8">
       {/* 全螢幕無縫大氣漸層 */}
       <div className="fixed inset-0 ambient-space-glows pointer-events-none z-0"></div>
 
-      <section className="space-y-8 animate-fade-in relative z-10">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-white/[0.04] pb-6">
+      <section className="space-y-5 sm:space-y-8 animate-fade-in relative z-10">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 sm:gap-4 border-b border-white/[0.04] pb-4 sm:pb-6">
           <div className="space-y-2">
-            <h1 className="font-sans font-bold text-3xl text-white tracking-[0.05em] flex flex-wrap items-baseline gap-3">
+            <h1 className="font-sans font-bold text-2xl sm:text-3xl text-white tracking-[0.03em] sm:tracking-[0.05em] flex flex-wrap items-baseline gap-2 sm:gap-3">
               玩家展示館
               <span className="font-cinzel font-light text-xs tracking-[0.2em] text-auroraMint uppercase">
                 Lobby Directory
               </span>
             </h1>
-            <p className="text-xs text-zinc-300 font-light leading-relaxed max-w-3xl">
+            <p className="text-[11px] sm:text-xs text-zinc-300 font-light leading-relaxed max-w-3xl">
               請安靜瀏覽下方玩家的遊戲人格。複製他們的金鑰（UID），並在適當的夜晚，於遊戲世界中展開您的微光旅程。
             </p>
           </div>
@@ -48,11 +48,11 @@ export default function BrowsePage() {
         </div>
 
         {/* Game Select Panel */}
-        <div className="glass-card p-6 rounded-xl space-y-4">
+        <div className="glass-card p-4 sm:p-6 rounded-xl space-y-3 sm:space-y-4">
           <p className="text-[10px] text-zinc-400 uppercase tracking-widest font-mono">
             選擇遊戲星系 // Game Directory
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-[auto_1fr] gap-4 items-center">
+          <div className="grid grid-cols-1 sm:grid-cols-[auto_1fr] gap-3 sm:gap-4 items-center">
             <div className="flex items-center space-x-2 max-w-md">
               <span className="text-[11px] text-zinc-400 whitespace-nowrap font-mono">星系:</span>
               <div className="relative w-full">
