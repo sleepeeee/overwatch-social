@@ -9,6 +9,7 @@ export interface OWPlayerCard {
   server: string;            // 伺服器代號，例如: 'asia' | 'america' | 'europe'
   battle_tag: string;        // 玩家 BattleTag，例如: '愛喝奶茶#3342'
   is_tag_visible: boolean;   // BattleTag 隱私開關，若為 false 則在廣場顯示為 '已隱藏#xxxx'
+  is_card_visible?: boolean; // 整張卡片可見性開關，若為 false 則整張卡從廣場/詳細頁消失（預設 true）
   
   // 英雄展示 (最多選 3 個常用英雄 ID，例如 'winston', 'tracer', 'genji')
   selected_heroes: string[]; 

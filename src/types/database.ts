@@ -119,6 +119,7 @@ export type Database = {
           display_name: string | null
           game: string
           id: string
+          is_card_visible: boolean
           is_hidden: boolean
           is_tag_visible: boolean
           languages: string[]
@@ -137,6 +138,7 @@ export type Database = {
           display_name?: string | null
           game?: string
           id?: string
+          is_card_visible?: boolean
           is_hidden?: boolean
           is_tag_visible?: boolean
           languages?: string[]
@@ -155,6 +157,7 @@ export type Database = {
           display_name?: string | null
           game?: string
           id?: string
+          is_card_visible?: boolean
           is_hidden?: boolean
           is_tag_visible?: boolean
           languages?: string[]

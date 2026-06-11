@@ -11,6 +11,7 @@ import {
   LANGUAGE_OPTIONS
 } from "@/data/mockPlayers";
 import OWCard from "@/components/OWCard";
+import { GAME_AVAILABILITY } from "@/lib/gameCatalog";
 import InteractiveAvatar from "@/components/InteractiveAvatar";
 import { getHeroAlignments } from "@/app/actions/alignment";
 import type { AlignmentConfig } from "@/data/heroAlignments";
@@ -35,6 +36,7 @@ const DEFAULT_CARD: OWPlayerCard = {
   server: "asia",
   battle_tag: "",
   is_tag_visible: true,
+  is_card_visible: true,
   selected_heroes: [],
   tags: [],
   message: "GGWP！一起加油，推車到底啦 🚀",
@@ -978,15 +980,22 @@ export default function ProfilePage() {
                 </Button>
               </div>
 
-              {/* 2. 🎯 特戰英豪名片 - 已解禁 */}
+              {/* 2. 🎯 特戰英豪名片 - 尚未開放（GAME_AVAILABILITY.valorant） */}
               <div className="glass-card border border-white/5 hover:border-rose-500/30 rounded-[24px] p-5 shadow-sm hover:shadow-[0_0_20px_rgba(244,63,94,0.15)] hover:-translate-y-1 transition-all duration-500 flex flex-col justify-between group cursor-default">
                 <div>
                   <div className="flex justify-between items-start mb-4">
                     <span className="text-[20px] filter saturate-100 group-hover:scale-110 transition-transform">🎯</span>
-                    <span className="bg-rose-500/10 border border-rose-500/25 text-rose-400 px-2.5 py-0.5 rounded-full text-[9px] font-black tracking-wider flex items-center gap-1 shadow-sm font-mono">
-                      <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
-                      ACTIVE
-                    </span>
+                    {GAME_AVAILABILITY.valorant ? (
+                      <span className="bg-rose-500/10 border border-rose-500/25 text-rose-400 px-2.5 py-0.5 rounded-full text-[9px] font-black tracking-wider flex items-center gap-1 shadow-sm font-mono">
+                        <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
+                        ACTIVE
+                      </span>
+                    ) : (
+                      <span className="bg-white/5 border border-white/10 text-zinc-500 px-2.5 py-0.5 rounded-full text-[9px] font-black tracking-wider flex items-center gap-1 shadow-sm font-mono">
+                        <span className="w-1.5 h-1.5 rounded-full bg-zinc-600" />
+                        COMING SOON
+                      </span>
+                    )}
                   </div>
                   
                   <h3 className="text-sm font-black text-zinc-100">特戰英豪名片</h3>
@@ -1017,23 +1026,39 @@ export default function ProfilePage() {
                   </div>
                 </div>
                 
-                <Button
-                  onClick={() => setEditingGame("val")}
-                  className="w-full bg-rose-500/10 hover:bg-rose-500 border border-rose-500/20 text-rose-400 hover:text-white py-2.5 text-xs font-bold rounded-xl transition-all duration-300 shadow-sm cursor-pointer"
-                >
-                  點擊編輯遊戲名片
-                </Button>
+                {GAME_AVAILABILITY.valorant ? (
+                  <Button
+                    onClick={() => setEditingGame("val")}
+                    className="w-full bg-rose-500/10 hover:bg-rose-500 border border-rose-500/20 text-rose-400 hover:text-white py-2.5 text-xs font-bold rounded-xl transition-all duration-300 shadow-sm cursor-pointer"
+                  >
+                    點擊編輯遊戲名片
+                  </Button>
+                ) : (
+                  <Button
+                    disabled
+                    className="w-full bg-white/[0.03] border border-white/10 text-zinc-500 py-2.5 text-xs font-bold rounded-xl shadow-sm cursor-not-allowed"
+                  >
+                    敬請期待 // COMING SOON
+                  </Button>
+                )}
               </div>
 
-              {/* 3. 👑 英雄聯盟名片 - 已解禁 */}
+              {/* 3. 👑 英雄聯盟名片 - 尚未開放（GAME_AVAILABILITY.lol） */}
               <div className="glass-card border border-white/5 hover:border-blue-500/30 rounded-[24px] p-5 shadow-sm hover:shadow-[0_0_20px_rgba(59,130,246,0.15)] hover:-translate-y-1 transition-all duration-500 flex flex-col justify-between group cursor-default">
                 <div>
                   <div className="flex justify-between items-start mb-4">
                     <span className="text-[20px] filter saturate-100 group-hover:scale-110 transition-transform">👑</span>
-                    <span className="bg-blue-500/10 border border-blue-500/25 text-blue-400 px-2.5 py-0.5 rounded-full text-[9px] font-black tracking-wider flex items-center gap-1 shadow-sm font-mono">
-                      <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
-                      ACTIVE
-                    </span>
+                    {GAME_AVAILABILITY.lol ? (
+                      <span className="bg-blue-500/10 border border-blue-500/25 text-blue-400 px-2.5 py-0.5 rounded-full text-[9px] font-black tracking-wider flex items-center gap-1 shadow-sm font-mono">
+                        <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
+                        ACTIVE
+                      </span>
+                    ) : (
+                      <span className="bg-white/5 border border-white/10 text-zinc-500 px-2.5 py-0.5 rounded-full text-[9px] font-black tracking-wider flex items-center gap-1 shadow-sm font-mono">
+                        <span className="w-1.5 h-1.5 rounded-full bg-zinc-600" />
+                        COMING SOON
+                      </span>
+                    )}
                   </div>
                   
                   <h3 className="text-sm font-black text-zinc-100">英雄聯盟名片</h3>
@@ -1064,12 +1089,21 @@ export default function ProfilePage() {
                   </div>
                 </div>
                 
-                <Button
-                  onClick={() => setEditingGame("lol")}
-                  className="w-full bg-blue-500/10 hover:bg-blue-500 border border-blue-500/20 text-blue-400 hover:text-white py-2.5 text-xs font-bold rounded-xl transition-all duration-300 shadow-sm cursor-pointer"
-                >
-                  點擊編輯遊戲名片
-                </Button>
+                {GAME_AVAILABILITY.lol ? (
+                  <Button
+                    onClick={() => setEditingGame("lol")}
+                    className="w-full bg-blue-500/10 hover:bg-blue-500 border border-blue-500/20 text-blue-400 hover:text-white py-2.5 text-xs font-bold rounded-xl transition-all duration-300 shadow-sm cursor-pointer"
+                  >
+                    點擊編輯遊戲名片
+                  </Button>
+                ) : (
+                  <Button
+                    disabled
+                    className="w-full bg-white/[0.03] border border-white/10 text-zinc-500 py-2.5 text-xs font-bold rounded-xl shadow-sm cursor-not-allowed"
+                  >
+                    敬請期待 // COMING SOON
+                  </Button>
+                )}
               </div>
             </div>
           </div>
@@ -1236,12 +1270,12 @@ export default function ProfilePage() {
                 </div>
               </div>
 
-              {/* 直接隱藏名片 */}
+              {/* 隱藏 BattleTag（只遮 ID，卡片仍在廣場） */}
               <div className="bg-black/20 p-4.5 rounded-2xl border border-white/5 flex justify-between items-center shadow-[0_2px_8px_rgba(0,0,0,0.01)]">
                 <div className="space-y-0.5 max-w-[80%]">
-                  <span className="text-xs font-bold text-zinc-200 block font-sans">直接隱藏卡片 // Hidden Card</span>
+                  <span className="text-xs font-bold text-zinc-200 block font-sans">隱藏 BattleTag // Hide BattleTag</span>
                   <span className="text-[9px] text-zinc-400 font-semibold block leading-relaxed font-sans">
-                    開啟後，您的特工名片將直接從交友廣場（河道）中消失，其他玩家將無法瀏覽到您的任何資訊。
+                    開啟後，名片仍會出現在交友廣場，但您的 BattleTag 將顯示為「隱藏#xxxx」，其他玩家無法複製。
                   </span>
                 </div>
                 <button
@@ -1254,6 +1288,29 @@ export default function ProfilePage() {
                   <span
                     className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200 ${
                       !currentCard.is_tag_visible ? "translate-x-6" : "translate-x-1"
+                    }`}
+                  />
+                </button>
+              </div>
+
+              {/* 直接隱藏卡片（整張卡從廣場消失） */}
+              <div className="bg-black/20 p-4.5 rounded-2xl border border-white/5 flex justify-between items-center shadow-[0_2px_8px_rgba(0,0,0,0.01)]">
+                <div className="space-y-0.5 max-w-[80%]">
+                  <span className="text-xs font-bold text-zinc-200 block font-sans">直接隱藏卡片 // Hidden Card</span>
+                  <span className="text-[9px] text-zinc-400 font-semibold block leading-relaxed font-sans">
+                    開啟後，您的特工名片將直接從交友廣場（河道）中消失，其他玩家將無法瀏覽到您的任何資訊。
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setCard({ ...currentCard, is_card_visible: !(currentCard.is_card_visible ?? true) })}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 cursor-pointer shadow-sm ${
+                    currentCard.is_card_visible === false ? `bg-${colorClasses.primary}-500` : "bg-white/10"
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200 ${
+                      currentCard.is_card_visible === false ? "translate-x-6" : "translate-x-1"
                     }`}
                   />
                 </button>
