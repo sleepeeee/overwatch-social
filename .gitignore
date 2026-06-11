@@ -70,3 +70,5 @@ dev-server.*.log
 /_recovered/
 /_recovered_fullscan/
 .vscode/
+
+.vercel
