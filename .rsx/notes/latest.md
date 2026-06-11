@@ -269,3 +269,10 @@ Tier: grep
 - Pre-archive Gate: PASS（FAIL=0, WARN=0）
 - 歸檔路徑: openspec/changes/archive/2026-06-04-one-card-per-game-constraint/
 <!-- archive-log-end -->
+
+<!-- pre-check-log-start -->
+### [Step 0 pre-check] UI 視覺重設計技能選型 (2026-06-12)
+Tier: RAG
+命中：5 筆（REF-023, REF-018, REF-006, REF-015, REF-003）但相似度皆 ≤ 0.20，與「設計 skill 選型」主題無直接相關 → 視同本地無命中（不視為錯誤態）
+使用者選擇：(c) 自動（弱命中直接外部搜尋）
+<!-- pre-check-log-end -->
