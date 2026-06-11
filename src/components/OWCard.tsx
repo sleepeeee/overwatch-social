@@ -232,11 +232,12 @@ export default function OWCard({
                     return (
                       <>
                         <HeroCardBackground config={bgConfig} heroName={heroInfo.name} />
-                        {/* 漸層底色遮罩，完美融合暗黑美學 */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent z-10 pointer-events-none"></div>
-                        {/* 懸浮角色名稱標籤 */}
-                        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-sm border border-white/10 px-2 py-0.5 rounded-full text-center whitespace-nowrap z-20">
-                          <span className="text-[8px] font-sans font-medium text-zinc-100 tracking-wide">{heroInfo.name}</span>
+                        {/* 底部字幕層，融入圖片而不是貼一顆標籤 */}
+                        <div className="absolute inset-x-0 bottom-0 z-20 h-11 bg-gradient-to-t from-[#05030a]/95 via-[#05030a]/58 to-transparent pointer-events-none sm:h-12"></div>
+                        <div className="absolute inset-x-1.5 bottom-2 z-30 text-center pointer-events-none">
+                          <span className="block truncate font-sans text-[10px] font-bold leading-none tracking-[0.04em] text-zinc-50/95 [text-shadow:0_1px_2px_rgba(0,0,0,0.95),0_0_10px_rgba(5,3,10,0.9)] sm:text-[10.5px]">
+                            {heroInfo.name}
+                          </span>
                         </div>
                       </>
                     );

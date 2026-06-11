@@ -24,6 +24,10 @@ export default function TopBar() {
     setMounted(true);
   }, []);
 
+  if (pathname?.startsWith("/developer")) {
+    return null;
+  }
+
   if (!mounted) {
     return (
       <div className="w-full flex items-center justify-between gap-3 z-30 relative h-20 opacity-0" />
