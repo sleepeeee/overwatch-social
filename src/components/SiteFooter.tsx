@@ -4,9 +4,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FooterMinimalNodeIcon } from "@/components/CosmicParticlesBackground";
 
+const footerLinks = [
+  { href: "/report", label: "回報問題" },
+  { href: "/privacy", label: "隱私權政策" },
+  { href: "/terms", label: "使用條款" },
+];
+
 export default function SiteFooter() {
   const pathname = usePathname();
-  const isReportPage = pathname === "/report";
 
   return (
     <footer className="site-footer fluid-gap-footer border-t border-white/[0.03] px-4 py-10 text-center text-[11px] relative z-10 bg-transparent sm:py-12">
@@ -20,17 +25,24 @@ export default function SiteFooter() {
         Player cards first. Contact only when it feels right.
       </p>
       <nav aria-label="支援連結" className="mt-6 flex flex-wrap items-center justify-center gap-2">
-        <Link
-          href="/report"
-          aria-current={isReportPage ? "page" : undefined}
-          className={`rounded-full border px-3 py-1.5 tracking-[0.16em] transition-all duration-300 ${
-            isReportPage
-              ? "border-auroraMint/35 bg-auroraMint/10 text-auroraMint"
-              : "border-white/[0.06] bg-white/[0.02] text-zinc-400 hover:border-auroraMint/30 hover:text-zinc-200"
-          }`}
-        >
-          回報問題
-        </Link>
+        {footerLinks.map((link) => {
+          const isActive = pathname === link.href;
+
+          return (
+            <Link
+              key={link.href}
+              href={link.href}
+              aria-current={isActive ? "page" : undefined}
+              className={`rounded-full border px-3 py-1.5 tracking-[0.16em] transition-all duration-300 ${
+                isActive
+                  ? "border-auroraMint/35 bg-auroraMint/10 text-auroraMint"
+                  : "border-white/[0.06] bg-white/[0.02] text-zinc-400 hover:border-auroraMint/30 hover:text-zinc-200"
+              }`}
+            >
+              {link.label}
+            </Link>
+          );
+        })}
       </nav>
     </footer>
   );
