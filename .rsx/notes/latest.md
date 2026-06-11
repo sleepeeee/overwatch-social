@@ -276,3 +276,10 @@ Tier: RAG
 命中：5 筆（REF-023, REF-018, REF-006, REF-015, REF-003）但相似度皆 ≤ 0.20，與「設計 skill 選型」主題無直接相關 → 視同本地無命中（不視為錯誤態）
 使用者選擇：(c) 自動（弱命中直接外部搜尋）
 <!-- pre-check-log-end -->
+
+### [§1.3 council 後續] 被排除 skill 描述確認（2026-06-12，主代理本地解決）
+Codex 補搜項「actual skill descriptions for excluded candidates」已由 session skill registry 官方描述確認，文獻空白解除：
+- **theme-factory**：「Toolkit for styling artifacts with a theme（slides/docs/reports/HTML landing pages）；10 套預設 theme + on-the-fly 生成」→ 確認為 artifact 換膚工具，不輸出可整合進 Next.js codebase 的程式碼。排除成立；但可作為「調色盤/字型靈感產生器」次要輔助。
+- **canvas-design**：「Create beautiful visual art in .png/.pdf documents（poster/art/static piece）」→ 靜態視覺產出，與互動式 web UI 無關。排除成立。
+- **web-artifacts-builder**：「creating elaborate multi-component claude.ai HTML artifacts」→ 綁定 claude.ai artifact 平台。排除成立。
+結論：frontend-design 為唯一適合整站程式碼級重設計的 skill，排除推定升級為文件確認。
