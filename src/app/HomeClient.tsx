@@ -58,7 +58,7 @@ export default function Home() {
           <div className="py-3 sm:py-6 flex flex-col items-center justify-center text-center max-w-4xl mx-auto space-y-6 sm:space-y-12 animate-fade-in">
             <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full border border-white/10 bg-white/[0.02] text-[10px] text-zinc-300 font-mono uppercase tracking-widest mx-auto w-fit">
               <span className="w-1.5 h-1.5 rounded-full bg-auroraMint inline-block animate-pulse"></span>
-              <span>慢速玩家展示館 運作中</span>
+              <span>Beta 展示館開放中</span>
             </div>
 
             <div className="flex justify-center py-1 sm:py-2 relative w-full">
@@ -69,9 +69,9 @@ export default function Home() {
             </div>
 
             <p className="text-xs sm:text-base text-zinc-300 leading-relaxed max-w-2xl mx-auto font-sans font-light mt-1 sm:mt-4 text-center">
-              這不是一個喧鬧的交友大廳，而是一處深夜運作的玩家展示館。
-              不急躁、無配對壓力、不強迫社交。
-              請在此安靜地陳列您的遊戲美學，慢速瀏覽，與契合的遊戲氣質擦肩而過。
+              這裡不是熱鬧的交友廣場，而是一座安靜運行的深夜展示館。
+              玩家把自己的遊戲習慣、常用角色與偏好留在名片上，
+              讓相近的頻率在瀏覽之間慢慢靠近。
             </p>
 
             {/* 雙 CTA 入口卡片 */}
@@ -96,7 +96,7 @@ export default function Home() {
                     <span className="text-xs text-auroraMint font-light">✦</span>
                   </h3>
                   <p className="text-xs text-zinc-300 leading-relaxed font-light">
-                    慢速瀏覽各平行宇宙的召喚師、特工與守望者檔案。翻閱精緻的遊戲名片，尋找頻率相通的無言默契。
+                    走進展示館，翻看一張張被留下的玩家名片。也許只是相同的角色、相近的時段，或一句剛好對上的遊戲節奏，就能成為下一場同行的開始。
                   </p>
                 </div>
               </Link>
@@ -118,7 +118,7 @@ export default function Home() {
                     全域身份工作室
                   </h3>
                   <p className="text-xs text-zinc-400 leading-relaxed font-light">
-                    在此撰寫您的深夜星語。您可以客製守望者、特工或是召喚師名片。配備您喜愛的英雄立繪，拼貼出專屬的電競氣質。
+                    建立你的名片，寫下你常玩什麼、怎麼玩、想不想開語音，以及哪些聯絡方式可以公開。
                   </p>
                 </div>
 
@@ -160,21 +160,21 @@ export default function Home() {
               <p className="text-zinc-400 font-mono text-xs uppercase tracking-[0.2em] mb-5 sm:mb-8 text-center">AFTER MIDNIGHT 寂靜宣言</p>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
                 <div className="space-y-2">
-                  <h4 className="text-xs text-zinc-300 font-bold tracking-wider font-mono">01 // 低侵入式社交</h4>
+                  <h4 className="text-xs text-zinc-300 font-bold tracking-wider font-mono">01 // 不做配對壓力</h4>
                   <p className="text-[11px] text-zinc-400 leading-relaxed font-light">
-                    我們相信真正的默契不需要在線焦慮。這裡沒有即時私訊，唯有在對方發光的名片上複製 UID，在遊戲內靜靜相遇。
+                    這裡不做滑卡、不做即時私訊，也不催你馬上互動。你只需要把名片放好，其他人看見後再自行決定要不要聯絡。
                   </p>
                 </div>
                 <div className="space-y-2">
-                  <h4 className="text-xs text-zinc-300 font-bold tracking-wider font-mono">02 // 玩家風格圖鑑</h4>
+                  <h4 className="text-xs text-zinc-300 font-bold tracking-wider font-mono">02 // 先看遊戲習慣</h4>
                   <p className="text-[11px] text-zinc-400 leading-relaxed font-light">
-                    展示您擅長的角色立繪、星軌定位、是否開麥等基礎遊戲美學，讓您的卡牌成為一件精緻的深夜藏品。
+                    比起一句自我介紹，我們更在意你怎麼玩。常用角色、語音習慣、時段、伺服器，這些資訊比漂亮話更有用。
                   </p>
                 </div>
                 <div className="space-y-2">
-                  <h4 className="text-xs text-zinc-300 font-bold tracking-wider font-mono">03 // 深夜無壓探索</h4>
+                  <h4 className="text-xs text-zinc-300 font-bold tracking-wider font-mono">03 // 聯絡權交給玩家</h4>
                   <p className="text-[11px] text-zinc-400 leading-relaxed font-light">
-                    去除令人焦慮的愛心按讚數、綠點與快餐配對。給予足夠的空氣，放慢尋找同行者的腳步。
+                    After Midnight 不會替你撮合關係。名片只負責展示，真正要不要加好友、要不要一起玩，交給玩家自己判斷。
                   </p>
                 </div>
               </div>
