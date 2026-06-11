@@ -1000,30 +1000,38 @@ export default function ProfilePage() {
                   
                   <h3 className="text-sm font-black text-zinc-100">特戰英豪名片</h3>
                   <p className="text-[10px] text-zinc-400 font-semibold mt-0.5 font-mono">Valorant Identity</p>
-                  
-                  <div className="my-5 bg-black/40 border border-white/5 rounded-xl p-3 space-y-1 shadow-sm">
-                    <div className="text-[9px] font-bold text-zinc-400 uppercase font-mono">當前綁定玩家 // UID</div>
-                    <div className="text-xs font-semibold text-zinc-200 truncate">{valCardData.battle_tag || "未設定 (請點擊編輯)"}</div>
-                    
-                    {/* 英雄頭像預覽 */}
-                    <div className="flex gap-1.5 mt-3">
-                      {valCardData.selected_heroes.filter(Boolean).map((heroId) => (
-                        <div key={heroId} className="w-6 h-6 rounded-full overflow-hidden border border-white/10 bg-black/40 flex items-center justify-center shrink-0">
-                          <img
-                            src={`/images/heroes/avatars/val_${heroId}.png`}
-                            alt={getCharacterImageAlt("val", getHeroDisplayNameById("val", heroId), "常用角色縮圖")}
-                            className="w-full h-full object-cover"
-                            onError={(e) => {
-                              (e.target as HTMLImageElement).src = '/images/heroes/silhouette.png';
-                            }}
-                          />
-                        </div>
-                      ))}
-                      {valCardData.selected_heroes.filter(Boolean).length === 0 && (
-                        <span className="text-[9px] text-zinc-550 italic font-mono">No agents configured</span>
-                      )}
+
+                  {GAME_AVAILABILITY.valorant ? (
+                    <div className="my-5 bg-black/40 border border-white/5 rounded-xl p-3 space-y-1 shadow-sm">
+                      <div className="text-[9px] font-bold text-zinc-400 uppercase font-mono">當前綁定玩家 // UID</div>
+                      <div className="text-xs font-semibold text-zinc-200 truncate">{valCardData.battle_tag || "未設定 (請點擊編輯)"}</div>
+
+                      {/* 英雄頭像預覽 */}
+                      <div className="flex gap-1.5 mt-3">
+                        {valCardData.selected_heroes.filter(Boolean).map((heroId) => (
+                          <div key={heroId} className="w-6 h-6 rounded-full overflow-hidden border border-white/10 bg-black/40 flex items-center justify-center shrink-0">
+                            <img
+                              src={`/images/heroes/avatars/val_${heroId}.png`}
+                              alt={getCharacterImageAlt("val", getHeroDisplayNameById("val", heroId), "常用角色縮圖")}
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                (e.target as HTMLImageElement).src = '/images/heroes/silhouette.png';
+                              }}
+                            />
+                          </div>
+                        ))}
+                        {valCardData.selected_heroes.filter(Boolean).length === 0 && (
+                          <span className="text-[9px] text-zinc-550 italic font-mono">No agents configured</span>
+                        )}
+                      </div>
                     </div>
-                  </div>
+                  ) : (
+                    <div className="my-5 bg-black/20 border border-white/5 rounded-xl p-3 shadow-sm">
+                      <p className="text-[10px] text-zinc-500 font-semibold leading-relaxed font-sans">
+                        新遊戲陣地建設中，敬請期待後續開放。
+                      </p>
+                    </div>
+                  )}
                 </div>
                 
                 {GAME_AVAILABILITY.valorant ? (
@@ -1063,30 +1071,38 @@ export default function ProfilePage() {
                   
                   <h3 className="text-sm font-black text-zinc-100">英雄聯盟名片</h3>
                   <p className="text-[10px] text-zinc-400 font-semibold mt-0.5 font-mono">League of Legends</p>
-                  
-                  <div className="my-5 bg-black/40 border border-white/5 rounded-xl p-3 space-y-1 shadow-sm">
-                    <div className="text-[9px] font-bold text-zinc-400 uppercase font-mono">當前綁定玩家 // UID</div>
-                    <div className="text-xs font-semibold text-zinc-200 truncate">{lolCardData.battle_tag || "未設定 (請點擊編輯)"}</div>
-                    
-                    {/* 英雄頭像預覽 */}
-                    <div className="flex gap-1.5 mt-3">
-                      {lolCardData.selected_heroes.filter(Boolean).map((heroId) => (
-                        <div key={heroId} className="w-6 h-6 rounded-full overflow-hidden border border-white/10 bg-black/40 flex items-center justify-center shrink-0">
-                          <img
-                            src={`/images/heroes/avatars/lol_${heroId}.png`}
-                            alt={getCharacterImageAlt("lol", getHeroDisplayNameById("lol", heroId), "常用英雄縮圖")}
-                            className="w-full h-full object-cover"
-                            onError={(e) => {
-                              (e.target as HTMLImageElement).src = '/images/heroes/silhouette.png';
-                            }}
-                          />
-                        </div>
-                      ))}
-                      {lolCardData.selected_heroes.filter(Boolean).length === 0 && (
-                        <span className="text-[9px] text-zinc-550 italic font-mono">No champions configured</span>
-                      )}
+
+                  {GAME_AVAILABILITY.lol ? (
+                    <div className="my-5 bg-black/40 border border-white/5 rounded-xl p-3 space-y-1 shadow-sm">
+                      <div className="text-[9px] font-bold text-zinc-400 uppercase font-mono">當前綁定玩家 // UID</div>
+                      <div className="text-xs font-semibold text-zinc-200 truncate">{lolCardData.battle_tag || "未設定 (請點擊編輯)"}</div>
+
+                      {/* 英雄頭像預覽 */}
+                      <div className="flex gap-1.5 mt-3">
+                        {lolCardData.selected_heroes.filter(Boolean).map((heroId) => (
+                          <div key={heroId} className="w-6 h-6 rounded-full overflow-hidden border border-white/10 bg-black/40 flex items-center justify-center shrink-0">
+                            <img
+                              src={`/images/heroes/avatars/lol_${heroId}.png`}
+                              alt={getCharacterImageAlt("lol", getHeroDisplayNameById("lol", heroId), "常用英雄縮圖")}
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                (e.target as HTMLImageElement).src = '/images/heroes/silhouette.png';
+                              }}
+                            />
+                          </div>
+                        ))}
+                        {lolCardData.selected_heroes.filter(Boolean).length === 0 && (
+                          <span className="text-[9px] text-zinc-550 italic font-mono">No champions configured</span>
+                        )}
+                      </div>
                     </div>
-                  </div>
+                  ) : (
+                    <div className="my-5 bg-black/20 border border-white/5 rounded-xl p-3 shadow-sm">
+                      <p className="text-[10px] text-zinc-500 font-semibold leading-relaxed font-sans">
+                        新遊戲陣地建設中，敬請期待後續開放。
+                      </p>
+                    </div>
+                  )}
                 </div>
                 
                 {GAME_AVAILABILITY.lol ? (

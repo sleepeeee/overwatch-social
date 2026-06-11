@@ -29,9 +29,9 @@ export const GAME_AVAILABILITY: Record<GameId, boolean> = {
 
 export const OVERWATCH_SERVER_OPTIONS: ServerOption[] = [
   // 防呆雷達：value 是存進資料庫的代號，請不要改成中文顯示文字。
-  { value: "asia", label: "亞洲伺服器", labelEn: "Asia Server" },
-  { value: "america", label: "美洲伺服器", labelEn: "America Server" },
-  { value: "europe", label: "歐洲伺服器", labelEn: "Europe Server" },
+  { value: "asia", label: "亞洲伺服器", labelEn: "Asia" },
+  { value: "america", label: "美洲伺服器", labelEn: "America" },
+  { value: "europe", label: "歐洲伺服器", labelEn: "Europe" },
 ];
 
 const OVERWATCH_SERVER_ALIASES: Record<string, string> = {
@@ -70,5 +70,5 @@ export function getOverwatchServerLabel(value: string | null | undefined): strin
 
 export function getOverwatchServerLabelEn(value: string | null | undefined): string {
   const server = normalizeOverwatchServer(value);
-  return OVERWATCH_SERVER_OPTIONS.find((option) => option.value === server)?.labelEn ?? "Asia Server";
+  return OVERWATCH_SERVER_OPTIONS.find((option) => option.value === server)?.labelEn ?? "Asia";
 }
