@@ -109,13 +109,11 @@ export default async function PlayerDetailPage({ params }: Props) {
           <div className="flex gap-2 shrink-0">
             {heroConfigs.slice(0, 3).map((hero) => hero && (
               <div key={hero.id} className="w-16 h-16 rounded-2xl overflow-hidden border border-[#8c7c6c]/15 bg-white/60 shadow-sm">
+                {/* Server Component 不可掛 onError 事件；hero 已經過 HEROES_CONFIG 過濾，頭像必定存在 */}
                 <img
                   src={`/images/heroes/avatars/${hero.id}.png`}
                   alt={`鬥陣特攻英雄 ${hero.name} 常用英雄縮圖`}
                   className="w-full h-full object-cover"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = "/images/heroes/silhouette.png";
-                  }}
                 />
               </div>
             ))}
