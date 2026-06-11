@@ -1286,28 +1286,7 @@ export default function ProfilePage() {
                 </div>
               </div>
 
-              {/* 隱藏 BattleTag（只遮 ID，卡片仍在廣場） */}
-              <div className="bg-black/20 p-4.5 rounded-2xl border border-white/5 flex justify-between items-center shadow-[0_2px_8px_rgba(0,0,0,0.01)]">
-                <div className="space-y-0.5 max-w-[80%]">
-                  <span className="text-xs font-bold text-zinc-200 block font-sans">隱藏 BattleTag // Hide BattleTag</span>
-                  <span className="text-[9px] text-zinc-400 font-semibold block leading-relaxed font-sans">
-                    開啟後，名片仍會出現在交友廣場，但您的 BattleTag 將顯示為「隱藏#xxxx」，其他玩家無法複製。
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setCard({ ...currentCard, is_tag_visible: !currentCard.is_tag_visible })}
-                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 cursor-pointer shadow-sm ${
-                    !currentCard.is_tag_visible ? `bg-${colorClasses.primary}-500` : "bg-white/10"
-                  }`}
-                >
-                  <span
-                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200 ${
-                      !currentCard.is_tag_visible ? "translate-x-6" : "translate-x-1"
-                    }`}
-                  />
-                </button>
-              </div>
+              {/* 「隱藏 BattleTag」開關暫不開放（is_tag_visible 欄位與遮蔽鏈保留，未來開放時加回 UI 即可） */}
 
               {/* 直接隱藏卡片（整張卡從廣場消失） */}
               <div className="bg-black/20 p-4.5 rounded-2xl border border-white/5 flex justify-between items-center shadow-[0_2px_8px_rgba(0,0,0,0.01)]">
