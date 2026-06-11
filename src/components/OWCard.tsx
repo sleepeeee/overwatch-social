@@ -8,7 +8,7 @@ import { SocialIcon } from "@/components/ui/SocialIcons";
 import { HERO_ALIGNMENTS, DEFAULT_ALIGNMENT } from "@/data/heroAlignments";
 import { HeroCardBackground } from "./HeroCardBackground";
 import { getHeroBackgroundConfig } from "@/data/heroBackgrounds";
-import { getOverwatchServerLabel } from "@/lib/gameCatalog";
+import { getOverwatchServerLabelEn } from "@/lib/gameCatalog";
 
 interface OWCardProps {
   cardData: OWPlayerCard;
@@ -179,7 +179,7 @@ export default function OWCard({
       <div className="flex justify-between items-center border-b border-white/[0.04] pb-2.5 sm:pb-3 mb-3 sm:mb-4 gap-2">
         <span className="text-zinc-400 font-bold text-[11px] sm:text-xs tracking-widest uppercase whitespace-nowrap shrink-0">Overwatch | 鬥陣特工</span>
         <span className="bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-black tracking-widest whitespace-nowrap shrink-0 uppercase">
-          {getOverwatchServerLabel(server)}
+          {getOverwatchServerLabelEn(server)}
         </span>
       </div>
 
