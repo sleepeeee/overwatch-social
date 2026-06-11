@@ -21,9 +21,9 @@
 
 ## Phase 3 — Developer 預覽通道
 
-- [ ] 3.1 ThemeContext 解除硬鎖：setTheme 接受白名單主題（白名單 = 既有 5 + 新 3）；新增 `theme-style` localStorage 持久化
-- [ ] 3.2 StylePicker 接上 useDevMode() gating：掛 layout 層右下浮動入口、僅 developer 渲染；選單列出全部可用主題
-- [ ] 3.3 FOUC 已知限制註解（`TODO(theme-FOUC)`）+ 一般用戶隔離驗證（anon / 一般帳號看不到入口、恆 original-baseline）
+- [x] 3.1 ThemeContext 解除硬鎖：setTheme 接受白名單主題（白名單 = 既有 5 + 新 3）；新增 `theme-style` localStorage 持久化
+- [x] 3.2 主題切換 UI（實作為新元件 ThemeSwitcher.tsx 掛 layout 右下浮動；原 StylePicker 為舊 Style A/B 展示元件、介面不合，依外科手術原則不改動）
+- [x] 3.3 FOUC 已知限制註解（TODO(theme-FOUC) 於 ThemeContext）+ anon 隔離驗證（切換器 0 個、首頁像素級無差異）（`TODO(theme-FOUC)`）+ 一般用戶隔離驗證（anon / 一般帳號看不到入口、恆 original-baseline）
 
 ## Phase 4 — 三套新主題設計（frontend-design skill，每套含設計審查 checkpoint）
 
