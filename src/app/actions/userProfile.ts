@@ -33,6 +33,7 @@ export interface AdminUserCard {
   mic_status: string;
   display_name: string | null;
   updated_at: string;
+  is_hidden: boolean;
 }
 
 async function ensureDeveloper() {
@@ -145,7 +146,7 @@ export async function getAdminUserCards(userId: string): Promise<{
 
     const { data, error } = await supabase
       .from("profiles")
-      .select("id, user_id, game, server, battle_tag, is_tag_visible, selected_heroes, tags, message, languages, mic_status, display_name, updated_at")
+      .select("id, user_id, game, server, battle_tag, is_tag_visible, selected_heroes, tags, message, languages, mic_status, display_name, updated_at, is_hidden")
       .eq("user_id", userId)
       .order("updated_at", { ascending: false });
 

@@ -1,7 +1,8 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { revalidatePath } from "next/cache";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { PLACEHOLDER_BATTLE_TAG } from "@/types/card";
 
 /**
@@ -148,6 +149,90 @@ export async function getAllProfilesForDeveloper(search?: string): Promise<{
         updated_at: row.updated_at,
       })),
     };
+  } catch (err) {
+    return { success: false, error: String(err) };
+  }
+}
+
+/**
+ * 下架/恢復一張名片（moderation，developer-only）。
+ * 下架後 public_profiles view 過濾該名片，廣場與玩家詳細頁皆不可見；
+ * 本人在工作室仍看得到並可編輯。
+ */
+export async function setCardHidden(cardId: string, hidden: boolean) {
+  try {
+    await ensureDeveloper();
+
+    const admin = createAdminClient();
+    if (!admin) return { success: false, error: "伺服器尚未設定管理金鑰（SUPABASE_SECRET_KEY）" };
+
+    const { error } = await admin
+      .from("profiles")
+      .update({ is_hidden: hidden })
+      .eq("id", cardId);
+
+    if (error) return { success: false, error: error.message };
+
+    revalidateTag("public-profiles", "max");
+    return { success: true };
+  } catch (err) {
+    return { success: false, error: String(err) };
+  }
+}
+
+/**
+ * 停權/解除停權一個用戶（moderation，developer-only）。
+ * 停權使用 Supabase Auth 原生 ban：無法再登入，既有 session 於 JWT 到期後失效。
+ * 名片不會自動下架，需另行操作。
+ */
+export async function setUserBanned(userId: string, banned: boolean) {
+  try {
+    const { user: currentUser } = await ensureDeveloper();
+
+    if (currentUser.id === userId) {
+      return { success: false, error: "安全保護：您無法停權自己" };
+    }
+
+    const admin = createAdminClient();
+    if (!admin) return { success: false, error: "伺服器尚未設定管理金鑰（SUPABASE_SECRET_KEY）" };
+
+    // 876600h ≈ 100 年，等同永久停權；"none" 解除
+    const { error } = await admin.auth.admin.updateUserById(userId, {
+      ban_duration: banned ? "876600h" : "none",
+    });
+
+    if (error) return { success: false, error: error.message };
+    return { success: true };
+  } catch (err) {
+    return { success: false, error: String(err) };
+  }
+}
+
+/**
+ * 讀取全部用戶的停權狀態（developer-only，後台用戶列表用）
+ */
+export async function getAdminBanStates(): Promise<{
+  success: boolean;
+  data?: Record<string, boolean>;
+  error?: string;
+}> {
+  try {
+    await ensureDeveloper();
+
+    const admin = createAdminClient();
+    if (!admin) return { success: false, error: "伺服器尚未設定管理金鑰（SUPABASE_SECRET_KEY）" };
+
+    const { data, error } = await admin.auth.admin.listUsers({ page: 1, perPage: 200 });
+    if (error) return { success: false, error: error.message };
+
+    const states: Record<string, boolean> = {};
+    for (const u of data.users) {
+      // banned_until 未來時間 = 停權中；supabase-js User 型別未宣告此欄位，需窄化
+      const bannedUntil = (u as { banned_until?: string | null }).banned_until;
+      states[u.id] = !!bannedUntil && new Date(bannedUntil) > new Date();
+    }
+
+    return { success: true, data: states };
   } catch (err) {
     return { success: false, error: String(err) };
   }

@@ -119,6 +119,7 @@ export type Database = {
           display_name: string | null
           game: string
           id: string
+          is_hidden: boolean
           is_tag_visible: boolean
           languages: string[]
           mbti: string | null
@@ -136,6 +137,7 @@ export type Database = {
           display_name?: string | null
           game?: string
           id?: string
+          is_hidden?: boolean
           is_tag_visible?: boolean
           languages?: string[]
           mbti?: string | null
@@ -153,6 +155,7 @@ export type Database = {
           display_name?: string | null
           game?: string
           id?: string
+          is_hidden?: boolean
           is_tag_visible?: boolean
           languages?: string[]
           mbti?: string | null
@@ -200,44 +203,13 @@ export type Database = {
           mbti: string | null
           message: string | null
           mic_status: string | null
+          nickname: string | null
           selected_heroes: string[] | null
           server: string | null
           social_channels: Json | null
           tags: string[] | null
           updated_at: string | null
           user_id: string | null
-        }
-        Insert: {
-          battle_tag?: never
-          display_name?: string | null
-          game?: string | null
-          is_tag_visible?: boolean | null
-          languages?: string[] | null
-          mbti?: string | null
-          message?: string | null
-          mic_status?: string | null
-          selected_heroes?: string[] | null
-          server?: string | null
-          social_channels?: never
-          tags?: string[] | null
-          updated_at?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          battle_tag?: never
-          display_name?: string | null
-          game?: string | null
-          is_tag_visible?: boolean | null
-          languages?: string[] | null
-          mbti?: string | null
-          message?: string | null
-          mic_status?: string | null
-          selected_heroes?: string[] | null
-          server?: string | null
-          social_channels?: never
-          tags?: string[] | null
-          updated_at?: string | null
-          user_id?: string | null
         }
         Relationships: []
       }
