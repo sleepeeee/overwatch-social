@@ -3,7 +3,7 @@ id: F-028
 title: 硬碼顏色實測規模為估算 10 倍，但使用者面向去重後僅 127 種 → 遷移範圍限縮至使用者面向檔案
 status: active
 references_to: [REF-034]
-referenced_by: []
+referenced_by: [ADR-27]
 change: add-standalone-theme-style
 date: 2026-06-12
 ---

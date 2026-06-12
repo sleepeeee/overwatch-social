@@ -3,7 +3,7 @@ id: F-029
 title: 亮底主題（minimal-magazine）token-only 覆蓋不全——部分文字隱形，使用者裁示保留為已知限制
 status: active
 references_to: [F-028]
-referenced_by: []
+referenced_by: [ADR-27]
 change: add-standalone-theme-style
 date: 2026-06-12
 ---

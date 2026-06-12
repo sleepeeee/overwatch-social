@@ -36,3 +36,12 @@ REF-028~035 共 8 筆（≥ min_refs_per_propose=3），crossref 對稱，§1.3 
 ## Stage 0 缺口錨定（0.5，修正語氣版）
 
 最近鄰 prior work = globals.css 既有 5 套主題 class（已做：卡片/輸入框/按鈕層變數覆蓋）與 REF-015 HUD 設計稿移植模式（已做：單元件級視覺規格移植）；本 change 針對的、**尚未被前案覆蓋的範圍** = 全站 token 完備化（145 處硬碼點）+ 雙 token 體系橋接 + 角色 gating 主題預覽。錨定 REF：REF-032、REF-033、REF-034。
+
+## §6.7 真實 dispatch 記錄（2026-06-12）
+
+| 欄位 | 內容 |
+|---|---|
+| moment_id | 6.7 |
+| dispatch_tool | `codex:codex-rescue` subagent（單輪；Gemini 臂依使用者輕量模式裁示跳過——風險低：本輪僅審已驗證的取捨收尾）|
+| output_excerpt | 「VERDICT: PROCEED 10/10 — ThemeContext 白名單/持久化/FOUC 註記齊備、layout 確實未掛載 ThemeSwitcher 符合 spec、globals.css token 集中管理、repo 搜尋無三套原型主題殘留、未見 production 行為改變風險」|
+| verdict | PROCEED（評分 10/10，無 Critical/Major）→ 可進 ARCHIVE |

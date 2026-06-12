@@ -36,7 +36,7 @@
 
 - [x] 5.1 npm run build 通過 + playwright E2E 36/36 passed
 - [x] 5.2 更新專案 CLAUDE.md（ThemeContext 描述 + 新增「主題 Token 系統」章節含新元件用色規範）
-- [ ] 5.3 §6.7 Codex 實作審查（apply 完成後）
+- [x] 5.3 §6.7 Codex 實作審查：PROCEED 10/10（輕量模式單輪守門；Gemini 臂依輕量裁示跳過，記入 propose_checklist）
 
 ## 取捨收尾（2026-06-12 使用者裁示）
 
