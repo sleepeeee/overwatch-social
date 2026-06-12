@@ -388,7 +388,7 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
           <div className="space-y-1">
             <h3 className="text-theme-text-strong font-extrabold text-lg">沒有找到符合條件的名片</h3>
             <p className="text-theme-text-muted text-xs max-w-sm mx-auto">
-              試著調整您的篩選選項，或在右側重置所有條件，以瀏覽廣場上更多的鬥陣特工名片！
+              試著調整您的篩選選項，或在右側重置所有條件，以瀏覽廣場上更多的鬥陣特攻名片！
             </p>
           </div>
           <Button

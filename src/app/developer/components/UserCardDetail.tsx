@@ -6,7 +6,7 @@ import { setCardHidden } from "@/app/actions/developer";
 import { Loader2, AlertCircle, EyeOff, Eye } from "lucide-react";
 
 const GAME_LABELS: Record<string, string> = {
-  overwatch: "🥞 鬥陣特工",
+  overwatch: "🥞 鬥陣特攻",
   lol: "⚔️ 英雄聯盟",
   valorant: "🎯 特戰英豪",
 };

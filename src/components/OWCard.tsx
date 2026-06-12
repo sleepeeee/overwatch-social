@@ -174,7 +174,7 @@ export default function OWCard({
 
       {/* Header: Game Info */}
       <div className="flex justify-between items-center border-b border-white/[0.04] pb-3 mb-4 gap-2">
-        <span className="text-theme-text-muted font-bold text-xs tracking-widest uppercase whitespace-nowrap shrink-0">Overwatch | 鬥陣特工</span>
+        <span className="text-theme-text-muted font-bold text-xs tracking-widest uppercase whitespace-nowrap shrink-0">Overwatch | 鬥陣特攻</span>
         <span className="bg-theme-warning/10 text-theme-warning-soft border border-theme-warning/20 px-2.5 py-0.5 rounded-full text-xs font-black tracking-widest whitespace-nowrap shrink-0 uppercase">
           {getOverwatchServerLabelEn(server)}
         </span>

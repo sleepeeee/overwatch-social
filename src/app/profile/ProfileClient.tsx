@@ -919,7 +919,7 @@ export default function ProfilePage() {
             </h2>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* 1. 🥞 鬥陣特工名片 - 已啟用且可編輯 */}
+              {/* 1. 🥞 鬥陣特攻名片 - 已啟用且可編輯 */}
               <div className="glass-card border border-white/5 hover:border-auroraMint/30 rounded-[24px] p-5 shadow-sm hover:shadow-[0_0_20px_rgba(192,132,252,0.15)] hover:-translate-y-1 transition-all duration-500 flex flex-col justify-between group cursor-default">
                 <div>
                   <div className="flex justify-between items-start mb-4">
@@ -930,7 +930,7 @@ export default function ProfilePage() {
                     </span>
                   </div>
                   
-                  <h3 className="text-sm font-black text-theme-text-strong">鬥陣特工名片</h3>
+                  <h3 className="text-sm font-black text-theme-text-strong">鬥陣特攻名片</h3>
                   <p className="text-[10px] text-theme-text-muted font-semibold mt-0.5 font-mono">Overwatch Identity</p>
                   
                   <div className="my-5 bg-black/40 border border-white/5 rounded-xl p-3 space-y-1 shadow-sm">

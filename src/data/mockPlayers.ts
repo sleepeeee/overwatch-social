@@ -15,7 +15,7 @@ export const PRESET_TAGS: PresetTag[] = [
   { id: 'lfg', text: '招募隊友', type: 'danger' },
 ];
 
-// 2. 常用《鬥陣特工》英雄配置（採用官方透明去背高解析度半身立繪 URL）
+// 2. 常用《鬥陣特攻》英雄配置（採用官方透明去背高解析度半身立繪 URL）
 export const HEROES_CONFIG: HeroConfig[] = [
   {
     id: 'ana',
@@ -395,7 +395,7 @@ export const MOCK_USERS: UserProfile[] = [
   }
 ];
 
-// 4. 鬥陣特工名片 Mock 資料 (1-to-Many 關聯)
+// 4. 鬥陣特攻名片 Mock 資料 (1-to-Many 關聯)
 export const MOCK_PLAYERS: OWPlayerCard[] = [
   {
     card_id: 'card-hevelius',

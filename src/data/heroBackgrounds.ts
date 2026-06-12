@@ -1,6 +1,6 @@
 import { HeroBackgroundConfig } from '../types/card';
 
-// 🛡️ [Mitigation] 51位《鬥陣特工》特工主要色彩對照資料庫 (Primary & Secondary Theme Colors)
+// 🛡️ [Mitigation] 51位《鬥陣特攻》特工主要色彩對照資料庫 (Primary & Secondary Theme Colors)
 export const HERO_THEME_COLORS: Record<string, { primary: string; secondary: string; theme: 'light' | 'dark' }> = {
   ana: { primary: '#607d8b', secondary: '#ebd496', theme: 'light' },
   anran: { primary: '#f44336', secondary: '#ff9800', theme: 'dark' },

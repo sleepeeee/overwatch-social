@@ -14,7 +14,7 @@ export interface ServerOption {
 }
 
 export const GAME_OPTIONS: GameOption[] = [
-  { value: "overwatch", label: "鬥陣特工" },
+  { value: "overwatch", label: "鬥陣特攻" },
   { value: "valorant", label: "特戰英豪" },
   { value: "lol", label: "英雄聯盟" },
 ];
