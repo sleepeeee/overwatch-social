@@ -555,7 +555,7 @@ export default function ProfilePage() {
       return;
     }
     setHubSaved(true);
-    triggerToast("特工帳戶通用設定已成功儲存！");
+    triggerToast("玩家帳戶通用設定已成功儲存！");
     setTimeout(() => setHubSaved(false), 2000);
   };
 
@@ -680,8 +680,16 @@ export default function ProfilePage() {
       return;
     }
 
+    if (editingGame === "ow") {
+      const [namePart, suffixPart] = currentCard.battle_tag.split("#");
+      if (!namePart?.trim() || !suffixPart?.trim()) {
+        setErrorMsg("請輸入完整 BattleTag，例如：芮萊突破者#1011");
+        return;
+      }
+    }
+
     const activeSocials = Object.entries(currentCard.social_channels || {}).filter(
-      ([_, value]) => !!value && value.trim() !== ""
+      ([, value]) => !!value && value.trim() !== ""
     );
     
     if (activeSocials.length === 0) {
@@ -808,7 +816,7 @@ export default function ProfilePage() {
     );
   }
 
-  // ================= 2. 已登入的主入口狀態：特工帳戶主控台 (editingGame === null) =================
+  // ================= 2. 已登入的主入口狀態：玩家帳戶主控台 (editingGame === null) =================
   if (editingGame === null) {
     return (
       <div className="relative min-h-screen z-10 selection:bg-auroraMint/30 text-theme-text-strong max-w-4xl mx-auto px-4 py-8 space-y-12">
@@ -832,7 +840,7 @@ export default function ProfilePage() {
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
             <div className="text-center sm:text-left">
               <h1 className="text-2xl font-black tracking-wider text-white flex items-center justify-center sm:justify-start gap-2.5">
-                <Gamepad2 className="text-auroraMint animate-pulse" /> 特工帳戶主控台
+                <Gamepad2 className="text-auroraMint animate-pulse" /> 玩家帳戶主控台
               </h1>
               <p className="text-theme-text-muted mt-1 text-xs font-mono tracking-wide uppercase">
                 PLAYER IDENTITY STUDIO
@@ -1174,7 +1182,7 @@ export default function ProfilePage() {
             className={`inline-flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-${colorClasses.primary}-500/50 text-theme-text-soft hover:text-white px-4 py-2.5 rounded-xl text-xs font-bold tracking-widest uppercase transition-all shadow-sm active:scale-95 cursor-pointer font-mono`}
           >
             <ArrowLeft size={14} className="stroke-[3]" />
-            <span>← 返回特工主控台</span>
+            <span>返回帳戶主控台</span>
           </button>
 
           <div className={`${colorClasses.bg} border ${colorClasses.border} rounded-xl py-2 px-3 text-xs ${colorClasses.text} flex items-center gap-2 shadow-sm font-mono`}>

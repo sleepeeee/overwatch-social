@@ -174,6 +174,11 @@ export async function saveProfile(card: OWPlayerCard): Promise<{ error?: string 
   const userId = ensured.user.id;
   const game = normalizeGameId(card.game);
   const server = game === "overwatch" ? normalizeOverwatchServer(card.server) : card.server;
+  const [battleTagName, battleTagSuffix] = card.battle_tag.split("#");
+
+  if (game === "overwatch" && (!battleTagName?.trim() || !battleTagSuffix?.trim())) {
+    return { error: "請輸入完整 BattleTag，例如：芮萊突破者#1011" };
+  }
 
   const { error } = await supabase
     .from("profiles")
