@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { OWPlayerCard, type UserProfile } from "@/types/card";
 import {
   HEROES_CONFIG,
@@ -13,12 +13,10 @@ import {
 import OWCard from "@/components/OWCard";
 import { GAME_AVAILABILITY } from "@/lib/gameCatalog";
 import InteractiveAvatar from "@/components/InteractiveAvatar";
-import { exportCardImage } from "@/lib/cardImageExport";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
-import { Save, ArrowLeft, Gamepad2, AlertTriangle, Eye, EyeOff, Link2, LockKeyhole } from "lucide-react";
+import { ArrowLeft, ExternalLink, Gamepad2, AlertTriangle, LockKeyhole } from "lucide-react";
 import { getMyProfile, saveProfile, provisionDefaultCard } from "@/app/actions/profile";
 import { deleteMyAccount } from "@/app/actions/account";
 import { getMyUserProfile, saveNickname } from "@/app/actions/userProfile";
@@ -372,12 +370,8 @@ export default function ProfilePage() {
   const [heroRoleFilter, setHeroRoleFilter] = useState<"All" | "Tank" | "Dps" | "Support">("All");
   const [dbTags, setDbTags] = useState<SpecialTag[]>([]);
 
-  // 🌟 匯出圖片與分享相關狀態與 ref
-  const cardRef = useRef<HTMLDivElement>(null);
-  const [exportingImage, setExportingImage] = useState(false);
-  const [sharing, setSharing] = useState(false);
-  const [shareSuccess, setShareSuccess] = useState(false);
-  const [showShareModal, setShowShareModal] = useState(false);
+  // 🌟 分享頁入口狀態
+  const shareUrl = user?.id ? `/share/${user.id}` : "/profile";
   const [toast, setToast] = useState({ show: false, message: "" });
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deletingAccount, setDeletingAccount] = useState(false);
@@ -403,42 +397,6 @@ export default function ProfilePage() {
     setTimeout(() => {
       setToast(prev => prev.message === message ? { show: false, message: "" } : prev);
     }, 4000);
-  };
-
-  const handleExportImage = async () => {
-    if (!cardRef.current) return;
-    setExportingImage(true);
-    setErrorMsg(null);
-    try {
-      const name = currentCard.battle_tag ? currentCard.battle_tag.split("#")[0] : "player";
-      const result = await exportCardImage(cardRef.current, `${editingGame}-card-${name}.png`);
-      triggerToast(result === "shared" ? "已開啟手機分享選單，請選擇儲存或傳送圖片。" : "名片圖片已成功匯出！");
-    } catch (err) {
-      console.error("導出圖片失敗:", err);
-      setErrorMsg("導出圖片失敗，請重試！");
-    } finally {
-      setExportingImage(false);
-    }
-  };
-
-  const handleShareLink = async () => {
-    setErrorMsg(null);
-    setSharing(true);
-    try {
-      if (editingGame === "ow") {
-        await saveProfile(cardData);
-      }
-      const shareUrl = `${window.location.origin}/share/${user?.id || "mock-user-id"}`;
-      await navigator.clipboard.writeText(shareUrl);
-      setShareSuccess(true);
-      triggerToast("「專屬分享連結」已成功封入您的剪貼簿！✨");
-      setTimeout(() => setShareSuccess(false), 2500);
-    } catch (err) {
-      console.error("產生分享連結失敗:", err);
-      setErrorMsg("產生分享連結失敗，請重試！");
-    } finally {
-      setSharing(false);
-    }
   };
 
   // 初始化：載入特色標籤
@@ -704,7 +662,6 @@ export default function ProfilePage() {
           return;
         }
         setSaved(true);
-        setShowShareModal(true);
         triggerToast("特工名片已成功儲存並同步至廣場！✨");
         setTimeout(() => setSaved(false), 2000);
       } else {
@@ -1207,20 +1164,20 @@ export default function ProfilePage() {
           <div className="lg:col-span-4 flex flex-col items-center gap-4 lg:sticky lg:top-24">
             <h2 className="text-[10px] font-bold tracking-widest text-theme-text-muted uppercase font-mono">即時名片預覽 // Live Preview</h2>
             
-            <div ref={cardRef} className="share-card-export-surface rounded-[28px] overflow-hidden relative">
+            <div className="share-card-export-surface rounded-[28px] overflow-hidden relative w-full max-w-[340px]">
               {editingGame === "ow" ? (
                 <OWCard
                   cardData={cardData}
                   isLoggedIn={true}
                   isEditable={true}
-                  renderMode={exportingImage ? "export" : "interactive"}
+                  renderMode="interactive"
                 />
               ) : (
                 <CosmicLivePreviewCard cardData={currentCard} gameType={editingGame} colorClasses={colorClasses} />
               )}
               
               {/* 點擊清空英雄立繪插槽按鈕 Overlay (專門對接 3 格常用立繪的✕清空) */}
-              {!exportingImage && <div className="absolute top-[176px] left-5 right-5 grid grid-cols-3 h-[180px] pointer-events-none">
+              <div className="absolute top-[176px] left-5 right-5 grid grid-cols-3 h-[180px] pointer-events-none">
                 {[0, 1, 2].map((idx) => {
                   const heroId = currentCard.selected_heroes[idx];
                   if (!heroId) return <div key={idx} />;
@@ -1237,29 +1194,21 @@ export default function ProfilePage() {
                     </div>
                   );
                 })}
-              </div>}
+              </div>
             </div>
 
-            {/* 💾 匯出圖片與複製連結按鈕區 */}
-            <div className="w-full max-w-[320px] grid grid-cols-2 gap-3 mt-2">
+            {/* 保存與分享入口 */}
+            <div className="w-full max-w-[340px] mt-2">
+              <Link href={shareUrl} className="block w-full">
               <Button
                 type="button"
-                onClick={handleExportImage}
-                disabled={exportingImage}
-                className="bg-gradient-to-r from-auroraTeal to-auroraMint hover:from-auroraMint hover:to-auroraTeal border border-auroraMint/45 text-white rounded-xl py-3 px-3 text-xs font-black transition-all shadow-[0_0_22px_rgba(34,211,238,0.24)] hover:shadow-[0_0_30px_rgba(34,211,238,0.38)] active:scale-95 cursor-pointer flex items-center justify-center gap-2 font-mono disabled:opacity-55 disabled:cursor-not-allowed"
+                disabled={!user?.id}
+                className="w-full bg-gradient-to-r from-auroraTeal to-auroraMint hover:from-auroraMint hover:to-auroraTeal border border-auroraMint/45 text-white rounded-xl py-3 px-3 text-xs font-black transition-all shadow-[0_0_22px_rgba(34,211,238,0.24)] hover:shadow-[0_0_30px_rgba(34,211,238,0.38)] active:scale-95 cursor-pointer flex items-center justify-center gap-2 font-mono"
               >
-                <Save size={14} className="shrink-0" />
-                <span>{exportingImage ? "匯出中" : "保存圖片"}</span>
+                <ExternalLink size={14} className="shrink-0" />
+                <span>前往保存與分享</span>
               </Button>
-              <Button
-                type="button"
-                onClick={handleShareLink}
-                disabled={sharing}
-                className="bg-theme-warning/12 hover:bg-theme-warning/20 border border-theme-warning/35 hover:border-theme-warning text-theme-warning-soft hover:text-white rounded-xl py-3 px-3 text-xs font-black transition-all shadow-[0_0_18px_rgba(249,158,26,0.13)] hover:shadow-[0_0_24px_rgba(249,158,26,0.25)] active:scale-95 cursor-pointer flex items-center justify-center gap-2 font-mono disabled:opacity-55 disabled:cursor-not-allowed"
-              >
-                <Link2 size={14} className="shrink-0" />
-                <span>{sharing ? "複製中" : shareSuccess ? "已複製" : "複製連結"}</span>
-              </Button>
+              </Link>
             </div>
 
             <p className="text-[10px] text-theme-text-faint italic text-center max-w-[320px] mt-1 font-semibold leading-relaxed">
