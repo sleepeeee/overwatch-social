@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowLeft, Check, Copy, ImageDown, Loader2, Sparkles } from "lucide-react";
+import { ArrowLeft, Check, Copy, Loader2, Sparkles } from "lucide-react";
 import OWCard from "@/components/OWCard";
 import { createCardImageDataUrl } from "@/lib/cardImageExport";
 import { useAuth } from "@/context/AuthContext";
@@ -44,13 +44,16 @@ export default function ShareCardClient({ cardData }: Props) {
       }
     };
 
-    const frameId = window.requestAnimationFrame(() => {
-      void generatePreview();
+    // 等兩幀確保 OWCard 完整渲染後再產圖
+    const id1 = window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        void generatePreview();
+      });
     });
 
     return () => {
       isMounted = false;
-      window.cancelAnimationFrame(frameId);
+      window.cancelAnimationFrame(id1);
     };
   }, [cardData]);
 
@@ -113,19 +116,9 @@ export default function ShareCardClient({ cardData }: Props) {
                 </p>
               </div>
 
-              <div className="fixed left-[-10000px] top-0 w-[340px] pointer-events-none" aria-hidden="true">
-                <div ref={cardRef} className="share-card-export-surface rounded-[28px] overflow-hidden w-[340px] flex justify-center">
-                  <OWCard
-                    cardData={cardData}
-                    isLoggedIn={!!user}
-                    isEditable={false}
-                    renderMode="export"
-                  />
-                </div>
-              </div>
-
               <div className="w-full max-w-[340px]">
                 {imageUrl ? (
+                  /* 產圖完成：顯示可長按儲存的圖片 */
                   <img
                     src={imageUrl}
                     alt={`${playerName} 的 AFTER MIDNIGHT 玩家名片保存圖片`}
@@ -133,17 +126,24 @@ export default function ShareCardClient({ cardData }: Props) {
                     draggable="true"
                   />
                 ) : (
-                  <div className="share-card-export-surface rounded-[28px] overflow-hidden shadow-lg w-full min-h-[452px] flex flex-col items-center justify-center gap-3 text-theme-text-muted border border-white/[0.05]">
-                    {generatingImage ? (
-                      <>
+                  /* 產圖中：OWCard 直接在 viewport 內渲染確保圖片載入，loading overlay 遮住 */
+                  <div className="relative">
+                    <div
+                      ref={cardRef}
+                      className="share-card-export-surface rounded-[28px] overflow-hidden w-full flex justify-center"
+                    >
+                      <OWCard
+                        cardData={cardData}
+                        isLoggedIn={!!user}
+                        isEditable={false}
+                        renderMode="export"
+                      />
+                    </div>
+                    {generatingImage && (
+                      <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 rounded-[28px] bg-black/60 backdrop-blur-sm">
                         <Loader2 className="h-6 w-6 animate-spin text-auroraMint" />
-                        <span className="text-xs font-bold">正在產生可保存圖片</span>
-                      </>
-                    ) : (
-                      <>
-                        <ImageDown className="h-6 w-6 text-theme-text-faint" />
-                        <span className="text-xs font-bold">圖片預覽尚未產生</span>
-                      </>
+                        <span className="text-xs font-bold text-white">正在產生可保存圖片</span>
+                      </div>
                     )}
                   </div>
                 )}

@@ -46,27 +46,25 @@ const waitForCardExport = async (node: HTMLElement) => {
   await nextFrame();
 };
 
-// html-to-image 在 mobile 上 fetch 多張圖片時常只完成部分，導致空白。
-// 預先把所有 img src 轉成 data URL，讓 html-to-image 不需要自行 fetch。
+// 圖片在 viewport 內已載入，用 canvas.drawImage 直接提取 data URL。
+// 比 fetch 更可靠：不依賴網路、不受 mobile 並行限制影響。
 const preloadImagesAsDataUrls = async (node: HTMLElement): Promise<void> => {
   const images = Array.from(node.querySelectorAll<HTMLImageElement>("img"));
   await Promise.all(
     images.map(async (img) => {
-      const src = img.currentSrc || img.src;
-      if (!src || src.startsWith("data:")) return;
+      if (img.src.startsWith("data:")) return;
+      if (!img.complete || img.naturalWidth === 0) return;
       try {
-        const res = await fetch(src, { credentials: "same-origin" });
-        const blob = await res.blob();
-        const dataUrl = await new Promise<string>((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result as string);
-          reader.onerror = reject;
-          reader.readAsDataURL(blob);
-        });
-        img.src = dataUrl;
+        const canvas = document.createElement("canvas");
+        canvas.width = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return;
+        ctx.drawImage(img, 0, 0);
+        img.src = canvas.toDataURL("image/png");
         await img.decode().catch(() => undefined);
       } catch {
-        // fetch 失敗則保留原始 src，最壞情況只有該圖空白
+        // 保留原始 src（CORS 或其他問題）
       }
     })
   );
