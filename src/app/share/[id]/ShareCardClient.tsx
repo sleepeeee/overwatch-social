@@ -56,7 +56,7 @@ export default function ShareCardClient({ cardData }: Props) {
   };
 
   return (
-    <div className="min-h-screen relative pb-32 transition-colors duration-500 text-zinc-100">
+    <div className="min-h-screen relative pb-32 transition-colors duration-500 text-theme-text-strong">
       <div className="fixed inset-0 ambient-space-glows pointer-events-none z-0" />
 
       <main className="p-6 md:p-8 min-h-screen w-full max-w-7xl mx-auto px-4 md:px-8 pt-6 z-10 relative">
@@ -66,7 +66,7 @@ export default function ShareCardClient({ cardData }: Props) {
             <Link href="/browse">
               <Button
                 variant="outline"
-                className="inline-flex items-center gap-2 border-white/10 hover:border-auroraMint/30 text-zinc-300 hover:text-white bg-white/[0.01] hover:bg-white/[0.04] font-bold text-xs tracking-widest uppercase px-4 py-2 rounded-xl shadow-sm transition-all duration-300 cursor-pointer hover:scale-102"
+                className="inline-flex items-center gap-2 border-white/10 hover:border-auroraMint/30 text-theme-text-soft hover:text-white bg-white/[0.01] hover:bg-white/[0.04] font-bold text-xs tracking-widest uppercase px-4 py-2 rounded-xl shadow-sm transition-all duration-300 cursor-pointer hover:scale-102"
               >
                 <ArrowLeft size={13} className="stroke-[3]" />
                 <span>返回大廳廣場</span>
@@ -82,11 +82,11 @@ export default function ShareCardClient({ cardData }: Props) {
           </div>
 
           {!cardData ? (
-            <Card className="glass-panel text-zinc-100 max-w-md w-full mt-8 border-white/[0.03]">
+            <Card className="glass-panel text-theme-text-strong max-w-md w-full mt-8 border-white/[0.03]">
               <CardContent className="p-6 flex flex-col items-center text-center gap-4">
                 <span className="text-4xl">🔎</span>
                 <h3 className="font-extrabold text-lg text-white">找不到名片</h3>
-                <p className="text-xs text-zinc-400">該玩家的名片不存在或已設為私密。</p>
+                <p className="text-xs text-theme-text-muted">該玩家的名片不存在或已設為私密。</p>
                 <Link href="/browse" className="mt-2 w-full">
                   <Button className="w-full bg-gradient-to-r from-auroraTeal to-auroraMint text-white hover:opacity-90 font-bold text-xs rounded-xl py-3 transition-all duration-300">
                     前往大廳尋找其他隊友
@@ -120,7 +120,7 @@ export default function ShareCardClient({ cardData }: Props) {
                 <Link href="/profile" className="w-full">
                   <Button
                     variant="outline"
-                    className="w-full border-white/10 hover:border-auroraMint/30 text-zinc-300 hover:text-white bg-white/[0.01] hover:bg-white/[0.03] font-extrabold text-sm py-4.5 rounded-xl shadow-sm transition-all active:scale-98 cursor-pointer flex items-center justify-center gap-2 duration-300"
+                    className="w-full border-white/10 hover:border-auroraMint/30 text-theme-text-soft hover:text-white bg-white/[0.01] hover:bg-white/[0.03] font-extrabold text-sm py-4.5 rounded-xl shadow-sm transition-all active:scale-98 cursor-pointer flex items-center justify-center gap-2 duration-300"
                   >
                     <span>✨</span>
                     <span>我也要建立特工名片</span>
@@ -128,7 +128,7 @@ export default function ShareCardClient({ cardData }: Props) {
                 </Link>
               </div>
 
-              <p className="text-[11px] text-zinc-400/80 font-sans italic text-center max-w-[320px] font-semibold mt-2 leading-relaxed">
+              <p className="text-[11px] text-theme-text-muted/80 font-sans italic text-center max-w-[320px] font-semibold mt-2 leading-relaxed">
                 💡 點擊名片上的 <b>BattleTag</b> 或是下方社群圖示即可快速複製對方的聯絡資訊！
               </p>
             </div>

@@ -46,7 +46,7 @@ export default function TopBar() {
             <span className="text-[10px] sm:text-xs font-semibold tracking-[0.18em] sm:tracking-[0.24em] text-white uppercase group-hover:text-auroraMint transition-colors duration-500 font-mono truncate">
               AFTER MIDNIGHT
             </span>
-            <span className="hidden sm:block text-[8px] text-zinc-400 tracking-[0.3em] uppercase font-mono mt-1 truncate">
+            <span className="hidden sm:block text-[8px] text-theme-text-muted tracking-[0.3em] uppercase font-mono mt-1 truncate">
               Slow Player Cosmos
             </span>
           </div>
@@ -61,7 +61,7 @@ export default function TopBar() {
               className={`rounded-full px-2 py-2 text-[10px] tracking-[0.06em] transition-all duration-500 font-mono sm:px-4 sm:text-[11px] sm:tracking-wider ${
                 pathname === item.href
                   ? "text-auroraMint bg-white/[0.04] border border-white/10"
-                  : "text-zinc-300 hover:text-white border border-transparent"
+                  : "text-theme-text-soft hover:text-white border border-transparent"
               }`}
             >
               <span className="sm:hidden">{item.mobileLabel}</span>

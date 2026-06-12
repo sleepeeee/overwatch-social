@@ -48,13 +48,13 @@ export default function ReportPage() {
     : undefined;
 
   return (
-    <div className="relative min-h-screen overflow-hidden text-zinc-100">
+    <div className="relative min-h-screen overflow-hidden text-theme-text-strong">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_20%,rgba(192,132,252,0.14),transparent_28%),radial-gradient(circle_at_82%_12%,rgba(99,102,241,0.12),transparent_32%),linear-gradient(180deg,rgba(3,2,6,0.2),rgba(3,2,6,0.82))]" />
 
       <main className="relative z-10 mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
         <Link
           href="/"
-          className="inline-flex h-9 w-fit items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 text-xs font-medium text-zinc-300 transition hover:border-auroraMint/40 hover:text-white focus:outline-none focus:ring-2 focus:ring-auroraMint/50"
+          className="inline-flex h-9 w-fit items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 text-xs font-medium text-theme-text-soft transition hover:border-auroraMint/40 hover:text-white focus:outline-none focus:ring-2 focus:ring-auroraMint/50"
         >
           <ArrowLeft className="h-4 w-4" aria-hidden="true" />
           返回前廳
@@ -68,7 +68,7 @@ export default function ReportPage() {
             <h1 className="font-playfair text-3xl font-semibold tracking-normal text-white sm:text-5xl">
               After Midnight 回報終端機
             </h1>
-            <p className="max-w-2xl text-sm leading-7 text-zinc-300 sm:text-base">
+            <p className="max-w-2xl text-sm leading-7 text-theme-text-soft sm:text-base">
               Beta 測試期間，這裡用來接收錯誤、不當名片、資料刪除請求，也可以提供建議與聯絡我們。
               請不要送出你不想讓站方看到的私人資訊。
             </p>
@@ -88,7 +88,7 @@ export default function ReportPage() {
                   <Icon className="h-5 w-5" aria-hidden="true" />
                 </div>
                 <h2 className="text-base font-semibold text-white">{item.label}</h2>
-                <p className="mt-2 text-sm leading-6 text-zinc-400">{item.description}</p>
+                <p className="mt-2 text-sm leading-6 text-theme-text-muted">{item.description}</p>
               </article>
             );
           })}
@@ -96,11 +96,11 @@ export default function ReportPage() {
 
         <section className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
           <div className="rounded-2xl border border-white/[0.07] bg-[#050409]/85 p-5 backdrop-blur-xl sm:p-6">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-zinc-500">Before sending</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-theme-text-faint">Before sending</p>
             <h2 className="mt-3 text-xl font-semibold text-white">回報前請準備這些資料</h2>
             <ul className="mt-5 space-y-3">
               {requiredItems.map((item) => (
-                <li key={item} className="flex gap-3 text-sm leading-6 text-zinc-300">
+                <li key={item} className="flex gap-3 text-sm leading-6 text-theme-text-soft">
                   <span className="mt-2 h-1.5 w-1.5 flex-none rounded-full bg-auroraMint shadow-[0_0_12px_rgba(192,132,252,0.65)]" />
                   <span>{item}</span>
                 </li>
@@ -111,10 +111,10 @@ export default function ReportPage() {
           <aside className="rounded-2xl border border-auroraMint/20 bg-auroraMint/[0.06] p-5 backdrop-blur-xl sm:p-6">
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-auroraMint">Response path</p>
             <h2 className="mt-3 text-xl font-semibold text-white">我們會怎麼回覆</h2>
-            <p className="mt-3 text-sm leading-6 text-zinc-300">
+            <p className="mt-3 text-sm leading-6 text-theme-text-soft">
               如果你留下可聯絡方式，站方會透過品牌信箱回覆。Beta 期間不保證即時客服，但會優先處理登入、資料與不當內容問題。
             </p>
-            <div className="mt-5 rounded-xl border border-white/[0.08] bg-black/20 p-4 text-xs leading-6 text-zinc-400">
+            <div className="mt-5 rounded-xl border border-white/[0.08] bg-black/20 p-4 text-xs leading-6 text-theme-text-muted">
               這一頁目前尚未放入網站導覽。正式入口位置會等 Beta 測試流程確認後再加入。
             </div>
           </aside>
@@ -132,7 +132,7 @@ export default function ReportPage() {
               <ExternalLink className="h-4 w-4" aria-hidden="true" />
             </a>
           ) : (
-            <div className="inline-flex min-h-14 items-center justify-center rounded-2xl border border-white/[0.07] bg-white/[0.025] px-5 text-sm font-semibold text-zinc-500">
+            <div className="inline-flex min-h-14 items-center justify-center rounded-2xl border border-white/[0.07] bg-white/[0.025] px-5 text-sm font-semibold text-theme-text-faint">
               回報表單設定中
             </div>
           )}
@@ -140,13 +140,13 @@ export default function ReportPage() {
           {mailHref ? (
             <a
               href={mailHref}
-              className="inline-flex min-h-14 items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/[0.035] px-5 text-sm font-semibold text-zinc-200 transition hover:border-white/25 hover:text-white focus:outline-none focus:ring-2 focus:ring-auroraMint/50"
+              className="inline-flex min-h-14 items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/[0.035] px-5 text-sm font-semibold text-theme-text-body transition hover:border-white/25 hover:text-white focus:outline-none focus:ring-2 focus:ring-auroraMint/50"
             >
               用品牌信箱聯絡
               <Mail className="h-4 w-4" aria-hidden="true" />
             </a>
           ) : (
-            <div className="inline-flex min-h-14 items-center justify-center rounded-2xl border border-white/[0.07] bg-white/[0.025] px-5 text-sm font-semibold text-zinc-500">
+            <div className="inline-flex min-h-14 items-center justify-center rounded-2xl border border-white/[0.07] bg-white/[0.025] px-5 text-sm font-semibold text-theme-text-faint">
               品牌信箱設定中
             </div>
           )}

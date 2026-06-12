@@ -283,3 +283,8 @@ Codex 補搜項「actual skill descriptions for excluded candidates」已由 ses
 - **canvas-design**：「Create beautiful visual art in .png/.pdf documents（poster/art/static piece）」→ 靜態視覺產出，與互動式 web UI 無關。排除成立。
 - **web-artifacts-builder**：「creating elaborate multi-component claude.ai HTML artifacts」→ 綁定 claude.ai artifact 平台。排除成立。
 結論：frontend-design 為唯一適合整站程式碼級重設計的 skill，排除推定升級為文件確認。
+
+### [APPLY 收尾] add-standalone-theme-style（2026-06-12）
+**最終採用**：token 地基（377 處 + 品牌色 130+ 處變數化、回歸 0.002%）+ 主題基礎建設（ThemeContext 白名單/持久化、ThemeSwitcher 元件存在未掛載）。**否決**：三套原型主題（neon 驗收過但不採用；magazine 未過 F-029；arcade 一併不採用），CSS 已移除、git 歷史保留。
+**驗證**：tsc PASS、build PASS、E2E 36/36、最終外觀與原始基準 0.002%。
+**Finding**：F-028（掃描校準）、F-029（亮底 negative result）。CLAUDE.md 已更新（affects_consumers 對齊）。

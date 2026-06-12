@@ -71,7 +71,7 @@ export default async function PlayerDetailPage({ params }: Props) {
     .filter(Boolean);
 
   const micIcon = player.mic_status === "mic-on"
-    ? <Mic size={14} className="text-emerald-500" />
+    ? <Mic size={14} className="text-theme-success" />
     : player.mic_status === "mic-off"
     ? <MicOff size={14} className="text-[#8c7c6c]/50" />
     : <Mic size={14} className="text-[#d8a070]" />;
