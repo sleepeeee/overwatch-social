@@ -44,16 +44,14 @@ export default function ShareCardClient({ cardData }: Props) {
       }
     };
 
-    // 等兩幀確保 OWCard 完整渲染後再產圖
-    const id1 = window.requestAnimationFrame(() => {
-      window.requestAnimationFrame(() => {
-        void generatePreview();
-      });
-    });
+    // 等 1.5 秒讓 OWCard 所有圖片完整載入並 decode 後再產圖
+    const timerId = window.setTimeout(() => {
+      void generatePreview();
+    }, 1500);
 
     return () => {
       isMounted = false;
-      window.cancelAnimationFrame(id1);
+      window.clearTimeout(timerId);
     };
   }, [cardData]);
 
