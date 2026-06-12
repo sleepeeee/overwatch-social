@@ -21,7 +21,8 @@ const DEFAULT_ALIGNMENTS: AlignmentConfig = {
   buttons_y: 0,
   tag_font_size: 10,
   tag_x: 0,
-  tag_y: 0
+  tag_y: 0,
+  is_hidden: false
 };
 
 const DEFAULT_ANNOUNCEMENTS: AnnouncementItem[] = [
@@ -59,7 +60,7 @@ const DEFAULT_ANNOUNCEMENTS: AnnouncementItem[] = [
     color: "rgba(140, 124, 108, 0.85)",
     message: "如果這個禪意手帳風的小站溫暖了你，歡迎買杯咖啡支持本站。我們將持續開發更多有趣、精美的遊戲社群小工具！",
     custom_icon_url: "",
-    alignments: { ...DEFAULT_ALIGNMENTS }
+    alignments: { ...DEFAULT_ALIGNMENTS, is_hidden: true }
   }
 ];
 

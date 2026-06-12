@@ -19,16 +19,14 @@ export default function Home() {
   const [announcements, setAnnouncements] = useState<AnnouncementItem[]>([]);
   const cloudBtnRef = useRef<HTMLButtonElement | null>(null);
 
-  // 載入公告資料並篩選 01, 02, 03
+  // 載入公告資料並篩選未隱藏項目
   useEffect(() => {
     let active = true;
     getAnnouncements()
       .then((data) => {
         if (active) {
-          const filtered = data.filter((item) =>
-            ["01", "02", "03"].includes(item.num)
-          );
-          setAnnouncements(filtered);
+          const visible = data.filter((item) => !item.alignments?.is_hidden);
+          setAnnouncements(visible);
         }
       })
       .catch((err) => {

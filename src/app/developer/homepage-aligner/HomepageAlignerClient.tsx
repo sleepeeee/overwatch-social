@@ -49,6 +49,16 @@ export default function HomepageAlignerClient({
     });
   };
 
+  const handleVisibilityToggle = (idx: number) => {
+    setAnnouncements((prev) => {
+      const updated = [...prev];
+      const alignments = { ...updated[idx].alignments } as any;
+      alignments.is_hidden = !alignments.is_hidden;
+      updated[idx] = { ...updated[idx], alignments };
+      return updated;
+    });
+  };
+
   const handleSaveAnnouncements = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -162,6 +172,15 @@ export default function HomepageAlignerClient({
                           {/* 頂部發光能量粒子 */}
                           <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#c084fc]/30 to-transparent" />
                           
+                          {/* 隱藏狀態浮水印 */}
+                          {item.alignments?.is_hidden && (
+                            <div className="absolute inset-0 bg-red-950/20 backdrop-blur-[1px] flex items-center justify-center pointer-events-none z-10">
+                              <span className="bg-red-500/20 border border-red-500/30 text-red-400 text-[9px] font-black tracking-widest px-3 py-1 rounded-full uppercase">
+                                已隱藏 (HIDDEN)
+                              </span>
+                            </div>
+                          )}
+
                           <div className="flex flex-col gap-2">
                             <div className="flex items-center justify-between">
                               <span className="text-[9px] font-mono text-purple-300 tracking-widest font-semibold uppercase">
@@ -196,7 +215,8 @@ export default function HomepageAlignerClient({
                 <div className="bg-white/[0.01] p-1.5 rounded-xl border border-white/[0.04] flex gap-2 w-full shadow-inner">
                   {[1, 2, 3, 4].map((num) => {
                     const isActive = activeSegment === num;
-                    const isHidden = num === 4;
+                    const item = announcements[num - 1];
+                    const isHidden = item?.alignments?.is_hidden;
                     return (
                       <button
                         key={num}
@@ -212,7 +232,7 @@ export default function HomepageAlignerClient({
                             : "text-zinc-400 hover:text-white hover:bg-white/[0.02] border border-transparent"
                         }`}
                       >
-                        區塊 {num} {isHidden && <span className="text-[8px] text-amber-400 opacity-80">(隱)</span>}
+                        區塊 {num} {isHidden && <span className="text-[8px] text-amber-400 opacity-90 font-bold font-mono ml-1">(已隱藏)</span>}
                       </button>
                     );
                   })}
@@ -224,28 +244,48 @@ export default function HomepageAlignerClient({
                     const isSelected = activeSegment === idx + 1;
                     if (!isSelected) return null;
 
-                    const isHiddenAnn = item.num === "04";
+                    const isHiddenAnn = item.alignments?.is_hidden;
 
                     return (
                       <div key={item.num} className="space-y-6 animate-fade-in">
                         
-                        {/* 04 號隱藏提示 */}
+                        {/* 隱藏提示橫幅 */}
                         {isHiddenAnn && (
-                          <div className="p-4 rounded-xl border border-amber-500/20 bg-amber-500/5 text-amber-300 text-[11px] leading-relaxed flex gap-2.5 shadow-[0_0_15px_rgba(245,158,11,0.06)]">
+                          <div className="p-4 rounded-xl border border-amber-500/20 bg-amber-500/5 text-amber-300 text-[11px] leading-relaxed flex gap-2.5 shadow-[0_0_15px_rgba(245,158,11,0.06)] animate-fade-in">
                             <Info size={16} className="shrink-0 text-amber-400 mt-0.5" />
                             <div>
                               <span className="font-bold">⚠️ 隱藏公告提示：</span>
-                              此區塊 (#04) 目前已在首頁星圖選單中隱藏，編輯儲存的內容將保留於資料表中作為後備，但不會在前台繪製。
+                              此區塊 (#{item.num}) 目前已在前台星圖選單中隱藏，編輯儲存後將保留於資料表中作為後備，但不會在前台繪製。
                             </div>
                           </div>
                         )}
 
                         <div className="p-6 rounded-2xl border border-white/[0.04] bg-white/[0.01] space-y-5 shadow-2xl">
-                          <div className="flex items-center gap-2 border-b border-white/5 pb-3">
-                            <Layers size={14} className="text-purple-400" />
-                            <h3 className="text-xs font-black text-zinc-300 uppercase tracking-widest font-mono">
-                              ✏️ 區塊 #{item.num} 公告資訊編輯
-                            </h3>
+                          <div className="flex items-center justify-between border-b border-white/5 pb-3">
+                            <div className="flex items-center gap-2">
+                              <Layers size={14} className="text-purple-400" />
+                              <h3 className="text-xs font-black text-zinc-300 uppercase tracking-widest font-mono">
+                                ✏️ 區塊 #{item.num} 公告資訊編輯
+                              </h3>
+                            </div>
+                            
+                            {/* 前台顯示/隱藏切換開關 */}
+                            <div className="flex items-center gap-2">
+                              <span className="text-[10px] text-zinc-400 font-bold font-mono">
+                                前台星圖狀態：
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => handleVisibilityToggle(idx)}
+                                className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all cursor-pointer ${
+                                  item.alignments?.is_hidden
+                                    ? "bg-red-950/40 border border-red-500/30 text-red-400 hover:bg-red-900/40"
+                                    : "bg-emerald-950/40 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-900/40"
+                                }`}
+                              >
+                                {item.alignments?.is_hidden ? "已隱藏 (HIDDEN)" : "顯示中 (VISIBLE)"}
+                              </button>
+                            </div>
                           </div>
 
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
