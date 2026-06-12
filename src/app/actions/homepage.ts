@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { unstable_noStore as noStore } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import type { AlignmentConfig, AnnouncementItem } from "@/types/homepage";
+import type { Json } from "@/types/database";
 
 export type { AlignmentConfig, AnnouncementItem } from "@/types/homepage";
 
@@ -105,12 +106,13 @@ export async function getAnnouncements(): Promise<AnnouncementItem[]> {
     }
 
     return data.map(row => ({
-      num: row.num as string,
-      tag: row.tag as string,
-      title: row.title as string,
-      color: row.color as string,
-      message: row.message as string,
-      custom_icon_url: (row.custom_icon_url as string) || "",
+      num: row.num,
+      tag: row.tag,
+      title: row.title,
+      color: row.color,
+      message: row.message,
+      custom_icon_url: row.custom_icon_url || "",
+      // alignments 為 jsonb：Json → AlignmentConfig 的合理邊界轉換
       alignments: { ...DEFAULT_ALIGNMENTS, ...(row.alignments as Partial<AlignmentConfig>) },
     }));
   } catch (error) {
@@ -161,7 +163,8 @@ export async function saveAnnouncements(data: AnnouncementItem[]) {
       color: item.color,
       message: item.message,
       custom_icon_url: item.custom_icon_url ?? "",
-      alignments: item.alignments ?? DEFAULT_ALIGNMENTS,
+      // AlignmentConfig（固定 number 欄位）寫入 jsonb 欄位：app→DB 邊界轉換
+      alignments: (item.alignments ?? DEFAULT_ALIGNMENTS) as unknown as Json,
     }));
 
     const { error } = await supabase

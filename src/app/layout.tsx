@@ -74,7 +74,7 @@ export default function RootLayout({
       <body
         className="min-h-screen flex flex-col text-foreground relative pt-[var(--dev-banner-height,0px)]"
         style={{
-          backgroundColor: "#030206",
+          backgroundColor: "var(--background, #030206)",
           backgroundImage: "var(--theme-bg-gradient)",
           fontFamily: "var(--font-noto-sans-tc), var(--font-geist-sans), sans-serif"
         }}
@@ -92,6 +92,8 @@ export default function RootLayout({
             <TopBar />
             <main className="site-main flex-1 relative z-10">{children}</main>
             <SiteFooter />
+            {/* 主題預覽切換器（ThemeSwitcher.tsx）暫不掛載——使用者裁示隱藏入口、保留基礎建設
+                （add-standalone-theme-style）。要啟用：import 後在此處掛 <ThemeSwitcher /> */}
           </AuthProvider>
         </ThemeProvider>
         <Analytics />

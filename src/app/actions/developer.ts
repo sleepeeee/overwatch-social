@@ -1,7 +1,9 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { revalidatePath } from "next/cache";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { revalidatePath, revalidateTag } from "next/cache";
+import { PLACEHOLDER_BATTLE_TAG } from "@/types/card";
 
 /**
  * 🛡️ [Security Helper] 確保只有開發者才能執行後台 Server Actions
@@ -140,13 +142,106 @@ export async function getAllProfilesForDeveloper(search?: string): Promise<{
     return {
       success: true,
       data: (data || []).map(row => ({
-        user_id: row.user_id as string,
-        battle_tag: (row.battle_tag as string) || "",
-        is_tag_visible: row.is_tag_visible as boolean,
-        selected_heroes: (row.selected_heroes as string[]) ?? [],
-        updated_at: row.updated_at as string,
+        user_id: row.user_id,
+        battle_tag: row.battle_tag || "",
+        is_tag_visible: row.is_tag_visible,
+        selected_heroes: row.selected_heroes ?? [],
+        updated_at: row.updated_at,
       })),
     };
+  } catch (err) {
+    return { success: false, error: String(err) };
+  }
+}
+
+/**
+ * 下架/恢復一張名片（moderation，developer-only）。
+ * 下架後 public_profiles view 過濾該名片，廣場與玩家詳細頁皆不可見；
+ * 本人在工作室仍看得到並可編輯。
+ */
+export async function setCardHidden(cardId: string, hidden: boolean) {
+  try {
+    await ensureDeveloper();
+
+    const admin = createAdminClient();
+    if (!admin) return { success: false, error: "伺服器尚未設定管理金鑰（SUPABASE_SECRET_KEY）" };
+
+    const { error } = await admin
+      .from("profiles")
+      .update({ is_hidden: hidden })
+      .eq("id", cardId);
+
+    if (error) return { success: false, error: error.message };
+
+    revalidateTag("public-profiles", "max");
+    return { success: true };
+  } catch (err) {
+    return { success: false, error: String(err) };
+  }
+}
+
+/**
+ * 停權/解除停權一個用戶（moderation，developer-only）。
+ * 停權使用 Supabase Auth 原生 ban：無法再登入，既有 session 於 JWT 到期後失效。
+ * 名片不會自動下架，需另行操作。
+ */
+export async function setUserBanned(userId: string, banned: boolean) {
+  try {
+    const { user: currentUser } = await ensureDeveloper();
+
+    if (currentUser.id === userId) {
+      return { success: false, error: "安全保護：您無法停權自己" };
+    }
+
+    const admin = createAdminClient();
+    if (!admin) return { success: false, error: "伺服器尚未設定管理金鑰（SUPABASE_SECRET_KEY）" };
+
+    // 876600h ≈ 100 年，等同永久停權；"none" 解除
+    const { error } = await admin.auth.admin.updateUserById(userId, {
+      ban_duration: banned ? "876600h" : "none",
+    });
+
+    if (error) return { success: false, error: error.message };
+    return { success: true };
+  } catch (err) {
+    return { success: false, error: String(err) };
+  }
+}
+
+export interface AdminAuthInfo {
+  banned: boolean;
+  google_name: string | null;
+}
+
+/**
+ * 讀取全部用戶的 auth 層資訊：停權狀態 + Google 帳號名稱（developer-only，後台用戶列表用）
+ */
+export async function getAdminAuthInfo(): Promise<{
+  success: boolean;
+  data?: Record<string, AdminAuthInfo>;
+  error?: string;
+}> {
+  try {
+    await ensureDeveloper();
+
+    const admin = createAdminClient();
+    if (!admin) return { success: false, error: "伺服器尚未設定管理金鑰（SUPABASE_SECRET_KEY）" };
+
+    const { data, error } = await admin.auth.admin.listUsers({ page: 1, perPage: 200 });
+    if (error) return { success: false, error: error.message };
+
+    const states: Record<string, AdminAuthInfo> = {};
+    for (const u of data.users) {
+      // banned_until 未來時間 = 停權中；supabase-js User 型別未宣告此欄位，需窄化
+      const bannedUntil = (u as { banned_until?: string | null }).banned_until;
+      const meta = u.user_metadata as { full_name?: string; name?: string } | null;
+      states[u.id] = {
+        banned: !!bannedUntil && new Date(bannedUntil) > new Date(),
+        google_name: meta?.full_name ?? meta?.name ?? u.email?.split("@")[0] ?? null,
+      };
+    }
+
+    return { success: true, data: states };
   } catch (err) {
     return { success: false, error: String(err) };
   }
@@ -166,7 +261,7 @@ export async function getHeroStats(): Promise<Array<{ heroId: string; count: num
       return [];
     }
 
-    return (data as Array<{ hero_id: string; hero_count: number | string }>).map(row => ({
+    return data.map(row => ({
       heroId: row.hero_id,
       count: Number(row.hero_count),
     }));
@@ -188,7 +283,7 @@ export async function getSystemStats() {
       supabase.from("profiles").select("*", { count: "exact", head: true }),
       supabase.from("profiles").select("*", { count: "exact", head: true })
         .not("battle_tag", "is", null)
-        .neq("battle_tag", "愛喝奶茶#3342") // 排除預設佔位值，只計算真正填寫的名片
+        .neq("battle_tag", PLACEHOLDER_BATTLE_TAG) // 排除預設佔位值，只計算真正填寫的名片
     ]);
 
     if (userResult.error) {

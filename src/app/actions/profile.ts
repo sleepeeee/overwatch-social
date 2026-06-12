@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { normalizeGameId, normalizeOverwatchServer } from "@/lib/gameCatalog";
 import { ensureUserProfileForCurrentUser } from "@/lib/userProfileIdentity";
+import { toSocialChannels } from "@/lib/socialChannels";
 import { OWPlayerCard } from "@/types/card";
 import { revalidateTag } from "next/cache";
 
@@ -27,15 +28,17 @@ export async function getMyProfile(game = 'overwatch'): Promise<OWPlayerCard | n
     server: normalizeOverwatchServer(data.server),
     battle_tag: data.battle_tag,
     is_tag_visible: data.is_tag_visible,
+    is_card_visible: data.is_card_visible ?? true,
+    is_draft: data.is_draft ?? false,
     selected_heroes: data.selected_heroes ?? [],
     tags: data.tags ?? [],
     message: data.message ?? "",
     languages: data.languages ?? [],
     mic_status: data.mic_status as OWPlayerCard["mic_status"],
-    social_channels: data.social_channels ?? {},
+    social_channels: toSocialChannels(data.social_channels),
     mbti: data.mbti ?? undefined,
-    display_name: (data.display_name as string) ?? undefined,
-    game: normalizeGameId(data.game as string),
+    display_name: data.display_name ?? undefined,
+    game: normalizeGameId(data.game),
   };
 }
 
@@ -48,21 +51,74 @@ export async function getPublicProfile(userId: string): Promise<OWPlayerCard | n
     .single();
   if (!data) return null;
   return {
-    card_id: `card-${data.user_id}`,
-    user_id: data.user_id as string,
-    server: normalizeOverwatchServer(data.server as string),
-    battle_tag: data.battle_tag as string,
-    is_tag_visible: data.is_tag_visible as boolean,
-    selected_heroes: (data.selected_heroes as string[]) ?? [],
-    tags: (data.tags as string[]) ?? [],
-    message: (data.message as string) ?? "",
-    languages: (data.languages as string[]) ?? [],
-    mic_status: data.mic_status as OWPlayerCard["mic_status"],
+    card_id: `card-${data.user_id ?? ""}`,
+    user_id: data.user_id ?? "",
+    server: normalizeOverwatchServer(data.server),
+    battle_tag: data.battle_tag ?? "",
+    is_tag_visible: data.is_tag_visible ?? false,
+    selected_heroes: data.selected_heroes ?? [],
+    tags: data.tags ?? [],
+    message: data.message ?? "",
+    languages: data.languages ?? [],
+    // DB mic_status 為 string；OWPlayerCard 為 union，合理 domain narrowing
+    mic_status: (data.mic_status ?? "mic-off") as OWPlayerCard["mic_status"],
     social_channels: {},
-    mbti: (data.mbti as string) ?? undefined,
-    display_name: (data.display_name as string) ?? undefined,
-    game: normalizeGameId(data.game as string),
+    mbti: data.mbti ?? undefined,
+    display_name: data.display_name ?? undefined,
+    game: normalizeGameId(data.game),
   };
+}
+
+// 草稿卡隨機預設名稱詞庫（與 Google 身份無關，貼合深夜星空調性）
+const DRAFT_NAME_WORDS = [
+  "深夜哨兵", "星空旅人", "午夜行者", "月光特工", "夜航信使",
+  "流星獵人", "極光守望", "暗夜貓頭鷹", "銀河漫遊者", "宵禁突破者",
+];
+
+/**
+ * 進入名片編輯器時自動建檔（草稿）：
+ * - battle_tag 為隨機預設名稱（詞庫 + 4 碼隨機數字）
+ * - is_draft = true、is_card_visible = false（不出現在廣場）
+ * - 已有名片（含草稿）時直接回傳現有資料，不重複建檔
+ */
+export async function provisionDefaultCard(game = "overwatch"): Promise<OWPlayerCard | null> {
+  const supabase = await createClient();
+  const ensured = await ensureUserProfileForCurrentUser(supabase);
+  if (!ensured.user?.id || ensured.error) return null;
+
+  const existing = await getMyProfile(game);
+  if (existing) return existing;
+
+  const word = DRAFT_NAME_WORDS[Math.floor(Math.random() * DRAFT_NAME_WORDS.length)];
+  const digits = String(Math.floor(Math.random() * 10000)).padStart(4, "0");
+  const draftTag = `${word}#${digits}`;
+
+  const gameId = normalizeGameId(game);
+  const { error } = await supabase.from("profiles").upsert(
+    {
+      user_id: ensured.user.id,
+      game: gameId,
+      battle_tag: draftTag,
+      server: "asia",
+      is_tag_visible: true,
+      is_card_visible: false,
+      is_draft: true,
+      selected_heroes: [],
+      tags: [],
+      message: "GGWP！一起加油，推車到底啦 🚀",
+      languages: ["繁體中文"],
+      mic_status: "listen-only",
+      social_channels: {},
+    },
+    { onConflict: "user_id,game", ignoreDuplicates: true }
+  );
+
+  if (error) {
+    console.error("provisionDefaultCard failed:", error.message);
+    return null;
+  }
+  // 草稿不在公開 view 內，無需 revalidate
+  return getMyProfile(game);
 }
 
 export async function saveDisplayName(displayName: string): Promise<{ error?: string }> {
@@ -96,7 +152,7 @@ export async function getMyDisplayName(): Promise<string | null> {
     .eq("user_id", user.id)
     .single();
 
-  return (data?.display_name as string | null) ?? null;
+  return data?.display_name ?? null;
 }
 
 export async function saveProfile(card: OWPlayerCard): Promise<{ error?: string }> {
@@ -129,6 +185,8 @@ export async function saveProfile(card: OWPlayerCard): Promise<{ error?: string 
         server,
         battle_tag: card.battle_tag,
         is_tag_visible: card.is_tag_visible,
+        is_card_visible: card.is_card_visible ?? true,
+        is_draft: false,  // 任何一次用戶儲存都讓草稿轉正
         selected_heroes: card.selected_heroes,
         tags: card.tags,
         message: card.message,

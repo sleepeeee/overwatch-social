@@ -12,7 +12,7 @@ export default function StylePicker({ activeStyle, setActiveStyle }: StylePicker
   const stylesList = [
     { id: "A" as const, label: "Style A (Dashboard)", icon: Sliders, color: "hover:text-[#8c7c6c] border-[#8c7c6c]/20" },
     { id: "B" as const, label: "Style B (Watercolor Art)", icon: Palette, color: "hover:text-[#82b7cc] border-[#82b7cc]/20" },
-    { id: "AB" as const, label: "Style A+B (Hybrid Fusion)", icon: Layers, color: "hover:text-purple-400 border-purple-400/20" }
+    { id: "AB" as const, label: "Style A+B (Hybrid Fusion)", icon: Layers, color: "hover:text-theme-accent-brand border-theme-accent-brand/20" }
   ];
 
   return (

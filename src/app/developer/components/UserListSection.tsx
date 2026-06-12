@@ -2,8 +2,9 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { getAdminUserList, AdminUserListItem } from "@/app/actions/userProfile";
+import { getAdminAuthInfo, setUserBanned, AdminAuthInfo } from "@/app/actions/developer";
 import UserCardDetail from "./UserCardDetail";
-import { Search, ChevronDown, ChevronUp, Loader2, AlertCircle } from "lucide-react";
+import { Search, ChevronDown, ChevronUp, Loader2, AlertCircle, Ban, ShieldCheck } from "lucide-react";
 
 const GAME_LABELS: Record<string, { label: string; color: string }> = {
   overwatch: { label: "OW", color: "bg-amber-100 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300" },
@@ -17,17 +18,28 @@ export default function UserListSection() {
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
   const [expandedUsers, setExpandedUsers] = useState<Set<string>>(new Set());
+  const [authInfo, setAuthInfo] = useState<Record<string, AdminAuthInfo>>({});
+  const [banConfirmId, setBanConfirmId] = useState<string | null>(null);
+  const [banningId, setBanningId] = useState<string | null>(null);
+  const [banError, setBanError] = useState("");
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const fetchUsers = useCallback(async (query?: string) => {
     setLoading(true);
     setError("");
     try {
-      const res = await getAdminUserList({ query: query ?? "" });
+      const [res, authRes] = await Promise.all([
+        getAdminUserList({ query: query ?? "" }),
+        getAdminAuthInfo(),
+      ]);
       if (res.success && res.data) {
         setUsers(res.data);
       } else {
         setError(res.error ?? "載入失敗");
+      }
+      // auth 資訊（Google 名稱/停權）載入失敗不阻擋列表（金鑰未設定時按鈕仍會回報錯誤）
+      if (authRes.success && authRes.data) {
+        setAuthInfo(authRes.data);
       }
     } catch {
       setError("網路或認證錯誤，請重新整理頁面");
@@ -35,6 +47,33 @@ export default function UserListSection() {
       setLoading(false);
     }
   }, []);
+
+  const handleToggleBan = async (userId: string) => {
+    const banned = authInfo[userId]?.banned ?? false;
+    // 停權需要兩段式確認；解除停權直接執行
+    if (!banned && banConfirmId !== userId) {
+      setBanConfirmId(userId);
+      return;
+    }
+    setBanConfirmId(null);
+    setBanningId(userId);
+    setBanError("");
+    try {
+      const res = await setUserBanned(userId, !banned);
+      if (res.success) {
+        setAuthInfo(prev => ({
+          ...prev,
+          [userId]: { banned: !banned, google_name: prev[userId]?.google_name ?? null },
+        }));
+      } else {
+        setBanError(res.error ?? "操作失敗");
+      }
+    } catch {
+      setBanError("網路或認證錯誤，請重新整理頁面");
+    } finally {
+      setBanningId(null);
+    }
+  };
 
   useEffect(() => {
     fetchUsers();
@@ -90,6 +129,14 @@ export default function UserListSection() {
         </div>
       )}
 
+      {/* 停權操作錯誤 */}
+      {banError && !loading && (
+        <div className="p-3 rounded-xl border border-rose-500/20 bg-rose-500/8 text-rose-500 text-xs font-semibold flex items-center gap-2">
+          <AlertCircle size={14} />
+          <span>{banError}</span>
+        </div>
+      )}
+
       {/* 用戶列表 */}
       {users && !loading && (
         <div className="bg-white dark:bg-[#202428] rounded-xl border border-slate-200 dark:border-slate-800/80 shadow-sm overflow-hidden">
@@ -103,21 +150,40 @@ export default function UserListSection() {
                 const isExpanded = expandedUsers.has(user.user_id);
                 const displayName = user.nickname ?? null;
                 const idShort = user.user_id.slice(0, 8);
+                const isBanned = authInfo[user.user_id]?.banned ?? false;
+                const googleName = authInfo[user.user_id]?.google_name ?? null;
+                const isBanConfirming = banConfirmId === user.user_id;
+                const isBanning = banningId === user.user_id;
 
                 return (
                   <div key={user.user_id}>
                     {/* 第一層：用戶 row */}
                     <div className="flex items-center gap-3 px-5 py-3.5 hover:bg-slate-50/60 dark:hover:bg-slate-900/20 transition-colors">
-                      {/* 暱稱 + ID */}
+                      {/* Google 名稱（主）+ 暱稱（輔）+ ID */}
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          {displayName ? (
+                          {googleName ? (
+                            <span className="text-sm font-black text-slate-800 dark:text-slate-100 truncate">
+                              {googleName}
+                            </span>
+                          ) : displayName ? (
                             <span className="text-sm font-black text-slate-800 dark:text-slate-100 truncate">
                               {displayName}
                             </span>
                           ) : (
                             <span className="text-xs font-semibold text-slate-400 italic">
-                              未設定暱稱
+                              未知帳號
+                            </span>
+                          )}
+                          {googleName && (
+                            <span className="text-[11px] font-semibold text-slate-400 truncate">
+                              {displayName ? `暱稱：${displayName}` : "未設定暱稱"}
+                            </span>
+                          )}
+                          {isBanned && (
+                            <span className="text-[10px] font-black px-2 py-0.5 rounded bg-rose-100 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 flex items-center gap-1 shrink-0">
+                              <Ban size={10} />
+                              停權中
                             </span>
                           )}
                         </div>
@@ -145,6 +211,29 @@ export default function UserListSection() {
                           })
                         )}
                       </div>
+
+                      {/* 停權/解除停權按鈕（停權需二次點擊確認） */}
+                      <button
+                        onClick={() => handleToggleBan(user.user_id)}
+                        onBlur={() => setBanConfirmId(prev => (prev === user.user_id ? null : prev))}
+                        disabled={isBanning}
+                        className={`shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-lg text-[10px] font-bold border transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${
+                          isBanned
+                            ? "border-emerald-300 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/30"
+                            : isBanConfirming
+                              ? "border-rose-500 bg-rose-500 text-white hover:bg-rose-600"
+                              : "border-rose-300 dark:border-rose-800 text-rose-500 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30"
+                        }`}
+                      >
+                        {isBanning ? (
+                          <Loader2 size={12} className="animate-spin" />
+                        ) : isBanned ? (
+                          <ShieldCheck size={12} />
+                        ) : (
+                          <Ban size={12} />
+                        )}
+                        <span>{isBanned ? "解除停權" : isBanConfirming ? "確認停權？" : "停權"}</span>
+                      </button>
 
                       {/* 展開按鈕 */}
                       <button

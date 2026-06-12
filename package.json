@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-"test:unit": "node tests/unit/developer-capture-meter.test.mjs",
+    "test:unit": "node --test \"tests/unit/*.test.mjs\"",
     "test:e2e": "playwright test",
     "capture:recalculate": "node scripts/recalculate-capture-meter.js",
     "lighthouse": "lighthouse http://127.0.0.1:3000 --view"

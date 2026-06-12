@@ -37,7 +37,7 @@ export default function FloatingDock() {
           let itemClass = `w-8.5 h-8.5 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl flex items-center justify-center transition-all duration-500 ${
             isActive 
               ? "text-white scale-[1.05]" 
-              : "bg-white/5 border border-white/5 text-zinc-400 hover:bg-white/10 hover:text-white hover:scale-[1.02]"
+              : "bg-white/5 border border-white/5 text-theme-text-muted hover:bg-white/10 hover:text-white hover:scale-[1.02]"
           }`;
           
           let wrapperStyle: React.CSSProperties = {};
@@ -63,7 +63,7 @@ export default function FloatingDock() {
               </div>
 
               {/* 溫順氣泡提示 - 暗黑風格 */}
-              <span className={`absolute -top-8 left-1/2 -translate-x-1/2 px-2.5 py-1 text-[8px] font-bold text-zinc-200 bg-obsidian border border-white/5 rounded-md backdrop-blur-sm pointer-events-none transition-all duration-300 origin-bottom whitespace-nowrap shadow-xl ${
+              <span className={`absolute -top-8 left-1/2 -translate-x-1/2 px-2.5 py-1 text-[8px] font-bold text-theme-text-body bg-obsidian border border-white/5 rounded-md backdrop-blur-sm pointer-events-none transition-all duration-300 origin-bottom whitespace-nowrap shadow-xl ${
                 isHovered ? "scale-100 opacity-100 translate-y-0 -translate-x-1/2" : "scale-75 opacity-0 translate-y-2 -translate-x-1/2"
               }`}>
                 {item.label}

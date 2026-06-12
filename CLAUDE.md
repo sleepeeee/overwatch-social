@@ -38,7 +38,7 @@
 
 ## 環境啟動
 ```bash
-cd "D:/Overwatch專案/overwatch-social"
+cd "D:/Overwatch專案"
 npm run dev      # 開發伺服器 → http://localhost:3000
 npm run build    # 正式打包
 ```
@@ -78,7 +78,7 @@ src/app/
 
 src/context/
 ├── AuthContext.tsx                # 全域 AuthContext（getUser + onAuthStateChange 雙軌）
-└── ThemeContext.tsx               # 主題 Context（目前鎖定 original-baseline 單主題）
+└── ThemeContext.tsx               # 主題 Context（白名單切換機制 + theme-style localStorage；預設且唯一上線主題 = original-baseline；含 TODO(theme-FOUC) 升級註記）
 
 src/components/
 ├── TopBar.tsx                    # 統一頂部導覽（Google 登入/登出，三頁共用；layout.tsx 全局掛載）
@@ -186,6 +186,13 @@ social_channels 讀取：需登入，透過 authenticated RLS policy 直接查 p
 
 ### game_tags 表
 特色標籤系統（由 /developer/tags-manager 管理）。
+
+## 主題 Token 系統（add-standalone-theme-style，2026-06）
+
+- 全站使用者面向顏色已 token 化：25 個語意 token（`--theme-text-*`/`--theme-surface-*`/`--theme-danger` 等）+ 4 個品牌光暈變數（`--brand-aurora-1/2/3`、`--brand-starry`），定義於 `globals.css` 的 `:root` 與 `.theme-original-baseline`，utility 透過 `@theme inline` alias 使用（如 `text-theme-text-muted`、`bg-theme-danger/10`）
+- **新元件規範**：顏色一律用語意 token utility，禁止硬碼 Tailwind 調色盤 class（`bg-purple-400` 等）；豁免範圍見 `openspec` archive `add-standalone-theme-style/token-map.md`（開發者後台、HUD、資料驅動色）
+- 新主題上線三步：globals.css 加 theme class（同步覆寫 shadcn 層 + 自有層）→ ThemeContext 白名單加名稱 → layout.tsx 掛回 `ThemeSwitcher`（元件已備好未掛載）
+- 三套原型主題（霓虹電競/極簡雜誌/復古街機）的完整 CSS 與截圖在 git 歷史（分支 visual/full-restyle，commit da0f032 起）；亮底主題的已知極限見 `.rsx/findings/F-029`
 
 ## 重要設計決策（ADR）
 - ADR-01：DB view 隱私遮蔽（vs 前端）

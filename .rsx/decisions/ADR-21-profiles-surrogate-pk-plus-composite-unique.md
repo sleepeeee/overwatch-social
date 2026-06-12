@@ -35,3 +35,4 @@ title: profiles 表採代理鍵(id UUID) + UNIQUE(user_id,game) 取代單欄 use
 - [[REF-019]] profiles schema 遷移路徑
 - [[REF-020]] Supabase upsert onConflict 複合鍵
 - F-022 PK 換代理鍵零中斷執行記錄
+- [[ADR-23]]（referenced_by）OW server 條件式 CHECK 沿用「依 game 區分值域」設計脈絡

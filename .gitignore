@@ -65,3 +65,15 @@ next-env.d.ts
 
 # dev server logs
 dev-server.*.log
+
+# recovery / scan artifacts（不該進版控，曾被 Stop hook 誤自動提交）
+/_recovered/
+/_recovered_fullscan/
+.vscode/
+
+.vercel
+
+# 視覺回歸截圖（本地產物）
+e2e/baseline/
+e2e/regression-*/
+e2e/preview-*/

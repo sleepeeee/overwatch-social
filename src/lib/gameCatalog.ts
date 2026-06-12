@@ -19,6 +19,14 @@ export const GAME_OPTIONS: GameOption[] = [
   { value: "lol", label: "英雄聯盟" },
 ];
 
+// 遊戲開放旗標（單一事實來源）：名片編輯器只對 true 的遊戲開放，
+// 其餘在工作室顯示 COMING SOON。未來第二款遊戲實作完成時改 true 即可。
+export const GAME_AVAILABILITY: Record<GameId, boolean> = {
+  overwatch: true,
+  valorant: false,
+  lol: false,
+};
+
 export const OVERWATCH_SERVER_OPTIONS: ServerOption[] = [
   // 防呆雷達：value 是存進資料庫的代號，請不要改成中文顯示文字。
   { value: "asia", label: "Asia Server", labelEn: "Asia Server" },
@@ -58,4 +66,9 @@ export function normalizeOverwatchServer(value: string | null | undefined): stri
 export function getOverwatchServerLabel(value: string | null | undefined): string {
   const server = normalizeOverwatchServer(value);
   return OVERWATCH_SERVER_OPTIONS.find((option) => option.value === server)?.label ?? "Asia Server";
+}
+
+export function getOverwatchServerLabelEn(value: string | null | undefined): string {
+  const server = normalizeOverwatchServer(value);
+  return OVERWATCH_SERVER_OPTIONS.find((option) => option.value === server)?.labelEn ?? "Asia Server";
 }

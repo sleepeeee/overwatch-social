@@ -39,7 +39,8 @@ export default async function Page() {
     supabase.from("profiles").select("user_id", { count: "exact", head: true }),
     supabase.from("profiles").select("user_id", { count: "exact", head: true })
       .not("battle_tag", "is", null)
-      .neq("battle_tag", "愛喝奶茶#3342"),
+      .neq("battle_tag", "愛喝奶茶#3342")
+      .eq("is_draft", false),  // 草稿卡（進編輯器未儲存）不算已完成名片
   ]);
 
   const totalUsers = totalUsersResult.count ?? 0;

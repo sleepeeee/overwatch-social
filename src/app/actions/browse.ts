@@ -2,26 +2,31 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { normalizeGameId, normalizeOverwatchServer } from "@/lib/gameCatalog";
+import { toSocialChannels } from "@/lib/socialChannels";
 import type { OWPlayerCard } from "@/types/card";
+import type { Database } from "@/types/database";
+
+type PublicProfileRow = Database["public"]["Views"]["public_profiles"]["Row"];
 
 const PAGE_SIZE = 20;
 
-function rowToCard(row: Record<string, unknown>): OWPlayerCard {
+function rowToCard(row: PublicProfileRow): OWPlayerCard {
   return {
-    card_id: (row.user_id as string),
-    user_id: row.user_id as string,
-    server: normalizeOverwatchServer(row.server as string),
-    battle_tag: row.battle_tag as string,
-    is_tag_visible: row.is_tag_visible as boolean,
-    selected_heroes: (row.selected_heroes as string[]) ?? [],
-    tags: (row.tags as string[]) ?? [],
-    message: (row.message as string) ?? "",
-    languages: (row.languages as string[]) ?? [],
-    mic_status: row.mic_status as OWPlayerCard["mic_status"],
-    social_channels: (row.social_channels as Record<string, string>) ?? {},
-    mbti: (row.mbti as string) ?? undefined,
-    display_name: (row.display_name as string) ?? undefined,
-    game: normalizeGameId(row.game as string),
+    card_id: row.user_id ?? "",
+    user_id: row.user_id ?? "",
+    server: normalizeOverwatchServer(row.server),
+    battle_tag: row.battle_tag ?? "",
+    is_tag_visible: row.is_tag_visible ?? false,
+    selected_heroes: row.selected_heroes ?? [],
+    tags: row.tags ?? [],
+    message: row.message ?? "",
+    languages: row.languages ?? [],
+    // DB mic_status 為 string；OWPlayerCard 為 union，此處為合理 domain narrowing
+    mic_status: (row.mic_status ?? "mic-off") as OWPlayerCard["mic_status"],
+    social_channels: toSocialChannels(row.social_channels),
+    mbti: row.mbti ?? undefined,
+    display_name: row.display_name ?? undefined,
+    game: normalizeGameId(row.game),
   };
 }
 
@@ -50,5 +55,5 @@ export async function getPublicProfiles(
 
   if (error || !data) return [];
 
-  return data.map((row) => rowToCard(row as Record<string, unknown>));
+  return data.map(rowToCard);
 }

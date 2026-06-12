@@ -1,0 +1,3 @@
+schema: spec-driven
+created: 2026-06-11
+note: 事後補記（retroactive）。實作經朋友 PR #3（migration 019 + 應用層 normalize）與本機 migration 020（DB CHECK）完成並 merge 至 main 後，回補 rsx 流程記錄。未重跑 propose 階段。

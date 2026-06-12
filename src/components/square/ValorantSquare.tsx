@@ -32,7 +32,7 @@ export default function ValorantSquare({ isPremiumStyle = true }: { isPremiumSty
             key={player.id}
             className="midnight-player-artifact browse-preview-card relative w-full max-w-[360px] p-5 flex flex-col justify-between h-[320px] opacity-70 pointer-events-none select-none"
           >
-            <div className="absolute top-0 inset-x-0 z-20 flex items-center justify-center gap-1 bg-amber-400/90 text-amber-900 text-[9px] font-black py-0.5 tracking-widest rounded-t-2xl">
+            <div className="absolute top-0 inset-x-0 z-20 flex items-center justify-center gap-1 bg-theme-warning-soft/90 text-theme-warning-deep text-[9px] font-black py-0.5 tracking-widest rounded-t-2xl">
               ⚠ 示範資料 — 非真實玩家
             </div>
             <div>

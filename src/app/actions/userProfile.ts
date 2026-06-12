@@ -33,6 +33,8 @@ export interface AdminUserCard {
   mic_status: string;
   display_name: string | null;
   updated_at: string;
+  is_hidden: boolean;
+  is_draft: boolean;
 }
 
 async function ensureDeveloper() {
@@ -114,9 +116,9 @@ export async function getAdminUserList(options: {
 
     const profilesByUser = new Map<string, Array<{ game: string; updated_at: string }>>();
     for (const p of profData ?? []) {
-      const uid = p.user_id as string;
+      const uid = p.user_id;
       if (!profilesByUser.has(uid)) profilesByUser.set(uid, []);
-      profilesByUser.get(uid)!.push({ game: p.game as string, updated_at: p.updated_at as string });
+      profilesByUser.get(uid)!.push({ game: p.game, updated_at: p.updated_at });
     }
 
     const items: AdminUserListItem[] = upData.map((row: { user_id: string; nickname: string | null }) => {
@@ -145,7 +147,7 @@ export async function getAdminUserCards(userId: string): Promise<{
 
     const { data, error } = await supabase
       .from("profiles")
-      .select("id, user_id, game, server, battle_tag, is_tag_visible, selected_heroes, tags, message, languages, mic_status, display_name, updated_at")
+      .select("id, user_id, game, server, battle_tag, is_tag_visible, selected_heroes, tags, message, languages, mic_status, display_name, updated_at, is_hidden, is_draft")
       .eq("user_id", userId)
       .order("updated_at", { ascending: false });
 
@@ -155,7 +157,7 @@ export async function getAdminUserCards(userId: string): Promise<{
       success: true,
       data: (data ?? []).map((card) => ({
         ...card,
-        server: getOverwatchServerLabel(card.server as string),
+        server: getOverwatchServerLabel(card.server),
       })) as AdminUserCard[],
     };
   } catch (err) {
