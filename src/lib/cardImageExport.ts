@@ -65,7 +65,7 @@ const canShareImageFile = (file: File) => {
 export async function createCardImageDataUrl(node: HTMLElement): Promise<string> {
   await waitForCardExport(node);
 
-  return toPng(node, {
+  const options = {
     cacheBust: true,
     pixelRatio: 2,
     backgroundColor: "transparent",
@@ -73,14 +73,19 @@ export async function createCardImageDataUrl(node: HTMLElement): Promise<string>
       transform: "scale(1)",
       transformOrigin: "top left",
     },
-  });
+  };
+
+  // html-to-image 第一次呼叫只觸發圖片 fetch/內部快取；第二次才能正確嵌入 base64
+  await toPng(node, options).catch(() => undefined);
+  return toPng(node, options);
 }
 
 export async function exportCardImage(node: HTMLElement, rawFileName: string): Promise<ExportResult> {
   const fileName = sanitizeFileName(rawFileName.endsWith(".png") ? rawFileName : `${rawFileName}.png`);
 
   await waitForCardExport(node);
-  const blob = await toBlob(node, {
+
+  const blobOptions = {
     cacheBust: true,
     pixelRatio: 2,
     backgroundColor: "transparent",
@@ -88,7 +93,11 @@ export async function exportCardImage(node: HTMLElement, rawFileName: string): P
       transform: "scale(1)",
       transformOrigin: "top left",
     },
-  });
+  };
+
+  // 同 createCardImageDataUrl：先暖機一次讓圖片 fetch 完成
+  await toPng(node, blobOptions).catch(() => undefined);
+  const blob = await toBlob(node, blobOptions);
 
   if (!blob) {
     throw new Error("名片圖片產生失敗");
