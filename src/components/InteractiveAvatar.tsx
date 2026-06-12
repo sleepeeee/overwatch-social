@@ -13,23 +13,19 @@ interface InteractiveAvatarProps {
 const PRESET_AVATARS = [
   {
     url: "/images/avatars/avatar_female_elegant_square.png",
-    name: "優雅玫瑰",
-    description: "高貴冷豔的玫瑰藝術氣息",
+    name: "靜夜",
   },
   {
     url: "/images/avatars/avatar_female_cheerful_square.png",
-    name: "開朗女孩",
-    description: "活潑耀眼的陽光插畫少女",
+    name: "暖燈",
   },
   {
     url: "/images/avatars/avatar_male_calm_square.png",
-    name: "沉靜型男",
-    description: "冷靜專注的深邃氣質畫家",
+    name: "沉夜",
   },
   {
     url: "/images/avatars/avatar_male_sunny_square.png",
-    name: "陽光男孩",
-    description: "溫暖爽朗的橘金色調特工",
+    name: "白夜",
   },
 ];
 
@@ -39,7 +35,6 @@ export default function InteractiveAvatar({
   displayName = "特工",
 }: InteractiveAvatarProps) {
   const [open, setOpen] = useState(false);
-  const [hoveredAvatar, setHoveredAvatar] = useState<string | null>(null);
 
   const handleSelectAvatar = (url: string) => {
     onAvatarChange(url);
@@ -52,9 +47,9 @@ export default function InteractiveAvatar({
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
       {/* 頭像 Trigger */}
-      <Dialog.Trigger className="outline-none border-none bg-transparent p-0 cursor-pointer block group/avatar focus:ring-2 focus:ring-[#82b7cc]/50 focus:rounded-full">
-        <div className="relative w-32 h-32 md:w-36 md:h-36 rounded-full p-1 bg-gradient-to-tr from-[#8c7c6c]/20 via-[#82b7cc]/40 to-[#f5d46b]/40 shadow-lg hover:shadow-[#82b7cc]/15 hover:scale-[1.03] transition-all duration-500">
-          <div className="w-full h-full rounded-full overflow-hidden border border-white bg-white/40 backdrop-blur-md relative">
+      <Dialog.Trigger className="outline-none border-none bg-transparent p-0 cursor-pointer block group/avatar focus:ring-2 focus:ring-violet-300/45 focus:rounded-full">
+        <div className="relative w-32 h-32 md:w-36 md:h-36 rounded-full p-1 bg-gradient-to-tr from-white/10 via-violet-300/35 to-fuchsia-300/20 shadow-lg hover:shadow-violet-500/18 hover:scale-[1.03] transition-all duration-500">
+          <div className="w-full h-full rounded-full overflow-hidden border border-white/12 bg-[#070611]/70 backdrop-blur-md relative">
             <img
               src={currentAvatarUrl}
               alt={`玩家頭像：${displayName}`}
@@ -75,85 +70,63 @@ export default function InteractiveAvatar({
       {/* dialog 彈窗 */}
       <Dialog.Portal>
         {/* 背景遮罩 */}
-        <Dialog.Backdrop className="fixed inset-0 bg-black/40 backdrop-blur-[4px] z-50 transition-opacity duration-300 data-[state=closed]:opacity-0 data-[state=open]:opacity-100" />
+        <Dialog.Backdrop className="fixed inset-0 bg-[#030206]/72 backdrop-blur-[6px] z-50 transition-opacity duration-300 data-[state=closed]:opacity-0 data-[state=open]:opacity-100" />
         
         {/* 彈窗主體 */}
-        <Dialog.Popup className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100%-2rem)] max-w-md bg-white/70 backdrop-blur-2xl border border-[#8c7c6c]/20 rounded-[28px] p-6 shadow-[0_25px_60px_rgba(93,64,55,0.18)] z-50 transition-all duration-300 data-[state=closed]:opacity-0 data-[state=closed]:scale-95 data-[state=open]:opacity-100 data-[state=open]:scale-100 focus:outline-none">
-          <div className="flex justify-between items-center mb-6">
-            <div>
-              <Dialog.Title className="text-lg font-extrabold text-[#3e2723] tracking-tight">
-                更換特工頭像
+        <Dialog.Popup className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100%-2rem)] max-w-md bg-[#070611]/95 backdrop-blur-2xl border border-white/10 rounded-3xl p-5 shadow-[0_24px_70px_rgba(0,0,0,0.58)] z-50 transition-all duration-300 data-[state=closed]:opacity-0 data-[state=closed]:scale-95 data-[state=open]:opacity-100 data-[state=open]:scale-100 focus:outline-none">
+          <div className="flex justify-between items-center mb-5">
+            <div className="min-w-0">
+              <Dialog.Title className="text-base font-bold text-zinc-100 tracking-tight">
+                選擇頭貼
               </Dialog.Title>
-              <Dialog.Description className="text-xs text-[#8c7c6c] mt-0.5 font-semibold">
-                選擇一張最符合您目前心情與氛圍的預設頭貼
+              <Dialog.Description className="sr-only">
+                從四張預設頭貼中選擇一張作為目前玩家頭像。
               </Dialog.Description>
             </div>
-            <Dialog.Close className="p-1.5 rounded-full bg-[#8c7c6c]/10 text-[#8c7c6c] hover:bg-theme-danger/10 hover:text-theme-danger transition-colors border-none cursor-pointer focus:ring-1 focus:ring-theme-danger-soft">
+            <Dialog.Close className="p-2 rounded-full bg-white/[0.06] text-theme-text-muted hover:bg-white/[0.1] hover:text-theme-text-strong transition-colors border border-white/[0.04] cursor-pointer focus:outline-none focus:ring-2 focus:ring-theme-accent-brand/40">
               <X size={16} />
             </Dialog.Close>
           </div>
 
           {/* 預設頭貼 4 欄 Grid */}
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-3">
             {PRESET_AVATARS.map((avatar) => {
               const isSelected = currentAvatarUrl === avatar.url;
               return (
                 <button
                   key={avatar.url}
                   onClick={() => handleSelectAvatar(avatar.url)}
-                  onMouseEnter={() => setHoveredAvatar(avatar.url)}
-                  onMouseLeave={() => setHoveredAvatar(null)}
-                  className={`relative p-2.5 rounded-2xl border bg-white/40 transition-all duration-300 text-left cursor-pointer group flex flex-col items-center justify-center text-center outline-none ${
+                  className={`relative p-3 rounded-2xl border transition-all duration-200 text-left cursor-pointer group flex flex-col items-center justify-center text-center outline-none ${
                     isSelected
-                      ? "border-[#82b7cc] bg-white/80 shadow-md shadow-[#82b7cc]/10"
-                      : "border-[#8c7c6c]/12 hover:border-[#82b7cc]/50 hover:bg-white/60"
+                      ? "border-violet-300/65 bg-violet-300/[0.12] shadow-[0_0_0_1px_rgba(196,181,253,0.14),0_12px_30px_rgba(91,33,182,0.22)]"
+                      : "border-white/[0.07] bg-white/[0.035] hover:border-violet-200/35 hover:bg-white/[0.07]"
                   }`}
                 >
-                  <div className="relative w-18 h-18 rounded-full overflow-hidden border border-white bg-white/50 mb-2">
+                  <div className={`relative w-20 h-20 rounded-full overflow-hidden border mb-2.5 transition-transform duration-200 group-hover:scale-[1.03] ${
+                    isSelected ? "border-violet-200/80" : "border-white/15"
+                  }`}>
                     <img
                       src={avatar.url}
                       alt={`玩家頭像選項：${avatar.name}`}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      className="w-full h-full object-cover"
                       draggable="false"
                     />
                     {isSelected && (
-                      <div className="absolute inset-0 bg-[#82b7cc]/30 flex items-center justify-center">
-                        <div className="bg-[#82b7cc] text-white p-0.5 rounded-full">
+                      <div className="absolute inset-0 bg-[#080610]/34 flex items-center justify-center">
+                        <div className="bg-violet-300 text-[#080610] p-1 rounded-full shadow-[0_0_18px_rgba(196,181,253,0.55)]">
                           <Check size={12} className="stroke-[3]" />
                         </div>
                       </div>
                     )}
                   </div>
                   <span className={`text-xs font-black tracking-tight transition-colors duration-200 ${
-                    isSelected ? "text-[#82b7cc]" : "text-[#5d4037]"
+                    isSelected ? "text-violet-200" : "text-zinc-300"
                   }`}>
                     {avatar.name}
                   </span>
                 </button>
               );
             })}
-          </div>
-
-          {/* 智慧預覽說明面板 */}
-          <div className="bg-[#fcf9f2]/90 border border-[#8c7c6c]/10 rounded-2xl p-3 min-h-[56px] transition-all duration-300 flex flex-col justify-center">
-            {hoveredAvatar ? (
-              (() => {
-                const info = PRESET_AVATARS.find((a) => a.url === hoveredAvatar);
-                return (
-                  <>
-                    <span className="text-[10px] font-black tracking-wider text-[#82b7cc] uppercase">智慧預覽</span>
-                    <p className="text-[11px] font-semibold text-[#8c7c6c] mt-0.5">{info?.description}</p>
-                  </>
-                );
-              })()
-            ) : (
-              <>
-                <span className="text-[10px] font-black tracking-wider text-[#8c7c6c] uppercase">當前選擇</span>
-                <p className="text-[11px] font-semibold text-[#8c7c6c] mt-0.5">
-                  {PRESET_AVATARS.find((a) => a.url === currentAvatarUrl)?.description || "無頭貼說明"}
-                </p>
-              </>
-            )}
           </div>
         </Dialog.Popup>
       </Dialog.Portal>
