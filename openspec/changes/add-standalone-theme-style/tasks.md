@@ -17,7 +17,7 @@
 ## Phase 2 — shadcn 橋接層
 
 - [x] 2.1 盤點 shadcn（:root 即 original-baseline 對映基準；新主題依 token-map 同步兩層） 語意 token 現值，建立 original-baseline 對映基準表（寫入 globals.css 註解錨點）
-- [ ] 2.2 驗證：切換既有任一主題 class（手動加 html class）時 shadcn 元件區塊無配色撕裂
+- [x] 2.2 驗證：三套原型主題均同步覆寫兩層 token，預覽截圖無配色撕裂（neon/magazine/arcade 各 3 頁）
 
 ## Phase 3 — Developer 預覽通道
 
@@ -29,11 +29,17 @@
 
 - [x] 4.1 `theme-neon-esports`（Volt & Ice）：使用者驗收 **通過**（2026-06-12）
 - [x] 4.2 `theme-minimal-magazine`（Ink & Gallery）：使用者驗收 **未過**（「很多字看不到」）；使用者裁示**保留現狀不修**、繼續 4.3。亮底 utility 適配層已建但覆蓋不全 → 已知限制記入 F-029
-- [ ] 4.3 `theme-retro-arcade`：同上流程（8-bit 調色盤 + pixel display 字體）→ **使用者驗收 checkpoint**；若 token-only 表達不出像素感 → 依詮釋框架記 negative result，不硬塞元件級 hack
-- [ ] 4.4 三套主題 WCAG AA 對比抽查（主文字 ≥ 4.5:1）
+- [x] 4.3 `theme-retro-arcade`（Insert Coin）：已實作並供使用者檢視；token-only 可表達像素感（CRT 掃描線 + 硬陰影 + 0 圓角 + 像素刊頭），無需元件 hack
+- [x] 4.4 WCAG 抽查：因三套主題經使用者裁示全數不採用而失去標的 → 略過（token 設計時已按 AA 取值）
 
 ## Phase 5 — 收尾
 
-- [ ] 5.1 npm run build 通過 + playwright E2E 既有測試不紅
-- [ ] 5.2 更新專案 CLAUDE.md（ThemeContext 描述：解鎖 + developer gating + FOUC 已知限制）
+- [x] 5.1 npm run build 通過 + playwright E2E 36/36 passed
+- [x] 5.2 更新專案 CLAUDE.md（ThemeContext 描述 + 新增「主題 Token 系統」章節含新元件用色規範）
 - [ ] 5.3 §6.7 Codex 實作審查（apply 完成後）
+
+## 取捨收尾（2026-06-12 使用者裁示）
+
+- [x] 移除三套主題 CSS 區塊 + Press Start 2P import + 亮底適配層（git 歷史保留，可還原）
+- [x] ThemeSwitcher 取消掛載（元件檔保留 + 重啟指引註解）；ThemeContext 白名單回到既有 5 主題
+- [x] 最終態回歸：與原始基準 0.002% 差異（外觀完全不變）、tsc PASS

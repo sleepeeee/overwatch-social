@@ -3,7 +3,6 @@ import { Geist, Noto_Sans_TC } from "next/font/google";
 import "./globals.css";
 import ArtOrnament from "@/components/morning-sketch/ArtOrnament";
 import DevModeBanner from "@/components/DevModeBanner";
-import ThemeSwitcher from "@/components/ThemeSwitcher";
 import TopBar from "@/components/TopBar";
 import SiteFooter from "@/components/SiteFooter";
 import { AuthProvider } from "@/context/AuthContext";
@@ -93,8 +92,8 @@ export default function RootLayout({
             <TopBar />
             <main className="site-main flex-1 relative z-10">{children}</main>
             <SiteFooter />
-            {/* developer-only 主題預覽切換器（需在 AuthProvider 內，使用 useDevMode）*/}
-            <ThemeSwitcher />
+            {/* 主題預覽切換器（ThemeSwitcher.tsx）暫不掛載——使用者裁示隱藏入口、保留基礎建設
+                （add-standalone-theme-style）。要啟用：import 後在此處掛 <ThemeSwitcher /> */}
           </AuthProvider>
         </ThemeProvider>
         <Analytics />

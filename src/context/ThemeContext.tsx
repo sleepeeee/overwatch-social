@@ -7,10 +7,7 @@ export type ThemeStyle =
   | "soft-midnight-lounge"
   | "paper-card-social"
   | "cyber-matchmaking-hub"
-  | "starry-midnight"
-  | "neon-esports"
-  | "minimal-magazine"
-  | "retro-arcade";
+  | "starry-midnight";
 
 interface ThemeContextType {
   theme: ThemeStyle;
@@ -22,15 +19,13 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | null>(null);
 
 // 主題白名單：setTheme 僅接受此清單內的值（add-standalone-theme-style）
+// 新主題上線流程：globals.css 加 theme class → 此清單加名稱 → layout 掛回 ThemeSwitcher
 const THEME_WHITELIST: ThemeStyle[] = [
   "original-baseline",
   "soft-midnight-lounge",
   "paper-card-social",
   "cyber-matchmaking-hub",
   "starry-midnight",
-  "neon-esports",
-  "minimal-magazine",
-  "retro-arcade",
 ];
 
 const ALL_THEME_CLASSES = THEME_WHITELIST.map((t) => `theme-${t}`);

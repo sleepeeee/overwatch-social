@@ -7,11 +7,11 @@ import { useDevMode } from "@/hooks/useDevMode";
 
 // developer-only 主題預覽切換器（add-standalone-theme-style）
 // 一般用戶與 anon 不渲染任何入口；主題純視覺、非安全邊界（useDevMode 為 UI-only gating）。
+// 三套原型主題（neon-esports / minimal-magazine / retro-arcade）的 CSS 已依使用者
+// 裁示移除（設計與截圖見 openspec archive add-standalone-theme-style）。
+// 重新啟用時：還原 globals.css theme class + ThemeContext 白名單 + 此清單。
 const THEME_OPTIONS: { id: ThemeStyle; label: string; note?: string }[] = [
   { id: "original-baseline", label: "原創基準", note: "曜石暗夜星塵（預設）" },
-  { id: "neon-esports", label: "霓虹電競", note: "深底霓虹 accent" },
-  { id: "minimal-magazine", label: "極簡雜誌", note: "白底大留白" },
-  { id: "retro-arcade", label: "復古街機", note: "8-bit 像素感" },
 ];
 
 export default function ThemeSwitcher() {

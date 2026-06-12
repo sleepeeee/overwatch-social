@@ -276,3 +276,8 @@ Tier: RAG
 命中：5 筆（REF-023, REF-018, REF-006, REF-015, REF-003）但相似度皆 ≤ 0.20，與「設計 skill 選型」主題無直接相關 → 視同本地無命中（不視為錯誤態）
 使用者選擇：(c) 自動（弱命中直接外部搜尋）
 <!-- pre-check-log-end -->
+
+### [APPLY 收尾] add-standalone-theme-style（2026-06-12）
+**最終採用**：token 地基（377 處 + 品牌色 130+ 處變數化、回歸 0.002%）+ 主題基礎建設（ThemeContext 白名單/持久化、ThemeSwitcher 元件存在未掛載）。**否決**：三套原型主題（neon 驗收過但不採用；magazine 未過 F-029；arcade 一併不採用），CSS 已移除、git 歷史保留。
+**驗證**：tsc PASS、build PASS、E2E 36/36、最終外觀與原始基準 0.002%。
+**Finding**：F-028（掃描校準）、F-029（亮底 negative result）。CLAUDE.md 已更新（affects_consumers 對齊）。

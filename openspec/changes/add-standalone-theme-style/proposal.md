@@ -6,6 +6,8 @@ related_claims: []
 
 # Proposal: add-standalone-theme-style
 
+> **最終採用結果（2026-06-12）**：採用 What Changes 第 1、2 項與第 4 項的機制層（解鎖 + 白名單 + 持久化）；第 3 項三套主題與第 4 項的 UI 入口（ThemeSwitcher 掛載）經完整實作與使用者驗收後**否決移除**（neon-esports 驗收通過但暫不採用；minimal-magazine 驗收未過，見 F-029；retro-arcade 使用者檢視後一併不採用）。外觀維持 original-baseline 完全不變。
+
 ## Why（含 reframe 後的假設）
 
 OW Social 目前視覺被鎖死在單一主題：
