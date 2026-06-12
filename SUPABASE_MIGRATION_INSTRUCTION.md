@@ -7,7 +7,7 @@
 這是因為新建立的資料表並未授權給 `authenticated` 與 `anon` 角色，導致透過 Supabase Client 連線時被 PostgreSQL 直接攔截拒絕。
 
 我們已經建立了新的 Migration 檔案：
-👉 [020_announcements_grant.sql](file:///D:/AI/overwatch/overwatch-social/supabase/migrations/020_announcements_grant.sql)
+👉 [022_announcements_grant.sql](file:///D:/AI/overwatch/overwatch-social/supabase/migrations/022_announcements_grant.sql)
 
 請您在協助合併此 PR 時，**務必協助執行該 Migration** 以套用權限更新。
 
