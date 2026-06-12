@@ -13,15 +13,12 @@ import {
 import OWCard from "@/components/OWCard";
 import { GAME_AVAILABILITY } from "@/lib/gameCatalog";
 import InteractiveAvatar from "@/components/InteractiveAvatar";
-import { getHeroAlignments } from "@/app/actions/alignment";
-import type { AlignmentConfig } from "@/data/heroAlignments";
-import { HERO_ALIGNMENTS } from "@/data/heroAlignments";
 import { exportCardImage } from "@/lib/cardImageExport";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Save, ArrowLeft, Gamepad2, AlertTriangle, Eye, EyeOff, LockKeyhole } from "lucide-react";
+import { Save, ArrowLeft, Gamepad2, AlertTriangle, Eye, EyeOff, Link2, LockKeyhole } from "lucide-react";
 import { getMyProfile, saveProfile, provisionDefaultCard } from "@/app/actions/profile";
 import { deleteMyAccount } from "@/app/actions/account";
 import { getMyUserProfile, saveNickname } from "@/app/actions/userProfile";
@@ -373,7 +370,6 @@ export default function ProfilePage() {
   const [hubSaved, setHubSaved] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [heroRoleFilter, setHeroRoleFilter] = useState<"All" | "Tank" | "Dps" | "Support">("All");
-  const [heroAlignments, setHeroAlignments] = useState<Record<string, AlignmentConfig>>(HERO_ALIGNMENTS);
   const [dbTags, setDbTags] = useState<SpecialTag[]>([]);
 
   // 🌟 匯出圖片與分享相關狀態與 ref
@@ -445,14 +441,13 @@ export default function ProfilePage() {
     }
   };
 
-  // 初始化：載入特色標籤 + 英雄對準參數
+  // 初始化：載入特色標籤
   useEffect(() => {
     getGameSpecialTags("overwatch").then(res => {
       if (res.success && res.data) {
         setDbTags(res.data);
       }
     });
-    getHeroAlignments().then(setHeroAlignments);
     setMounted(true);
   }, []);
 
@@ -651,14 +646,18 @@ export default function ProfilePage() {
     setErrorMsg(null);
     
     if (!currentCard.battle_tag || !currentCard.battle_tag.trim()) {
-      setErrorMsg("請填寫您的 遊戲 ID (BattleTag)！");
+      const message = "請填寫您的 遊戲 ID (BattleTag)！";
+      setErrorMsg(message);
+      triggerToast(`⚠️ ${message}`);
       return;
     }
 
     if (editingGame === "ow") {
       const [namePart, suffixPart] = currentCard.battle_tag.split("#");
       if (!namePart?.trim() || !suffixPart?.trim()) {
-        setErrorMsg("請輸入完整 BattleTag，例如：芮萊突破者#1011");
+        const message = "請輸入完整 BattleTag，例如：芮萊突破者#1011";
+        setErrorMsg(message);
+        triggerToast(`⚠️ ${message}`);
         return;
       }
     }
@@ -668,7 +667,9 @@ export default function ProfilePage() {
     );
     
     if (activeSocials.length === 0) {
-      setErrorMsg("為保障聯絡暢通，最少必須填寫一個聯絡管道！");
+      const message = "為保障聯絡暢通，最少必須填寫一個聯絡管道！";
+      setErrorMsg(message);
+      triggerToast(`⚠️ ${message}`);
       return;
     }
 
@@ -1192,14 +1193,13 @@ export default function ProfilePage() {
                   isLoggedIn={true}
                   isEditable={true}
                   renderMode={exportingImage ? "export" : "interactive"}
-                  customAlignments={heroAlignments}
                 />
               ) : (
                 <CosmicLivePreviewCard cardData={currentCard} gameType={editingGame} colorClasses={colorClasses} />
               )}
               
               {/* 點擊清空英雄立繪插槽按鈕 Overlay (專門對接 3 格常用立繪的✕清空) */}
-              {!exportingImage && <div className="absolute top-[175px] left-1/2 -translate-x-1/2 w-[340px] grid grid-cols-3 gap-2 px-3 h-32 pointer-events-none">
+              {!exportingImage && <div className="absolute top-[176px] left-5 right-5 grid grid-cols-3 h-[180px] pointer-events-none">
                 {[0, 1, 2].map((idx) => {
                   const heroId = currentCard.selected_heroes[idx];
                   if (!heroId) return <div key={idx} />;
@@ -1208,7 +1208,7 @@ export default function ProfilePage() {
                       <button
                         type="button"
                         onClick={() => handleClearHeroSlot(idx)}
-                        className="pointer-events-auto absolute top-1 right-1 w-4 h-4 bg-black/80 text-[8px] text-theme-danger-soft hover:text-white rounded-full flex items-center justify-center border border-white/10 hover:border-theme-danger active:scale-90 transition-all font-sans cursor-pointer"
+                        className="pointer-events-auto absolute top-2 right-2 z-40 w-5 h-5 bg-[#07040c]/90 text-[10px] text-theme-danger-soft hover:text-white rounded-full flex items-center justify-center border border-theme-danger/35 hover:border-theme-danger shadow-[0_0_10px_rgba(0,0,0,0.65)] active:scale-90 transition-all font-sans cursor-pointer"
                         title="清空此位置"
                       >
                         ✕
@@ -1225,17 +1225,19 @@ export default function ProfilePage() {
                 type="button"
                 onClick={handleExportImage}
                 disabled={exportingImage}
-                className={`bg-white/5 hover:bg-white/10 border border-white/10 hover:border-${colorClasses.primary}-500/50 text-theme-text-soft hover:text-white rounded-xl py-2.5 px-3 text-xs font-bold transition-all shadow-sm active:scale-95 cursor-pointer flex items-center justify-center gap-1.5 font-mono`}
+                className="bg-gradient-to-r from-auroraTeal to-auroraMint hover:from-auroraMint hover:to-auroraTeal border border-auroraMint/45 text-white rounded-xl py-3 px-3 text-xs font-black transition-all shadow-[0_0_22px_rgba(34,211,238,0.24)] hover:shadow-[0_0_30px_rgba(34,211,238,0.38)] active:scale-95 cursor-pointer flex items-center justify-center gap-2 font-mono disabled:opacity-55 disabled:cursor-not-allowed"
               >
-                <span>💾 保存圖片</span>
+                <Save size={14} className="shrink-0" />
+                <span>{exportingImage ? "匯出中" : "保存圖片"}</span>
               </Button>
               <Button
                 type="button"
                 onClick={handleShareLink}
                 disabled={sharing}
-                className={`bg-white/5 hover:bg-white/10 border border-white/10 hover:border-${colorClasses.primary}-500/50 text-theme-text-soft hover:text-white rounded-xl py-2.5 px-3 text-xs font-bold transition-all shadow-sm active:scale-95 cursor-pointer flex items-center justify-center gap-1.5 font-mono`}
+                className="bg-theme-warning/12 hover:bg-theme-warning/20 border border-theme-warning/35 hover:border-theme-warning text-theme-warning-soft hover:text-white rounded-xl py-3 px-3 text-xs font-black transition-all shadow-[0_0_18px_rgba(249,158,26,0.13)] hover:shadow-[0_0_24px_rgba(249,158,26,0.25)] active:scale-95 cursor-pointer flex items-center justify-center gap-2 font-mono disabled:opacity-55 disabled:cursor-not-allowed"
               >
-                <span>🔗 {shareSuccess ? "已複製！" : "複製連結"}</span>
+                <Link2 size={14} className="shrink-0" />
+                <span>{sharing ? "複製中" : shareSuccess ? "已複製" : "複製連結"}</span>
               </Button>
             </div>
 

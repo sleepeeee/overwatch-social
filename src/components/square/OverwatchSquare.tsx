@@ -9,10 +9,7 @@ import LoginModal from "@/components/LoginModal";
 import { Button } from "@/components/ui/button";
 import { RotateCcw, AlertCircle, Search, ChevronDown } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
-import { getHeroAlignments } from "@/app/actions/alignment";
 import { getPublicProfiles } from "@/app/actions/browse";
-import type { AlignmentConfig } from "@/data/heroAlignments";
-import { HERO_ALIGNMENTS } from "@/data/heroAlignments";
 import { useAuth } from "@/context/AuthContext";
 
 interface OverwatchSquareProps {
@@ -33,7 +30,6 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
   const [selectedServer, setSelectedServer] = useState("全部");
   const [selectedMic, setSelectedMic] = useState("全部");
   const [isMounted, setIsMounted] = useState(false);
-  const [heroAlignments, setHeroAlignments] = useState<Record<string, AlignmentConfig>>(HERO_ALIGNMENTS);
   const [isShowingMockData, setIsShowingMockData] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [hasMore, setHasMore] = useState(false);
@@ -121,9 +117,6 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
 
   useEffect(() => {
     setIsMounted(true);
-    getHeroAlignments().then((aligns) => {
-      if (aligns) setHeroAlignments(aligns);
-    });
     loadPlayers("", 0);
   }, []);
 
@@ -335,7 +328,6 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
                   cardData={player}
                   isLoggedIn={isLoggedIn}
                   isEditable={false}
-                  customAlignments={heroAlignments}
                   onLoginRequired={(!authLoading && !isLoggedIn) ? () => setShowLoginModal(true) : undefined}
                 />
               </div>

@@ -4,7 +4,7 @@ import DeveloperConsoleClient from "./DeveloperConsoleClient";
 
 export const metadata = {
   title: "開發者主控台 | Overwatch Social",
-  description: "系統管理、功能開關、開發測試工具與立繪對準儀高階製程控制台",
+  description: "系統管理、功能開關、開發測試工具與內容維護控制台",
 };
 
 export default async function Page() {
