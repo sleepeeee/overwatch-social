@@ -126,22 +126,22 @@ export default function MorningSketchBanner({ styleMode }: BannerProps) {
         <div className="flex items-center gap-4 text-[#8c7c6c]/80 pt-2">
           {isStyleA ? (
             <>
-              <button className="relative group overflow-hidden px-4.5 py-1.5 text-[10px] font-extrabold uppercase tracking-widest text-white bg-[#82b7cc] rounded-full transition-all duration-300 hover:scale-105 active:scale-95 shadow-sm">
+              <button className="relative group overflow-hidden px-4.5 py-1.5 text-[10px] font-extrabold uppercase tracking-widest text-white bg-[#8b5cf6] rounded-full transition-all duration-300 hover:scale-105 active:scale-95 shadow-sm">
                 Explore More
               </button>
               <div className="flex gap-3 text-[#8c7c6c]/50">
-                <InstagramIcon size={14} className="hover:text-[#82b7cc] cursor-pointer transition-colors" />
-                <Search size={14} className="hover:text-[#82b7cc] cursor-pointer transition-colors" />
-                <Mail size={14} className="hover:text-[#82b7cc] cursor-pointer transition-colors" />
+                <InstagramIcon size={14} className="hover:text-[#c084fc] cursor-pointer transition-colors" />
+                <Search size={14} className="hover:text-[#c084fc] cursor-pointer transition-colors" />
+                <Mail size={14} className="hover:text-[#c084fc] cursor-pointer transition-colors" />
               </div>
             </>
           ) : (
             <div className="flex items-center gap-4 text-[#8c7c6c]/50">
               <div className="flex gap-3">
-                <InstagramIcon size={14} className="hover:text-[#82b7cc] cursor-pointer transition-colors" />
-                <Search size={14} className="hover:text-[#82b7cc] cursor-pointer transition-colors" />
-                <Mail size={14} className="hover:text-[#82b7cc] cursor-pointer transition-colors" />
-                <Bookmark size={14} className="hover:text-[#82b7cc] cursor-pointer transition-colors" />
+                <InstagramIcon size={14} className="hover:text-[#c084fc] cursor-pointer transition-colors" />
+                <Search size={14} className="hover:text-[#c084fc] cursor-pointer transition-colors" />
+                <Mail size={14} className="hover:text-[#c084fc] cursor-pointer transition-colors" />
+                <Bookmark size={14} className="hover:text-[#c084fc] cursor-pointer transition-colors" />
               </div>
               <span className="text-[10px] font-bold text-[#8c7c6c]/60">@morning.sketch</span>
             </div>
@@ -152,8 +152,8 @@ export default function MorningSketchBanner({ styleMode }: BannerProps) {
       {/* 風格 B / AB 時的進度圓環區 */}
       {!isStyleA && (
         <div className="relative z-10 flex gap-4 pr-4 drop-shadow-[0_4px_10px_rgba(0,0,0,0.15)] bg-slate-900/40 p-4.5 rounded-2xl backdrop-blur-md border border-white/10 self-start mt-2">
-          {renderCircle(animatedProgress.p1, "stroke-[#82b7cc]", "lines")}
-          {renderCircle(animatedProgress.p2, "stroke-[#f5d46b]", "colors")}
+          {renderCircle(animatedProgress.p1, "stroke-[#c084fc]", "lines")}
+          {renderCircle(animatedProgress.p2, "stroke-[#a78bfa]", "colors")}
           {renderCircle(animatedProgress.p3, "stroke-emerald-400", "details")}
         </div>
       )}
