@@ -10,6 +10,7 @@ import { ThemeProvider } from "@/context/ThemeContext";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { CosmicParticlesBackground } from "@/components/CosmicParticlesBackground";
+import SelectionUnlocker from "@/components/SelectionUnlocker";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -79,6 +80,7 @@ export default function RootLayout({
           fontFamily: "var(--font-noto-sans-tc), var(--font-geist-sans), sans-serif"
         }}
       >
+        <SelectionUnlocker />
         <ThemeProvider>
           {/* 全站常駐高質感星空粒子背景 */}
           <CosmicParticlesBackground />
