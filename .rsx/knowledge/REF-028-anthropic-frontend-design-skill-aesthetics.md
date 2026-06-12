@@ -5,7 +5,7 @@ title: Anthropic frontend-design skill — 生產級 UI 美學指引
 url: https://github.com/anthropics/claude-plugins-official/blob/main/plugins/frontend-design/skills/frontend-design/SKILL.md
 status: active
 references_to: [REF-029, REF-030]
-referenced_by: []
+referenced_by: [REF-035]
 stars: n/a
 language: Markdown
 license: n/a

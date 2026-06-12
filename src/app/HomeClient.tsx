@@ -47,7 +47,7 @@ export default function Home() {
   };
 
   return (
-    <div className="relative min-h-screen flex flex-col justify-between z-10 selection:bg-auroraMint/30 text-zinc-100">
+    <div className="relative min-h-screen flex flex-col justify-between z-10 selection:bg-auroraMint/30 text-theme-text-strong">
       {/* 全螢幕無縫大氣漸層 */}
       <div className="fixed inset-0 ambient-space-glows pointer-events-none z-0"></div>
 
@@ -56,7 +56,7 @@ export default function Home() {
         <div className="space-y-8 sm:space-y-12 max-w-7xl mx-auto z-10 relative">
 
           <div className="py-3 sm:py-6 flex flex-col items-center justify-center text-center max-w-4xl mx-auto space-y-6 sm:space-y-12 animate-fade-in">
-            <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full border border-white/10 bg-white/[0.02] text-[10px] text-zinc-300 font-mono uppercase tracking-widest mx-auto w-fit">
+            <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full border border-white/10 bg-white/[0.02] text-[10px] text-theme-text-soft font-mono uppercase tracking-widest mx-auto w-fit">
               <span className="w-1.5 h-1.5 rounded-full bg-auroraMint inline-block animate-pulse"></span>
               <span>Beta 展示館開放中</span>
             </div>
@@ -68,7 +68,7 @@ export default function Home() {
               </div>
             </div>
 
-            <p className="text-xs sm:text-base text-zinc-300 leading-relaxed max-w-2xl mx-auto font-sans font-light mt-1 sm:mt-4 text-center">
+            <p className="text-xs sm:text-base text-theme-text-soft leading-relaxed max-w-2xl mx-auto font-sans font-light mt-1 sm:mt-4 text-center">
               這裡不是熱鬧的交友廣場，而是一座安靜運行的深夜展示館。
               玩家把自己的遊戲習慣、常用角色與偏好留在名片上，
               讓相近的頻率在瀏覽之間慢慢靠近。
@@ -95,7 +95,7 @@ export default function Home() {
                     名片廣場與展示館
                     <span className="text-xs text-auroraMint font-light">✦</span>
                   </h3>
-                  <p className="text-xs text-zinc-300 leading-relaxed font-light">
+                  <p className="text-xs text-theme-text-soft leading-relaxed font-light">
                     走進展示館，翻看一張張被留下的玩家名片。也許只是相同的角色、相近的時段，或一句剛好對上的遊戲節奏，就能成為下一場同行的開始。
                   </p>
                 </div>
@@ -111,13 +111,13 @@ export default function Home() {
                 <div className="relative">
                   <div className="absolute -right-10 -bottom-10 w-32 h-32 rounded-full bg-white/[0.01] filter blur-xl group-hover:bg-white/[0.03] transition-all duration-700"></div>
                   <div className="flex items-center justify-between mb-4">
-                    <span className="text-xs font-mono text-zinc-400 uppercase tracking-wider">Identity Studio</span>
-                    <span className="text-zinc-500 font-mono text-xs group-hover:translate-x-1 transition-transform duration-500">→</span>
+                    <span className="text-xs font-mono text-theme-text-muted uppercase tracking-wider">Identity Studio</span>
+                    <span className="text-theme-text-faint font-mono text-xs group-hover:translate-x-1 transition-transform duration-500">→</span>
                   </div>
                   <h3 className="font-playfair text-xl text-white font-semibold mb-2 flex items-center gap-1.5">
                     全域身份工作室
                   </h3>
-                  <p className="text-xs text-zinc-400 leading-relaxed font-light">
+                  <p className="text-xs text-theme-text-muted leading-relaxed font-light">
                     建立你的名片，寫下你常玩什麼、怎麼玩、想不想開語音，以及哪些聯絡方式可以公開。
                   </p>
                 </div>
@@ -131,7 +131,7 @@ export default function Home() {
                         e.stopPropagation(); // 阻止立即跳轉，先執行登入
                         handleGoogleLogin();
                       }}
-                      className="inline-flex items-center space-x-2.5 h-8 px-3 rounded-full text-[9px] sm:text-[10px] tracking-wide transition-all duration-300 font-sans text-zinc-400 hover:text-zinc-200 border border-white/[0.05] hover:border-white/[0.15] bg-white/[0.005] hover:bg-white/[0.02] cursor-pointer"
+                      className="inline-flex items-center space-x-2.5 h-8 px-3 rounded-full text-[9px] sm:text-[10px] tracking-wide transition-all duration-300 font-sans text-theme-text-muted hover:text-theme-text-body border border-white/[0.05] hover:border-white/[0.15] bg-white/[0.005] hover:bg-white/[0.02] cursor-pointer"
                     >
                       <svg className="w-3 h-3 flex-shrink-0" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -142,13 +142,13 @@ export default function Home() {
                       <span>Continue with Google</span>
                     </button>
                   ) : user ? (
-                    <div className="inline-flex items-center space-x-1.5 text-[9px] text-emerald-400 font-mono tracking-wider bg-emerald-500/5 border border-emerald-500/10 px-2.5 py-1 rounded-full w-fit">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <div className="inline-flex items-center space-x-1.5 text-[9px] text-theme-success-soft font-mono tracking-wider bg-theme-success/5 border border-theme-success/10 px-2.5 py-1 rounded-full w-fit">
+                      <span className="w-1.5 h-1.5 rounded-full bg-theme-success-soft animate-pulse"></span>
                       <span>已同步 GOOGLE 雲端資料</span>
                     </div>
                   ) : (
                     <div className="h-8 flex items-center justify-start">
-                      <span className="w-3 h-3 rounded-full border border-zinc-500 border-t-transparent animate-spin inline-block"></span>
+                      <span className="w-3 h-3 rounded-full border border-theme-text-faint border-t-transparent animate-spin inline-block"></span>
                     </div>
                   )}
                 </div>
@@ -157,23 +157,23 @@ export default function Home() {
 
             {/* 寂靜宣言 */}
             <div className="pt-6 sm:pt-10 border-t border-white/[0.04] w-full max-w-3xl fluid-gap-manifesto text-left">
-              <p className="text-zinc-400 font-mono text-xs uppercase tracking-[0.2em] mb-5 sm:mb-8 text-center">AFTER MIDNIGHT 寂靜宣言</p>
+              <p className="text-theme-text-muted font-mono text-xs uppercase tracking-[0.2em] mb-5 sm:mb-8 text-center">AFTER MIDNIGHT 寂靜宣言</p>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
                 <div className="space-y-2">
-                  <h4 className="text-xs text-zinc-300 font-bold tracking-wider font-mono">01 // 不做配對壓力</h4>
-                  <p className="text-[11px] text-zinc-400 leading-relaxed font-light">
+                  <h4 className="text-xs text-theme-text-soft font-bold tracking-wider font-mono">01 // 不做配對壓力</h4>
+                  <p className="text-[11px] text-theme-text-muted leading-relaxed font-light">
                     這裡不做滑卡、不做即時私訊，也不催你馬上互動。你只需要把名片放好，其他人看見後再自行決定要不要聯絡。
                   </p>
                 </div>
                 <div className="space-y-2">
-                  <h4 className="text-xs text-zinc-300 font-bold tracking-wider font-mono">02 // 先看遊戲習慣</h4>
-                  <p className="text-[11px] text-zinc-400 leading-relaxed font-light">
+                  <h4 className="text-xs text-theme-text-soft font-bold tracking-wider font-mono">02 // 先看遊戲習慣</h4>
+                  <p className="text-[11px] text-theme-text-muted leading-relaxed font-light">
                     比起一句自我介紹，我們更在意你怎麼玩。常用角色、語音習慣、時段、伺服器，這些資訊比漂亮話更有用。
                   </p>
                 </div>
                 <div className="space-y-2">
-                  <h4 className="text-xs text-zinc-300 font-bold tracking-wider font-mono">03 // 聯絡權交給玩家</h4>
-                  <p className="text-[11px] text-zinc-400 leading-relaxed font-light">
+                  <h4 className="text-xs text-theme-text-soft font-bold tracking-wider font-mono">03 // 聯絡權交給玩家</h4>
+                  <p className="text-[11px] text-theme-text-muted leading-relaxed font-light">
                     After Midnight 不會替你撮合關係。名片只負責展示，真正要不要加好友、要不要一起玩，交給玩家自己判斷。
                   </p>
                 </div>

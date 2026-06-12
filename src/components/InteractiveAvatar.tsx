@@ -83,7 +83,7 @@ export default function InteractiveAvatar({
                 從四張預設頭貼中選擇一張作為目前玩家頭像。
               </Dialog.Description>
             </div>
-            <Dialog.Close className="p-2 rounded-full bg-white/[0.06] text-zinc-400 hover:bg-white/[0.1] hover:text-zinc-100 transition-colors border border-white/[0.04] cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-300/40">
+            <Dialog.Close className="p-2 rounded-full bg-white/[0.06] text-theme-text-muted hover:bg-white/[0.1] hover:text-theme-text-strong transition-colors border border-white/[0.04] cursor-pointer focus:outline-none focus:ring-2 focus:ring-theme-accent-brand/40">
               <X size={16} />
             </Dialog.Close>
           </div>

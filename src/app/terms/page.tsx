@@ -69,13 +69,13 @@ const sections = [
 
 export default function TermsPage() {
   return (
-    <div className="relative min-h-screen overflow-hidden text-zinc-100">
+    <div className="relative min-h-screen overflow-hidden text-theme-text-strong">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_20%,rgba(192,132,252,0.14),transparent_28%),radial-gradient(circle_at_82%_12%,rgba(45,212,191,0.1),transparent_30%),linear-gradient(180deg,rgba(3,2,6,0.16),rgba(3,2,6,0.84))]" />
 
       <main className="relative z-10 mx-auto flex w-full max-w-3xl flex-col gap-7 px-4 py-8 sm:px-6 sm:py-12">
         <Link
           href="/"
-          className="inline-flex h-9 w-fit items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 text-xs font-medium text-zinc-300 transition hover:border-auroraMint/40 hover:text-white focus:outline-none focus:ring-2 focus:ring-auroraMint/50"
+          className="inline-flex h-9 w-fit items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3 text-xs font-medium text-theme-text-soft transition hover:border-auroraMint/40 hover:text-white focus:outline-none focus:ring-2 focus:ring-auroraMint/50"
         >
           <ArrowLeft className="h-4 w-4" aria-hidden="true" />
           返回前廳
@@ -87,15 +87,15 @@ export default function TermsPage() {
             TERMS
           </div>
           <h1 className="font-playfair text-3xl font-semibold text-white sm:text-4xl">使用條款</h1>
-          <p className="text-sm leading-7 text-zinc-300">
+          <p className="text-sm leading-7 text-theme-text-soft">
             這裡是 AFTER MIDNIGHT 的平台規則：可以做什麼、不能做什麼，以及站外互動風險由誰承擔。
           </p>
-          <p className="font-mono text-[11px] tracking-[0.12em] text-zinc-500">最後更新：2026-06-12</p>
+          <p className="font-mono text-[11px] tracking-[0.12em] text-theme-text-faint">最後更新：2026-06-12</p>
         </section>
 
         <section className="rounded-2xl border border-auroraMint/20 bg-auroraMint/[0.07] p-5 sm:p-6">
           <h2 className="text-base font-semibold text-white">平台只是一座名片公告欄</h2>
-          <p className="mt-3 text-sm leading-7 text-zinc-200">
+          <p className="mt-3 text-sm leading-7 text-theme-text-body">
             我們提供展示與探索，不替玩家保證身分、互動、交易、組隊或站外行為。遇到騷擾、詐騙或不當交易，請回報，我們會依規則處理平台上的內容。
           </p>
         </section>
@@ -108,7 +108,7 @@ export default function TermsPage() {
             <h2 className="text-lg font-semibold text-white">{section.title}</h2>
             <ul className="mt-4 space-y-3">
               {section.items.map((item) => (
-                <li key={item} className="flex gap-3 text-sm leading-6 text-zinc-300">
+                <li key={item} className="flex gap-3 text-sm leading-6 text-theme-text-soft">
                   <span className="mt-2 h-1.5 w-1.5 flex-none rounded-full bg-auroraMint" />
                   <span>{item}</span>
                 </li>
@@ -117,13 +117,13 @@ export default function TermsPage() {
           </section>
         ))}
 
-        <p className="text-xs leading-6 text-zinc-500">
+        <p className="text-xs leading-6 text-theme-text-faint">
           相關頁面：{" "}
-          <Link href="/privacy" className="text-zinc-300 underline-offset-4 hover:text-auroraMint hover:underline">
+          <Link href="/privacy" className="text-theme-text-soft underline-offset-4 hover:text-auroraMint hover:underline">
             隱私權政策
           </Link>
           {" "}·{" "}
-          <Link href="/report" className="text-zinc-300 underline-offset-4 hover:text-auroraMint hover:underline">
+          <Link href="/report" className="text-theme-text-soft underline-offset-4 hover:text-auroraMint hover:underline">
             回報問題
           </Link>
         </p>

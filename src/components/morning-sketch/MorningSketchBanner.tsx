@@ -151,10 +151,10 @@ export default function MorningSketchBanner({ styleMode }: BannerProps) {
 
       {/* 風格 B / AB 時的進度圓環區 */}
       {!isStyleA && (
-        <div className="relative z-10 flex gap-4 pr-4 drop-shadow-[0_4px_10px_rgba(0,0,0,0.15)] bg-slate-900/40 p-4.5 rounded-2xl backdrop-blur-md border border-white/10 self-start mt-2">
-          {renderCircle(animatedProgress.p1, "stroke-[#c084fc]", "lines")}
-          {renderCircle(animatedProgress.p2, "stroke-[#a78bfa]", "colors")}
-          {renderCircle(animatedProgress.p3, "stroke-emerald-400", "details")}
+        <div className="relative z-10 flex gap-4 pr-4 drop-shadow-[0_4px_10px_rgba(0,0,0,0.15)] bg-theme-surface-deep/40 p-4.5 rounded-2xl backdrop-blur-md border border-white/10 self-start mt-2">
+          {renderCircle(animatedProgress.p1, "stroke-[var(--brand-aurora-2)]", "lines")}
+          {renderCircle(animatedProgress.p2, "stroke-[var(--brand-aurora-3)]", "colors")}
+          {renderCircle(animatedProgress.p3, "stroke-theme-success-soft", "details")}
         </div>
       )}
     </div>
