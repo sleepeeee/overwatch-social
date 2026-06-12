@@ -322,7 +322,7 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
             {filteredPlayers.map((player) => (
               <div
                 key={player.card_id}
-                className="midnight-player-artifact w-full flex justify-center transition-transform duration-300 relative"
+                className="midnight-player-artifact w-full max-w-[340px] flex justify-center transition-transform duration-300 relative"
               >
                 <OWCard
                   cardData={player}

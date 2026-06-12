@@ -1,6 +1,7 @@
 "use client";
 
 import { toBlob } from "html-to-image";
+import { toPng } from "html-to-image";
 
 type ExportResult = "shared" | "downloaded";
 
@@ -55,42 +56,38 @@ const downloadBlob = (blob: Blob, fileName: string) => {
   window.setTimeout(() => URL.revokeObjectURL(url), 1000);
 };
 
-const withFixedExportSurface = async <T,>(node: HTMLElement, task: () => Promise<T>) => {
-  const previousWidth = node.style.width;
-  const previousMaxWidth = node.style.maxWidth;
-
-  node.style.width = "420px";
-  node.style.maxWidth = "420px";
-
-  try {
-    await nextFrame();
-    return await task();
-  } finally {
-    node.style.width = previousWidth;
-    node.style.maxWidth = previousMaxWidth;
-  }
-};
-
 const canShareImageFile = (file: File) => {
   if (!isMobileLikeDevice()) return false;
   if (!navigator.share || !navigator.canShare) return false;
   return navigator.canShare({ files: [file] });
 };
 
+export async function createCardImageDataUrl(node: HTMLElement): Promise<string> {
+  await waitForCardExport(node);
+
+  return toPng(node, {
+    cacheBust: true,
+    pixelRatio: 2,
+    backgroundColor: "transparent",
+    style: {
+      transform: "scale(1)",
+      transformOrigin: "top left",
+    },
+  });
+}
+
 export async function exportCardImage(node: HTMLElement, rawFileName: string): Promise<ExportResult> {
   const fileName = sanitizeFileName(rawFileName.endsWith(".png") ? rawFileName : `${rawFileName}.png`);
 
-  const blob = await withFixedExportSurface(node, async () => {
-    await waitForCardExport(node);
-
-    return toBlob(node, {
-      cacheBust: true,
-      backgroundColor: "transparent",
-      style: {
-        transform: "scale(1)",
-        transformOrigin: "top left",
-      },
-    });
+  await waitForCardExport(node);
+  const blob = await toBlob(node, {
+    cacheBust: true,
+    pixelRatio: 2,
+    backgroundColor: "transparent",
+    style: {
+      transform: "scale(1)",
+      transformOrigin: "top left",
+    },
   });
 
   if (!blob) {

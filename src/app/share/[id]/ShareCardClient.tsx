@@ -1,12 +1,12 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowLeft, Sparkles } from "lucide-react";
+import { ArrowLeft, Check, Copy, ImageDown, Loader2, Sparkles } from "lucide-react";
 import OWCard from "@/components/OWCard";
-import { exportCardImage } from "@/lib/cardImageExport";
+import { createCardImageDataUrl } from "@/lib/cardImageExport";
 import { useAuth } from "@/context/AuthContext";
 import type { OWPlayerCard } from "@/types/card";
 
@@ -17,19 +17,51 @@ interface Props {
 export default function ShareCardClient({ cardData }: Props) {
   const { user } = useAuth();
   const cardRef = useRef<HTMLDivElement>(null);
-  const [exportingImage, setExportingImage] = useState(false);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [generatingImage, setGeneratingImage] = useState(false);
+  const [copySuccess, setCopySuccess] = useState(false);
   const playerName = cardData?.battle_tag ? cardData.battle_tag.split("#")[0] : "Unknown Agent";
 
-  const handleExportImage = async () => {
-    if (!cardRef.current || !cardData) return;
-    setExportingImage(true);
+  useEffect(() => {
+    let isMounted = true;
+
+    const generatePreview = async () => {
+      if (!cardRef.current || !cardData) return;
+      setGeneratingImage(true);
+      setImageUrl(null);
+
+      try {
+        const dataUrl = await createCardImageDataUrl(cardRef.current);
+        if (isMounted) {
+          setImageUrl(dataUrl);
+        }
+      } catch (err) {
+        console.error("產生保存圖片失敗:", err);
+      } finally {
+        if (isMounted) {
+          setGeneratingImage(false);
+        }
+      }
+    };
+
+    const frameId = window.requestAnimationFrame(() => {
+      void generatePreview();
+    });
+
+    return () => {
+      isMounted = false;
+      window.cancelAnimationFrame(frameId);
+    };
+  }, [cardData]);
+
+  const handleCopyShareUrl = async () => {
     try {
-      await exportCardImage(cardRef.current, `ow-card-${playerName}.png`);
+      await navigator.clipboard.writeText(window.location.href);
+      setCopySuccess(true);
+      window.setTimeout(() => setCopySuccess(false), 2400);
     } catch (err) {
-      console.error("導出圖片失敗:", err);
-      alert("導出圖片失敗，請重試！");
-    } finally {
-      setExportingImage(false);
+      console.error("複製分享連結失敗:", err);
+      alert("複製分享連結失敗，請手動複製網址列。");
     }
   };
 
@@ -74,27 +106,58 @@ export default function ShareCardClient({ cardData }: Props) {
             </Card>
           ) : (
             <div className="flex flex-col items-center gap-6 w-full animate-[fadeInUp_0.6s_ease-out]">
-              {/* 名片卡片渲染 */}
-              <div ref={cardRef} className="share-card-export-surface rounded-[28px] overflow-hidden shadow-lg max-w-[340px] w-full flex justify-center">
-                <OWCard
-                  cardData={cardData}
-                  isLoggedIn={!!user}
-                  isEditable={false}
-                  renderMode={exportingImage ? "export" : "interactive"}
-                />
+              <div className="w-full max-w-[340px] text-center space-y-2">
+                <h1 className="text-lg font-extrabold text-theme-text-strong">保存或分享這張名片</h1>
+                <p className="text-xs leading-relaxed text-theme-text-muted">
+                  電腦可在圖片上按右鍵另存圖片；手機可長按圖片保存。
+                </p>
+              </div>
+
+              <div className="fixed left-[-10000px] top-0 w-[340px] pointer-events-none opacity-0" aria-hidden="true">
+                <div ref={cardRef} className="share-card-export-surface rounded-[28px] overflow-hidden w-[340px] flex justify-center">
+                  <OWCard
+                    cardData={cardData}
+                    isLoggedIn={!!user}
+                    isEditable={false}
+                    renderMode="export"
+                  />
+                </div>
+              </div>
+
+              <div className="w-full max-w-[340px]">
+                {imageUrl ? (
+                  <img
+                    src={imageUrl}
+                    alt={`${playerName} 的 AFTER MIDNIGHT 玩家名片保存圖片`}
+                    className="w-full rounded-[28px] shadow-lg select-auto"
+                    draggable="true"
+                  />
+                ) : (
+                  <div className="share-card-export-surface rounded-[28px] overflow-hidden shadow-lg w-full min-h-[452px] flex flex-col items-center justify-center gap-3 text-theme-text-muted border border-white/[0.05]">
+                    {generatingImage ? (
+                      <>
+                        <Loader2 className="h-6 w-6 animate-spin text-auroraMint" />
+                        <span className="text-xs font-bold">正在產生可保存圖片</span>
+                      </>
+                    ) : (
+                      <>
+                        <ImageDown className="h-6 w-6 text-theme-text-faint" />
+                        <span className="text-xs font-bold">圖片預覽尚未產生</span>
+                      </>
+                    )}
+                  </div>
+                )}
               </div>
 
               {/* 控制按鈕區 */}
               <div className="w-full max-w-[340px] flex flex-col gap-3">
                 <Button
-                  onClick={handleExportImage}
-                  disabled={exportingImage}
+                  onClick={handleCopyShareUrl}
                   className="w-full bg-gradient-to-r from-auroraTeal to-auroraMint text-white font-extrabold text-sm py-4.5 rounded-xl shadow-md transition-all active:scale-98 cursor-pointer flex items-center justify-center gap-2 hover:opacity-90 duration-300"
                 >
-                  <span>💾</span>
-                  <span>{exportingImage ? "正在導出圖片..." : "保存此卡片為圖片"}</span>
+                  {copySuccess ? <Check size={16} /> : <Copy size={16} />}
+                  <span>{copySuccess ? "已複製分享連結" : "複製分享連結"}</span>
                 </Button>
-
                 <Link href="/profile" className="w-full">
                   <Button
                     variant="outline"
@@ -106,8 +169,8 @@ export default function ShareCardClient({ cardData }: Props) {
                 </Link>
               </div>
 
-              <p className="text-[11px] text-theme-text-muted/80 font-sans italic text-center max-w-[320px] font-semibold mt-2 leading-relaxed">
-                💡 點擊名片上的 <b>BattleTag</b> 或是下方社群圖示即可快速複製對方的聯絡資訊！
+              <p className="text-[11px] text-theme-text-muted/80 font-sans text-center max-w-[320px] font-semibold mt-2 leading-relaxed">
+                如果手機沒有出現儲存選項，請先用瀏覽器開啟此頁，再長按圖片。
               </p>
             </div>
           )}
