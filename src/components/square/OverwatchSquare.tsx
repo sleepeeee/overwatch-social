@@ -320,7 +320,7 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
 
       {isLoading ? (
         <div className="flex flex-col items-center justify-center py-20 gap-3 text-[#8c7c6c]">
-          <div className="w-8 h-8 rounded-full border-2 border-[#82b7cc]/30 border-t-[#82b7cc] animate-spin" />
+          <div className="w-8 h-8 rounded-full border-2 border-[#8c7c6c]/25 border-t-[#8c7c6c] animate-spin" />
           <span className="text-xs font-bold tracking-widest">正在載入展示館⋯</span>
         </div>
       ) : filteredPlayers.length > 0 ? (
