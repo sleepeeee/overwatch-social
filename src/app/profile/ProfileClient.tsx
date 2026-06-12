@@ -673,28 +673,35 @@ export default function ProfilePage() {
     }
 
     setSaving(true);
-    if (editingGame === "ow") {
-      const result = await saveProfile(cardData);
-      setSaving(false);
-      if (result.error) {
-        setErrorMsg(result.error);
-        return;
+    try {
+      if (editingGame === "ow") {
+        const result = await saveProfile(cardData);
+        if (result.error) {
+          setErrorMsg(result.error);
+          triggerToast(`⚠️ ${result.error}`);
+          return;
+        }
+        setSaved(true);
+        setShowShareModal(true);
+        triggerToast("特工名片已成功儲存並同步至廣場！✨");
+        setTimeout(() => setSaved(false), 2000);
+      } else {
+        // 本地暫存特戰英豪與英雄聯盟
+        const key = `player_card_${editingGame}_${user.id}`;
+        localStorage.setItem(key, JSON.stringify(currentCard));
+        setSaved(true);
+        triggerToast(`您的《${editingGame === "val" ? "特戰英豪" : "英雄聯盟"}》名片設定已成功儲存！✨`);
+        setTimeout(() => {
+          setSaved(false);
+          setEditingGame(null);
+        }, 1500);
       }
-      setSaved(true);
-      setShowShareModal(true);
-      triggerToast("特工名片已成功儲存並同步至廣場！✨");
-      setTimeout(() => setSaved(false), 2000);
-    } else {
-      // 本地暫存特戰英豪與英雄聯盟
-      const key = `player_card_${editingGame}_${user.id}`;
-      localStorage.setItem(key, JSON.stringify(currentCard));
+    } catch (error) {
+      console.error("保存名片資料失敗:", error);
+      setErrorMsg("名片資料保存失敗，請稍後再試");
+      triggerToast("⚠️ 名片資料保存失敗，請稍後再試");
+    } finally {
       setSaving(false);
-      setSaved(true);
-      triggerToast(`您的《${editingGame === "val" ? "特戰英豪" : "英雄聯盟"}》名片設定已成功儲存！✨`);
-      setTimeout(() => {
-        setSaved(false);
-        setEditingGame(null);
-      }, 1500);
     }
   };
 
