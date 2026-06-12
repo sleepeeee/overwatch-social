@@ -1,5 +1,5 @@
 -- ============================================================
--- Migration 022: GRANT 必要權限（最小權限版）
+-- Migration 026: GRANT 必要權限（最小權限版）
 -- 修復：announcements / hero_alignments / game_special_tags /
 -- developer_whitelist 未補 GRANT，authenticated 寫入時拋
 -- permission denied。

@@ -1,5 +1,5 @@
 -- ============================================================
--- Migration 018: 名片下架（moderation）+ public_profiles view 修正重建
+-- Migration 022: 名片下架（moderation）+ public_profiles view 修正重建
 --
 -- 1. profiles 加 is_hidden（developer 下架違規名片用，預設 false）
 -- 2. 重建 public_profiles view：
