@@ -27,8 +27,8 @@
 
 ## Phase 4 — 三套新主題設計（frontend-design skill，每套含設計審查 checkpoint）
 
-- [ ] 4.1 `theme-neon-esports`：skill 設計 pass（DERIV-REF-035 prompt 約束 + REF-031 參數方向）→ 寫入 globals.css → 4 頁截圖 → **使用者驗收 checkpoint**
-- [ ] 4.2 `theme-minimal-magazine`：同上流程（白底大留白方向）→ **使用者驗收 checkpoint**
+- [x] 4.1 `theme-neon-esports`（Volt & Ice）：使用者驗收 **通過**（2026-06-12）
+- [x] 4.2 `theme-minimal-magazine`（Ink & Gallery）：使用者驗收 **未過**（「很多字看不到」）；使用者裁示**保留現狀不修**、繼續 4.3。亮底 utility 適配層已建但覆蓋不全 → 已知限制記入 F-029
 - [ ] 4.3 `theme-retro-arcade`：同上流程（8-bit 調色盤 + pixel display 字體）→ **使用者驗收 checkpoint**；若 token-only 表達不出像素感 → 依詮釋框架記 negative result，不硬塞元件級 hack
 - [ ] 4.4 三套主題 WCAG AA 對比抽查（主文字 ≥ 4.5:1）
 

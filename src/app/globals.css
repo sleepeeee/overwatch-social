@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@300;400;600&family=Inter:wght@300;400;500;600;700&family=Noto+Serif+TC:wght@200;300;400;500;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@300;400;600&family=Inter:wght@300;400;500;600;700&family=Noto+Serif+TC:wght@200;300;400;500;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Press+Start+2P&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
@@ -492,6 +492,126 @@
 }
 .theme-minimal-magazine :is(.bg-white\/5, .bg-white\/10, .bg-white\/20) {
   background-color: color-mix(in oklab, var(--foreground) 4%, transparent);
+}
+
+/* ============================================================
+   復古街機 (theme-retro-arcade) — add-standalone-theme-style
+   方向：「Insert Coin」— CRT 深紫藍底 + 掃描線、投幣機黃 × 螢光粉
+   × 磷光綠、0 圓角、4px 硬陰影（無模糊）、像素字型刊頭。
+   只新增、不修改既有主題。
+   ============================================================ */
+.theme-retro-arcade {
+  /* shadcn 語意層 */
+  --background: oklch(18% 0.055 292);
+  --foreground: oklch(95% 0.015 130);
+  --card: oklch(23% 0.06 290);
+  --card-foreground: oklch(95% 0.015 130);
+  --popover: oklch(21% 0.058 291);
+  --popover-foreground: oklch(95% 0.015 130);
+  --primary: oklch(85% 0.17 95);
+  --primary-foreground: oklch(18% 0.055 292);
+  --secondary: oklch(27% 0.07 288);
+  --secondary-foreground: oklch(95% 0.015 130);
+  --muted: oklch(27% 0.07 288);
+  --muted-foreground: oklch(72% 0.05 290);
+  --accent: oklch(68% 0.25 0);
+  --accent-foreground: oklch(98% 0.01 95);
+  --destructive: oklch(60% 0.24 28);
+  --border: oklch(68% 0.25 0 / 30%);
+  --input: oklch(35% 0.08 290 / 60%);
+  --ring: oklch(85% 0.17 95);
+
+  /* 氛圍層：CRT 掃描線 + 雙磷光暈（黃 × 粉）+ 暗角 */
+  --theme-bg-gradient: repeating-linear-gradient(0deg, transparent 0px, transparent 3px, oklch(0% 0 0 / 7%) 3px, oklch(0% 0 0 / 7%) 4px),
+    radial-gradient(circle 50vw at 85% 10%, oklch(85% 0.17 95 / 6%) 0%, transparent 100%),
+    radial-gradient(circle 45vw at 12% 90%, oklch(68% 0.25 0 / 7%) 0%, transparent 100%),
+    radial-gradient(ellipse 120% 100% at 50% 50%, transparent 60%, oklch(8% 0.04 292 / 55%) 100%);
+  --shadow-card-val: 4px 4px 0 oklch(10% 0.045 292);
+  --border-card-val: 2px solid oklch(68% 0.25 0 / 35%);
+  --glass-bg: oklch(20% 0.058 291 / 96%);
+  --glass-blur: blur(0px);
+  --glass-border: 2px solid oklch(68% 0.25 0 / 30%);
+  --glass-radius: 0px;
+  --glass-hover-bg: oklch(85% 0.17 95 / 6%);
+  --glass-hover-border: 2px solid oklch(85% 0.17 95 / 70%);
+  --organic-radius: 0px;
+  --shadow-card-hover-val: 6px 6px 0 oklch(10% 0.045 292);
+  --theme-selection-bg: oklch(85% 0.17 95 / 40%);
+  --theme-scrollbar-hover: oklch(68% 0.25 0 / 60%);
+
+  /* 結構 token：方塊像素感 */
+  --theme-card-radius: 0px;
+  --theme-card-shadow: 4px 4px 0 oklch(10% 0.045 292);
+  --theme-card-shadow-hover: 6px 6px 0 oklch(10% 0.045 292);
+  --theme-card-border: 2px solid oklch(68% 0.25 0 / 35%);
+  --theme-card-border-hover: 2px solid oklch(85% 0.17 95 / 80%);
+  --theme-inner-radius: 0px;
+  --theme-inner-border: 2px solid oklch(95% 0.015 130 / 12%);
+  --theme-inner-shadow: none;
+  --theme-button-radius: 0px;
+  --theme-input-radius: 0px;
+  --theme-input-border: 2px solid oklch(95% 0.015 130 / 25%);
+  --theme-input-focus-border-color: oklch(85% 0.17 95);
+  --theme-input-focus-ring: 3px 3px 0 oklch(85% 0.17 95 / 35%);
+  --theme-tag-radius: 0px;
+  --theme-tag-border: 2px solid oklch(85% 0.17 95 / 50%);
+  --theme-font-family: var(--font-sans);
+  --theme-letter-spacing: 0.04em;
+  --theme-text-transform: none;
+  --theme-transition-duration: 120ms;
+  --theme-transition-timing: steps(3, end);
+  --theme-card-rotate: 0deg;
+  --theme-card-rotate-mobile: 0deg;
+  --theme-card-hover-translate-y: -2px;
+  --theme-card-hover-translate-y-mobile: -1px;
+
+  /* 品牌光暈覆寫：投幣黃 × 螢光粉 */
+  --brand-aurora-1: oklch(68% 0.25 0);
+  --brand-aurora-2: oklch(85% 0.17 95);
+  --brand-aurora-3: oklch(80% 0.21 135);
+  --brand-starry: oklch(75% 0.14 195);
+
+  /* 語意色 token：磷光文字 × 8-bit 狀態色 */
+  --theme-text-strong: oklch(96% 0.02 120);
+  --theme-text-body: oklch(90% 0.025 125);
+  --theme-text-soft: oklch(83% 0.03 128);
+  --theme-text-muted: oklch(70% 0.04 290);
+  --theme-text-faint: oklch(56% 0.05 290);
+  --theme-text-inverse: oklch(18% 0.055 292);
+  --theme-surface-deep: oklch(14% 0.05 292);
+  --theme-surface-raised: oklch(27% 0.07 288);
+  --theme-surface-light: oklch(92% 0.02 120);
+  --theme-border-subtle: oklch(36% 0.08 289);
+  --theme-border-light: oklch(50% 0.1 288);
+  --theme-danger: oklch(60% 0.24 28);
+  --theme-danger-soft: oklch(70% 0.2 25);
+  --theme-danger-deep: oklch(26% 0.1 25);
+  --theme-warning: oklch(85% 0.17 95);
+  --theme-warning-soft: oklch(89% 0.15 100);
+  --theme-warning-deep: oklch(30% 0.07 90);
+  --theme-info: oklch(75% 0.14 195);
+  --theme-info-soft: oklch(82% 0.12 198);
+  --theme-info-deep: oklch(28% 0.06 210);
+  --theme-success: oklch(80% 0.21 135);
+  --theme-success-soft: oklch(87% 0.19 138);
+  --theme-accent-cyan: oklch(75% 0.14 195);
+  --theme-accent-brand: oklch(68% 0.25 0);
+  --theme-accent-brand-deep: oklch(26% 0.1 355);
+}
+
+/* 街機主題適配層（CSS-only，不動元件）*/
+.theme-retro-arcade .brand-title {
+  font-family: 'Press Start 2P', monospace; /* 拉丁字元像素刊頭 */
+  font-size: 26px;
+  letter-spacing: 0.1em;
+  filter: drop-shadow(3px 3px 0 oklch(68% 0.25 0 / 60%));
+  animation: none;
+}
+.theme-retro-arcade .brand-slogan {
+  letter-spacing: 0.4em;
+}
+.theme-retro-arcade canvas.pointer-events-none.z-0 {
+  opacity: 0.35; /* 星空粒子調暗，讓掃描線成為主質感 */
 }
 
 .dark {
