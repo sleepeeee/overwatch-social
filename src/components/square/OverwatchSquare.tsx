@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
 import { OWPlayerCard } from "@/types/card";
 import { MOCK_PLAYERS, HEROES_CONFIG, SERVER_OPTIONS, MIC_OPTIONS } from "@/data/mockPlayers";
 import { normalizeOverwatchServer } from "@/lib/gameCatalog";
@@ -24,7 +23,6 @@ interface OverwatchSquareProps {
 const PAGE_SIZE = 20;
 
 export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: OverwatchSquareProps) {
-  const router = useRouter();
   const { user, authLoading } = useAuth();
   const isLoggedIn = !!user;
 
@@ -321,9 +319,9 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
       </div>
 
       {isLoading ? (
-        <div className="flex flex-col items-center justify-center py-20 gap-3 text-[#8c7c6c]">
-          <div className="w-8 h-8 rounded-full border-2 border-[#82b7cc]/30 border-t-[#82b7cc] animate-spin" />
-          <span className="text-xs font-bold tracking-widest">招募特工中⋯</span>
+        <div className="flex flex-col items-center justify-center py-20 gap-3 text-auroraMint">
+          <div className="w-8 h-8 rounded-full border-2 border-auroraMint/20 border-t-auroraMint animate-spin" />
+          <span className="text-xs font-bold tracking-widest">正在載入展示館⋯</span>
         </div>
       ) : filteredPlayers.length > 0 ? (
         <>
@@ -331,11 +329,7 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
             {filteredPlayers.map((player) => (
               <div
                 key={player.card_id}
-                className="midnight-player-artifact w-full flex justify-center transition-transform duration-300 relative cursor-pointer"
-                onClick={(e) => {
-                  if ((e.target as HTMLElement).closest('[data-no-navigate]')) return;
-                  router.push(`/player/${player.user_id}`);
-                }}
+                className="midnight-player-artifact w-full flex justify-center transition-transform duration-300 relative"
               >
                 <OWCard
                   cardData={player}
@@ -368,7 +362,7 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
           <div className="space-y-1">
             <h3 className="text-zinc-100 font-extrabold text-lg">沒有找到符合條件的名片</h3>
             <p className="text-zinc-400 text-xs max-w-sm mx-auto">
-              試著調整您的篩選選項，或在右側重置所有條件，以瀏覽廣場上更多的鬥陣特工特工！
+              試著調整您的篩選選項，或在右側重置所有條件，以瀏覽廣場上更多的鬥陣特工名片！
             </p>
           </div>
           <Button
