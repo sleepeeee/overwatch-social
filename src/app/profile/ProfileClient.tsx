@@ -651,14 +651,18 @@ export default function ProfilePage() {
     setErrorMsg(null);
     
     if (!currentCard.battle_tag || !currentCard.battle_tag.trim()) {
-      setErrorMsg("請填寫您的 遊戲 ID (BattleTag)！");
+      const message = "請填寫您的 遊戲 ID (BattleTag)！";
+      setErrorMsg(message);
+      triggerToast(`⚠️ ${message}`);
       return;
     }
 
     if (editingGame === "ow") {
       const [namePart, suffixPart] = currentCard.battle_tag.split("#");
       if (!namePart?.trim() || !suffixPart?.trim()) {
-        setErrorMsg("請輸入完整 BattleTag，例如：芮萊突破者#1011");
+        const message = "請輸入完整 BattleTag，例如：芮萊突破者#1011";
+        setErrorMsg(message);
+        triggerToast(`⚠️ ${message}`);
         return;
       }
     }
@@ -668,7 +672,9 @@ export default function ProfilePage() {
     );
     
     if (activeSocials.length === 0) {
-      setErrorMsg("為保障聯絡暢通，最少必須填寫一個聯絡管道！");
+      const message = "為保障聯絡暢通，最少必須填寫一個聯絡管道！";
+      setErrorMsg(message);
+      triggerToast(`⚠️ ${message}`);
       return;
     }
 
