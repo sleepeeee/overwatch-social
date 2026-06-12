@@ -16,12 +16,12 @@ import InteractiveAvatar from "@/components/InteractiveAvatar";
 import { getHeroAlignments } from "@/app/actions/alignment";
 import type { AlignmentConfig } from "@/data/heroAlignments";
 import { HERO_ALIGNMENTS } from "@/data/heroAlignments";
+import { exportCardImage } from "@/lib/cardImageExport";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Save, ArrowLeft, Gamepad2, AlertTriangle, Eye, EyeOff, LockKeyhole } from "lucide-react";
-import { toPng } from "html-to-image";
 import { getMyProfile, saveProfile, provisionDefaultCard } from "@/app/actions/profile";
 import { deleteMyAccount } from "@/app/actions/account";
 import { getMyUserProfile, saveNickname } from "@/app/actions/userProfile";
@@ -326,19 +326,6 @@ function CosmicLivePreviewCard({
   );
 }
 
-const waitForCardExport = async (node: HTMLElement) => {
-  await document.fonts?.ready;
-  const images = Array.from(node.querySelectorAll("img"));
-  await Promise.all(
-    images.map((image) => {
-      if (image.complete) return Promise.resolve();
-      return image.decode().catch(() => undefined);
-    })
-  );
-  await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
-  await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
-};
-
 export default function ProfilePage() {
   const { user, authLoading, userProfile: authUserProfile } = useAuth();
   const [editingGame, setEditingGame] = useState<"ow" | "val" | "lol" | null>(null);
@@ -427,21 +414,9 @@ export default function ProfilePage() {
     setExportingImage(true);
     setErrorMsg(null);
     try {
-      await waitForCardExport(cardRef.current);
-      const dataUrl = await toPng(cardRef.current, {
-        cacheBust: true,
-        backgroundColor: "transparent",
-        style: {
-          transform: "scale(1)",
-          transformOrigin: "top left"
-        }
-      });
-      const link = document.createElement("a");
       const name = currentCard.battle_tag ? currentCard.battle_tag.split("#")[0] : "player";
-      link.download = `${editingGame}-card-${name}.png`;
-      link.href = dataUrl;
-      link.click();
-      triggerToast("名片圖片下載功能已準備就緒，圖片已成功匯出！");
+      const result = await exportCardImage(cardRef.current, `${editingGame}-card-${name}.png`);
+      triggerToast(result === "shared" ? "已開啟手機分享選單，請選擇儲存或傳送圖片。" : "名片圖片已成功匯出！");
     } catch (err) {
       console.error("導出圖片失敗:", err);
       setErrorMsg("導出圖片失敗，請重試！");
