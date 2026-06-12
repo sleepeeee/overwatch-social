@@ -1,16 +1,63 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 
 // 匯入 Cosmic 向量元件與星空 Canvas 粒子
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { CosmicFullLogo } from "@/components/CosmicParticlesBackground";
+import { getAnnouncements } from "@/app/actions/homepage";
+import type { AnnouncementItem } from "@/types/homepage";
+import { CloudStarmap } from "@/components/morning-sketch/CloudStarmap";
 
 export default function Home() {
   const router = useRouter();
   const { user, authLoading } = useAuth();
+
+  const [starmapOpen, setStarmapOpen] = useState(false);
+  const [announcements, setAnnouncements] = useState<AnnouncementItem[]>([]);
+  const cloudBtnRef = useRef<HTMLButtonElement | null>(null);
+
+  // 載入公告資料並篩選 01, 02, 03
+  useEffect(() => {
+    let active = true;
+    getAnnouncements()
+      .then((data) => {
+        if (active) {
+          const filtered = data.filter((item) =>
+            ["01", "02", "03"].includes(item.num)
+          );
+          setAnnouncements(filtered);
+        }
+      })
+      .catch((err) => {
+        console.error("Failed to load announcements in client:", err);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  // 鍵盤 Esc 收回支援
+  useEffect(() => {
+    if (!starmapOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setStarmapOpen(false);
+        cloudBtnRef.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [starmapOpen]);
+
+  const toggleStarmap = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setStarmapOpen(!starmapOpen);
+  };
 
   const handleGoogleLogin = async () => {
     const { createClient } = await import("@/lib/supabase/client");
@@ -63,8 +110,28 @@ export default function Home() {
 
             <div className="flex justify-center py-1 sm:py-2 relative w-full">
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-56 h-56 sm:w-80 sm:h-80 rounded-full bg-auroraMint/5 filter blur-3xl opacity-60"></div>
-              <div className="relative w-full max-w-[220px] sm:max-w-md bg-transparent rounded-full border border-white/[0.02] shadow-[0_0_50px_rgba(139,92,246,0.05)]">
-                <CosmicFullLogo className="w-full h-auto" />
+              {/* 外層定位基準容器：無 rounded-full，無 border，無 shadow，無 overflow-hidden 裁切 */}
+              <div className="relative w-full max-w-[220px] sm:max-w-md bg-transparent">
+                {/* 內層實體 Logo 視覺容器：擁有圓角與陰影，並加上 overflow-hidden */}
+                <div className="w-full h-auto rounded-full border border-white/[0.02] shadow-[0_0_50px_rgba(139,92,246,0.05)] overflow-hidden">
+                  <CosmicFullLogo className="w-full h-auto" />
+                </div>
+                
+                {/* 雲朵互動熱區按鈕 - 移除 focus ring 與 focus:opacity-20 圈圈，僅保留 focus:outline-none */}
+                <button
+                  ref={cloudBtnRef}
+                  onClick={toggleStarmap}
+                  aria-expanded={starmapOpen}
+                  aria-label="開啟站長星圖選單"
+                  className="absolute left-[38%] top-[35%] w-[14%] h-[12%] rounded-full opacity-0 cursor-pointer focus:outline-none z-30"
+                />
+
+                {/* 星圖面板與連線元件 - 位於裁切容器之外，因此連接線絕不會被截斷！ */}
+                <CloudStarmap
+                  isOpen={starmapOpen}
+                  onClose={() => setStarmapOpen(false)}
+                  announcements={announcements}
+                />
               </div>
             </div>
 
