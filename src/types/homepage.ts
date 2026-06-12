@@ -15,6 +15,7 @@ export interface AlignmentConfig {
   tag_font_size: number;
   tag_x: number;
   tag_y: number;
+  is_hidden?: boolean; // 新增：是否在星圖中隱藏
 }
 
 export interface AnnouncementItem {

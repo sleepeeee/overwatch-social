@@ -485,7 +485,75 @@
     stroke-width: 1.2;
     opacity: 0.85;
     filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));
-    animation: driftCloud 13.2s ease-in-out infinite alternate;
+    animation: driftCloud 13.2s ease-in-out infinite alternate, cloudGlow 3.5s ease-in-out infinite;
+}
+
+/* 星圖選單與連接線動畫優化 */
+
+/* 1. 底層微飄移星軌 */
+.starmap-orbit-line {
+    stroke: rgba(168, 85, 247, 0.18);
+    stroke-width: 1;
+    stroke-dasharray: 4 4;
+    stroke-dashoffset: 40;
+    opacity: 0;
+    transition: stroke-dashoffset 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease-out;
+}
+
+.starmap-orbit-line.active {
+    stroke-dashoffset: 0;
+    opacity: 1;
+    animation: orbitDrift 15s linear infinite;
+}
+
+/* 2. 頂層發光流動點線 */
+.starmap-flow-line {
+    stroke: #c084fc;
+    stroke-width: 1.5;
+    stroke-dasharray: 10 90; /* 10px 發光點，90px 空白 */
+    stroke-dashoffset: 100;
+    opacity: 0;
+    filter: drop-shadow(0 0 3px #c084fc) drop-shadow(0 0 6px #8b5cf6);
+    transition: stroke-dashoffset 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease-out;
+}
+
+.starmap-flow-line.active {
+    stroke-dashoffset: 0;
+    opacity: 0.9;
+    animation: flowPulseLine 2.2s linear infinite;
+}
+
+/* 3. 面板過渡特效 (加入微旋轉) */
+.starmap-panel {
+    opacity: 0;
+    transform: scale(0.3) translate(var(--cloud-dx, 0px), var(--cloud-dy, 0px)) rotate(var(--panel-rotate, 0deg));
+    transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.65s ease-out;
+    pointer-events: none;
+}
+
+.starmap-panel.active {
+    opacity: 1;
+    transform: scale(1) translate(0, 0) rotate(var(--panel-rotate, 0deg));
+    pointer-events: auto;
+}
+
+/* 4. Focus 狀態與雲朵脈動連結 */
+.relative:focus-within .fluffy-cloud {
+    stroke: #c084fc;
+    stroke-width: 1.8;
+    opacity: 1;
+    filter: drop-shadow(0 0 15px rgba(192, 132, 252, 0.95));
+    animation: driftCloud 13.2s ease-in-out infinite alternate, cloudGlowActive 1.5s ease-in-out infinite !important;
+}
+
+/* 雲朵在選單展開時也保持高亮 */
+.relative:focus-within .fluffy-cloud,
+.relative:has(button[aria-expanded="true"]) .fluffy-cloud {
+    stroke: #c084fc;
+    stroke-width: 1.8;
+    opacity: 1;
+    filter: drop-shadow(0 0 15px rgba(192, 132, 252, 0.95));
+    animation: driftCloud 13.2s ease-in-out infinite alternate, cloudGlowActive 1.5s ease-in-out infinite !important;
 }
 
 @keyframes moonEntrance {
@@ -529,6 +597,32 @@
     0% { transform: translate(-8px, 5px); opacity: 0.6; }
     100% { transform: translate(12px, -3px); opacity: 0.85; }
 }
+@keyframes cloudGlow {
+    0%, 100% {
+        filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5)) drop-shadow(0 0 4px rgba(192, 132, 252, 0.25));
+    }
+    50% {
+        filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5)) drop-shadow(0 0 14px rgba(192, 132, 252, 0.75));
+    }
+}
+@keyframes cloudGlowActive {
+    0%, 100% {
+        filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5)) drop-shadow(0 0 8px rgba(192, 132, 252, 0.5));
+    }
+    50% {
+        filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5)) drop-shadow(0 0 20px rgba(192, 132, 252, 0.95));
+    }
+}
+
+@keyframes orbitDrift {
+    from { stroke-dashoffset: 40; }
+    to { stroke-dashoffset: 0; }
+}
+
+@keyframes flowPulseLine {
+    from { stroke-dashoffset: 100; }
+    to { stroke-dashoffset: 0; }
+}
 
 @media (prefers-reduced-motion: reduce) {
     * {
@@ -545,5 +639,22 @@
     }
     #dynamic-particles circle {
         animation: none !important;
+    }
+    .fluffy-cloud {
+        animation: none !important;
+        filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5)) drop-shadow(0 0 8px rgba(192, 132, 252, 0.5)) !important;
+    }
+    .starmap-orbit-line {
+        stroke-dashoffset: 0 !important;
+        transition: opacity 0.3s ease-out !important;
+    }
+    .starmap-flow-line {
+        stroke-dashoffset: 0 !important;
+        opacity: 0 !important;
+        animation: none !important;
+    }
+    .starmap-panel {
+        transform: none !important;
+        transition: opacity 0.3s ease-out !important;
     }
 }
