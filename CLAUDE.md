@@ -1,8 +1,15 @@
-# OW Social - 鬥陣特工交友平台
+# AFTER MIDNIGHT（OW Social）- 玩家名片展示館
 
 ## 專案總覽
-鬥陣特工（Overwatch 2）主題的玩家個人名片 / 交友平台，未來擴展為多遊戲社群大廳。
-玩家可建立含英雄、段位、角色偏好的個人名片，並在廣場上瀏覽、認識其他玩家。
+鬥陣特工（Overwatch 2）主題的**玩家身份展示系統 / 名片展示館**，未來擴展為多遊戲圖鑑大廳。
+玩家建立自己的遊戲人格卡片，其他玩家安靜地探索、觀看，並自行決定是否透過遊戲內好友系統接觸。
+
+### 產品定位（SSOT：`(new)AFTER_MIDNIGHT_網站架構草案.docx`，v1 2026-06）
+- **核心哲學：低侵入社交（Low-intrusive Social）**——探索感、收藏感、安靜感、深夜氛圍、玩家人格展示
+- **不是**交友平台 / 即時社交網站；**永不做**：私訊系統、即時聊天室、配對演算法、站內交友、強 engagement feed
+- 玩家卡 =「玩家人格展示卡」（非交友卡）；全域暱稱 = 玩家統一身份識別（可搜出其所有遊戲卡片）
+- 視覺方向：Card-first hierarchy、Gallery thinking、Calm exploration、Slow browsing、Atmospheric UI；避免社交 feed / Tinder 感 / SaaS dashboard
+- 未來可能（仍守低侵入原則）：組隊大廳、玩家收藏、更深層探索體驗
 - 生產網址：https://aftermidnight-gg.vercel.app
 - Supabase Project ID：`cxoncanfveqtfofcqyqe`
 
@@ -15,7 +22,7 @@
 | 中文名稱 | AI 溝現代號 (Alias) | 實體檔案路徑 | 路由 (Route) | 功能簡述 |
 | :--- | :--- | :--- | :--- | :--- |
 | **首頁頁面** | `home` | `src/app/page.tsx` | `/` | 登入前的Landing Page、朝陽全息視覺主頁 |
-| **鬥陣特攻廣場** | `ow lobby` | `src/app/browse/page.tsx` | `/browse` | 玩家名片交友廣場，讀取公用檔案清單 |
+| **鬥陣特攻廣場** | `ow lobby` | `src/app/browse/page.tsx` | `/browse` | 玩家卡片展示牆 / 遊戲人格探索空間（網站核心區域），讀取公用檔案清單 |
 | **個人檔案頁面** | `profile` | `src/app/profile/page.tsx` | `/profile` | 玩家個人名片編輯與特工檔案設定 |
 | **玩家詳細頁** | `player detail` | `src/app/player/[id]/page.tsx` | `/player/[id]` | 單一玩家的公開名片詳細頁（未登入可看基本資料） |
 | **開發者後台** | `dev console` | `src/app/developer/page.tsx` | `/developer` | 提供給 Admin/開發者的參數管理後台 |
@@ -56,7 +63,7 @@ npm run build    # 正式打包
 src/app/
 ├── page.tsx                      # 首頁（TopBar + 玩家卡輪播）
 ├── layout.tsx                    # 全域 Layout（AuthProvider + FloatingDock）
-├── browse/page.tsx               # 名片交友廣場（authLoading spinner + Square 子元件）
+├── browse/page.tsx               # 卡片廣場（玩家探索核心；authLoading spinner + Square 子元件）
 ├── profile/page.tsx              # 個人名片設定（LoginModal overlay 守門）
 ├── player/[id]/page.tsx          # 玩家詳細頁（Server Component，含 generateMetadata）
 ├── developer/
