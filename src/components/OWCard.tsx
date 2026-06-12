@@ -5,7 +5,6 @@ import { OWPlayerCard } from "@/types/card";
 import { HEROES_CONFIG, PRESET_TAGS } from "@/data/mockPlayers";
 import { Copy, Eye, EyeOff, Globe } from "lucide-react";
 import { SocialIcon } from "@/components/ui/SocialIcons";
-import { HERO_ALIGNMENTS, DEFAULT_ALIGNMENT } from "@/data/heroAlignments";
 import { HeroCardBackground } from "./HeroCardBackground";
 import { getHeroBackgroundConfig } from "@/data/heroBackgrounds";
 import { getOverwatchServerLabelEn } from "@/lib/gameCatalog";
@@ -15,7 +14,6 @@ interface OWCardProps {
   isLoggedIn?: boolean;
   isEditable?: boolean;
   renderMode?: "interactive" | "export";
-  customAlignments?: Record<string, { scale: number; translateX: number; translateY: number }>;
   onLoginRequired?: () => void;
 }
 
@@ -24,7 +22,6 @@ export default function OWCard({
   isLoggedIn = true,
   isEditable = false,
   renderMode = "interactive",
-  customAlignments,
   onLoginRequired,
 }: OWCardProps) {
   const [copiedTag, setCopiedTag] = useState(false);
@@ -218,11 +215,6 @@ export default function OWCard({
         {[0, 1, 2].map((index) => {
           const heroId = selected_heroes[index];
           const heroInfo = heroId ? getHeroInfo(heroId) : null;
-          const adj = heroId ? (customAlignments?.[heroId] || HERO_ALIGNMENTS[heroId] || DEFAULT_ALIGNMENT) : DEFAULT_ALIGNMENT;
-          const imgStyle = {
-            transform: `scale(${adj.scale}) translate(${adj.translateX}%, ${adj.translateY}%)`,
-            transformOrigin: "top center",
-          };
           return (
             <div key={index} className="relative flex-1 h-full border-r border-white/[0.05] last:border-r-0 overflow-hidden group/hero flex flex-col justify-between">
               {heroInfo ? (
@@ -242,14 +234,13 @@ export default function OWCard({
                       </>
                     );
                   })()}
-                  <div className="relative w-full h-[90%] flex justify-center items-start select-none transition-transform duration-500 group-hover/hero:scale-[1.03] z-10">
+                  <div className="absolute inset-0 z-10 flex items-start justify-center overflow-visible select-none">
                     <img
-                      src={`/images/heroes/full/${heroInfo.id}.png`}
+                      src={`/images/heroes/busts/${heroInfo.id}.png`}
                       alt={`鬥陣特攻英雄 ${heroInfo.name} 名片立繪`}
                       loading={isExportMode ? "eager" : "lazy"}
                       referrerPolicy="no-referrer"
-                      style={imgStyle}
-                      className="max-w-[185%] max-h-[135%] object-contain transition-all duration-500 filter drop-shadow-[0_6px_12px_rgba(0,0,0,0.5)] group-hover/hero:drop-shadow-[0_12px_24px_rgba(0,0,0,0.7)] select-none"
+                      className="h-full w-full object-cover transition-transform duration-500 filter drop-shadow-[0_6px_12px_rgba(0,0,0,0.5)] group-hover/hero:scale-[1.03] select-none"
                       draggable="false"
                       onError={(e) => { (e.target as HTMLImageElement).src = '/images/heroes/silhouette.png'; }}
                     />

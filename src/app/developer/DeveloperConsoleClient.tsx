@@ -744,36 +744,8 @@ export default function DeveloperConsoleClient({
                 </div>
 
                 <div className="grid grid-cols-1 gap-6">
-                  
-                  {/* Tool 1 */}
-                  <div className="bg-white dark:bg-[#202428] rounded-xl p-5 border border-slate-200 dark:border-slate-800/80 shadow-sm flex flex-col justify-between gap-4">
-                    <div className="flex items-start gap-4">
-                      <div className="p-3 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl shrink-0">
-                        <Sliders size={20} />
-                      </div>
-                      <div className="space-y-1">
-                        <h3 className="text-sm font-bold text-slate-800 dark:text-slate-100">
-                          英雄立繪對準工具 <span className="font-mono text-[11px] text-slate-400">(Portrait Aligner)</span>
-                        </h3>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                          用於精密調整《鬥陣特攻 2》英雄半身頭像立繪在卡槽中的 <strong>縮放比 (Scale)</strong> 與 <strong>X/Y 軸位移補償參數</strong>。保存後會即時寫入系統設定，全站無縫同步。
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-end border-t border-slate-100 dark:border-slate-800/50 pt-3">
-                      <Link 
-                        href="/developer/adjuster" 
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="px-4 py-2 rounded-lg text-xs font-semibold text-white shadow-md hover:shadow-lg flex items-center gap-1.5 transition-all bg-gradient-to-r from-[var(--theme-primary)] to-[var(--theme-primary-dark)] hover:opacity-90"
-                      >
-                        <span>啟動對準工具</span>
-                        <ArrowRight size={12} />
-                      </Link>
-                    </div>
-                  </div>
 
-                  {/* Tool 2 */}
+                  {/* Tool 1 */}
                   <div className="bg-white dark:bg-[#202428] rounded-xl p-5 border border-slate-200 dark:border-slate-800/80 shadow-sm flex flex-col justify-between gap-4">
                     <div className="flex items-start gap-4">
                       <div className="p-3 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl shrink-0">
@@ -801,7 +773,7 @@ export default function DeveloperConsoleClient({
                     </div>
                   </div>
 
-                  {/* Tool 3 */}
+                  {/* Tool 2 */}
                   <div className="bg-white dark:bg-[#202428] rounded-xl p-5 border border-slate-200 dark:border-slate-800/80 shadow-sm flex flex-col justify-between gap-4">
                     <div className="flex items-start gap-4">
                       <div className="p-3 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl shrink-0">
@@ -829,7 +801,7 @@ export default function DeveloperConsoleClient({
                     </div>
                   </div>
 
-                  {/* Tool 4 */}
+                  {/* Tool 3 */}
                   <div className="bg-white dark:bg-[#202428] rounded-xl p-5 border border-slate-200 dark:border-slate-800/80 shadow-sm flex flex-col justify-between gap-4">
                     <div className="flex items-start gap-4">
                       <div className="p-3 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl shrink-0">
