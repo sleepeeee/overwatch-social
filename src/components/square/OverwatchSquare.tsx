@@ -7,7 +7,7 @@ import { normalizeOverwatchServer } from "@/lib/gameCatalog";
 import OWCard from "@/components/OWCard";
 import LoginModal from "@/components/LoginModal";
 import { Button } from "@/components/ui/button";
-import { RotateCcw, AlertCircle, Search, ChevronDown } from "lucide-react";
+import { RotateCcw, AlertCircle, Search, ChevronDown, SlidersHorizontal } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { getPublicProfiles } from "@/app/actions/browse";
 import { useAuth } from "@/context/AuthContext";
@@ -30,6 +30,8 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
   const [selectedServer, setSelectedServer] = useState("全部");
   const [selectedMic, setSelectedMic] = useState("全部");
   const [isMounted, setIsMounted] = useState(false);
+  // 手機篩選面板收合（lg 以上由 CSS 強制常駐展開，初始值固定 false 確保 SSR 安全）
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isShowingMockData, setIsShowingMockData] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [hasMore, setHasMore] = useState(false);
@@ -37,6 +39,13 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
   const requestCounterRef = useRef<number>(0);  // 遞增計數器，比 Date.now() 更可靠
   const searchDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const effectiveSearchQuery = searchQuery ?? localSearchQuery;
+  // 啟用中的篩選數量（判斷條件與「重置篩選」按鈕一致）
+  const activeFilterCount = [
+    localSearchQuery.trim() !== "",
+    selectedServer !== "全部",
+    selectedRole !== "全部",
+    selectedMic !== "全部",
+  ].filter(Boolean).length;
 
   const toPlayerCard = (row: Record<string, unknown>): OWPlayerCard => ({
     card_id: (row.card_id as string) ?? (row.user_id as string),
@@ -203,8 +212,32 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
         </div>
       )}
 
-      <div className="glass-card w-full p-4 sm:p-5 md:p-6 space-y-4 sm:space-y-5 relative z-10 rounded-xl border border-white/[0.06]">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+      <div className="glass-card w-full p-4 sm:p-5 md:p-6 relative z-10 rounded-xl border border-white/[0.06]">
+        {/* 手機收合橫條（lg 以上不渲染，桌面恆常駐展開） */}
+        <button
+          type="button"
+          onClick={() => setIsFilterOpen((prev) => !prev)}
+          aria-expanded={isFilterOpen}
+          className="flex lg:hidden w-full items-center justify-between gap-2 cursor-pointer"
+        >
+          <span className="flex items-center gap-2 text-[10px] text-theme-text-muted uppercase tracking-[0.18em] font-mono font-medium">
+            <SlidersHorizontal size={13} className="text-auroraMint" />
+            <span>篩選 // Search & Filter</span>
+            {activeFilterCount > 0 && (
+              <span className="rounded-full border border-auroraMint/30 bg-auroraMint/10 px-2 py-0.5 text-[9px] font-mono lowercase text-auroraMint">
+                {activeFilterCount} active
+              </span>
+            )}
+          </span>
+          <ChevronDown
+            size={14}
+            className={`text-theme-text-faint transition-transform duration-300 ${isFilterOpen ? "rotate-180" : ""}`}
+          />
+        </button>
+
+        {/* 篩選控制項：手機依 isFilterOpen 顯示，lg 以上由 CSS 強制常駐（控制項不卸載，收合不重置條件） */}
+        <div className={`${isFilterOpen ? "block" : "hidden"} lg:block mt-4 sm:mt-5 lg:mt-0 space-y-4 sm:space-y-5`}>
+        <div className="hidden lg:flex lg:items-center justify-between gap-2">
           <p className="text-[10px] text-theme-text-muted uppercase tracking-[0.18em] font-mono font-medium">
             調整探索頻率 // Overwatch Search & Filter
           </p>
@@ -308,6 +341,7 @@ export default function OverwatchSquare({ searchQuery, isPremiumStyle = true }: 
               )}
             </div>
           </div>
+        </div>
         </div>
       </div>
 
