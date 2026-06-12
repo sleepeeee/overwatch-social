@@ -113,7 +113,7 @@ export default function ShareCardClient({ cardData }: Props) {
                 </p>
               </div>
 
-              <div className="fixed left-[-10000px] top-0 w-[340px] pointer-events-none opacity-0" aria-hidden="true">
+              <div className="fixed left-[-10000px] top-0 w-[340px] pointer-events-none" aria-hidden="true">
                 <div ref={cardRef} className="share-card-export-surface rounded-[28px] overflow-hidden w-[340px] flex justify-center">
                   <OWCard
                     cardData={cardData}
