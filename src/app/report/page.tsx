@@ -114,42 +114,38 @@ export default function ReportPage() {
             <p className="mt-3 text-sm leading-6 text-theme-text-soft">
               如果你留下可聯絡方式，站方會透過品牌信箱回覆。Beta 期間不保證即時客服，但會優先處理登入、資料與不當內容問題。
             </p>
-            <div className="mt-5 rounded-xl border border-white/[0.08] bg-black/20 p-4 text-xs leading-6 text-theme-text-muted">
-              這一頁目前尚未放入網站導覽。正式入口位置會等 Beta 測試流程確認後再加入。
+            <div className="mt-5 flex flex-col gap-3">
+              {reportFormUrl ? (
+                <a
+                  href={reportFormUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl border border-auroraMint/30 bg-auroraMint/15 px-5 text-sm font-semibold text-white transition hover:border-auroraMint/60 hover:bg-auroraMint/20 focus:outline-none focus:ring-2 focus:ring-auroraMint/50"
+                >
+                  前往回報表單
+                  <ExternalLink className="h-4 w-4" aria-hidden="true" />
+                </a>
+              ) : (
+                <div className="inline-flex min-h-12 items-center justify-center rounded-2xl border border-white/[0.07] bg-white/[0.025] px-5 text-sm font-semibold text-theme-text-faint">
+                  回報表單設定中
+                </div>
+              )}
+
+              {mailHref ? (
+                <a
+                  href={mailHref}
+                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/[0.035] px-5 text-sm font-semibold text-theme-text-body transition hover:border-white/25 hover:text-white focus:outline-none focus:ring-2 focus:ring-auroraMint/50"
+                >
+                  用品牌信箱聯絡
+                  <Mail className="h-4 w-4" aria-hidden="true" />
+                </a>
+              ) : (
+                <div className="inline-flex min-h-12 items-center justify-center rounded-2xl border border-white/[0.07] bg-white/[0.025] px-5 text-sm font-semibold text-theme-text-faint">
+                  品牌信箱設定中
+                </div>
+              )}
             </div>
           </aside>
-        </section>
-
-        <section className="grid gap-3 sm:grid-cols-2">
-          {reportFormUrl ? (
-            <a
-              href={reportFormUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex min-h-14 items-center justify-center gap-2 rounded-2xl border border-auroraMint/30 bg-auroraMint/15 px-5 text-sm font-semibold text-white transition hover:border-auroraMint/60 hover:bg-auroraMint/20 focus:outline-none focus:ring-2 focus:ring-auroraMint/50"
-            >
-              前往回報表單
-              <ExternalLink className="h-4 w-4" aria-hidden="true" />
-            </a>
-          ) : (
-            <div className="inline-flex min-h-14 items-center justify-center rounded-2xl border border-white/[0.07] bg-white/[0.025] px-5 text-sm font-semibold text-theme-text-faint">
-              回報表單設定中
-            </div>
-          )}
-
-          {mailHref ? (
-            <a
-              href={mailHref}
-              className="inline-flex min-h-14 items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/[0.035] px-5 text-sm font-semibold text-theme-text-body transition hover:border-white/25 hover:text-white focus:outline-none focus:ring-2 focus:ring-auroraMint/50"
-            >
-              用品牌信箱聯絡
-              <Mail className="h-4 w-4" aria-hidden="true" />
-            </a>
-          ) : (
-            <div className="inline-flex min-h-14 items-center justify-center rounded-2xl border border-white/[0.07] bg-white/[0.025] px-5 text-sm font-semibold text-theme-text-faint">
-              品牌信箱設定中
-            </div>
-          )}
         </section>
       </main>
     </div>

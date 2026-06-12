@@ -131,13 +131,24 @@ supabase/migrations/
 ├── 003_hero_alignments.sql        # hero_alignments 表 + RLS + 51 筆 seed
 ├── 004_developer_profiles_policy.sql # developer SELECT policy（跨用戶讀 profiles）
 ├── 005_announcements.sql          # announcements 表 + RLS + 4 筆 seed
-├── 005_game_tags.sql              # game_tags 表（特色標籤系統）
 ├── 006_profiles_grant.sql         # GRANT SELECT/INSERT/UPDATE/DELETE → authenticated
 ├── 007_public_profiles_social.sql # public_profiles view 更新
 ├── 008_fix_social_channels_privacy.sql # RLS policy（authenticated 可讀 visible profiles）
-├── 009_hero_stats_function.sql        # get_hero_stats() RPC（unnest + COUNT DISTINCT + SECURITY DEFINER）
+├── 009_hero_stats_function.sql    # get_hero_stats() RPC（unnest + COUNT DISTINCT + SECURITY DEFINER）
+├── 010_game_tags.sql              # game_tags 表（特色標籤系統）
+├── 011~015                        # 效能索引、display_name、一遊戲一卡、view 還原
 ├── 016_user_profiles.sql          # user_profiles 表 + RLS + 遷移 INSERT（全域暱稱）
-└── 017_public_profiles_with_nickname.sql # public_profiles view 加 nickname（LEFT JOIN user_profiles）
+├── 017（已刪除）                   # 隱私地雷（view 洩漏原始 social_channels），從未套用 prod，被 022 取代
+├── 018_insert_generic_tags.sql    # 通用標籤 seed
+├── 019_normalize_user_profiles_and_card_servers.sql # 暱稱/伺服器值正規化
+├── 020_overwatch_server_check_constraint.sql # OW server CHECK 約束（asia/america/europe）
+├── 021_harden_supabase_security.sql # 安全強化（重建 view 含 nickname + 遮蔽）
+├── 022_moderation_is_hidden.sql   # 站方下架 is_hidden + view 重建
+├── 023_profiles_grant_service_role.sql # service_role DML 權限
+├── 024_profiles_is_card_visible.sql # 用戶自藏 is_card_visible + view 過濾
+├── 025_profiles_is_draft.sql      # 草稿卡 is_draft
+└── 026_announcements_grant.sql    # announcements 等表最小權限 GRANT
+（編號 = prod 套用順序，2026-06-12 重排歸位；新 migration 從 027 起編）
 ```
 
 ## 認證與權限系統
