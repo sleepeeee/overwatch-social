@@ -6,26 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, Sparkles } from "lucide-react";
 import OWCard from "@/components/OWCard";
-import { toPng } from "html-to-image";
+import { exportCardImage } from "@/lib/cardImageExport";
 import { useAuth } from "@/context/AuthContext";
 import type { OWPlayerCard } from "@/types/card";
 
 interface Props {
   cardData: OWPlayerCard | null;
 }
-
-const waitForCardExport = async (node: HTMLElement) => {
-  await document.fonts?.ready;
-  const images = Array.from(node.querySelectorAll("img"));
-  await Promise.all(
-    images.map((image) => {
-      if (image.complete) return Promise.resolve();
-      return image.decode().catch(() => undefined);
-    })
-  );
-  await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
-  await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
-};
 
 export default function ShareCardClient({ cardData }: Props) {
   const { user } = useAuth();
@@ -37,16 +24,7 @@ export default function ShareCardClient({ cardData }: Props) {
     if (!cardRef.current || !cardData) return;
     setExportingImage(true);
     try {
-      await waitForCardExport(cardRef.current);
-      const dataUrl = await toPng(cardRef.current, {
-        cacheBust: true,
-        backgroundColor: "transparent",
-        style: { transform: "scale(1)", transformOrigin: "top left" }
-      });
-      const link = document.createElement("a");
-      link.download = `ow-card-${playerName}.png`;
-      link.href = dataUrl;
-      link.click();
+      await exportCardImage(cardRef.current, `ow-card-${playerName}.png`);
     } catch (err) {
       console.error("導出圖片失敗:", err);
       alert("導出圖片失敗，請重試！");
