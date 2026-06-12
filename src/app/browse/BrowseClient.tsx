@@ -35,14 +35,14 @@ export default function BrowsePage() {
               </span>
             </h1>
             <p className="text-[11px] sm:text-xs text-theme-text-soft font-light leading-relaxed max-w-3xl">
-              請安靜瀏覽下方玩家的遊戲人格。複製他們的金鑰（UID），並在適當的夜晚，於遊戲世界中展開您的微光旅程。
+              請安靜瀏覽下方玩家的遊戲人格。複製他們的 UID，在遊戲中找到彼此。
             </p>
           </div>
           <Link
             href="/profile"
             className="px-4 py-2.5 rounded-lg border border-white/10 hover:border-auroraMint/30 bg-white/[0.01] hover:bg-auroraMint/5 text-xs text-theme-text-soft hover:text-white transition-all duration-300 font-mono tracking-wider flex items-center justify-center space-x-2"
           >
-            <span>管理我的特工帳戶</span>
+            <span>管理我的帳戶</span>
             <span>✦</span>
           </Link>
         </div>
