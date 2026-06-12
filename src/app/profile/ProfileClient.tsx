@@ -38,7 +38,7 @@ const DEFAULT_CARD: OWPlayerCard = {
   languages: ["繁體中文"],
   mic_status: "listen-only",
   social_channels: {},
-  mbti: "INFJ"
+  mbti: undefined
 };
 
 interface SpecialTag {
