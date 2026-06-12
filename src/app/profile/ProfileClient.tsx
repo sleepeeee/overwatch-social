@@ -451,6 +451,21 @@ export default function ProfilePage() {
     setMounted(true);
   }, []);
 
+  // dbTags 載入後，過濾 cardData.tags 裡的失效舊標籤（去 # 正規化後比對）
+  useEffect(() => {
+    if (dbTags.length === 0) return;
+    const normalize = (t: string) => t.replace(/^#+/, '').trim();
+    const validSet = new Set(dbTags.map(t => normalize(t.tag_name)));
+    setCardData(prev => {
+      const filtered = (prev.tags ?? []).map(normalize).filter(t => t !== '' && validSet.has(t));
+      const unchanged =
+        filtered.length === (prev.tags ?? []).length &&
+        filtered.every((t, i) => t === (prev.tags ?? [])[i]);
+      if (unchanged) return prev;
+      return { ...prev, tags: filtered };
+    });
+  }, [dbTags]);
+
   // Auth seed：以 per-user localStorage 優先
   useEffect(() => {
     if (!authUserProfile) return;
@@ -676,7 +691,13 @@ export default function ProfilePage() {
     setSaving(true);
     try {
       if (editingGame === "ow") {
-        const result = await saveProfile(cardData);
+        const normalize = (t: string) => t.replace(/^#+/, '').trim();
+        const validSet = new Set(dbTags.map(t => normalize(t.tag_name)));
+        const cardToSave = {
+          ...cardData,
+          tags: (cardData.tags ?? []).map(normalize).filter(t => t !== '' && validSet.has(t)),
+        };
+        const result = await saveProfile(cardToSave);
         if (result.error) {
           setErrorMsg(result.error);
           triggerToast(`⚠️ ${result.error}`);
