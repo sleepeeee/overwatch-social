@@ -161,7 +161,7 @@ export default function LuckyAlly() {
             <div className="flex flex-wrap gap-1.5 min-w-0">
               {player?.tags.slice(0, 2).map((tag) => (
                 <span key={tag} className="soft-home-badge">
-                  #{tag}
+                  #{tag.replace(/^#+/, '')}
                 </span>
               ))}
             </div>

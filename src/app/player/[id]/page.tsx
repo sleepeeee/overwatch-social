@@ -158,7 +158,7 @@ export default async function PlayerDetailPage({ params }: Props) {
           <div className="flex flex-wrap gap-2">
             {(player.tags as string[]).map((tag) => (
               <span key={tag} className="text-[11px] font-bold px-3 py-1 rounded-full pastel-tag-blue">
-                #{tag}
+                #{tag.replace(/^#+/, '')}
               </span>
             ))}
           </div>

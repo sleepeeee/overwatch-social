@@ -262,7 +262,7 @@ function CosmicLivePreviewCard({
               key={tagText}
               className={`text-[9px] font-medium bg-theme-surface-raised/40 border border-white/[0.04] text-theme-text-body rounded-full px-2.5 py-1 transition-all duration-300 hover:scale-[1.03]`}
             >
-              #{tagText}
+              #{tagText.replace(/^#+/, '')}
             </span>
           ))
         ) : (
@@ -1511,7 +1511,7 @@ export default function ProfilePage() {
                           : "bg-white/[0.01] border-white/[0.06] text-theme-text-muted hover:text-white"
                       }`}
                     >
-                      #{tagName}
+                      #{tagName.replace(/^#+/, '')}
                     </button>
                   );
                 })}
