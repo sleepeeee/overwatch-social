@@ -47,38 +47,33 @@ const waitForCardExport = async (node: HTMLElement) => {
   await nextFrame();
 };
 
-// 圖片轉 data URL：用 canvas.drawImage 直接提取，避免 html-to-image 序列化
-// foreignObject 時 mobile 隨機空白（REF-036 race）。對未載入圖必須先 await load
-// + decode，不可 early-return（會把未 decode 圖交回 foreignObject）。
+const blobToDataUrl = (blob: Blob): Promise<string> =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(blob);
+  });
+
+// 用 fetch 直接拿 binary → FileReader 轉 dataURL，完全繞過 <img> 元素的
+// load/decode 時序。html-to-image 序列化 foreignObject 時 mobile Safari
+// 對 <img> race（REF-036）；以 dataURL src 餵入則 serialize 沒有 race。
 const preloadImagesAsDataUrls = async (node: HTMLElement): Promise<void> => {
   const images = Array.from(node.querySelectorAll<HTMLImageElement>("img"));
   await Promise.all(
     images.map(async (img) => {
       if (img.src.startsWith("data:")) return;
-
-      if (!img.complete || img.naturalWidth === 0) {
-        await new Promise<void>((resolve) => {
-          const timeout = window.setTimeout(resolve, 5000);
-          img.addEventListener("load", () => { clearTimeout(timeout); resolve(); }, { once: true });
-          img.addEventListener("error", () => { clearTimeout(timeout); resolve(); }, { once: true });
-        });
-      }
-
-      await img.decode().catch(() => undefined);
-
-      if (img.naturalWidth === 0 || img.naturalHeight === 0) return;
-
+      const originalSrc = img.src;
       try {
-        const canvas = document.createElement("canvas");
-        canvas.width = img.naturalWidth;
-        canvas.height = img.naturalHeight;
-        const ctx = canvas.getContext("2d");
-        if (!ctx) return;
-        ctx.drawImage(img, 0, 0);
-        img.src = canvas.toDataURL("image/png");
+        const res = await fetch(originalSrc, { cache: "force-cache" });
+        if (!res.ok) return;
+        const blob = await res.blob();
+        const dataUrl = await blobToDataUrl(blob);
+        img.src = dataUrl;
+        // 等到瀏覽器把 dataURL decode 完成才回（避免 html-to-image 跑時還沒 decode）
         await img.decode().catch(() => undefined);
       } catch {
-        // 保留原始 src（CORS 或其他問題）
+        // 保留原始 src（網路失敗時走 onError silhouette fallback）
       }
     })
   );
