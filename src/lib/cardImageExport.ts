@@ -58,9 +58,6 @@ const blobToDataUrl = (blob: Blob): Promise<string> =>
 // 用 fetch 直接拿 binary → FileReader 轉 dataURL，完全繞過 <img> 元素的
 // load/decode 時序。html-to-image 序列化 foreignObject 時 mobile Safari
 // 對 <img> race（REF-036）；以 dataURL src 餵入則 serialize 沒有 race。
-// 用 fetch 直接拿 binary → FileReader 轉 dataURL，完全繞過 <img> 元素的
-// load/decode 時序。html-to-image 序列化 foreignObject 時 mobile Safari
-// 對 <img> race（REF-036）；以 dataURL src 餵入則 serialize 沒有 race。
 const preloadImagesAsDataUrls = async (node: HTMLElement): Promise<void> => {
   const images = Array.from(node.querySelectorAll<HTMLImageElement>("img"));
   await Promise.all(
