@@ -57,6 +57,16 @@
 
 ## Zone B — 工作日誌（追加，由新到舊）
 
+### 2026-06-13 fix-oauth-redirect-preserve-origin — PROPOSE + APPLY 完成
+
+- **背景**：使用者反饋 OAuth 登入完成後一律跳回 `/profile`，從 `/browse` 觸發 LoginModal 登入後失去探索脈絡。EXPLORE 階段定位根因：callback `safeRedirectPath` 已支援 `?next=` 但 4 個 `signInWithOAuth` 入口（LoginModal/HomeClient/ProfileClient/AuthShelvedButtons）皆未配合寫入 next
+- **Tier**：L1 lean（5 檔、4 個同類修改、單一主題、user 已拍板、spec 文件級 delta）；跳過 Stage 0-6 與 §6.1/§6.5 council
+- **已完成**：4 openspec artifacts + propose_checklist；新增 `src/lib/auth/googleLogin.ts` helper（buildNext + UNSAFE_NEXT_PREFIXES + signInWithGoogle）；4 個入口替換；單元測試 `tests/unit/google-login-build-next.test.mjs` 4/4 pass；tsc 0 errors；lint 無新增問題；openspec validate --strict PASS
+- **§6.7 守門**：派 codex:codex-rescue background 6 分鐘後回「仍讀檔中」+ output 0 bytes → 判定 transport 故障 → 走 §6.8 TRANSPORT-DEGRADED 自審路徑（本 change 首次降級）。Verdict PROCEED 8/10，無 critical；4 個 minor（M1 unsafe prefix 無斜線邊界 / M2 callback double decode / M3 Supabase prefix-match 宣稱待實測 / M4 helper SSR fallback origin=""）皆範圍外或可延後
+- **待 user 親跑**：tasks 1.1-1.2（環境校準）+ tasks 5.1-5.5（dev 環境手動驗證 4 個 flow）+ tasks 7.2（行動裝置實機）
+- **卡關**：無（核心交付完成，僅剩 user 親驗）
+- **下次優先**：user 跑 dev 驗證後 `/rsx:archive fix-oauth-redirect-preserve-origin`；或先回頭做 `favorites-collections` propose
+
 ### 2026-06-11 audit-developer-capture-injection (C3) — ARCHIVE 準備完成（rsx-archiver sub-agent）
 
 - **已完成**：tasks.md Task 1-5 全部勾選（測試新增、runner 擴充、全綠驗收、Gemini §6.5 審查、ARCHIVE 前置）；建 ADR-26（execFile + 參數陣列 + env 絕對路徑 shell 執行安全準則，含 Gemini 3 個 footnote N1/N2/N3）；建 F-027（audit-confirms-safe → characterization test 固化 pattern + 跨平台注入分隔符教訓 + 無測試覆蓋的安全寫法等同未受保護原則）；建 REF-027（Node.js child_process execFile vs exec shell 解析機制）；三路雙向 crossref 回填（ADR-26 ↔ F-027 ↔ REF-027）；Pre-archive Gate FAIL=0；latest.md Zone A 覆寫 + Zone B 追加

@@ -10,6 +10,7 @@ import { CosmicFullLogo } from "@/components/CosmicParticlesBackground";
 import { getAnnouncements } from "@/app/actions/homepage";
 import type { AnnouncementItem } from "@/types/homepage";
 import { CloudStarmap } from "@/components/morning-sketch/CloudStarmap";
+import { signInWithGoogle } from "@/lib/auth/googleLogin";
 
 export default function Home() {
   const router = useRouter();
@@ -58,14 +59,7 @@ export default function Home() {
   };
 
   const handleGoogleLogin = async () => {
-    const { createClient } = await import("@/lib/supabase/client");
-    const supabase = createClient();
-    await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-      },
-    });
+    await signInWithGoogle();
   };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {

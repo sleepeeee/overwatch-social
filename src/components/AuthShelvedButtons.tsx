@@ -6,6 +6,7 @@ import { LogOut } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useAuth } from "@/context/AuthContext";
 import { useDevMode } from "@/hooks/useDevMode";
+import { signInWithGoogle } from "@/lib/auth/googleLogin";
 
 /**
  * 🔒 曜石暗夜星河 - 已收納備份的原版認證與開發者按鈕
@@ -31,13 +32,7 @@ export default function AuthShelvedButtons() {
   const handleGoogleLogin = async () => {
     if (loginPending) return;
     setLoginPending(true);
-    const supabase = createClient();
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-      },
-    });
+    const { error } = await signInWithGoogle();
     if (error) {
       console.error("Google 登入失敗:", error.message);
       setLoginPending(false);

@@ -24,6 +24,7 @@ import { getGameSpecialTags } from "@/app/actions/tags";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { SocialIcon } from "@/components/ui/SocialIcons";
+import { signInWithGoogle } from "@/lib/auth/googleLogin";
 
 const DEFAULT_CARD: OWPlayerCard = {
   card_id: "card-current-user",
@@ -685,14 +686,7 @@ export default function ProfilePage() {
   };
 
   const handleGoogleLogin = async () => {
-    const { createClient } = await import("@/lib/supabase/client");
-    const supabase = createClient();
-    await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-      },
-    });
+    await signInWithGoogle();
   };
 
   const handleGoogleLogout = async () => {
@@ -1176,25 +1170,6 @@ export default function ProfilePage() {
                 <CosmicLivePreviewCard cardData={currentCard} gameType={editingGame} colorClasses={colorClasses} />
               )}
               
-              {/* 點擊清空英雄立繪插槽按鈕 Overlay (專門對接 3 格常用立繪的✕清空) */}
-              <div className="absolute top-[176px] left-5 right-5 grid grid-cols-3 h-[180px] pointer-events-none">
-                {[0, 1, 2].map((idx) => {
-                  const heroId = currentCard.selected_heroes[idx];
-                  if (!heroId) return <div key={idx} />;
-                  return (
-                    <div key={idx} className="relative h-full w-full">
-                      <button
-                        type="button"
-                        onClick={() => handleClearHeroSlot(idx)}
-                        className="pointer-events-auto absolute top-2 right-2 z-40 w-5 h-5 bg-[#07040c]/90 text-[10px] text-theme-danger-soft hover:text-white rounded-full flex items-center justify-center border border-theme-danger/35 hover:border-theme-danger shadow-[0_0_10px_rgba(0,0,0,0.65)] active:scale-90 transition-all font-sans cursor-pointer"
-                        title="清空此位置"
-                      >
-                        ✕
-                      </button>
-                    </div>
-                  );
-                })}
-              </div>
             </div>
 
             {/* 保存與分享入口 */}
@@ -1212,7 +1187,7 @@ export default function ProfilePage() {
             </div>
 
             <p className="text-[10px] text-theme-text-faint italic text-center max-w-[320px] mt-1 font-semibold leading-relaxed">
-              ✨ 點擊預覽圖中英雄插槽右上角的「✕」可將其移去。
+              ✨ 在英雄編輯區「已選」列點該頭像，或在網格再點同一顆，即可移除。
             </p>
           </div>
 
@@ -1400,6 +1375,69 @@ export default function ProfilePage() {
                     ))}
                   </div>
                 )}
+              </div>
+
+              {/* 已選 slot 緊湊橫條：直接點 ✕ 即可移除，省去捲回網格找原英雄 */}
+              <div className="flex items-center gap-3 pb-1">
+                <span className="text-[9px] font-mono text-theme-text-faint tracking-widest uppercase shrink-0">
+                  已選 {currentCard.selected_heroes.filter(Boolean).length}/3
+                </span>
+                <div className="flex items-center gap-2.5">
+                  {[0, 1, 2].map((idx) => {
+                    const heroId = currentCard.selected_heroes[idx];
+                    if (!heroId) {
+                      return (
+                        <div
+                          key={idx}
+                          className="w-8 h-8 rounded-full border border-dashed border-white/10 flex items-center justify-center text-theme-text-faint text-[10px] select-none"
+                          aria-label="空插槽"
+                          title="尚未選擇"
+                        >
+                          ✦
+                        </div>
+                      );
+                    }
+                    const avatarSrc = editingGame === "ow"
+                      ? `/images/heroes/avatars/${heroId}.png`
+                      : `/images/heroes/avatars/${editingGame}_${heroId}.png`;
+                    const heroName = getHeroDisplayNameById(editingGame!, heroId);
+                    return (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => handleClearHeroSlot(idx)}
+                        className="group relative w-8 h-8 rounded-full cursor-pointer active:scale-90 transition-transform"
+                        title={`點此移除 ${heroName}`}
+                        aria-label={`移除 ${heroName}`}
+                      >
+                        <div className={`w-8 h-8 rounded-full overflow-hidden border ${colorClasses.border} bg-black/40 transition-all group-hover:border-theme-danger group-hover:shadow-[0_0_8px_rgba(244,63,94,0.4)]`}>
+                          <img
+                            src={avatarSrc}
+                            alt={getCharacterImageAlt(editingGame!, heroName, "已選縮圖")}
+                            className="w-full h-full object-cover transition-opacity group-hover:opacity-30"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).src = '/images/heroes/silhouette.png';
+                            }}
+                          />
+                        </div>
+                        {/* hover 時頭像變暗、中央放大 ✕，整顆都是熱區 */}
+                        <span
+                          aria-hidden="true"
+                          className="absolute inset-0 flex items-center justify-center text-white text-sm font-bold opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none drop-shadow-[0_0_4px_rgba(244,63,94,0.9)]"
+                        >
+                          ✕
+                        </span>
+                        {/* 預設右上角小 ✕：可移除的視覺暗示，hover 時讓位給中央大 ✕ */}
+                        <span
+                          aria-hidden="true"
+                          className="absolute -top-1 -right-1 w-4 h-4 bg-[#07040c]/90 text-[8px] text-theme-danger-soft rounded-full flex items-center justify-center border border-theme-danger/35 shadow-[0_0_6px_rgba(0,0,0,0.6)] group-hover:opacity-0 transition-opacity"
+                        >
+                          ✕
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
 
               {/* 英雄頭像網格 */}
