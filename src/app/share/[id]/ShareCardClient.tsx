@@ -185,6 +185,23 @@ export default function ShareCardClient({ cardData }: Props) {
                 </p>
               </div>
 
+              {/* TEMP DIAGNOSTIC PANEL — 放最頂方便截圖；截圖後將移除 */}
+              <div className="w-full max-w-[340px] rounded-xl border-2 border-fuchsia-400/60 bg-black/80 p-3 text-[10px] font-mono text-fuchsia-100 shadow-[0_0_20px_rgba(217,70,239,0.4)]">
+                <div className="font-bold text-fuchsia-300 mb-1">🔬 DIAG v3 (截圖回傳)</div>
+                <div className="break-all opacity-80 mb-2">
+                  UA: {typeof navigator !== "undefined" ? navigator.userAgent : "ssr"}
+                </div>
+                <div className="opacity-80 mb-2">
+                  state: imageUrl={imageUrl ? `len=${imageUrl.length}` : "null"} | cardFile=
+                  {cardFile ? `size=${cardFile.size}` : "null"} | shareSupported={String(shareSupported)} | gen={String(generatingImage)}
+                </div>
+                <pre className="whitespace-pre-wrap break-all max-h-[280px] overflow-auto text-fuchsia-50/90">
+{diag.length === 0
+  ? "(尚未開始 / 已 reset)"
+  : diag.map((d) => `+${String(d.t).padStart(4, " ")}ms  ${d.kind}${d.src ? " " + d.src : ""}${d.info ? "  | " + d.info : ""}`).join("\n")}
+                </pre>
+              </div>
+
               <div className="w-full max-w-[340px]">
                 {imageUrl ? (
                   /* 產圖完成：顯示可長按儲存的圖片 */
@@ -256,22 +273,6 @@ export default function ShareCardClient({ cardData }: Props) {
                   : "電腦可在圖片上按右鍵另存圖片；手機可長按圖片保存。"}
               </p>
 
-              {/* TEMP DIAGNOSTIC PANEL — 截圖後將移除 */}
-              <div className="w-full max-w-[340px] mt-4 rounded-xl border border-fuchsia-400/30 bg-black/70 p-3 text-[10px] font-mono text-fuchsia-100">
-                <div className="font-bold text-fuchsia-300 mb-1">DIAG (截圖回傳，事後移除)</div>
-                <div className="break-all opacity-80 mb-2">
-                  UA: {typeof navigator !== "undefined" ? navigator.userAgent : "ssr"}
-                </div>
-                <div className="opacity-80 mb-2">
-                  state: imageUrl={imageUrl ? `len=${imageUrl.length}` : "null"} | cardFile=
-                  {cardFile ? `size=${cardFile.size}` : "null"} | shareSupported={String(shareSupported)} | gen={String(generatingImage)}
-                </div>
-                <pre className="whitespace-pre-wrap break-all max-h-[260px] overflow-auto text-fuchsia-50/90">
-{diag.length === 0
-  ? "(尚未開始 / 已 reset)"
-  : diag.map((d) => `+${String(d.t).padStart(4, " ")}ms  ${d.kind}${d.src ? " " + d.src : ""}${d.info ? "  | " + d.info : ""}`).join("\n")}
-                </pre>
-              </div>
             </div>
           )}
         </div>
