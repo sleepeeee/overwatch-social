@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { X } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
+import { signInWithGoogle } from "@/lib/auth/googleLogin";
 
 interface LoginModalProps {
   show: boolean;
@@ -26,13 +26,7 @@ export default function LoginModal({
   const handleLogin = async () => {
     if (loginPending) return;
     setLoginPending(true);
-    const supabase = createClient();
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-      },
-    });
+    const { error } = await signInWithGoogle();
     if (error) {
       console.error("Google 登入失敗:", error.message);
       setLoginPending(false);
