@@ -288,3 +288,29 @@ Codex 補搜項「actual skill descriptions for excluded candidates」已由 ses
 **最終採用**：token 地基（377 處 + 品牌色 130+ 處變數化、回歸 0.002%）+ 主題基礎建設（ThemeContext 白名單/持久化、ThemeSwitcher 元件存在未掛載）。**否決**：三套原型主題（neon 驗收過但不採用；magazine 未過 F-029；arcade 一併不採用），CSS 已移除、git 歷史保留。
 **驗證**：tsc PASS、build PASS、E2E 36/36、最終外觀與原始基準 0.002%。
 **Finding**：F-028（掃描校準）、F-029（亮底 negative result）。CLAUDE.md 已更新（affects_consumers 對齊）。
+
+<!-- pre-check-log-start -->
+### [Step 0 pre-check] 文字超出框框/換行 全站防護 (2026-06-13)
+Tier: RAG → grep fallback
+RAG 命中：5 筆但相似度全 ≤ 0.29（REF-036/033/017/028/029），主題不相關，視同無命中（非錯誤態）
+Grep 命中：.rsx/knowledge/ + findings/ + decisions/ 內無 REF/Finding 命中（21 個 .rsx/codex_runs/*.jsonl 屬 log 噪音、非實質命中）
+git log 補充線索（不算 §1.0 命中，列為已知 baseline pattern）：
+- bc51844（PR #21, 2026-06-13）標籤過長修法 — whitespace-nowrap + max-w-full，涵蓋 OWCard / ProfileClient 預覽卡 / 標籤按鈕 / Dev console UserCardDetail 四處
+- d27116c 移除展示館卡片誤加的 max-w-[340px] 寬度限制
+使用者選擇：依 §1.0「命中 = 0 不詢問直接進 §1.1」執行
+任務 scope：「不只標籤，需要全面檢查」→ 派 rsx-explorer sub-agent 走 (A) context 隔離路徑
+<!-- pre-check-log-end -->
+
+### 2026-06-13 全站文字溢出 EXPLORE 完成（待主代理整合）
+
+- **已完成**：派 rsx-explorer 全站掃描 12 個元件 + L2 外部搜尋 5 個來源；建 REF-038（type=technique，CJK 長文字溢出全站防護 pattern + Tailwind v4 utility 對照 + iOS Safari 15.4+ 支援邊界 + Gemini UX caveats）；§1.3 council Codex ‖ Gemini 並行完成
+- **§1.3 council verdict**：SPLIT → 主代理裁決 **PASS-WITH-ADJUSTMENTS**
+  - Codex (6/10)：NEEDS_MORE_SEARCH — 漏 3 個 dev console errorMsg 路徑、補 iOS Safari 15.4+ caveat、建議拆 ADR + 補 Card REF
+  - Gemini (8/10) **TRANSPORT-DEGRADED**（agy oauth token 過期，agent 自己 fallback 審查）：PASS — 升 R-08/R-06 為 P0、補 320px/scrollbar/overflow-x:clip viewport 角度
+  - 主代理裁決：搜尋角度兩邊補強都不是「方向錯誤」級別，不回 §1.1 補搜；直接整合進風險清單
+- **最終風險清單**：7 個 P0（R-04 OWCard UID Box、R-08 LotusWelcomeWidget 公告、R-01/R-02/R-03 player/[id]、R-05 CosmicLivePreviewCard、R-06 UserCardDetail display_name）+ 2 個 P1（R-07 message、R-09 揪團）+ 5 個 P2（dev console 3 errorMsg、layout overflow-x:clip、TopBar/OWCard languages 已正確）
+- **Exit Criteria**：(1) council ✅（SPLIT 已記錄）(2) REF 數 ❌（1/3 < min_refs_per_propose）(3) crossref ✅ (4) latest.md ✅
+- **REF 數 gap 處置**：待 user 裁決 — (a) 補拆 REF-039 (iOS Safari docs) + REF-040 (shadcn Card 約定) 補到 3 個跑 L2 full rsx propose / (b) 視為 §2.0 L1 lean change 例外（單一 cross-cutting CSS pattern，跨檔但無架構決策）/ (c) 跳流程直接修
+- **卡關**：無
+- **下次優先**：等 user 選擇 (a)/(b)/(c) → 進 PROPOSE 或直接 apply
+<!-- council-verdict-2026-06-13 -->

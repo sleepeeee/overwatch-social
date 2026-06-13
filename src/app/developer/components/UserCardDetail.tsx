@@ -154,9 +154,9 @@ export default function UserCardDetail({ userId }: UserCardDetailProps) {
                 {MIC_LABELS[card.mic_status] ?? card.mic_status}
               </span>
             </div>
-            <div>
+            <div className="min-w-0">
               <span className="text-slate-400 font-bold block text-[10px] uppercase mb-0.5">顯示名稱</span>
-              <span className="font-semibold text-slate-700 dark:text-slate-200">
+              <span className="font-semibold text-slate-700 dark:text-slate-200 block truncate" title={card.display_name ?? undefined}>
                 {card.display_name ?? <span className="italic text-slate-400">未設定</span>}
               </span>
             </div>
@@ -187,7 +187,7 @@ export default function UserCardDetail({ userId }: UserCardDetailProps) {
             {card.message && (
               <div className="col-span-4">
                 <span className="text-slate-400 font-bold block text-[10px] uppercase mb-0.5">留言</span>
-                <p className="text-slate-600 dark:text-slate-300 leading-relaxed">{card.message}</p>
+                <p className="text-slate-600 dark:text-slate-300 leading-relaxed break-words">{card.message}</p>
               </div>
             )}
           </div>

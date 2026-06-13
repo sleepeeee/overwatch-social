@@ -163,8 +163,8 @@ export default function LotusWelcomeWidget({ previewData, activeStepOverride }: 
         >
           {current.title}
         </h4>
-        <p 
-          className="text-[#8c7c6c] text-xs md:text-sm leading-relaxed italic px-2 min-h-[62px] flex items-center justify-center line-clamp-3"
+        <p
+          className="text-[#8c7c6c] text-xs md:text-sm leading-relaxed italic px-2 min-h-[62px] flex items-center justify-center line-clamp-3 break-words"
           style={{
             fontSize: `${stableAlignments.messageFontSize}px`,
             transform: `translate(${current.alignments?.message_x || 0}px, ${current.alignments?.message_y || 0}px)`

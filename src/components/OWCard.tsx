@@ -181,12 +181,12 @@ export default function OWCard({
       </div>
 
       {/* Standalone UID Clipboard Box */}
-      <div className="bg-black/40 border border-white/[0.03] rounded-xl p-3 flex items-center justify-between mb-4 relative z-10">
-        <div className="flex flex-col">
+      <div className="bg-black/40 border border-white/[0.03] rounded-xl p-3 flex items-center justify-between mb-4 relative z-10 gap-2">
+        <div className="flex flex-col min-w-0 flex-1">
           <span className="text-[9px] text-theme-text-muted font-mono">UID</span>
-          <span className="text-xs text-theme-text-strong font-mono font-semibold select-all mt-0.5">{getDisplayBattleTag()}</span>
+          <span className="text-xs text-theme-text-strong font-mono font-semibold select-all mt-0.5 truncate" title={getDisplayBattleTag()}>{getDisplayBattleTag()}</span>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
           {!isExportMode && (isEditable || is_tag_visible) && battle_tag !== "已隱藏#xxxx" && (
             <button
               onClick={handleCopyTag}

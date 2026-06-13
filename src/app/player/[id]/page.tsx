@@ -121,7 +121,7 @@ export default async function PlayerDetailPage({ params }: Props) {
 
           {/* 基本資訊 */}
           <div className="flex-1 min-w-0 space-y-2">
-            <h1 className="text-xl font-extrabold text-[#3e2723] tracking-wide truncate">
+            <h1 className="text-xl font-extrabold text-[#3e2723] tracking-wide truncate" title={player.battle_tag ?? undefined}>
               {player.battle_tag}
             </h1>
 
@@ -166,9 +166,9 @@ export default async function PlayerDetailPage({ params }: Props) {
 
         {/* 語言 */}
         {(player.languages as string[] ?? []).length > 0 && (
-          <div className="flex items-center gap-2 text-xs text-[#8c7c6c]">
-            <Globe size={13} />
-            <span className="font-semibold">{(player.languages as string[]).join("、")}</span>
+          <div className="flex items-start gap-2 text-xs text-[#8c7c6c] min-w-0">
+            <Globe size={13} className="shrink-0 mt-0.5" />
+            <span className="font-semibold break-words min-w-0">{(player.languages as string[]).join("、")}</span>
           </div>
         )}
 
@@ -195,10 +195,10 @@ export default async function PlayerDetailPage({ params }: Props) {
                 return (
                   <div
                     key={platform}
-                    className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/50 border border-[#8c7c6c]/15 text-xs font-bold text-[#5d4037]"
+                    className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/50 border border-[#8c7c6c]/15 text-xs font-bold text-[#5d4037] min-w-0 max-w-full"
                   >
-                    <span className="capitalize text-[#8c7c6c]">{platform}</span>
-                    {value !== "true" && <span className="font-mono">{value}</span>}
+                    <span className="capitalize text-[#8c7c6c] shrink-0">{platform}</span>
+                    {value !== "true" && <span className="font-mono truncate min-w-0" title={String(value)}>{String(value)}</span>}
                   </div>
                 );
               })}
