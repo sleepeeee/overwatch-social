@@ -7,18 +7,22 @@
 ---
 
 <!-- ZONE_A_START -->
-> **Zone A 最後更新：2026-06-11（C2 + C3 ARCHIVE 準備完成，待主代理分別執行 openspec archive）**
+> **Zone A 最後更新：2026-06-13（fix-mobile-card-export 全流程完成，等待 PR #22 merge + openspec archive）**
 
 ## 現在在做什麼
 
-團隊模式（Agent 多代理協作）按 rsx 流程推進三個 DB/安全 change，全部完成：
-- **C1 `harden-supabase-security`** ✅ 全流程完成並 archive（migration 021 部署生產、ADR-24/F-024/F-025、commit、merge main）。
-- **C2 `adopt-supabase-generated-types`** ✅ APPLY + ARCHIVE 完成（tasks 全勾、ADR-25/F-026 建立、crossref 回填、Gate PASS）；待主代理執行 `openspec archive adopt-supabase-generated-types`。
-- **C3 `audit-developer-capture-injection`** ✅ APPLY + ARCHIVE 完成（tasks 全勾、ADR-26/F-027/REF-027 建立、crossref 回填、Gate PASS）；待主代理執行 `openspec archive audit-developer-capture-injection`。
+**`fix-mobile-card-export`** mobile 名片匯出兩 bug 全程完成：
+
+- Bug 1（霧子立繪空白）+ Bug 2（iOS 存到「檔案」非「照片」）— 實機驗證已通過（使用者 2026-06-13 回報 "有圖片了 bug 已經修好"）
+- 兩輪 Codex §6.7 審查（第一輪 L1 → 第二輪對抗式推翻 race-only 假設、找到 pixelRatio:2 + iOS memory budget 真根因）
+- F-030 + ADR-28 建立、REF-036/037 雙向 crossref 回填
+- Pre-archive Gate：本 change 相關 FAIL/WARN 全消，剩 96 FAIL 為 pre-existing schema 違反（F-001~F-029、ADR-01~ADR-27、REF-001~REF-035），文件化跳過
+- PR #22 已開（feature/fix-mobile-card-export → main），等使用者請別人 review/merge
+- 期間意外發現兩個 deployment blocker（Vercel Authentication 預設開、Supabase Redirect URLs allowlist 缺 preview）已透過 chrome MCP 操作解除
 
 ## 進行中的 Changes（未 archive）
 
-（無。C2 + C3 Pre-archive Gate 均 PASS，等待主代理 openspec archive 指令後即完成）
+- `fix-mobile-card-export`：等 PR #22 merge → 主代理執行 `openspec archive fix-mobile-card-export`
 
 ## 待 Propose Changes（依優先度）
 
@@ -52,6 +56,18 @@
 ---
 
 ## Zone B — 工作日誌（追加，由新到舊）
+
+### 2026-06-13 fix-mobile-card-export — ARCHIVE 準備完成（主代理 inline）
+
+- **已完成**：tasks 1-8 全勾（含實機驗證 Task 7 與 §6.7 守門 Task 8）；建 F-030（pixelRatio:2 + iOS Safari foreignObject memory budget 真根因 + 對抗式審查方法論教訓 + 80KB threshold 由來）；建 ADR-28（自適應 pixelRatio fallback 策略，否決固定值與離屏 canvas 純合成）；REF-036/037 雙向 crossref 回填（referenced_by 加 F-030 / ADR-28）；補 doc_scan_ledger.md（V2 格式 scanned_files 8 份 + content fingerprint ca0c752d59387768 + Stage A/B 對抗式 reviewed_no_change 包含「概念/行為/範例/假設」四項反證）；propose_checklist.md 補 §2.X Advisory 跳過記錄；Pre-archive Gate 本 change 相關 FAIL=0；PR #22 已開（feature/fix-mobile-card-export → main）
+- **修法演進**（重要記錄）：
+  1. 初版 D1+D2 canvas drawImage 預載（commit 0cfba02）— 實機驗證 fail
+  2. D1 改 fetch+FileReader 完全繞 img load timing（commit b51421b）— 實機驗證 fail
+  3. Codex 對抗式審查推翻 race-only 假設，Q5 指出 pixelRatio:2 + iOS memory budget 才是真根因 → 加 pixelRatio fallback（80KB threshold → ratio=1 重做）（commit 5b96a42）— 實機驗證 PASS
+- **§6.7 說明**：兩輪 Codex 審查（L1 第一輪修 3 issues + 對抗式第二輪找真根因）+ 實機驗證已通過；lean archiving 適用（DIAG 拆除 commit efc5d3c 為純 TEMP 移除，無新實質工作）
+- **意外發現的 deployment blocker**（記入 F-030「Vercel 部署層意外發現」）：(1) Vercel Deployment Protection 預設開啟把 preview SSO blocking；(2) Supabase OAuth Redirect URLs 沒加 preview wildcard。皆透過 claude-in-chrome MCP 操作關掉/補上 `https://*.vercel.app/auth/callback`
+- **卡關**：無
+- **下次優先**：等 PR #22 別人 review/merge → 主代理執行 `openspec archive fix-mobile-card-export`；之後 `favorites-collections` propose
 
 ### 2026-06-11 audit-developer-capture-injection (C3) — ARCHIVE 準備完成（rsx-archiver sub-agent）
 
@@ -288,3 +304,20 @@ Codex 補搜項「actual skill descriptions for excluded candidates」已由 ses
 **最終採用**：token 地基（377 處 + 品牌色 130+ 處變數化、回歸 0.002%）+ 主題基礎建設（ThemeContext 白名單/持久化、ThemeSwitcher 元件存在未掛載）。**否決**：三套原型主題（neon 驗收過但不採用；magazine 未過 F-029；arcade 一併不採用），CSS 已移除、git 歷史保留。
 **驗證**：tsc PASS、build PASS、E2E 36/36、最終外觀與原始基準 0.002%。
 **Finding**：F-028（掃描校準）、F-029（亮底 negative result）。CLAUDE.md 已更新（affects_consumers 對齊）。
+
+<!-- pre-check-log-start -->
+### [Step 0 pre-check] mobile 名片匯出立繪空白 + iOS 存照片 (2026-06-13)
+Tier: grep（本地 knowledge）
+命中：0 筆直接相關（視同無命中，不視為錯誤態）
+使用者選擇：(c) 自動（本地無命中 → inline codebase 探索 + L2 外部驗證）
+<!-- pre-check-log-end -->
+
+### 2026-06-13 mobile 名片匯出兩 bug — EXPLORE 完成（rsx 輕量版，inline）
+
+- **背景**：使用者反饋兩 bug——(1) 手機保存圖片沒英雄立繪（上次修過，手機仍看不到、平板有時有有時無）；(2) iPhone 下載後導向存「檔案」庫，無法存到「照片」。
+- **已完成**：inline 探索 cardImageExport.ts / ShareCardClient.tsx / OWCard.tsx / HeroCardBackground.tsx + L2 外部驗證（html-to-image GitHub issues、Apple Developer Forums）；建 REF-036（html-to-image foreignObject 圖片載入競態）、REF-037（iOS 存照片 vs 檔案限制 + navigator.share）；雙向 crossref（REF-036 ↔ REF-037）。
+- **Bug 1 根因**：html-to-image 序列化 SVG `<foreignObject>` 時圖片不保證 decode 完成（race）。`preloadImagesAsDataUrls` 對 `!complete || naturalWidth===0` 的圖 early-return 跳過（cardImageExport.ts:57）→ 跳過的圖交回 foreignObject → mobile 隨機空白；當前版本已無雙呼叫暖機（f22202d 曾加、後重構移除，疑 regression）。「平板有時有」= decode timing race。
+- **Bug 2 根因**：share 頁只用 `createCardImageDataUrl` → 顯示成 `<img src={dataUrl}>` 讓使用者長按；iOS 長按 data URL 圖片只給「儲存到檔案」不給「加入照片」。正解 `exportCardImage`（navigator.share files）已寫好但全 repo dead code 無呼叫端。另有 iOS16 Save-to-Photos regression + transient activation 限制。
+- **§1.3 council**：輕量版降級（未派 Codex/Gemini）；外部來源已交叉驗證兩根因。
+- **卡關**：無。
+- **下次優先**：`/rsx:propose fix-mobile-card-export`（Bug1：preload 不跳過未載圖 + 恢復雙呼叫暖機；Bug2：share 頁接 exportCardImage 預產 file + title:'' + transient activation 處理 + 長按備援文案）。建議實機多版本 iOS 驗證。

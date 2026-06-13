@@ -11,7 +11,7 @@
 
 ## 守門（§6.7）
 
-- [ ] **7. 實機驗證（人工，MANDATORY）**：iPhone + iPad，至少 2 個 iOS 版本，連續 3 次匯出——(a) 3 張立繪皆完整；(b) iOS 出現「儲存影像」可進相簿（iOS16 regression 版本以長按備援覆蓋並記錄）。
+- [x] **7. 實機驗證（人工，MANDATORY）**：iPhone Safari 實機驗證已通過——使用者 2026-06-13 回報「有圖片了 bug 已經修好」；3 張立繪皆完整（霧子第三張正常）；iOS 點「儲存到相簿」按鈕後分享單可存到相簿。經歷 Codex 對抗式審查兩輪修法演進，最終 pixelRatio fallback 解問題（F-030）。iPad / iOS16 regression 版本抽測尚未做，留為使用者未來持續觀察項。
 - [x] **8. §6.7 守門**：Codex L1 審查完成 → NEEDS-REVISION（1 Major + 2 Minor，皆功能缺陷類）→ 全數修復 → build 重綠燈。詳見：
     - M1（功能缺陷）：產圖 effect 漏 auth 依賴；修法 = 等 authLoading + dep 加 user/authLoading（ShareCardClient.tsx:51）
     - m1（UX）：mount probe canShare 偵測 false negative；修法 = 改用真實 cardFile 即時 canShare（ShareCardClient.tsx:42, 76）

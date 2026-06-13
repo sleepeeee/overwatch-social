@@ -5,7 +5,7 @@ title: html-to-image 在 iOS/Safari 的 foreignObject 圖片載入競態（blank
 url: https://github.com/bubkoo/html-to-image/issues/361
 status: active
 references_to: [REF-037]
-referenced_by: [REF-037]
+referenced_by: [REF-037, F-030, ADR-28]
 ---
 
 # html-to-image 在 iOS/Safari 的 foreignObject 圖片載入競態

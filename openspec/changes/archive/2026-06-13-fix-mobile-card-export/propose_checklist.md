@@ -19,6 +19,7 @@
 |---|---|---|---|
 | Stage 0 §6.1 Codex‖Gemini council | L1-skip：bug 修復、方向已拍板、scope 2 檔 | 低（根因已雙來源外部驗證 REF-036/037）| apply 後 §6.7 單輪守門 |
 | Stage 1 explorer dispatch | L1-skip：EXPLORE 已建 REF-036/037（雙向 crossref），知識充足 | 低 | — |
+| §2.X PROPOSE-time Semantic Advisory | 跳過：L1 lean，affects_consumers=[] 且 ripgrep 兜底 0 命中，無消費端文件需 advisory 諮詢；archive 階段已補語意層 doc_scan_ledger.md（reviewed_no_change）涵蓋契約檢視 | 低 | archive 階段 doc_scan_ledger.md 已執行 Stage A/B 概念篩 + 對抗式 reviewed_no_change |
 | Stage 4 多面向 audit | L1-skip：< 50 行變更、非架構級 | 低 | §6.7 守門涵蓋 |
 | Stage 6 §6.5 adversarial council | L1-skip：同上 | 低 | §6.7 守門涵蓋 |
 | min_refs_per_propose=3（本 change 引 2 REF） | L1-skip：bug 修復非新研究，2 個高相關 REF（036/037）已完整錨定兩根因 | 低 | 如 apply 發現第三方向缺證據再補搜 |

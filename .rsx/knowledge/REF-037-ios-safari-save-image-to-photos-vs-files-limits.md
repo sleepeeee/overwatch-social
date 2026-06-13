@@ -5,7 +5,7 @@ title: iOS Safari 儲存圖片到「照片」vs「檔案」的限制與 navigato
 url: https://developer.apple.com/forums/thread/729782
 status: active
 references_to: [REF-036]
-referenced_by: [REF-036]
+referenced_by: [REF-036, F-030, ADR-28]
 ---
 
 # iOS Safari 儲存圖片到「照片」vs「檔案」的限制
