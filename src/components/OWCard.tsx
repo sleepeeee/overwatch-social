@@ -263,7 +263,7 @@ export default function OWCard({
           tags.map((tagText) => (
             <span
               key={tagText}
-              className={`text-[9px] font-medium rounded-full px-2.5 py-1 border transition-all duration-300 hover:scale-[1.03] ${getTagType(tagText)}`}
+              className={`text-[9px] font-medium rounded-full px-2.5 py-1 border transition-all duration-300 hover:scale-[1.03] whitespace-nowrap max-w-full ${getTagType(tagText)}`}
               style={{ fontFamily: "var(--theme-font-family), sans-serif" }}
             >
               {tagText.startsWith('#') ? tagText : `#${tagText}`}

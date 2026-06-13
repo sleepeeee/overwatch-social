@@ -258,7 +258,7 @@ function CosmicLivePreviewCard({
           tags.map((tagText: string) => (
             <span
               key={tagText}
-              className={`text-[9px] font-medium bg-theme-surface-raised/40 border border-white/[0.04] text-theme-text-body rounded-full px-2.5 py-1 transition-all duration-300 hover:scale-[1.03]`}
+              className={`text-[9px] font-medium bg-theme-surface-raised/40 border border-white/[0.04] text-theme-text-body rounded-full px-2.5 py-1 transition-all duration-300 hover:scale-[1.03] whitespace-nowrap max-w-full`}
             >
               #{tagText.replace(/^#+/, '')}
             </span>
@@ -1454,7 +1454,7 @@ export default function ProfilePage() {
                       key={tagName}
                       type="button"
                       onClick={() => handleToggleTag(tagName)}
-                      className={`text-[10px] font-mono px-3 py-1.5 rounded-full border transition-all cursor-pointer ${
+                      className={`text-[10px] font-mono px-3 py-1.5 rounded-full border transition-all cursor-pointer whitespace-nowrap ${
                         isSelected
                           ? `${colorClasses.bg} ${colorClasses.text} ${colorClasses.border} font-bold ${colorClasses.tagGlow}`
                           : "bg-white/[0.01] border-white/[0.06] text-theme-text-muted hover:text-white"

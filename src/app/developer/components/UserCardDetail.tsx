@@ -177,7 +177,7 @@ export default function UserCardDetail({ userId }: UserCardDetailProps) {
                 <span className="text-slate-400 font-bold block text-[10px] uppercase mb-0.5">標籤</span>
                 <div className="flex gap-1.5 flex-wrap">
                   {card.tags.map(t => (
-                    <span key={t} className="px-1.5 py-0.5 rounded bg-[var(--theme-primary-light,#eef)] text-[var(--theme-primary-text,#556)] text-[10px] font-bold border border-[var(--theme-primary,#aaa)]/20">
+                    <span key={t} className="px-1.5 py-0.5 rounded bg-[var(--theme-primary-light,#eef)] text-[var(--theme-primary-text,#556)] text-[10px] font-bold border border-[var(--theme-primary,#aaa)]/20 whitespace-nowrap max-w-full">
                       {t}
                     </span>
                   ))}
