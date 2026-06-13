@@ -80,14 +80,34 @@ TBD - created by archiving change google-oauth-supabase-auth. Update Purpose aft
 ---
 
 ### Requirement: 常用立繪三插槽依序填入與自訂移除 (Hero Showcase Three Slots Sequencing & Removal)
-在名片自訂編輯器中，當玩家點擊英雄立繪清單時，系統 **SHALL** 依據目前已選插槽數量「依序填入」空缺插槽（最多 3 個）。已選英雄再次點選 **SHALL** 將其移除，且每個插槽右上角 **MUST** 顯示 `✕` 按鈕，點擊 `✕` **SHALL** 僅清空該特定插槽（不打亂其他插槽內英雄）。立繪圖片 **SHALL** 具備破圖防護 fallback 背景，以防圖片路徑無效時顯示空白或破圖符號。
+在名片自訂編輯器中，當玩家點擊英雄立繪清單時，系統 **SHALL** 依據目前已選插槽數量「依序填入」空缺插槽（最多 3 個）。已選英雄再次點選 **SHALL** 將其移除。系統 **SHALL** 在「英雄編輯區」內提供一個常駐的「已選 X/3」緊湊橫條，每個已選插槽渲染為圓形頭像 button，預設右上角 **MUST** 顯示小 `✕` affordance；button hover 時頭像 **SHALL** 變暗並於中央放大顯示 `✕`；點擊該 button **SHALL** 僅清空該特定插槽（不打亂其他插槽內英雄）。空插槽 **MUST** 渲染為虛線圓圈 + `✦` 佔位，提供「尚未選擇」title。立繪圖片 **SHALL** 具備破圖防護 `onError` fallback（指向 `/images/heroes/silhouette.png`），以防圖片路徑無效時顯示空白或破圖符號。
 
 #### Scenario: 依序填入三個常用英雄
+
 - **GIVEN** 玩家未選擇任何常用英雄，插槽 1, 2, 3 皆為空
 - **WHEN** 玩家點選第一個英雄「安娜 (Ana)」，接著點選第二個英雄「源氏 (Genji)」
 - **THEN** 安娜被放入插槽 1，源氏被放入插槽 2
-- **WHEN** 玩家點選插槽 1 的右上角 `✕` 按鈕
+- **AND** 「已選 X/3」橫條 SHALL 顯示「已選 2/3」
+- **WHEN** 玩家點選「已選」橫條上「安娜」頭像 button
 - **THEN** 插槽 1 變為空，插槽 2 仍維持 Genji
+- **AND** 計數 SHALL 變為「已選 1/3」
+
+#### Scenario: 已選橫條提供「整顆 button = 熱區」移除
+
+- **GIVEN** 玩家於「已選」橫條看到一顆已填入頭像 button
+- **WHEN** 滑鼠 hover 至該 button
+- **THEN** button 內頭像 SHALL 顯示透明度降低（變暗）
+- **AND** button 中央 SHALL 顯示放大的 `✕`
+- **AND** button 右上角預設的小 `✕` SHALL 隨 hover 消失（讓位給中央大 `✕`，避免視覺重疊）
+- **WHEN** 玩家點擊該 button 任一位置
+- **THEN** 對應插槽 SHALL 被清空，計數 SHALL 同步更新
+
+#### Scenario: 空插槽以虛線圓圈 + ✦ 佔位
+
+- **GIVEN** 玩家未選擇任何英雄
+- **WHEN** 進入英雄編輯區
+- **THEN** 「已選」橫條 SHALL 顯示 3 個虛線圓圈，每個內含 `✦` 佔位符
+- **AND** 佔位符 SHALL 提供 `aria-label="空插槽"` 與 `title="尚未選擇"`
 
 ---
 
