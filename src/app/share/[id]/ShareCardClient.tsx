@@ -106,7 +106,11 @@ export default function ShareCardClient({ cardData }: Props) {
       isMounted = false;
       window.clearTimeout(timerId);
     };
-  }, [cardData, authLoading, user]);
+    // 故意不把 user 放進 deps：auth resolve 後 effect 只該跑一次；
+    // 把 user 加入 deps 會在 auth rehydrate 時整套重跑覆蓋預熱結果（Codex Q2）。
+    // user 影響 OWCard 的 BattleTag 遮罩，但 authLoading→false 時 user 已 resolved。
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cardData, authLoading]);
 
   const handleSaveToAlbum = async () => {
     if (!cardFile) return;
@@ -163,6 +167,27 @@ export default function ShareCardClient({ cardData }: Props) {
             )}
           </div>
 
+          {/* TEMP DIAGNOSTIC PANEL — 移到 cardData 條件外，cardData null 時也顯示（Codex Q3） */}
+          <div className="w-full max-w-[340px] rounded-xl border-2 border-fuchsia-400/60 bg-black/80 p-3 text-[10px] font-mono text-fuchsia-100 shadow-[0_0_20px_rgba(217,70,239,0.4)]">
+            <div className="font-bold text-fuchsia-300 mb-1">🔬 DIAG v4 (always-on)</div>
+            <div className="break-all opacity-80 mb-1">
+              UA: {typeof navigator !== "undefined" ? navigator.userAgent : "ssr"}
+            </div>
+            <div className="opacity-80 mb-1">
+              cardData={cardData ? `id=${cardData.card_id}` : "NULL (server fetch fail)"} | authLoading=
+              {String(authLoading)} | user={user ? "yes" : "no"}
+            </div>
+            <div className="opacity-80 mb-2">
+              imageUrl={imageUrl ? `len=${imageUrl.length}` : "null"} | cardFile=
+              {cardFile ? `size=${cardFile.size}` : "null"} | shareSupported={String(shareSupported)} | gen={String(generatingImage)}
+            </div>
+            <pre className="whitespace-pre-wrap break-all max-h-[280px] overflow-auto text-fuchsia-50/90 m-0">
+{diag.length === 0
+  ? "(尚未開始 / 已 reset)"
+  : diag.map((d) => `+${String(d.t).padStart(4, " ")}ms  ${d.kind}${d.src ? " " + d.src : ""}${d.info ? "  | " + d.info : ""}`).join("\n")}
+            </pre>
+          </div>
+
           {!cardData ? (
             <Card className="glass-panel text-theme-text-strong max-w-md w-full mt-8 border-white/[0.03]">
               <CardContent className="p-6 flex flex-col items-center text-center gap-4">
@@ -183,23 +208,6 @@ export default function ShareCardClient({ cardData }: Props) {
                 <p className="text-xs leading-relaxed text-theme-text-muted">
                   電腦可在圖片上按右鍵另存圖片；手機可長按圖片保存。
                 </p>
-              </div>
-
-              {/* TEMP DIAGNOSTIC PANEL — 放最頂方便截圖；截圖後將移除 */}
-              <div className="w-full max-w-[340px] rounded-xl border-2 border-fuchsia-400/60 bg-black/80 p-3 text-[10px] font-mono text-fuchsia-100 shadow-[0_0_20px_rgba(217,70,239,0.4)]">
-                <div className="font-bold text-fuchsia-300 mb-1">🔬 DIAG v3 (截圖回傳)</div>
-                <div className="break-all opacity-80 mb-2">
-                  UA: {typeof navigator !== "undefined" ? navigator.userAgent : "ssr"}
-                </div>
-                <div className="opacity-80 mb-2">
-                  state: imageUrl={imageUrl ? `len=${imageUrl.length}` : "null"} | cardFile=
-                  {cardFile ? `size=${cardFile.size}` : "null"} | shareSupported={String(shareSupported)} | gen={String(generatingImage)}
-                </div>
-                <pre className="whitespace-pre-wrap break-all max-h-[280px] overflow-auto text-fuchsia-50/90">
-{diag.length === 0
-  ? "(尚未開始 / 已 reset)"
-  : diag.map((d) => `+${String(d.t).padStart(4, " ")}ms  ${d.kind}${d.src ? " " + d.src : ""}${d.info ? "  | " + d.info : ""}`).join("\n")}
-                </pre>
               </div>
 
               <div className="w-full max-w-[340px]">

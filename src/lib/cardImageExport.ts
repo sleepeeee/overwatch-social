@@ -114,24 +114,29 @@ const canShareImageFile = (file: File) => {
   return navigator.canShare({ files: [file] });
 };
 
-const toPngOptions = {
+const makeToPngOptions = (pixelRatio: number) => ({
   cacheBust: false, // 圖片已是 data URL，不需要 cache bust
-  pixelRatio: 2,
+  pixelRatio,
   backgroundColor: "transparent",
   style: {
     transform: "scale(1)",
     transformOrigin: "top left",
   },
-} as const;
+} as const);
+
+// iOS Safari foreignObject rasterization 在 pixelRatio=2 + 多張 hero img 時
+// 容易撞 memory/paint budget 把某張 image 漏掉（Codex 對抗式審查 Q5）。
+// blob size 異常小視為 fallback signal：3 張 hero PNG 完整輸出 normally ≥ 80KB。
+const SMALL_BLOB_THRESHOLD = 80 * 1024;
 
 export async function createCardImageDataUrl(node: HTMLElement): Promise<string> {
   await waitForCardExport(node);
   await preloadImagesAsDataUrls(node);
   await document.fonts?.ready;
+  const opts = makeToPngOptions(2);
   // 雙呼叫暖機（REF-036）：第一次擷取暖 cache（丟棄），第二次才是正式結果。
-  // 對 iOS Safari foreignObject 圖片載入競態必要；commit f22202d 曾加入，後重構移除。
-  await toPng(node, toPngOptions).catch(() => undefined);
-  return toPng(node, toPngOptions);
+  await toPng(node, opts).catch(() => undefined);
+  return toPng(node, opts);
 }
 
 // 預先在背景產 File（給 ShareCardClient 暖好放 state，按鈕點擊時即可直接 share，
@@ -145,12 +150,24 @@ export async function createCardImageFile(node: HTMLElement, rawFileName: string
   await preloadImagesAsDataUrls(node, onDiag);
   await document.fonts?.ready;
   onDiag?.({ kind: "fonts_ready" });
-  // 雙呼叫暖機（REF-036）：第一次 toBlob 暖 cache 後丟棄，第二次才是正式結果。
-  await toBlob(node, toPngOptions).catch(() => undefined);
-  onDiag?.({ kind: "warmup_done" });
-  const blob = await toBlob(node, toPngOptions);
-  onDiag?.({ kind: "final_blob", info: `size=${blob?.size ?? 0}` });
 
+  // 第一次嘗試 pixelRatio=2（高品質）
+  const optsHi = makeToPngOptions(2);
+  await toBlob(node, optsHi).catch(() => undefined);
+  onDiag?.({ kind: "warmup_hi_done" });
+  let blob = await toBlob(node, optsHi);
+  onDiag?.({ kind: "attempt_hi", info: `size=${blob?.size ?? 0} threshold=${SMALL_BLOB_THRESHOLD}` });
+
+  // blob 太小 = iOS memory budget 可能漏圖 → 退回 pixelRatio=1 重做
+  if (!blob || blob.size < SMALL_BLOB_THRESHOLD) {
+    onDiag?.({ kind: "fallback_lo", info: "pixelRatio=2 too small, retry @1" });
+    const optsLo = makeToPngOptions(1);
+    await toBlob(node, optsLo).catch(() => undefined);
+    blob = await toBlob(node, optsLo);
+    onDiag?.({ kind: "attempt_lo", info: `size=${blob?.size ?? 0}` });
+  }
+
+  onDiag?.({ kind: "final_blob", info: `size=${blob?.size ?? 0}` });
   if (!blob) {
     throw new Error("名片圖片產生失敗");
   }
