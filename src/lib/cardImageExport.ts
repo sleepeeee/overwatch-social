@@ -47,25 +47,32 @@ const waitForCardExport = async (node: HTMLElement) => {
   await nextFrame();
 };
 
-// 圖片在 viewport 內已載入，用 canvas.drawImage 直接提取 data URL。
-// 比 fetch 更可靠：不依賴網路、不受 mobile 並行限制影響。
+const blobToDataUrl = (blob: Blob): Promise<string> =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(blob);
+  });
+
+// 用 fetch 直接拿 binary → FileReader 轉 dataURL，完全繞過 <img> 元素的
+// load/decode 時序。html-to-image 序列化 foreignObject 時 mobile Safari
+// 對 <img> race（REF-036）；以 dataURL src 餵入則 serialize 沒有 race。
 const preloadImagesAsDataUrls = async (node: HTMLElement): Promise<void> => {
   const images = Array.from(node.querySelectorAll<HTMLImageElement>("img"));
   await Promise.all(
     images.map(async (img) => {
       if (img.src.startsWith("data:")) return;
-      if (!img.complete || img.naturalWidth === 0) return;
+      const originalSrc = img.src;
       try {
-        const canvas = document.createElement("canvas");
-        canvas.width = img.naturalWidth;
-        canvas.height = img.naturalHeight;
-        const ctx = canvas.getContext("2d");
-        if (!ctx) return;
-        ctx.drawImage(img, 0, 0);
-        img.src = canvas.toDataURL("image/png");
+        const res = await fetch(originalSrc, { cache: "force-cache" });
+        if (!res.ok) return;
+        const blob = await res.blob();
+        const dataUrl = await blobToDataUrl(blob);
+        img.src = dataUrl;
         await img.decode().catch(() => undefined);
       } catch {
-        // 保留原始 src（CORS 或其他問題）
+        // 保留原始 src（網路失敗時走 onError silhouette fallback）
       }
     })
   );
@@ -87,40 +94,68 @@ const canShareImageFile = (file: File) => {
   return navigator.canShare({ files: [file] });
 };
 
-const toPngOptions = {
+const makeToPngOptions = (pixelRatio: number) => ({
   cacheBust: false, // 圖片已是 data URL，不需要 cache bust
-  pixelRatio: 2,
+  pixelRatio,
   backgroundColor: "transparent",
   style: {
     transform: "scale(1)",
     transformOrigin: "top left",
   },
-} as const;
+} as const);
+
+// iOS Safari foreignObject rasterization 在 pixelRatio=2 + 多張 hero img 時
+// 容易撞 memory/paint budget 把某張 image 漏掉（Codex 對抗式審查 Q5）。
+// blob size 異常小視為 fallback signal：3 張 hero PNG 完整輸出 normally ≥ 80KB。
+const SMALL_BLOB_THRESHOLD = 80 * 1024;
 
 export async function createCardImageDataUrl(node: HTMLElement): Promise<string> {
   await waitForCardExport(node);
   await preloadImagesAsDataUrls(node);
-  return toPng(node, toPngOptions);
+  await document.fonts?.ready;
+  const opts = makeToPngOptions(2);
+  // 雙呼叫暖機（REF-036）：第一次擷取暖 cache（丟棄），第二次才是正式結果。
+  await toPng(node, opts).catch(() => undefined);
+  return toPng(node, opts);
 }
 
-export async function exportCardImage(node: HTMLElement, rawFileName: string): Promise<ExportResult> {
+// 預先在背景產 File（給 ShareCardClient 暖好放 state，按鈕點擊時即可直接 share，
+// 避免 await 產圖耗盡 iOS transient activation；REF-037）。
+export async function createCardImageFile(node: HTMLElement, rawFileName: string): Promise<File> {
   const fileName = sanitizeFileName(rawFileName.endsWith(".png") ? rawFileName : `${rawFileName}.png`);
 
   await waitForCardExport(node);
   await preloadImagesAsDataUrls(node);
-  const blob = await toBlob(node, toPngOptions);
+  await document.fonts?.ready;
+
+  // 第一次嘗試 pixelRatio=2（高品質）
+  const optsHi = makeToPngOptions(2);
+  await toBlob(node, optsHi).catch(() => undefined);
+  let blob = await toBlob(node, optsHi);
+
+  // blob 太小 = iOS Safari foreignObject memory budget 可能漏圖
+  // → 退回 pixelRatio=1 重做（Codex 對抗式審查 Q5）
+  if (!blob || blob.size < SMALL_BLOB_THRESHOLD) {
+    const optsLo = makeToPngOptions(1);
+    await toBlob(node, optsLo).catch(() => undefined);
+    blob = await toBlob(node, optsLo);
+  }
 
   if (!blob) {
     throw new Error("名片圖片產生失敗");
   }
 
-  const file = new File([blob], fileName, { type: "image/png" });
+  return new File([blob], fileName, { type: "image/png" });
+}
 
+// 已預產好的 File 直接走 navigator.share；命中 transient activation。
+// title: "" 避免 iOS 把 share 當純文字而吞掉 files（REF-037）。
+export async function shareOrDownloadCardFile(file: File): Promise<ExportResult> {
   if (canShareImageFile(file)) {
     try {
       await navigator.share({
         files: [file],
-        title: "AFTER MIDNIGHT 玩家名片",
+        title: "",
       });
       return "shared";
     } catch (error) {
@@ -129,6 +164,11 @@ export async function exportCardImage(node: HTMLElement, rawFileName: string): P
     }
   }
 
-  downloadBlob(blob, fileName);
+  downloadBlob(file, file.name);
   return "downloaded";
+}
+
+export async function exportCardImage(node: HTMLElement, rawFileName: string): Promise<ExportResult> {
+  const file = await createCardImageFile(node, rawFileName);
+  return shareOrDownloadCardFile(file);
 }

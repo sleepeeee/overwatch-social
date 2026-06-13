@@ -4,35 +4,78 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowLeft, Check, Copy, Loader2, Sparkles } from "lucide-react";
+import { ArrowLeft, Check, Copy, Download, Loader2, Sparkles } from "lucide-react";
 import OWCard from "@/components/OWCard";
-import { createCardImageDataUrl } from "@/lib/cardImageExport";
+import { createCardImageFile, shareOrDownloadCardFile } from "@/lib/cardImageExport";
 import { useAuth } from "@/context/AuthContext";
 import type { OWPlayerCard } from "@/types/card";
+
+const blobToDataUrl = (blob: Blob): Promise<string> =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(blob);
+  });
+
+const canShareThisFile = (file: File): boolean => {
+  if (typeof navigator === "undefined") return false;
+  if (!navigator.share || !navigator.canShare) return false;
+  try {
+    return navigator.canShare({ files: [file] });
+  } catch {
+    return false;
+  }
+};
 
 interface Props {
   cardData: OWPlayerCard | null;
 }
 
 export default function ShareCardClient({ cardData }: Props) {
-  const { user } = useAuth();
+  const { user, authLoading } = useAuth();
   const cardRef = useRef<HTMLDivElement>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [cardFile, setCardFile] = useState<File | null>(null);
   const [generatingImage, setGeneratingImage] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
+  const [sharing, setSharing] = useState(false);
+  const copyTimerRef = useRef<number | null>(null);
   const playerName = cardData?.battle_tag ? cardData.battle_tag.split("#")[0] : "Unknown Agent";
 
+  // 用真實 cardFile 偵測 canShare（避免 mount 時 probe 的 false negative；
+  // 桌面瀏覽器多數會回 false，按鈕自然不顯示）
+  const shareSupported = cardFile ? canShareThisFile(cardFile) : false;
+
   useEffect(() => {
+    return () => {
+      if (copyTimerRef.current !== null) {
+        window.clearTimeout(copyTimerRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    // 必須等 auth resolve 後再產圖：OWCard 的 BattleTag 遮罩依賴 isLoggedIn，
+    // auth 未 resolve 時產出的 File 可能永久帶錯誤登入態（Codex §6.7 M1）。
+    if (authLoading) return;
+
     let isMounted = true;
 
     const generatePreview = async () => {
       if (!cardRef.current || !cardData) return;
       setGeneratingImage(true);
       setImageUrl(null);
+      setCardFile(null);
 
       try {
-        const dataUrl = await createCardImageDataUrl(cardRef.current);
+        const rawName = cardData.battle_tag
+          ? `after-midnight-${cardData.battle_tag.replace("#", "-")}.png`
+          : `after-midnight-card-${cardData.card_id ?? "unknown"}.png`;
+        const file = await createCardImageFile(cardRef.current, rawName);
+        const dataUrl = await blobToDataUrl(file);
         if (isMounted) {
+          setCardFile(file);
           setImageUrl(dataUrl);
         }
       } catch (err) {
@@ -53,13 +96,35 @@ export default function ShareCardClient({ cardData }: Props) {
       isMounted = false;
       window.clearTimeout(timerId);
     };
-  }, [cardData]);
+    // 故意不把 user 放進 deps：auth resolve 後 effect 只該跑一次；
+    // 把 user 加入 deps 會在 auth rehydrate 時整套重跑覆蓋預熱結果（Codex Q2）。
+    // user 影響 OWCard 的 BattleTag 遮罩，但 authLoading→false 時 user 已 resolved。
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cardData, authLoading]);
+
+  const handleSaveToAlbum = async () => {
+    if (!cardFile) return;
+    setSharing(true);
+    try {
+      await shareOrDownloadCardFile(cardFile);
+    } catch (err) {
+      console.error("儲存到相簿失敗:", err);
+    } finally {
+      setSharing(false);
+    }
+  };
 
   const handleCopyShareUrl = async () => {
     try {
       await navigator.clipboard.writeText(window.location.href);
       setCopySuccess(true);
-      window.setTimeout(() => setCopySuccess(false), 2400);
+      if (copyTimerRef.current !== null) {
+        window.clearTimeout(copyTimerRef.current);
+      }
+      copyTimerRef.current = window.setTimeout(() => {
+        setCopySuccess(false);
+        copyTimerRef.current = null;
+      }, 2400);
     } catch (err) {
       console.error("複製分享連結失敗:", err);
       alert("複製分享連結失敗，請手動複製網址列。");
@@ -149,6 +214,18 @@ export default function ShareCardClient({ cardData }: Props) {
 
               {/* 控制按鈕區 */}
               <div className="w-full max-w-[340px] flex flex-col gap-3">
+                {shareSupported && (
+                  <Button
+                    onClick={() => void handleSaveToAlbum()}
+                    disabled={!cardFile || sharing}
+                    className="w-full bg-gradient-to-r from-auroraMint to-auroraTeal text-white font-extrabold text-sm py-4.5 rounded-xl shadow-md transition-all active:scale-98 cursor-pointer flex items-center justify-center gap-2 hover:opacity-90 duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {sharing ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
+                    <span>
+                      {!cardFile ? "圖片準備中…" : sharing ? "開啟系統分享單…" : "儲存到相簿"}
+                    </span>
+                  </Button>
+                )}
                 <Button
                   onClick={handleCopyShareUrl}
                   className="w-full bg-gradient-to-r from-auroraTeal to-auroraMint text-white font-extrabold text-sm py-4.5 rounded-xl shadow-md transition-all active:scale-98 cursor-pointer flex items-center justify-center gap-2 hover:opacity-90 duration-300"
@@ -168,8 +245,11 @@ export default function ShareCardClient({ cardData }: Props) {
               </div>
 
               <p className="text-[11px] text-theme-text-muted/80 font-sans text-center max-w-[320px] font-semibold mt-2 leading-relaxed">
-                如果手機沒有出現儲存選項，請先用瀏覽器開啟此頁，再長按圖片。
+                {shareSupported
+                  ? "點「儲存到相簿」會開啟系統分享單，選「儲存影像」即可進相簿；若選項為「儲存到檔案」，請改用長按圖片儲存。"
+                  : "電腦可在圖片上按右鍵另存圖片；手機可長按圖片保存。"}
               </p>
+
             </div>
           )}
         </div>
