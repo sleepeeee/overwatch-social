@@ -589,7 +589,7 @@ export const MBTI_OPTIONS = [
   'ISTJ', 'ISFJ', 'ESTJ', 'ESFJ',
   'ISTP', 'ISFP', 'ESTP', 'ESFP'
 ];
-export const LANGUAGE_OPTIONS = ['繁體中文', '简体中文', 'English', '日本語', '한국어'];
+export const LANGUAGE_OPTIONS = ['繁體中文', '简体中文', '廣東話', 'English', '日本語', '한국어'];
 export const MIC_OPTIONS = [
   { value: 'mic-on', label: '可開麥交流 🎤' },
   { value: 'listen-only', label: '僅能聽麥 🎧' },
