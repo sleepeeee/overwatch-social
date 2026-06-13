@@ -7,18 +7,18 @@
 ---
 
 <!-- ZONE_A_START -->
-> **Zone A 最後更新：2026-06-11（C2 + C3 ARCHIVE 準備完成，待主代理分別執行 openspec archive）**
+> **Zone A 最後更新：2026-06-13（fix-global-text-overflow lean-direct 歸檔完成；ADR-28 建立工作流 pattern）**
 
 ## 現在在做什麼
 
-團隊模式（Agent 多代理協作）按 rsx 流程推進三個 DB/安全 change，全部完成：
-- **C1 `harden-supabase-security`** ✅ 全流程完成並 archive（migration 021 部署生產、ADR-24/F-024/F-025、commit、merge main）。
-- **C2 `adopt-supabase-generated-types`** ✅ APPLY + ARCHIVE 完成（tasks 全勾、ADR-25/F-026 建立、crossref 回填、Gate PASS）；待主代理執行 `openspec archive adopt-supabase-generated-types`。
-- **C3 `audit-developer-capture-injection`** ✅ APPLY + ARCHIVE 完成（tasks 全勾、ADR-26/F-027/REF-027 建立、crossref 回填、Gate PASS）；待主代理執行 `openspec archive audit-developer-capture-injection`。
+無 in-flight rsx change。今日連續完成三個 lean-direct PR：
+- **PR #22** ✅ `fix-mobile-card-export`（iOS 立繪空白 + 存相簿路徑；merged）
+- **PR #23** ✅ `add-cantonese-language`（溝通語言加廣東話；merged）
+- **PR #24** ✅ `fix-global-text-overflow`（全站長文字溢出防護；merged + REF-038 + ADR-28）
 
 ## 進行中的 Changes（未 archive）
 
-（無。C2 + C3 Pre-archive Gate 均 PASS，等待主代理 openspec archive 指令後即完成）
+（無）
 
 ## 待 Propose Changes（依優先度）
 
@@ -26,27 +26,31 @@
 |---|---|---|---|
 | #1 P1 | `favorites-collections` | M | 廣場無收藏功能，留存路徑斷裂 |
 | #2 P1 | `vercel-github-webhook-hud` | M | 生產環境 HUD 顯示假 commit stats |
+| #3 P2 | `dev-console-errormsg-overflow-補強` | S | Codex §1.3 漏項：3 個 dev console errorMsg 路徑 + layout overflow-x:clip iOS Safari 防禦補強 |
 
 ## 近期歸檔紀錄
 
 | Change | 時間 | 備註 |
 |---|---|---|
-| adopt-supabase-generated-types | 2026-06-11 | Supabase 生成型別 + createClient<Database> 泛型注入；toSocialChannels helper 收斂；移除約 20 個多餘 as 斷言；PLACEHOLDER_BATTLE_TAG 常數化；tsc 0 errors + 16/16 build；ADR-25/F-026；分支 feature/backend-generated-types |
-| harden-supabase-security | 2026-06-11 | Supabase 安全邊界硬化 migration 021；遮罩 social_channels PII（修 migration 015 回退 F-014）；developer_whitelist RLS 修復（P1）；function search_path + bucket listing；ADR-24/F-024/F-025 |
-| normalize-profiles-and-server-canonical | 2026-06-11 | OW server canonical 雙層防線 + user_profiles 補齊 + 孤兒卡軟下架；ADR-23；migration 019/020；**事後補記**（原走 PR #3 未走 rsx）|
+| **fix-global-text-overflow** | 2026-06-13 | **lean-direct path**（無 OpenSpec change）；REF-038 + ADR-28（cross-cutting CSS pattern lean 路徑決策）；§1.3 council Codex ‖ Gemini 並行（SPLIT → 主代理裁決 PASS-WITH-ADJUSTMENTS）；8 處修補（7 P0 + 1 P1）；PR #24 (12f4230) |
+| **add-cantonese-language** | 2026-06-13 | **L0 直改**；LANGUAGE_OPTIONS 加「廣東話」，位置放在「简体中文」之後；profiles.languages text[] 無 CHECK 約束無需 migration；PR #23 (927f6e4) |
+| **fix-mobile-card-export** | 2026-06-13 | iOS Safari foreignObject 圖片載入競態（REF-036）+ 存相簿路徑（REF-037）；preloadImagesAsDataUrls fetch+FileReader 繞 img load race；PR #22 (8bd2d6b) |
+| adopt-supabase-generated-types | 2026-06-11 | Supabase 生成型別 + createClient<Database> 泛型注入；ADR-25/F-026 |
+| harden-supabase-security | 2026-06-11 | migration 021；遮罩 social_channels PII；developer_whitelist RLS 修復；ADR-24/F-024/F-025 |
+| audit-developer-capture-injection | 2026-06-11 | execFile + 參數陣列 + env 絕對路徑 shell 執行安全準則；ADR-26/F-027/REF-027 |
+| normalize-profiles-and-server-canonical | 2026-06-11 | OW server canonical 雙層防線；ADR-23；migration 019/020 |
 | seo-improvements | 2026-06-10 | 全站 canonical + 各頁 Metadata + 首頁 JSON-LD |
-| user-identity-global-nickname | 2026-06-10 | 全站暱稱層 + Dev Console 用戶視圖；F-023/ADR-22/REF-022/REF-023；migration 016/017 |
+| user-identity-global-nickname | 2026-06-10 | 全站暱稱層 + Dev Console 用戶視圖；F-023/ADR-22/REF-022/REF-023 |
 | brand-logo-upgrade | 2026-06-10 | AFTER MIDNIGHT 品牌 Logo 升級 + 明暗切換 |
-| restore-profile-languages | 2026-06-10 | 個人檔案語言設定還原 |
-| add-generic-tags | 2026-06-10 | 通用標籤系統 |
-| theme-share-page-refresh | 2026-06-10 | 分享頁星空主題刷新 |
-| restore-final-html-visual-parity | 2026-06-06 | 還原最終 HTML 視覺一致性 |
-| modularize-browse-game-directories | 2026-06-06 | 廣場多遊戲目錄模組化 |
-| fix-adversarial-audit-issues | 2026-06-06 | 對抗式審查問題修復 |
+| add-standalone-theme-style | 2026-06-12 | token 地基 377 處 + 品牌色變數化（回歸 0.002%）；F-028/F-029（亮底 negative result） |
 | backend-infra-improvements | 2026-06-04 | view + browse cache + alignment cache；F-020/F-021/ADR-18/19/20 |
 | one-card-per-game-constraint | 2026-06-04 | profiles 代理鍵 PK + UNIQUE(user_id,game)；F-022/ADR-21 |
 
-> 完整歸檔史見 `openspec/changes/archive/`（截至 2026-06-11 共 48 個 change）。
+> 完整歸檔史見 `openspec/changes/archive/`（截至 2026-06-13 共 51 個 change + 3 個 lean-direct PR）。
+
+## lean-direct path 註記
+
+依 ADR-28，cross-cutting CSS pattern 修補採跳 rsx 流程直接 PR。**今日 3 次（PR #20/#21/#24）皆走此路徑**。下次遇到符合 5 條 Trigger 條件的工作可直接引 ADR-28；Anti-trigger 任一命中必走 L1/L2 正規流程。
 <!-- ZONE_A_END -->
 
 ---
@@ -301,16 +305,23 @@ git log 補充線索（不算 §1.0 命中，列為已知 baseline pattern）：
 任務 scope：「不只標籤，需要全面檢查」→ 派 rsx-explorer sub-agent 走 (A) context 隔離路徑
 <!-- pre-check-log-end -->
 
-### 2026-06-13 全站文字溢出 EXPLORE 完成（待主代理整合）
+### 2026-06-13 fix-global-text-overflow — lean-direct PR 完成 + 歸檔
 
-- **已完成**：派 rsx-explorer 全站掃描 12 個元件 + L2 外部搜尋 5 個來源；建 REF-038（type=technique，CJK 長文字溢出全站防護 pattern + Tailwind v4 utility 對照 + iOS Safari 15.4+ 支援邊界 + Gemini UX caveats）；§1.3 council Codex ‖ Gemini 並行完成
-- **§1.3 council verdict**：SPLIT → 主代理裁決 **PASS-WITH-ADJUSTMENTS**
-  - Codex (6/10)：NEEDS_MORE_SEARCH — 漏 3 個 dev console errorMsg 路徑、補 iOS Safari 15.4+ caveat、建議拆 ADR + 補 Card REF
-  - Gemini (8/10) **TRANSPORT-DEGRADED**（agy oauth token 過期，agent 自己 fallback 審查）：PASS — 升 R-08/R-06 為 P0、補 320px/scrollbar/overflow-x:clip viewport 角度
-  - 主代理裁決：搜尋角度兩邊補強都不是「方向錯誤」級別，不回 §1.1 補搜；直接整合進風險清單
-- **最終風險清單**：7 個 P0（R-04 OWCard UID Box、R-08 LotusWelcomeWidget 公告、R-01/R-02/R-03 player/[id]、R-05 CosmicLivePreviewCard、R-06 UserCardDetail display_name）+ 2 個 P1（R-07 message、R-09 揪團）+ 5 個 P2（dev console 3 errorMsg、layout overflow-x:clip、TopBar/OWCard languages 已正確）
-- **Exit Criteria**：(1) council ✅（SPLIT 已記錄）(2) REF 數 ❌（1/3 < min_refs_per_propose）(3) crossref ✅ (4) latest.md ✅
-- **REF 數 gap 處置**：待 user 裁決 — (a) 補拆 REF-039 (iOS Safari docs) + REF-040 (shadcn Card 約定) 補到 3 個跑 L2 full rsx propose / (b) 視為 §2.0 L1 lean change 例外（單一 cross-cutting CSS pattern，跨檔但無架構決策）/ (c) 跳流程直接修
+- **路徑**：lean-direct（user 選 (c) 跳 rsx 流程）— 詳 ADR-28
+- **已完成**：派 rsx-explorer 全站掃描 12 個元件；建 REF-038 + 補 iOS Safari / 320px / scrollbar / shadcn Card caveats；§1.3 council Codex ‖ Gemini 並行（SPLIT → 主代理裁決 PASS-WITH-ADJUSTMENTS）；8 處修補（7 P0 + 1 P1，涵蓋 OWCard UID Box、CosmicLivePreviewCard、player/[id] battle_tag/languages/聯絡方式、UserCardDetail display_name/message、LotusWelcomeWidget 公告）；tsc 0 errors + build 18 routes PASS；PR #24 (12f4230) merged；建 ADR-28（cross-cutting CSS pattern lean-direct path 決策）；REF-038 ↔ ADR-28 crossref 回填
+- **§1.3 council 留檔**：Codex (6/10) NEEDS_MORE_SEARCH — 漏 3 個 dev console errorMsg 路徑、補 iOS Safari 15.4+ caveat；Gemini (8/10) **TRANSPORT-DEGRADED**（agy oauth token 過期 fallback）— 升 R-08/R-06 為 P0、補 viewport 角度
+- **未做（明列）**：P2 補強（3 個 dev console errorMsg + layout overflow-x:clip）→ 加入 Zone A「待 Propose Changes」#3
 - **卡關**：無
-- **下次優先**：等 user 選擇 (a)/(b)/(c) → 進 PROPOSE 或直接 apply
+- **下次優先**：（依 Zone A 待 propose）#1 favorites-collections / #2 vercel-github-webhook-hud / #3 dev-console-errormsg 補強
+
+### 2026-06-13 add-cantonese-language — L0 直改
+
+- **已完成**：`src/data/mockPlayers.ts` LANGUAGE_OPTIONS 加「廣東話」於「简体中文」之後；單行改動；無 migration（profiles.languages text[] 無 CHECK）；tsc + build PASS；PR #23 (927f6e4) merged
+- **路徑**：L0 直改（無 spec 影響、單檔、無架構決策）
+- **卡關**：無
+
+### 2026-06-13 fix-mobile-card-export — 歸檔（rsx 流程已走完）
+
+- **已完成**：iOS Safari foreignObject 圖片載入競態修復 + 存相簿路徑；REF-036/037 建立；preloadImagesAsDataUrls 改 fetch+FileReader 繞 img load race；PR #22 (8bd2d6b) merged + openspec archive 完成
+- **卡關**：無
 <!-- council-verdict-2026-06-13 -->

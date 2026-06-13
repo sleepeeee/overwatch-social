@@ -5,7 +5,7 @@ title: CJK 長文字溢出全站防護 pattern（Tailwind v4 + flex/grid 環境�
 url: n/a
 status: active
 references_to: []
-referenced_by: []
+referenced_by: [ADR-28]
 ---
 
 # CJK 長文字溢出全站防護 pattern
