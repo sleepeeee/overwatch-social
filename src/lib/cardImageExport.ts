@@ -4,13 +4,6 @@ import { toBlob, toPng } from "html-to-image";
 
 type ExportResult = "shared" | "downloaded";
 
-export type DiagEvent = {
-  kind: string;
-  src?: string;
-  info?: string;
-};
-type DiagFn = (e: DiagEvent) => void;
-
 const nextFrame = () => new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
 
 const isMobileLikeDevice = () => {
@@ -65,38 +58,28 @@ const blobToDataUrl = (blob: Blob): Promise<string> =>
 // 用 fetch 直接拿 binary → FileReader 轉 dataURL，完全繞過 <img> 元素的
 // load/decode 時序。html-to-image 序列化 foreignObject 時 mobile Safari
 // 對 <img> race（REF-036）；以 dataURL src 餵入則 serialize 沒有 race。
-const preloadImagesAsDataUrls = async (node: HTMLElement, onDiag?: DiagFn): Promise<void> => {
+// 用 fetch 直接拿 binary → FileReader 轉 dataURL，完全繞過 <img> 元素的
+// load/decode 時序。html-to-image 序列化 foreignObject 時 mobile Safari
+// 對 <img> race（REF-036）；以 dataURL src 餵入則 serialize 沒有 race。
+const preloadImagesAsDataUrls = async (node: HTMLElement): Promise<void> => {
   const images = Array.from(node.querySelectorAll<HTMLImageElement>("img"));
-  onDiag?.({ kind: "preload_start", info: `images=${images.length}` });
   await Promise.all(
-    images.map(async (img, idx) => {
-      const tag = `img[${idx}]`;
-      const shortSrc = (img.src || "").split("/").pop() || "(empty)";
-      if (img.src.startsWith("data:")) {
-        onDiag?.({ kind: "preload_skip_data", src: tag, info: "already dataURL" });
-        return;
-      }
+    images.map(async (img) => {
+      if (img.src.startsWith("data:")) return;
       const originalSrc = img.src;
       try {
         const res = await fetch(originalSrc, { cache: "force-cache" });
-        onDiag?.({ kind: "fetch_done", src: `${tag} ${shortSrc}`, info: `ok=${res.ok} status=${res.status}` });
         if (!res.ok) return;
         const blob = await res.blob();
-        onDiag?.({ kind: "blob_done", src: `${tag} ${shortSrc}`, info: `size=${blob.size} type=${blob.type}` });
         const dataUrl = await blobToDataUrl(blob);
-        onDiag?.({ kind: "dataurl_done", src: `${tag} ${shortSrc}`, info: `len=${dataUrl.length}` });
         img.src = dataUrl;
-        await img.decode().catch((e) => {
-          onDiag?.({ kind: "decode_fail", src: `${tag} ${shortSrc}`, info: String(e) });
-        });
-        onDiag?.({ kind: "ready", src: `${tag} ${shortSrc}`, info: `natW=${img.naturalWidth} natH=${img.naturalHeight}` });
-      } catch (e) {
-        onDiag?.({ kind: "fetch_error", src: `${tag} ${shortSrc}`, info: String(e) });
+        await img.decode().catch(() => undefined);
+      } catch {
+        // 保留原始 src（網路失敗時走 onError silhouette fallback）
       }
     })
   );
   await nextFrame();
-  onDiag?.({ kind: "preload_end" });
 };
 
 const downloadBlob = (blob: Blob, fileName: string) => {
@@ -141,33 +124,26 @@ export async function createCardImageDataUrl(node: HTMLElement): Promise<string>
 
 // 預先在背景產 File（給 ShareCardClient 暖好放 state，按鈕點擊時即可直接 share，
 // 避免 await 產圖耗盡 iOS transient activation；REF-037）。
-export async function createCardImageFile(node: HTMLElement, rawFileName: string, onDiag?: DiagFn): Promise<File> {
+export async function createCardImageFile(node: HTMLElement, rawFileName: string): Promise<File> {
   const fileName = sanitizeFileName(rawFileName.endsWith(".png") ? rawFileName : `${rawFileName}.png`);
 
-  onDiag?.({ kind: "start" });
   await waitForCardExport(node);
-  onDiag?.({ kind: "waitForCardExport_done" });
-  await preloadImagesAsDataUrls(node, onDiag);
+  await preloadImagesAsDataUrls(node);
   await document.fonts?.ready;
-  onDiag?.({ kind: "fonts_ready" });
 
   // 第一次嘗試 pixelRatio=2（高品質）
   const optsHi = makeToPngOptions(2);
   await toBlob(node, optsHi).catch(() => undefined);
-  onDiag?.({ kind: "warmup_hi_done" });
   let blob = await toBlob(node, optsHi);
-  onDiag?.({ kind: "attempt_hi", info: `size=${blob?.size ?? 0} threshold=${SMALL_BLOB_THRESHOLD}` });
 
-  // blob 太小 = iOS memory budget 可能漏圖 → 退回 pixelRatio=1 重做
+  // blob 太小 = iOS Safari foreignObject memory budget 可能漏圖
+  // → 退回 pixelRatio=1 重做（Codex 對抗式審查 Q5）
   if (!blob || blob.size < SMALL_BLOB_THRESHOLD) {
-    onDiag?.({ kind: "fallback_lo", info: "pixelRatio=2 too small, retry @1" });
     const optsLo = makeToPngOptions(1);
     await toBlob(node, optsLo).catch(() => undefined);
     blob = await toBlob(node, optsLo);
-    onDiag?.({ kind: "attempt_lo", info: `size=${blob?.size ?? 0}` });
   }
 
-  onDiag?.({ kind: "final_blob", info: `size=${blob?.size ?? 0}` });
   if (!blob) {
     throw new Error("名片圖片產生失敗");
   }

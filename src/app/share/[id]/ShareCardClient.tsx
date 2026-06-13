@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, Check, Copy, Download, Loader2, Sparkles } from "lucide-react";
 import OWCard from "@/components/OWCard";
-import { createCardImageFile, shareOrDownloadCardFile, type DiagEvent } from "@/lib/cardImageExport";
+import { createCardImageFile, shareOrDownloadCardFile } from "@/lib/cardImageExport";
 import { useAuth } from "@/context/AuthContext";
 import type { OWPlayerCard } from "@/types/card";
 
@@ -40,8 +40,6 @@ export default function ShareCardClient({ cardData }: Props) {
   const [generatingImage, setGeneratingImage] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
   const [sharing, setSharing] = useState(false);
-  const [diag, setDiag] = useState<Array<DiagEvent & { t: number }>>([]);
-  const diagStartRef = useRef<number>(0);
   const copyTimerRef = useRef<number | null>(null);
   const playerName = cardData?.battle_tag ? cardData.battle_tag.split("#")[0] : "Unknown Agent";
 
@@ -69,20 +67,12 @@ export default function ShareCardClient({ cardData }: Props) {
       setGeneratingImage(true);
       setImageUrl(null);
       setCardFile(null);
-      setDiag([]);
-      diagStartRef.current = performance.now();
-
-      const collectDiag = (e: DiagEvent) => {
-        if (!isMounted) return;
-        const t = Math.round(performance.now() - diagStartRef.current);
-        setDiag((prev) => [...prev, { ...e, t }]);
-      };
 
       try {
         const rawName = cardData.battle_tag
           ? `after-midnight-${cardData.battle_tag.replace("#", "-")}.png`
           : `after-midnight-card-${cardData.card_id ?? "unknown"}.png`;
-        const file = await createCardImageFile(cardRef.current, rawName, collectDiag);
+        const file = await createCardImageFile(cardRef.current, rawName);
         const dataUrl = await blobToDataUrl(file);
         if (isMounted) {
           setCardFile(file);
@@ -165,27 +155,6 @@ export default function ShareCardClient({ cardData }: Props) {
                 <span>已成功載入特工分享名片</span>
               </div>
             )}
-          </div>
-
-          {/* TEMP DIAGNOSTIC PANEL — 移到 cardData 條件外，cardData null 時也顯示（Codex Q3） */}
-          <div className="w-full max-w-[340px] rounded-xl border-2 border-fuchsia-400/60 bg-black/80 p-3 text-[10px] font-mono text-fuchsia-100 shadow-[0_0_20px_rgba(217,70,239,0.4)]">
-            <div className="font-bold text-fuchsia-300 mb-1">🔬 DIAG v4 (always-on)</div>
-            <div className="break-all opacity-80 mb-1">
-              UA: {typeof navigator !== "undefined" ? navigator.userAgent : "ssr"}
-            </div>
-            <div className="opacity-80 mb-1">
-              cardData={cardData ? `id=${cardData.card_id}` : "NULL (server fetch fail)"} | authLoading=
-              {String(authLoading)} | user={user ? "yes" : "no"}
-            </div>
-            <div className="opacity-80 mb-2">
-              imageUrl={imageUrl ? `len=${imageUrl.length}` : "null"} | cardFile=
-              {cardFile ? `size=${cardFile.size}` : "null"} | shareSupported={String(shareSupported)} | gen={String(generatingImage)}
-            </div>
-            <pre className="whitespace-pre-wrap break-all max-h-[280px] overflow-auto text-fuchsia-50/90 m-0">
-{diag.length === 0
-  ? "(尚未開始 / 已 reset)"
-  : diag.map((d) => `+${String(d.t).padStart(4, " ")}ms  ${d.kind}${d.src ? " " + d.src : ""}${d.info ? "  | " + d.info : ""}`).join("\n")}
-            </pre>
           </div>
 
           {!cardData ? (
