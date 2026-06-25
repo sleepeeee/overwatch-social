@@ -52,7 +52,8 @@ export const HERO_THEME_COLORS: Record<string, { primary: string; secondary: str
   'wrecking-ball': { primary: '#ffb300', secondary: '#b0bec5', theme: 'light' },
   wuyang: { primary: '#1b5e20', secondary: '#a5d6a7', theme: 'dark' },
   zarya: { primary: '#ec407a', secondary: '#b0bec5', theme: 'light' },
-  zenyatta: { primary: '#faf0d6', secondary: '#fdd835', theme: 'light' }
+  zenyatta: { primary: '#faf0d6', secondary: '#fdd835', theme: 'light' },
+  shion: { primary: '#1a092a', secondary: '#ff2a5f', theme: 'dark' }
 };
 
 // 🛡️ [Mitigation] 各定位預設兜底色彩 (Role Default Colors)

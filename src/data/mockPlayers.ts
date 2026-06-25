@@ -322,6 +322,12 @@ export const HEROES_CONFIG: HeroConfig[] = [
     name: '禪亞塔',
     role: 'support',
     imageUrl: 'https://d15f34w2p8l1cc.cloudfront.net/overwatch/7d1546b1541a8afc39353f9337a408d6275a141b0432b7e560ef61579996b0fc.png'
+  },
+  {
+    id: 'shion',
+    name: '死怨',
+    role: 'damage',
+    imageUrl: '/images/heroes/full/shion.png'
   }
 ];
 
