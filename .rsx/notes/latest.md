@@ -7,11 +7,17 @@
 ---
 
 <!-- ZONE_A_START -->
-> **Zone A 最後更新：2026-06-13（fix-global-text-overflow lean-direct 歸檔完成；ADR-28 建立工作流 pattern）**
+> **Zone A 最後更新：2026-06-14（fix-oauth-redirect-preserve-origin 整合層驗證完成；PR #25 含英雄插槽 UX 補完已 merge）**
 
 ## 現在在做什麼
 
-無 in-flight rsx change。今日連續完成三個 lean-direct PR：
+無 in-flight rsx change。
+
+**今日（2026-06-14）**：
+- 完成 `fix-oauth-redirect-preserve-origin` 整合層驗證（user 不在電腦前 → AI 跑靜態 + curl + unit test 三層覆蓋取代手動 dev flow）：4 入口 grep 統一走 helper / curl 4 攻擊場景 callback 零洩漏 / buildNext 單元測試 4/4 pass。7.2 行動裝置實機延到 beta launch readiness 一起做
+- 確認 PR #25 (18f58fa) 已 merge：含 OAuth helper + 英雄已選插槽 UX 重設計（commit 548c665 補 spec + 單元測試）
+
+**昨日（2026-06-13）三個 lean-direct PR**：
 - **PR #22** ✅ `fix-mobile-card-export`（iOS 立繪空白 + 存相簿路徑；merged）
 - **PR #23** ✅ `add-cantonese-language`（溝通語言加廣東話；merged）
 - **PR #24** ✅ `fix-global-text-overflow`（全站長文字溢出防護；merged + REF-038 + ADR-28）
@@ -32,6 +38,7 @@
 
 | Change | 時間 | 備註 |
 |---|---|---|
+| **fix-oauth-redirect-preserve-origin** | 2026-06-13 | OAuth 完成保留來源頁面；4 入口統一 `signInWithGoogle` helper（HomeClient/AuthShelvedButtons/ProfileClient/LoginModal）；§6.7 TRANSPORT-DEGRADED 自審 PROCEED 8/10；2026-06-14 user 不在場 → 整合層驗證取代手動 dev flow（靜態 grep 4/4 + curl 4 攻擊場景零洩漏 + buildNext unit 4/4）；PR #25 (18f58fa) 含 UX unit 2（英雄已選插槽 + commit 548c665） |
 | **fix-global-text-overflow** | 2026-06-13 | **lean-direct path**（無 OpenSpec change）；REF-038 + ADR-28（cross-cutting CSS pattern lean 路徑決策）；§1.3 council Codex ‖ Gemini 並行（SPLIT → 主代理裁決 PASS-WITH-ADJUSTMENTS）；8 處修補（7 P0 + 1 P1）；PR #24 (12f4230) |
 | **add-cantonese-language** | 2026-06-13 | **L0 直改**；LANGUAGE_OPTIONS 加「廣東話」，位置放在「简体中文」之後；profiles.languages text[] 無 CHECK 約束無需 migration；PR #23 (927f6e4) |
 | **fix-mobile-card-export** | 2026-06-13 | iOS Safari foreignObject 圖片載入競態（REF-036）+ 存相簿路徑（REF-037）；preloadImagesAsDataUrls fetch+FileReader 繞 img load race；PR #22 (8bd2d6b) |
@@ -56,6 +63,27 @@
 ---
 
 ## Zone B — 工作日誌（追加，由新到舊）
+
+### 2026-06-14 fix-oauth-redirect-preserve-origin — 整合層驗證取代手動 dev flow（user 不在場）
+
+- **背景**：昨日 (2026-06-13) APPLY 完成 + archive 完成 + PR #25 (18f58fa) merge main，但 Zone A 未同步（顯示「進行中、待 user 親跑」實為 notes drift）。今日 user 不在電腦前要求 AI 想辦法測；本機 debug Chrome 未啟 + playwright MCP 本 session 未註冊 + claude-in-chrome MCP 需 user 日常 Chrome 在場 → 改採「靜態 + 端點 + unit」三層覆蓋
+- **驗證矩陣**：
+  - **1.1 dev 環境**：curl http://localhost:3000 → HTTP 200 ✅
+  - **1.2 Supabase OAuth 白名單**：SKIP（保險用、不阻塞 PR；user 回電腦後可補查）
+  - **5.1-5.3 4 入口統一走 helper**：grep `signInWithGoogle|signInWithOAuth` 確認 HomeClient.tsx:62 / AuthShelvedButtons.tsx:35 / ProfileClient.tsx:689 / LoginModal.tsx:29 全部 import + 呼叫 helper；唯一直呼 `supabase.auth.signInWithOAuth` 在 googleLogin.ts:40（合法 implementation）✅
+  - **5.4 callback 攻擊場景**：curl 4 個 evil next 變體（HTTP 307 + Location header）：
+    - (a) `?next=https://evil.example/` 無 code → `/auth/error?reason=no_code` ✅
+    - (b) `?code=fake&next=https://evil.example/` → `/auth/error?reason=exchange_failed`（exchange 是第一道閘）✅
+    - (c) `?code=fake&next=/browse` 對照組 → 同樣 `exchange_failed` ✅
+    - (d) bonus `?code=fake&next=//evil.example/`（protocol-relative）→ 同樣 `exchange_failed` ✅
+    - 4 場景全部 Location 在 `http://localhost:3000/*`，零外部 origin 洩漏
+  - **buildNext 單元測試**：`node --test tests/unit/google-login-build-next.test.mjs` → 4/4 pass（一般路徑直接回傳 / `/auth/*` fallback / `/developer/*` fallback / `/profile` 為合法 next）
+- **未驗證面**（已知 gap）：
+  - 「exchange 成功 + next=evil」端點層無法測（需真實 OAuth code），完全由 `safeRedirectPath` unit test 邏輯與 `route.ts:5-22` 程式碼審查 cover
+  - 「瀏覽器原生 `window.location.pathname` 抓取」端到端只能 E2E，延到 7.2 行動裝置 + beta launch readiness 時 user 親跑
+- **同 PR 第二 unit 確認**：commit 548c665（英雄已選插槽 UX 重設計）已補 profiles spec MODIFIED + `tests/unit/profile-hero-slot.test.mjs` 2/2 pass；§6.7 重審 PROCEED 7.5/10，6 個 minor 無 critical
+- **卡關**：無
+- **下次優先**：選 backlog P1 推進 — `favorites-collections`（廣場收藏，留存核心）or `vercel-github-webhook-hud`（HUD 真實 commit stats）；或繼續 beta launch readiness 收尾（小號刪除實測 + 白名單人工確認 + OAuth flow 行動裝置實機 task 7.2 一起做）
 
 ### 2026-06-13 fix-oauth-redirect-preserve-origin — PROPOSE + APPLY 完成
 
