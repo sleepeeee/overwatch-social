@@ -322,6 +322,12 @@ export const HEROES_CONFIG: HeroConfig[] = [
     name: '禪亞塔',
     role: 'support',
     imageUrl: 'https://d15f34w2p8l1cc.cloudfront.net/overwatch/7d1546b1541a8afc39353f9337a408d6275a141b0432b7e560ef61579996b0fc.png'
+  },
+  {
+    id: 'shion',
+    name: '死怨',
+    role: 'damage',
+    imageUrl: '/images/heroes/full/shion.png'
   }
 ];
 
@@ -579,6 +585,22 @@ export const MOCK_PLAYERS: OWPlayerCard[] = [
       discord: 'reaper_main'
     },
     mbti: 'ISTJ'
+  },
+  {
+    card_id: 'card-shion-demo',
+    user_id: 'user-shion-demo',
+    server: 'asia',
+    battle_tag: '死怨特工#1010',
+    is_tag_visible: true,
+    selected_heroes: ['shion', 'genji', 'sombra'],
+    tags: ['快樂排位', '輕鬆歡樂', '語音交流'],
+    message: '死怨新英雄愛好者。利爪組長老風格，冷靜致命。找有默契的輸出搭檔一起進化賽場！',
+    languages: ['繁體中文', 'English'],
+    mic_status: 'mic-on',
+    social_channels: {
+      discord: 'shion_main#1010'
+    },
+    mbti: 'INTJ'
   }
 ];
 
