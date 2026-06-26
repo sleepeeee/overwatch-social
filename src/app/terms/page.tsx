@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeft, ShieldAlert } from "lucide-react";
+import { ArrowLeft, ArrowRight, ShieldAlert } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "使用條款",
-  description: "AFTER MIDNIGHT 的平台規則、禁止行為、站外互動風險與管理權限。",
+  description: "AFTER MIDNIGHT 的平台規則、禁止行為、防詐騙與第三方連結責任、站外互動風險與管理權限。",
 };
 
 const sections = [
@@ -34,6 +34,18 @@ const sections = [
       "公開他人的個資、聊天紀錄、聯絡方式、照片或可識別身分的資訊。",
       "使用自動化工具大量爬取資料、干擾網站運作或規避平台限制。",
     ],
+  },
+  {
+    title: "詐騙防範與第三方連結",
+    items: [
+      "我們不會跟你要遊戲帳號密碼、雙重驗證碼、簡訊驗證碼、信用卡或銀行帳號、超商代碼。",
+      "我們也不會私下跟你要錢。Beta 期間平台完全免費；未來如果有付費或贊助功能，會在站內事先公告，並只在公開的付款入口進行。",
+      "我們也不經手遊戲點數卡、代打定金、抽獎參加費、二手帳號保證金或虛寶交易費。任何人說「先付定金幫你上分」「轉點數卡換抽獎」，都是詐騙。",
+      "看到有人自稱 AFTER MIDNIGHT 的人員、客服、開發者或合作對象跟你要這些，請馬上停止互動，那就是詐騙。",
+      "名片上的 Discord、Twitter / X、Instagram 等連結是玩家自己填的，我們不會事先逐一審查、不背書，也不對連結後的內容、安全性或可用性負責。",
+      "點開站外連結後的風險（釣魚網站、惡意程式、個資外洩等）由玩家自己承擔。但如果損害是站方故意或嚴重疏失造成，我們會負起責任。",
+    ],
+    cta: { label: "我要透過回報入口告訴你們", href: "/report" },
   },
   {
     title: "站方管理權",
@@ -90,7 +102,7 @@ export default function TermsPage() {
           <p className="text-sm leading-7 text-theme-text-soft">
             這裡是 AFTER MIDNIGHT 的平台規則：可以做什麼、不能做什麼，以及站外互動風險由誰承擔。
           </p>
-          <p className="font-mono text-[11px] tracking-[0.12em] text-theme-text-faint">最後更新：2026-06-12</p>
+          <p className="font-mono text-[11px] tracking-[0.12em] text-theme-text-faint">最後更新：2026-06-15</p>
         </section>
 
         <section className="rounded-2xl border border-auroraMint/20 bg-auroraMint/[0.07] p-5 sm:p-6">
@@ -114,6 +126,17 @@ export default function TermsPage() {
                 </li>
               ))}
             </ul>
+            {"cta" in section && section.cta && (
+              <div className="mt-5">
+                <Link
+                  href={section.cta.href}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-auroraMint/30 bg-auroraMint/10 px-4 py-1.5 text-xs font-semibold tracking-[0.16em] text-auroraMint transition hover:border-auroraMint/60 hover:bg-auroraMint/20 focus:outline-none focus:ring-2 focus:ring-auroraMint/50"
+                >
+                  {section.cta.label}
+                  <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+                </Link>
+              </div>
+            )}
           </section>
         ))}
 
